@@ -1,8 +1,8 @@
 ﻿* {
-    text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%;
-    -ms-text-size-adjust: 100%;
-    -moz-text-size-adjust: 100%;
+    text-size-adjust: none;
+    -webki-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+    -moz-text-size-adjust: none;
 }
 
 body {
@@ -136,8 +136,11 @@ div.article ol {
   margin: 0 0 0 32px;
   padding: 8px 0 8px 0;
   line-height: 24px;
+  font-size: 14px;
 }
-
+div.article ol li {
+  font-size: 14px;
+}
 div.code, div.console {
   border: 1px solid #008800;
   text-align:left;
