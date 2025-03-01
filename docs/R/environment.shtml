@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rの名前空間とスコーピング</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rの名前空間とスコーピング</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>プログラミング言語としてのRの良いところの一つは、名前空間の扱い方がシンプルで柔軟で一貫性があるところです。ぽちぽちと統計解析に使うには大雑把な把握で無問題だと思いますが、自作パッケージなどを作るようになる頃に重要になってくる知識なので、実例で理解していきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#名前空間" id="toc-名前空間"><span
+class="toc-section-number">1</span> 名前空間</a></li>
+<li><a href="#環境を知ろう" id="toc-環境を知ろう"><span
+class="toc-section-number">2</span> 環境を知ろう</a>
+<ul>
+<li><a href="#グローバル領域もひとつの環境"
+id="toc-グローバル領域もひとつの環境"><span
+class="toc-section-number">2.1</span>
+グローバル領域もひとつの環境</a></li>
+<li><a href="#パッケージはそれぞれ別の環境にある"
+id="toc-パッケージはそれぞれ別の環境にある"><span
+class="toc-section-number">2.2</span>
+パッケージはそれぞれ別の環境にある</a></li>
+<li><a href="#ロードしたパッケージのオブジェクトが検索される理由"
+id="toc-ロードしたパッケージのオブジェクトが検索される理由"><span
+class="toc-section-number">2.3</span>
+ロードしたパッケージのオブジェクトが検索される理由</a>
+<ul>
+<li><a href="#サーチパス" id="toc-サーチパス"><span
+class="toc-section-number">2.3.1</span> サーチパス</a></li>
+<li><a href="#globalenvの先祖" id="toc-globalenvの先祖"><span
+class="toc-section-number">2.3.2</span>
+<code>.GlobalEnv</code>の先祖</a></li>
+<li><a href="#サーチパスにないパッケージを参照するpkgname"
+id="toc-サーチパスにないパッケージを参照するpkgname"><span
+class="toc-section-number">2.3.3</span>
+サーチパスにないパッケージを参照する（pkg::name）</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#環境をつくってみる" id="toc-環境をつくってみる"><span
+class="toc-section-number">3</span> 環境をつくってみる</a>
+<ul>
+<li><a href="#子環境をつくる" id="toc-子環境をつくる"><span
+class="toc-section-number">3.1</span> 子環境をつくる</a></li>
+<li><a href="#作った環境をサーチパスに載せる"
+id="toc-作った環境をサーチパスに載せる"><span
+class="toc-section-number">3.2</span>
+作った環境をサーチパスに載せる</a></li>
+<li><a href="#環境とリストの違い" id="toc-環境とリストの違い"><span
+class="toc-section-number">3.3</span> 環境とリストの違い</a></li>
+</ul></li>
+<li><a href="#関数呼び出し時の環境" id="toc-関数呼び出し時の環境"><span
+class="toc-section-number">4</span> 関数呼び出し時の環境</a>
+<ul>
+<li><a href="#この子は誰の子" id="toc-この子は誰の子"><span
+class="toc-section-number">4.1</span> この子は誰の子？</a></li>
+<li><a href="#呼び出し時ではなく定義時に親は定まる"
+id="toc-呼び出し時ではなく定義時に親は定まる"><span
+class="toc-section-number">4.2</span>
+呼び出し時ではなく定義時に親は定まる</a></li>
+<li><a href="#保存先ではなく定義したときの環境が親"
+id="toc-保存先ではなく定義したときの環境が親"><span
+class="toc-section-number">4.3</span>
+保存先ではなく定義したときの環境が親</a></li>
+<li><a href="#呼び出し元が消えても呼び出し元の環境は残る"
+id="toc-呼び出し元が消えても呼び出し元の環境は残る"><span
+class="toc-section-number">4.4</span>
+呼び出し元が消えても、呼び出し元の環境は残る</a></li>
+</ul></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">5</span> まとめ</a></li>
+</ul>
+</div>
+
+<div id="名前空間" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> 名前空間</h1>
+<p>プログラミングでは多数の様々なオブジェクトや宣言の識別子、つまり名前を扱うことになるのですが、ヒトに分かりやすい名前を無計画に命名していくとすぐに重複することになります。これはバグの温床になるため、名前が通用する範囲（スコープ）を限定することにより識別子の重複を避ける仕組みである名前空間が、ほぼ全てのプログラミング言語で用意されています。</p>
+</div>
+<div id="環境を知ろう" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 環境を知ろう</h1>
+<p>Rの場合は、環境（environment）を名前空間に対応させる仕組みを用いて、スコープを管理しています。</p>
+<ul>
+<li>環境はvectorやlistといったオブジェクトを登録するメモリー空間の変数で、Rのコードが実行されるときに1つ紐付け（現在の環境;
+currrent environment）</li>
+<li>代入演算子<code>&lt;-</code>で定義されたオブジェクトは現在の環境に登録され、変数を参照するときは現在の環境に登録されているオブジェクトが優先的に参照されます</li>
+<li>環境には親があり、現在の環境に参照した名前の変数がないときは、親の環境、親の親の環境･･･と言う風に先祖を辿って検索します</li>
+<li>先祖の環境にも参照した名前の変数がないときは、サーチパスにある環境も検索します</li>
+</ul>
+<p>Rでは環境を理解することが、変数スコープを理解することになります。</p>
+<div id="グローバル領域もひとつの環境" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span>
+グローバル領域もひとつの環境</h2>
+<p>グローバル領域もひとつの環境で、変数<code>.GlobalEnv</code>や<code>globalenv()</code>関数で参照できます。</p>
+</div>
+<div id="パッケージはそれぞれ別の環境にある" class="section level2"
+number="2.2">
+<h2><span class="header-section-number">2.2</span>
+パッケージはそれぞれ別の環境にある</h2>
+<p>標準で使える関数<code>lm</code>や<code>confint</code>は<code>ls()</code>をしてもリストされません。これは現在の環境（e.g. <code>.GlobalEnv</code>）とは異なる環境にあるからです。調べるためには、</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">environment</span>(lm)</span></code></pre></div>
+<pre><code>&lt;environment: namespace:stats&gt;</code></pre>
+<p>と言う風にします。<code>package:stats</code>の環境にあることが分かります。
+<code>package:stats</code>の環境を取得することもできます。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">as.environment</span>(<span class="st">&quot;package:stats&quot;</span>)</span></code></pre></div>
+<pre><code>&lt;environment: package:stats&gt;
+attr(,&quot;name&quot;)
+[1] &quot;package:stats&quot;
+attr(,&quot;path&quot;)
+[1] &quot;/usr/lib/R/library/stats&quot;</code></pre>
+</div>
+<div id="ロードしたパッケージのオブジェクトが検索される理由"
+class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
+ロードしたパッケージのオブジェクトが検索される理由</h2>
+<p>パッケージの環境にある関数（e.g. <code>lm</code>）が呼び出せるのは、サーチパスに<code>package:stats</code>の環境が載っているから、もしくは<code>.GlobalEnv</code>の親などの先祖に<code>package:stats</code>が含まれているからです。</p>
+<div id="サーチパス" class="section level3" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span> サーチパス</h3>
+<p>パッケージを呼び出すと、サーチパスにパッケージの環境が追加されます。<code>readr</code>パッケージがインストールされているのであれば、</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">search</span>()</span></code></pre></div>
+<pre><code> [1] &quot;.GlobalEnv&quot;        &quot;package:readr&quot;     &quot;package:rmarkdown&quot;
+ [4] &quot;package:stats&quot;     &quot;package:graphics&quot;  &quot;package:grDevices&quot;
+ [7] &quot;package:utils&quot;     &quot;package:datasets&quot;  &quot;package:methods&quot;  
+[10] &quot;Autoloads&quot;         &quot;package:base&quot;     </code></pre>
+<p>と<code>package:readr</code>を確認することができます。
+アンロードすると、消えます。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">detach</span>(<span class="st">&quot;package:readr&quot;</span>, <span class="at">unload=</span><span class="cn">TRUE</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">search</span>()</span></code></pre></div>
+<pre><code> [1] &quot;.GlobalEnv&quot;        &quot;package:rmarkdown&quot; &quot;package:stats&quot;    
+ [4] &quot;package:graphics&quot;  &quot;package:grDevices&quot; &quot;package:utils&quot;    
+ [7] &quot;package:datasets&quot;  &quot;package:methods&quot;   &quot;Autoloads&quot;        
+[10] &quot;package:base&quot;     </code></pre>
+<p>なお<code>package:stats</code>はパッケージの呼び出し側が参照する環境（package
+environment）で、パッケージ内部のコードが参照する環境（namespace
+environment）とは別になっています。</p>
+</div>
+<div id="globalenvの先祖" class="section level3" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span>
+<code>.GlobalEnv</code>の先祖</h3>
+<p><code>.GlobalEnv</code>から<code>parent.env</code>を用いて親を辿っていくと、<code>package:stats</code>を経由して<code>base</code>に辿り着きます。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>e <span class="ot">&lt;-</span> .GlobalEnv</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="cf">while</span>(<span class="sc">!</span><span class="fu">identical</span>(e, <span class="fu">emptyenv</span>())){</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">environmentName</span>(e))</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    e <span class="ot">&lt;-</span> <span class="fu">parent.env</span>(e)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>[1] &quot;R_GlobalEnv&quot;
+[1] &quot;package:rmarkdown&quot;
+[1] &quot;package:stats&quot;
+[1] &quot;package:graphics&quot;
+[1] &quot;package:grDevices&quot;
+[1] &quot;package:utils&quot;
+[1] &quot;package:datasets&quot;
+[1] &quot;package:methods&quot;
+[1] &quot;Autoloads&quot;
+[1] &quot;base&quot;</code></pre>
+<p>また<code>base</code>にも親があって、<code>R_EmptyEnv</code>がそれになります。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">parent.env</span>(<span class="fu">as.environment</span>(<span class="st">&quot;package:base&quot;</span>))</span></code></pre></div>
+<pre><code>&lt;environment: R_EmptyEnv&gt;</code></pre>
+</div>
+<div id="サーチパスにないパッケージを参照するpkgname"
+class="section level3" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span>
+サーチパスにないパッケージを参照する（pkg::name）</h3>
+<p><code>library</code>関数でパッケージをロードせずにサーチパスに載っていなくても、例えば<code>readr</code>パッケージがインストールされていれば、<code>readr::read_csv</code>と言うようにパッケージ内の関数にアクセスできます。<code>::</code>はbaseパッケージで定義された演算子で、必要ならば<code>::</code>の左側のパッケージをロードして環境をつくった上で、<code>::</code>の右側の関数を探してくれるようです。</p>
+</div>
+</div>
+</div>
+<div id="環境をつくってみる" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 環境をつくってみる</h1>
+<p>回帰分析をして観測値を予測とともにプロットする作業においては意識する必要はないのですが、環境がどういうモノか確認していきましょう。
+明示的につくる必要は多くないと思いますが、つくることもできます。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>myenv <span class="ot">&lt;-</span> <span class="fu">new.env</span>()</span></code></pre></div>
+<p>環境の中に変数を定義したり、環境の中の変数を更新できます。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>myenv<span class="sc">$</span>a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">with</span>(myenv, { a <span class="ot">&lt;-</span> <span class="dv">2</span> }) <span class="co"># 第1引数の環境を指定すると、現在の環境をその環境に切り替えることができる</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>myenv<span class="sc">$</span>a</span></code></pre></div>
+<pre><code>[1] 2</code></pre>
+<p>同じ名前のオブジェクトでも、異なる環境にあれば共存できます。</p>
+<div id="子環境をつくる" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> 子環境をつくる</h2>
+<p>子環境をつくることもできます。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">with</span>(myenv, {</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>    cenv <span class="ot">&lt;-</span> <span class="fu">new.env</span>()</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>})</span></code></pre></div>
+<p>子環境の中では、親環境の変数をシームレスに参照することができます。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">with</span>(myenv<span class="sc">$</span>cenv, a)</span></code></pre></div>
+<pre><code>[1] 2</code></pre>
+</div>
+<div id="作った環境をサーチパスに載せる" class="section level2"
+number="3.2">
+<h2><span class="header-section-number">3.2</span>
+作った環境をサーチパスに載せる</h2>
+<p>往々にしてbad practiceになるので避けるべきですが、</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">attach</span>(myenv)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">parent.env</span>(myenv)</span></code></pre></div>
+<pre><code>&lt;environment: 0x5b48fafd1860&gt;</code></pre>
+<p>でサーチパスに載りますし、<code>detach</code>で外せます。</p>
+</div>
+<div id="環境とリストの違い" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span>
+環境とリストの違い</h2>
+<p>ほとんどリストのように扱っていますが、リストとは異なり現在の環境の変数の値は破壊的に更新されます。リストで同様に処理を行なっても、変数<code>a</code>の元のリストの値は更新されません。</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>lst <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>lst<span class="sc">$</span>a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">with</span>(lst, { a <span class="ot">&lt;-</span> <span class="dv">2</span> })</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a>lst<span class="sc">$</span>a</span></code></pre></div>
+<pre><code>[1] 1</code></pre>
+<p>リストを更新したい場合は、<code>lst &lt;- with(lst, { a &lt;- 2 })</code>と、更新されたオブジェクトで明示的に上書きする必要があります。
+また、環境は比較演算子を用いることができません。<code>identical</code>関数を用います。</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">identical</span>(myenv, .GlobalEnv)</span></code></pre></div>
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<div id="関数呼び出し時の環境" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
+関数呼び出し時の環境</h1>
+<p>関数呼び出しの度に実行時環境（executable
+environment）が自動的に作成され、それに切り替えられます。これによって、ローカルスコープが実現します。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>fun <span class="ot">&lt;-</span> <span class="cf">function</span>() <span class="fu">print</span>(<span class="fu">environment</span>())</span></code></pre></div>
+<p>上の現在の環境を表示する関数を、何度か呼び出してみましょう。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">fun</span>()</span></code></pre></div>
+<pre><code>&lt;environment: 0x5b48fcaf2078&gt;</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">fun</span>()</span></code></pre></div>
+<pre><code>&lt;environment: 0x5b48fcb75968&gt;</code></pre>
+<p>16進数の番号が変わっていくところから、関数呼び出しの度に新たな環境がつくられていることが分かります。</p>
+<div id="この子は誰の子" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> この子は誰の子？</h2>
+<p>現在の環境は<code>environment</code>関数、環境の親は<code>panrent.env</code>関数で取得することができます。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>fun1 <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>    showMsg <span class="ot">&lt;-</span> <span class="cf">function</span>(t, d) <span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%s in depth %d:&quot;</span>, t, d))</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>    <span class="fu">showMsg</span>(<span class="st">&quot;parent&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>    <span class="fu">showMsg</span>(<span class="st">&quot;current&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">environment</span>())</span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>    fun2 <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>        <span class="fu">showMsg</span>(<span class="st">&quot;parent&quot;</span>, <span class="dv">2</span>)</span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>        <span class="fu">showMsg</span>(<span class="st">&quot;current&quot;</span>, <span class="dv">2</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">environment</span>())</span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a>    }</span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a>    <span class="fu">fun2</span>()</span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>}</span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a><span class="fu">fun1</span>()</span></code></pre></div>
+<pre><code>[1] &quot;parent in depth 1:&quot;
+&lt;environment: 0x5b48fafd1860&gt;
+[1] &quot;current in depth 1:&quot;
+&lt;environment: 0x5b48fc7d7e48&gt;
+[1] &quot;parent in depth 2:&quot;
+&lt;environment: 0x5b48fc7d7e48&gt;
+[1] &quot;current in depth 2:&quot;
+&lt;environment: 0x5b48fc7e1208&gt;</code></pre>
+<p>fun2の親環境がfun1の環境であることが分かります。なお、関数オブジェクトがある環境が親になるので、再帰するとずっと親環境は同じになります。</p>
+</div>
+<div id="呼び出し時ではなく定義時に親は定まる" class="section level2"
+number="4.2">
+<h2><span class="header-section-number">4.2</span>
+呼び出し時ではなく定義時に親は定まる</h2>
+<p>環境の親子関係を見たときのコードを再帰に書き替えてみます。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>fun <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">depth=</span><span class="dv">0</span>){</span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>    showMsg <span class="ot">&lt;-</span> <span class="cf">function</span>(t, d) <span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%s in depth %d:&quot;</span>, t, d))</span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>    <span class="fu">showMsg</span>(<span class="st">&quot;parent&quot;</span>, depth)</span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>    <span class="fu">showMsg</span>(<span class="st">&quot;current&quot;</span>, depth)</span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">environment</span>())</span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>    <span class="cf">if</span>(depth<span class="sc">&lt;</span><span class="dv">2</span>) <span class="fu">fun</span>(depth <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>}</span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="fu">fun</span>(<span class="dv">1</span>)</span></code></pre></div>
+<pre><code>[1] &quot;parent in depth 1:&quot;
+&lt;environment: 0x5b48fafd1860&gt;
+[1] &quot;current in depth 1:&quot;
+&lt;environment: 0x5b48fca2bc50&gt;
+[1] &quot;parent in depth 2:&quot;
+&lt;environment: 0x5b48fafd1860&gt;
+[1] &quot;current in depth 2:&quot;
+&lt;environment: 0x5b48fca39358&gt;</code></pre>
+<p>深さ<code>1</code>も<code>2</code>で親環境が同じになりましたね。
+関数の親環境は、関数オブジェクトが定義されている環境になります。<code>fun2</code>は<code>fun1</code>の中で定義されていましたが、<code>fun</code>を再帰しても定義されている場所は変わりません。</p>
+</div>
+<div id="保存先ではなく定義したときの環境が親" class="section level2"
+number="4.3">
+<h2><span class="header-section-number">4.3</span>
+保存先ではなく定義したときの環境が親</h2>
+<p>環境の親子関係を見たときのコードの<code>fun1</code>内の代入演算子を<code>&lt;-</code>から<code>&lt;&lt;-</code>に書き替えます。これはsuper
+assignmentと言って、親環境の変数に代入するものです。親環境に該当する変数がない場合は、<code>.GlobalEnv</code>に作成されます。</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>fun2 <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>fun1 <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>    showMsg <span class="ot">&lt;&lt;-</span> <span class="cf">function</span>(t, d) <span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;%s in depth %d:&quot;</span>, t, d))</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>    <span class="fu">showMsg</span>(<span class="st">&quot;parent&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>    <span class="fu">showMsg</span>(<span class="st">&quot;current&quot;</span>, <span class="dv">1</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">environment</span>())</span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>    fun2 <span class="ot">&lt;&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a>        <span class="fu">showMsg</span>(<span class="st">&quot;parent&quot;</span>, <span class="dv">2</span>)</span>
+<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a>        <span class="fu">showMsg</span>(<span class="st">&quot;current&quot;</span>, <span class="dv">2</span>)</span>
+<span id="cb34-12"><a href="#cb34-12" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">environment</span>())</span>
+<span id="cb34-13"><a href="#cb34-13" tabindex="-1"></a>    }</span>
+<span id="cb34-14"><a href="#cb34-14" tabindex="-1"></a>    <span class="fu">fun2</span>()</span>
+<span id="cb34-15"><a href="#cb34-15" tabindex="-1"></a>}</span>
+<span id="cb34-16"><a href="#cb34-16" tabindex="-1"></a><span class="fu">fun1</span>()</span></code></pre></div>
+<pre><code>[1] &quot;parent in depth 1:&quot;
+&lt;environment: 0x5b48fafd1860&gt;
+[1] &quot;current in depth 1:&quot;
+&lt;environment: 0x5b48f9698bb8&gt;
+[1] &quot;parent in depth 2:&quot;
+&lt;environment: 0x5b48f9698bb8&gt;
+[1] &quot;current in depth 2:&quot;
+&lt;environment: 0x5b48f9655e30&gt;</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">fun2</span>()</span></code></pre></div>
+<pre><code>[1] &quot;parent in depth 2:&quot;
+&lt;environment: 0x5b48f9698bb8&gt;
+[1] &quot;current in depth 2:&quot;
+&lt;environment: 0x5b48f9532318&gt;</code></pre>
+<p>関数オブジェクト<code>fun1</code>と<code>fun2</code>は同じ環境に作られるわけですが、定義した環境が親環境になるため、<code>fun2</code>の親環境が<code>fun1</code>の現在の環境になっています。</p>
+</div>
+<div id="呼び出し元が消えても呼び出し元の環境は残る"
+class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span>
+呼び出し元が消えても、呼び出し元の環境は残る</h2>
+<p>トリッキーなのですが、削除した関数の環境にある変数<code>x</code>を更新することができます。</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>fun1 <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="dv">7</span></span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a>    fun2 <span class="ot">&lt;&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a>        <span class="fu">print</span>(<span class="fu">parent.env</span>(<span class="fu">environment</span>()))</span>
+<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a>        x <span class="ot">&lt;&lt;-</span> x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a>        x</span>
+<span id="cb38-7"><a href="#cb38-7" tabindex="-1"></a>    }</span>
+<span id="cb38-8"><a href="#cb38-8" tabindex="-1"></a>    x</span>
+<span id="cb38-9"><a href="#cb38-9" tabindex="-1"></a>}</span>
+<span id="cb38-10"><a href="#cb38-10" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">exists</span>(<span class="st">&quot;x&quot;</span>)) <span class="fu">rm</span>(x) <span class="co"># 変数xは消しておく</span></span>
+<span id="cb38-11"><a href="#cb38-11" tabindex="-1"></a><span class="fu">fun1</span>() <span class="co"># 関数fun2を表示，自分の環境のxを表示</span></span></code></pre></div>
+<pre><code>[1] 7</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">fun2</span>() <span class="co"># 関数fun1の環境にあるxを更新・表示</span></span></code></pre></div>
+<pre><code>&lt;environment: 0x5b48fa47dbe8&gt;</code></pre>
+<pre><code>[1] 8</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">rm</span>(fun1) <span class="co"># 関数fun1を消す</span></span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a><span class="fu">fun2</span>() <span class="co"># 動く</span></span></code></pre></div>
+<pre><code>&lt;environment: 0x5b48fa47dbe8&gt;</code></pre>
+<pre><code>[1] 9</code></pre>
+</div>
+</div>
+<div id="まとめ" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> まとめ</h1>
+<p>関数内でグローバル変数は参照できるが、代入演算だけでは更新はできないと言う基本的な挙動を理解するだけでだいたい間に合うわけですが、ローカル変数以外を参照する再帰関数を書き出す頃に、変数スコープの詳細な振る舞いを把握する必要が出てきます。変数を間接参照する<code>get</code>などの関数は、環境を指定する引数<code>envir</code>を持てることに気づけば、これだけならばlexical
+scopingとだけ理解してもよいのですが、変数を間接参照する<code>get</code>などの関数は環境を指定する引数<code>envir</code>を持てるわけで、環境を把握しておけばより柔軟なコードを書けるようになれます。</p>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

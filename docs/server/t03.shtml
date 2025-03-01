@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<meta name="DESCRIPTION" content=".htaccess によるリダイレクト処理の行い方を紹介。httpd.conf と .htaccess の記述方法を簡単に説明しています。"/>
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<h2>.htaccess によるリダイレクト</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+　ウェブではコンテンツの移動などにあわせて、META タグや Location: ヘッダーでのブラウザーの切り替えを行う事が多いですが、.htaccess でも Redirect 機能を用いることにより同様の事を行う事ができます。
+
+<h3>FileInfo の有効化</h3>
+　利用するには、.htaccess が使えるような環境を構築する必要があります。まずは httpd.conf を書き換え、以下のように .htaccess を使うディレクトリーのディレクティブの AllowOverride に FileInfo を追加しましょう。
+<h4>httpd.conf の修正個所</h4>
+<div class="code">
+&lt;Directory &quot;/usr/local/apache/www/htdocs&quot;&gt;<br/>
+&nbsp;&nbsp;Options Indexes FollowSymLinks MultiViews Includes<br/>
+&nbsp;&nbsp;AllowOverride <strong>FileInfo</strong> AuthConfig Limit # ここを変更<br/>
+&nbsp;&nbsp;Order allow,deny<br/>
+&nbsp;&nbsp;Allow from all<br/>
+&lt;/Directory&gt;<br/>
+</div>
+
+<h3>.htaccess の作成</h3>
+　次に .htaccess ファイルを作成します。例えば以下のような内容の .htaccess を作れば、http://.../target/ 以下へのアクセスは、全て Yahoo! に飛ばすことができます。
+<h4>.htaccess - 単純なリダイレクト例</h4>
+<div class="code">
+Reidrect permanent /target/ http://www.yahoo.co.jp/
+</div>
+
+　RedirectMatch を使えばパターン・マッチングも可能です。以下のように記述すると、全ての GIF ファイルへのパス指定は、http://uncorrelated.no-ip.com/img/ 以下を見に行くようになります。
+
+<h4>.htaccess - パターン・マッチング例</h4>
+<div class="code">
+RedirectMatch ([^/]+)\.gif$ http://uncorrelated.no-ip.com/img/$1.gif
+</div>
+
+<div class="footer"><!--#include virtual="/parts/footer.txt"--></div>
+</div>
+</div>
+</body>
+</html>

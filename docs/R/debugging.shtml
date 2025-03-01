@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rのデバッグ用関数群</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rのデバッグ用関数群</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>人間がコードを書く以上、コーディングにバグはつきものです。Rには原因追求のための関数群が標準で用意されており、統合開発環境に頼らなくてもそこそこは効率よくデバッグができるようになっています。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#ブレークポイントを仕掛ける"
+id="toc-ブレークポイントを仕掛ける"><span
+class="toc-section-number">1</span> ブレークポイントを仕掛ける</a>
+<ul>
+<li><a href="#browser関数" id="toc-browser関数"><span
+class="toc-section-number">1.1</span> <code>browser</code>関数</a>
+<ul>
+<li><a href="#browser関数を使ってみる"
+id="toc-browser関数を使ってみる"><span
+class="toc-section-number">1.1.1</span>
+<code>browser</code>関数を使ってみる</a></li>
+<li><a href="#デバッグモードに入る条件を引数exprで指定する"
+id="toc-デバッグモードに入る条件を引数exprで指定する"><span
+class="toc-section-number">1.1.2</span>
+デバッグモードに入る条件を引数<code>expr</code>で指定する</a></li>
+<li><a href="#引数skipcalls" id="toc-引数skipcalls"><span
+class="toc-section-number">1.1.3</span>
+引数<code>skipCalls</code></a></li>
+<li><a href="#引数textとcondition" id="toc-引数textとcondition"><span
+class="toc-section-number">1.1.4</span>
+引数<code>text</code>と<code>condition</code></a></li>
+</ul></li>
+<li><a href="#trace関数" id="toc-trace関数"><span
+class="toc-section-number">1.2</span> <code>trace</code>関数</a>
+<ul>
+<li><a href="#tracingstate関数" id="toc-tracingstate関数"><span
+class="toc-section-number">1.2.1</span>
+<code>tracingState</code>関数</a></li>
+</ul></li>
+<li><a href="#debug-debugonce関数" id="toc-debug-debugonce関数"><span
+class="toc-section-number">1.3</span> <code>debug</code>,
+<code>debugonce</code>関数</a></li>
+</ul></li>
+<li><a href="#エラーや警告が出た状態を把握する"
+id="toc-エラーや警告が出た状態を把握する"><span
+class="toc-section-number">2</span> エラーや警告が出た状態を把握する</a>
+<ul>
+<li><a href="#traceback関数" id="toc-traceback関数"><span
+class="toc-section-number">2.1</span> <code>traceback</code>関数</a>
+<ul>
+<li><a href="#警告でも中断する" id="toc-警告でも中断する"><span
+class="toc-section-number">2.1.1</span> 警告でも中断する</a></li>
+</ul></li>
+<li><a href="#optionserror-recover" id="toc-optionserror-recover"><span
+class="toc-section-number">2.2</span>
+<code>options(error = recover)</code></a></li>
+<li><a href="#optionserror-dump.frames-debuggerlast.dump"
+id="toc-optionserror-dump.frames-debuggerlast.dump"><span
+class="toc-section-number">2.3</span>
+<code>options(error = dump.frames)</code> →
+<code>debugger(last.dump)</code></a></li>
+</ul></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">3</span> まとめ</a></li>
+</ul>
+</div>
+
+<p>Rを本格的に使っている人々は、RStudioやVSC/R Extension/R
+Debuggerのような統合開発環境を利用していおり、GUIを使ったデバッグに慣れていると思いますが、対話型インターフェイスのCUIで使えるデバッグ関数群も知っておくと便利なことがあります<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。存在ぐらいは覚えておきましょう。</p>
+<div id="ブレークポイントを仕掛ける" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+ブレークポイントを仕掛ける</h1>
+<p>プログラム中のある箇所の状態やある部分の処理フローの流れを追いかけたいときは、ブレークポイントを仕掛けるのが定番です。コード中に<code>browser</code>関数を埋め込む方法、<code>trace</code>や<code>debug</code>や<code>debugonce</code>で関数にブレークポイントを仕掛ける方法の3種類があります。手軽なのは<code>browser()</code>と書いてしまうことなので、まずはそこから慣れていきましょう。</p>
+<div id="browser関数" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span>
+<code>browser</code>関数</h2>
+<p>最初に覚えるべき関数が<code>browser</code>関数です。実行すると、プログラムの実行がそこで中断され、変数の値を確認したり、変数に値を代入したり、一行づつプログラムを実行していったり（ステップ実行）できる、デバッグモードに入ることができます。
+例えば、</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>(<span class="cf">function</span>(x){</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    <span class="fu">browser</span>()</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    x <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="fu">print</span>(x)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>})(<span class="dv">1</span>)</span></code></pre></div>
+<p>と埋め込めば、関数内で<code>x</code>が定義されたところで実行が中断されます。挿入したところがブレークポイントになるわけです。
+中断された後は、</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">コマンド</th>
+<th align="left">挙動</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">n</td>
+<td
+align="left">ステップ・オーバー（一文づつ実行，関数の中は追いかけない）</td>
+</tr>
+<tr class="even">
+<td align="center">s</td>
+<td
+align="left">ステップ・イン（一文づつ実行，関数の中も追いかける）</td>
+</tr>
+<tr class="odd">
+<td align="center">c</td>
+<td align="left">再開（デバッグモードを抜けて実行を再開）</td>
+</tr>
+<tr class="even">
+<td align="center">f</td>
+<td align="left">再開（ステップ実行で入った関数やループを抜ける）</td>
+</tr>
+<tr class="odd">
+<td align="center">Q</td>
+<td align="left">終了（プログラムの実行自体を終了）</td>
+</tr>
+<tr class="even">
+<td align="center">where</td>
+<td align="left">トレースバックを表示</td>
+</tr>
+<tr class="odd">
+<td align="center">help</td>
+<td align="left">コマンドの説明を表示</td>
+</tr>
+</tbody>
+</table>
+<p>と言うコマンドを入れるか、<strong>Rの命令を入力</strong>します。ENTERキーは、<code>options(browserNLdisabled=TRUE)</code>で無効にできますが、デフォルトでは最初は再開で、ステップ・オーバー実行後はステップ・オーバー、ステップ・イン実行後はステップ・インになります。なお、<code>c</code>と<code>f</code>は実用上の違いは無い<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>こｔ、<code>? browser</code>で出てくるドキュメントにある<code>r</code>コマンドは機能しない<a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>ので注意してください。また、デバッグモードに入ったとき、次に実行する文が<code>debug:</code>の後に表示されていないときの<code>n</code>と<code>s</code>は無視されます。</p>
+<div id="browser関数を使ってみる" class="section level3" number="1.1.1">
+<h3><span class="header-section-number">1.1.1</span>
+<code>browser</code>関数を使ってみる</h3>
+<p>習うより慣れろ系なので、上述の例を実際に動かして見ましょう。</p>
+<pre><code>Called from: (function(x) {
+    browser()
+    x &lt;- x + 1
+    print(x)
+})(1)
+Browse[1]&gt; </code></pre>
+<p>とコマンド・プロンプトが表示されるので、コマンドか命令を入れていきます。ステップ・オーバーしていくと</p>
+<pre><code>Browse[1]&gt; n
+ #3 の debug: x &lt;- x + 1
+Browse[2]&gt; 
+ #4 の debug: print(x)
+Browse[2]&gt; 
+[1] 2</code></pre>
+<p>となり、ステップ・インしていくと</p>
+<pre><code>e[1]&gt; s
+ #3 の debug: x &lt;- x + 1
+Browse[2]&gt; 
+ #4 の debug: print(x)
+Browse[2]&gt; 
+debugging in: print(x)
+debug: UseMethod(&quot;print&quot;)
+Browse[3]&gt; 
+debugging in: print.default(x)
+debug: {
+    args &lt;- pairlist(digits = digits, quote = quote, na.print = na.print, 
+        print.gap = print.gap, right = right, max = max, width = width, 
+        useSource = useSource, ...)
+    missings &lt;- c(missing(digits), missing(quote), missing(na.print), 
+        missing(print.gap), missing(right), missing(max), missing(width), 
+        missing(useSource))
+    .Internal(print.default(x, args, missings))
+}</code></pre>
+<p><code>print</code>関数の中まで追跡してくれます。ステップインした関数の中で<code>f</code>か<code>c</code>を押すと、関数を抜けて、関数の次の文に飛びます。</p>
+<p>変数名をいれれば値を確認できますし、代入演算子<code>&lt;-</code>で変数に異常値を代入したり、フォーマット付きで値を確認したり、<code>plot</code>したりと、Rの命令が使えるのは便利です。コンパイル言語のデバッガーと比較して融通が利きます。</p>
+</div>
+<div id="デバッグモードに入る条件を引数exprで指定する"
+class="section level3" number="1.1.2">
+<h3><span class="header-section-number">1.1.2</span>
+デバッグモードに入る条件を引数<code>expr</code>で指定する</h3>
+<p>条件付きにデバッグモードに入れます。以下のように引数<code>expr</code>を指定したら、<code>x &lt;= 0</code>が<code>FALSE</code>なのでデバッグモードに入りません。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>(<span class="cf">function</span>(x){</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="fu">browser</span>(<span class="at">expr =</span> x <span class="sc">&lt;=</span> <span class="dv">0</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    x <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>    <span class="fu">print</span>(x)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>})(<span class="dv">1</span>)</span></code></pre></div>
+</div>
+<div id="引数skipcalls" class="section level3" number="1.1.3">
+<h3><span class="header-section-number">1.1.3</span>
+引数<code>skipCalls</code></h3>
+<p>ほかに<code>text</code>と<code>condition</code>と<code>skipCalls</code>を指定することができます。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>(<span class="cf">function</span>(x){</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>    <span class="fu">browser</span>(<span class="at">text =</span> <span class="st">&quot;example&quot;</span>, <span class="at">condition =</span> <span class="dv">1</span>, <span class="at">skipCalls=</span><span class="dv">2</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    x <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    <span class="fu">print</span>(x)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>})(<span class="dv">1</span>)</span></code></pre></div>
+<p>上を実行すると<code>skipCalls=2</code>の効果で<code>Called from:</code>が変わっているのが分かります。</p>
+</div>
+<div id="引数textとcondition" class="section level3" number="1.1.4">
+<h3><span class="header-section-number">1.1.4</span>
+引数<code>text</code>と<code>condition</code></h3>
+<p>複数のブレークポイントを管理する統合開発環境用だそうですが、<code>text</code>と<code>condition</code>で指定した値を<code>browserText</code>関数と<code>browserCondition</code>関数でとることができます。</p>
+<pre><code>Called from: top level 
+Browse[1]&gt; browserText()
+[1] &quot;example&quot;
+Browse[1]&gt; browserCondition()
+[1] 1
+Browse[1]&gt; </code></pre>
+<!-- browserSetDebug
+sys.frame  -->
+</div>
+</div>
+<div id="trace関数" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span>
+<code>trace</code>関数</h2>
+<p><code>trace</code>関数と<code>browser</code>関数を組み合わせて、関数にブレークポイントを仕掛けることができます。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>fn <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="dv">3</span>)<span class="sc">/</span><span class="dv">2</span><span class="dt">i</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>    z<span class="sc">^</span>x</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>}</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">trace</span>(fn, browser, <span class="at">at=</span><span class="dv">3</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="fu">fn</span>(<span class="dv">3</span>)</span></code></pre></div>
+<p>この例では、<code>fn</code>の3行目になる<code>z^x</code>の実行前にブレークポイントを仕掛けています。</p>
+<p>デバッグモードに入ったあとは、<code>browser</code>関数を呼んでいるだけに、<code>browser</code>関数と同様です。</p>
+<p>芸達者な関数で、<code>exit</code>で関数終了時に呼び出す関数を指定できるほか<a
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>、<code>print=FALSE</code>で表示を抑制したり、<code>edit=TRUE</code>でtraceしている関数を実行前にテキストエディタを開いて編集したりできます。</p>
+<p>総称関数（e.g. <code>summary</code>）をデバッグする場合は、引数<code>signature</code>でクラス名を指定します。また、パッケージ内の関数のように現在の環境と異なる環境にある関数の場合は引数<code>where</code>で環境を指定します。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">untrace</span>(fn)</span></code></pre></div>
+<p>なお、デバッグ完了後は、次回実行時もデバッグモードに入らないように、<code>untrace</code>する必要があります。<code>untrace</code>にも<code>trace</code>につけた<code>signature</code>と<code>where</code>は必要です。</p>
+<div id="tracingstate関数" class="section level3" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span>
+<code>tracingState</code>関数</h3>
+<p><code>tracingState(FALSE)</code>とすると、あらゆる箇所の<code>trace</code>が基本的に動かなくなります<a
+href="#fn5" class="footnote-ref"
+id="fnref5"><sup>5</sup></a>。<code>tracingState(TRUE)</code>で有効になります。</p>
+</div>
+</div>
+<div id="debug-debugonce関数" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> <code>debug</code>,
+<code>debugonce</code>関数</h2>
+<p><code>debug</code>関数と<code>debugonce</code>関数は<code>trace</code>関数に似た用途に用います。<code>debug</code>を使うと<code>undebug</code>をしないといけないので、1度だけデバッグモードに入れる<code>debugonce</code>を使ってみましょう。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">debugonce</span>(fn)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">fn</span>(<span class="dv">3</span>)</span></code></pre></div>
+<p><code>browser</code>関数と同様の引数<code>text</code>と<code>condition</code>と、<code>trace</code>関数と同様の<code>signature</code>をもてます。<code>isdebugged</code>でブレークポイントが仕掛けられているか確認することができ、<code>debuggingState(FALSE)</code>で無効にすることができます。もちろん<code>TRUE</code>を指定すれば有効化です。</p>
+</div>
+</div>
+<div id="エラーや警告が出た状態を把握する" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+エラーや警告が出た状態を把握する</h1>
+<p>コードを書いているときはエラーが出てもどこが問題かだいたい想像がついているわけですが、データセットを変えるなどしてエラーを出した場合などで、直観的に状況を把握できないときがあります。</p>
+<div id="traceback関数" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span>
+<code>traceback</code>関数</h2>
+<p>コードが複雑になってくると、例えば<code>source</code>関数で外部ファイルを実行するとき、エラーが出て停止したときにどこで停止したか分からないときがあります。そういうときに<code>traceback()</code>と入力すると、直前のエラーが生じた関数とその中の位置、エラーが生じた関数を呼んでいる関数を表示してくれます。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">assign</span>(<span class="st">&quot;.Traceback&quot;</span>, <span class="cn">NULL</span>, <span class="st">&quot;package:base&quot;</span>) <span class="co"># 説明のためframes/stackをクリア</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>fn1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">fn2</span>(x)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>fn2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">fn3</span>(x)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>fn3 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">stop</span>(<span class="st">&quot;an example error!&quot;</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">fn1</span>(<span class="dv">1</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="fu">traceback</span>()</span></code></pre></div>
+<p>入れ籠構造になっているわけですが、しっかり関数名と行番号を追いかけてくれます。</p>
+<pre><code>4: stop(&quot;an example error!&quot;) at #1
+3: fn3(x) at #1
+2: fn2(x) at #1
+1: fn1(1)</code></pre>
+<div id="警告でも中断する" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span>
+警告でも中断する</h3>
+<p>warningでも中断して<code>traceback()</code>したいときは、<code>options(warn = 2)</code>としてください。デフォルトは<code>options(warn = 0)</code>です。</p>
+</div>
+</div>
+<div id="optionserror-recover" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+<code>options(error = recover)</code></h2>
+<p>グローバルオプションを変更することで、エラーが出る直前でデバッグモードに入って状態を確認できます。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>fn2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;fn2 begin&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;an example error!&quot;</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;fn2 end&quot;</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>}</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>fn1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;fn1 begin&quot;</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>    <span class="fu">fn2</span>(x)</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;fn1 end&quot;</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>}</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a><span class="fu">options</span>(<span class="at">error =</span> recover)</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="fu">fn1</span>(<span class="dv">1</span>)</span></code></pre></div>
+<p>エラーになった関数と、それを呼び出している関数のどちらかで起動できますが、ステップ実行をすると必然的にすぐエラーになって止まります。</p>
+<pre><code>&gt; fn1(1)
+[1] &quot;fn1 begin&quot;
+[1] &quot;fn2 begin&quot;
+ fn2(x) でエラー: an example error!
+
+Enter a frame number, or 0 to exit
+
+1: fn1(1)
+2: #3: fn2(x)
+
+Selection:</code></pre>
+<p><code>0</code>を入力して終了、<code>fn1(1)</code>を呼ぶところ、<code>fn2(x)</code>の3行目と選択肢が出ていますね。
+<code>options(error = NULL)</code>で解除できます。</p>
+</div>
+<div id="optionserror-dump.frames-debuggerlast.dump"
+class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
+<code>options(error = dump.frames)</code> →
+<code>debugger(last.dump)</code></h2>
+<p>グローバルオプションを変更して、ダンプ情報を取得することで、エラーが出た直後の状態を確認することができます。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>fn2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;fn2 begin&quot;</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;an example error!&quot;</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;fn2 end&quot;</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>}</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>fn1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;fn1 begin&quot;</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>    <span class="fu">fn2</span>(x)</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;fn1 end&quot;</span>)</span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>}</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a><span class="fu">options</span>(<span class="at">error =</span> dump.frames)</span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a><span class="fu">fn1</span>(<span class="dv">1</span>)</span></code></pre></div>
+<p>使ったことがなかったので、こんな仕掛けが･･･と驚いています。</p>
+<pre><code>[1] &quot;fn1 begin&quot;
+[1] &quot;fn2 begin&quot;
+ fn2(x) でエラー: an example error!
+&gt; ls()
+[1] &quot;fn1&quot;       &quot;fn2&quot;       &quot;last.dump&quot;
+&gt; debugger(last.dump)
+ メッセージ:    fn2(x) でエラー: an example error!
+ 利用可能な環境は以下の呼び出しを含んでいました: 
+1: fn1(1)
+2: #3: fn2(x)
+3: #3: stop(&quot;an example error!&quot;)
+
+ 環境ナンバーを入力してください。0 を入力すると終了します   Selection: 0</code></pre>
+</div>
+</div>
+<div id="まとめ" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> まとめ</h1>
+<p>統合開発環境を使わない/使えないことが前提ですが、<code>browser()</code>を挟んでデバッグモードに入るだけで、だいぶ効率が上がると思います。後は<code>traceback()</code>で十分で、かなりはまらないと細かく引数やオプションをつけていくことはないと思いますが、何かの不幸で統合開発環境が使えないときにどん詰まりのときは、気分転換に試してみましょう。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>例えば、R
+Markdownのファイルにブレークポイントを設定できない統合開発環境でも、R
+Markdownの中のRのコードの中に<code>browser()</code>と書いておけば、そこでデバッグモードに入ることができます。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p><code>c</code>と<code>f</code>を押した後、ループや関数が終了する前に<code>browser()</code>の行が来た場合に、<code>c</code>の場合はデバッグモードに入りなおすのでスタックトレースが表示される一方で、<code>f</code>は入ったままなので表示されないと言う違いはなくもないのですが。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>ソースコードを確認したところ未実装。<a href="#fnref3"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p>例えば<code>recover</code>を指定すると、終了するか継続するか選択できます。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn5"><p><code>edit=TRUE</code>をつけておくと、なぜか編集は実行されます。コードは実行されません。<a
+href="#fnref5" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

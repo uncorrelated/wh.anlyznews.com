@@ -1,0 +1,1880 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>RからC言語の関数を呼ぼう</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">RからC言語の関数を呼ぼう</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>Rから呼ばれるためのC言語の関数は、高速で並列処理がOpenMPで容易でRでサポートされないOSのAPIやライブラリを使えるだけではなく、Rの機能も大きな制限なく操作することができます。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#準備" id="toc-準備"><span
+class="toc-section-number">1</span> 準備</a></li>
+<li><a href="#cと.callと.externalの3種類のc呼び出し"
+id="toc-cと.callと.externalの3種類のc呼び出し"><span
+class="toc-section-number">2</span>
+<code>.C</code>と<code>.Call</code>と<code>.External</code>の3種類のC呼び出し</a></li>
+<li><a href="#cを使ってみよう" id="toc-cを使ってみよう"><span
+class="toc-section-number">3</span>
+<code>.C</code>を使ってみよう</a></li>
+<li><a href="#callを使ってみよう" id="toc-callを使ってみよう"><span
+class="toc-section-number">4</span> <code>.Call</code>を使ってみよう</a>
+<ul>
+<li><a href="#ベクターを引数にとってベクターを戻す関数"
+id="toc-ベクターを引数にとってベクターを戻す関数"><span
+class="toc-section-number">4.1</span>
+ベクターを引数にとって、ベクターを戻す関数</a>
+<ul>
+<li><a href="#error関数" id="toc-error関数"><span
+class="toc-section-number">4.1.1</span> <code>error</code>関数</a></li>
+<li><a href="#sexp型の種類保持しているデータの型"
+id="toc-sexp型の種類保持しているデータの型"><span
+class="toc-section-number">4.1.2</span>
+<code>SEXP</code>型の種類（保持しているデータの型）</a></li>
+<li><a href="#is関数" id="toc-is関数"><span
+class="toc-section-number">4.1.3</span> <code>is*</code>関数</a></li>
+<li><a href="#欠損値非数値無限" id="toc-欠損値非数値無限"><span
+class="toc-section-number">4.1.4</span> 欠損値，非数値，無限</a></li>
+<li><a href="#protectとunprotect" id="toc-protectとunprotect"><span
+class="toc-section-number">4.1.5</span> PROTECTとUNPROTECT</a></li>
+<li><a href="#属性の取得と付与" id="toc-属性の取得と付与"><span
+class="toc-section-number">4.1.6</span> 属性の取得と付与</a></li>
+</ul></li>
+<li><a href="#行列を引数にとって行列を戻す関数"
+id="toc-行列を引数にとって行列を戻す関数"><span
+class="toc-section-number">4.2</span>
+行列を引数にとって、行列を戻す関数</a></li>
+<li><a href="#リストを引数にとってリストを戻す関数"
+id="toc-リストを引数にとってリストを戻す関数"><span
+class="toc-section-number">4.3</span>
+リストを引数にとって、リストを戻す関数</a>
+<ul>
+<li><a href="#scalar関数" id="toc-scalar関数"><span
+class="toc-section-number">4.3.1</span>
+<code>Scalar*</code>関数</a></li>
+<li><a href="#名前でリストの要素を参照する"
+id="toc-名前でリストの要素を参照する"><span
+class="toc-section-number">4.3.2</span>
+名前でリストの要素を参照する</a></li>
+<li><a href="#listと言う言葉が指し示すモノ"
+id="toc-listと言う言葉が指し示すモノ"><span
+class="toc-section-number">4.3.3</span>
+Listと言う言葉が指し示すモノ</a></li>
+</ul></li>
+<li><a href="#表現式を引数にとって実行する関数"
+id="toc-表現式を引数にとって実行する関数"><span
+class="toc-section-number">4.4</span>
+表現式を引数にとって、実行する関数</a>
+<ul>
+<li><a href="#globalenvを含む任意の環境にオブジェクトをつくれる"
+id="toc-globalenvを含む任意の環境にオブジェクトをつくれる"><span
+class="toc-section-number">4.4.1</span>
+<code>.GlobalEnv</code>を含む任意の環境にオブジェクトをつくれる</a></li>
+</ul></li>
+<li><a href="#関数を引数にとって実行する関数"
+id="toc-関数を引数にとって実行する関数"><span
+class="toc-section-number">4.5</span>
+関数を引数にとって、実行する関数</a></li>
+<li><a href="#関数内部でrの式を組み立てて実行する関数"
+id="toc-関数内部でrの式を組み立てて実行する関数"><span
+class="toc-section-number">4.6</span>
+関数内部でRの式を組み立てて実行する関数</a></li>
+</ul></li>
+<li><a href="#デバッガー" id="toc-デバッガー"><span
+class="toc-section-number">5</span> デバッガー</a></li>
+<li><a href="#dllで引数の型や呼び出し名を指定する"
+id="toc-dllで引数の型や呼び出し名を指定する"><span
+class="toc-section-number">6</span>
+DLLで引数の型や呼び出し名を指定する</a></li>
+<li><a href="#可変長引数のときに使う.external"
+id="toc-可変長引数のときに使う.external"><span
+class="toc-section-number">7</span>
+可変長引数のときに使う<code>.External</code></a></li>
+<li><a href="#c言語から利用できるrのapi"
+id="toc-c言語から利用できるrのapi"><span
+class="toc-section-number">8</span> C言語から利用できるRのAPI</a>
+<ul>
+<li><a href="#rコンソール出力関数reprintf"
+id="toc-rコンソール出力関数reprintf"><span
+class="toc-section-number">8.1</span>
+Rコンソール出力関数<code>REprintf</code></a></li>
+<li><a href="#メモリー管理関数群" id="toc-メモリー管理関数群"><span
+class="toc-section-number">8.2</span> メモリー管理関数群</a></li>
+<li><a href="#ユーザー中断の許可" id="toc-ユーザー中断の許可"><span
+class="toc-section-number">8.3</span> ユーザー中断の許可</a></li>
+<li><a href="#乱数生成関数" id="toc-乱数生成関数"><span
+class="toc-section-number">8.4</span> 乱数生成関数</a></li>
+<li><a href="#数学関数定数" id="toc-数学関数定数"><span
+class="toc-section-number">8.5</span> 数学関数/定数</a>
+<ul>
+<li><a href="#最適化" id="toc-最適化"><span
+class="toc-section-number">8.5.1</span> 最適化</a></li>
+<li><a href="#積分関数" id="toc-積分関数"><span
+class="toc-section-number">8.5.2</span> 積分関数</a></li>
+</ul></li>
+<li><a href="#その他" id="toc-その他"><span
+class="toc-section-number">8.6</span> その他</a></li>
+</ul></li>
+<li><a href="#openmpによる並列化" id="toc-openmpによる並列化"><span
+class="toc-section-number">9</span> OpenMPによる並列化</a></li>
+<li><a href="#rのゾンビがメモリに残ってファイルを放さない"
+id="toc-rのゾンビがメモリに残ってファイルを放さない"><span
+class="toc-section-number">10</span>
+Rのゾンビがメモリに残ってファイルを放さない！</a></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">11</span> まとめ</a></li>
+</ul>
+</div>
+
+<p>統計解析用プログラミング言語のRの長所の一つは、C言語で機能を拡張しやすいことです。単にCで書かれた関数を呼べるだけではなく<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>、CにRのオブジェクトを操作する機能と、数学確率関係のビルトイン関数を提供します。また、ボイラープレートコード<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>が少ないです。</p>
+<p>特殊なライブラリをリンクするCコードのコンパイルオプションは煩雑になり勝ちですが、Cコードを用意する簡単なコマンドが用意されており、その苦労もありません。WindowsではCコンパイラなどを用意するのが苦労なときもありますが、Rtoolsと言う開発環境が提供されています。</p>
+<p>CによるR拡張の応用にRcppがあり、<strong>主に計算速度の向上を目指す場合はRcppを使う方が少ない労力<a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>で可読性が高いコードを生産できます</strong>が、その土台になっている部分だけでも有用です。</p>
+<p>ドキュメントも何だかんだとある方で、最新の<a
+href="https://cran.r-project.org/doc/manuals/R-exts.html">Writing R
+Extensions</a><a href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>をよく読み、インクルードファイルを追いかけたら使い方で分からないことは無いと思いますが、最初はとっつきづらい面もあるので、簡単な例を紹介していきたいと思います。</p>
+<div id="準備" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> 準備</h1>
+<p>MS-WindowsではRとRtoolsをインストールして、環境変数が適切に設定されているか確認してください。この文書の記述時点での最新のR
+4.2.2とrtools
+4.2の標準インストールであれば、環境変数<code>RTOOLS42_HOME</code>が<code>C:\rtools42</code>になります。また、コマンドプロンプトからRを呼び出せるように、<code>PATH</code>に<code>%R_HOME%\bin</code>を追加しておいてください<a
+href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>。</p>
+<p>LinuxであればOSのパッケージマネージャーを用いるなどしてgfortranとRが動く環境にしてください。</p>
+<p>インストールが済んだら、OpenMPが有効になるようにオプションを設定します。Windowsの場合は<code>%R_USER%\.R\Makevars.win</code>を作成します。Linuxの場合は<code>~/.R/Makevars</code>です。Rcppなどで開発がしたことがある人にはお馴染みだと思います。
+Windowsでこのファイルが存在しない場合は、Rで</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>directory <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;R_USER&quot;</span>), <span class="st">&quot;.R&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">dir.exists</span>(directory)) <span class="fu">dir.create</span>(directory)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;CFLAGS = $(SHLIB_OPENMP_CFLAGS)</span><span class="sc">\n</span><span class="st">FCFLAGS = $(SHLIB_OPENMP_FFLAGS)&quot;</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="at">file=</span><span class="fu">paste</span>(directory, <span class="st">&quot;Makevars.win&quot;</span>, <span class="at">sep=</span><span class="st">&quot;/&quot;</span>))</span></code></pre></div>
+<p>とすれば作られます。場所は<code>print(directory)</code>をして確認してください。
+作った<code>Makevars.win</code>の中身の<code>CFLAGS</code>はCコンパイラに対するオプション、<code>FCFLAGS</code>はgFortran（のfree
+source
+formのコンパイル）に対するオプションになります。それぞれ<code>$(SHLIB_OPENMP_CFLAGS)</code>と<code>$(SHLIB_OPENMP_FFLAGS)</code>を指定しておくと、OpenMPが有効になります。Cコンパイラは不要に思えるかもですが、gFortranがつくったオブジェクト・ファイルをリンクするのに使います。</p>
+</div>
+<div id="cと.callと.externalの3種類のc呼び出し" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+<code>.C</code>と<code>.Call</code>と<code>.External</code>の3種類のC呼び出し</h1>
+<p>Rには<code>.C</code>と<code>.Call</code>と<code>.External</code>の3種類のC呼び出しがあります。<code>.C</code>はただのCの関数を呼ぶI/Fで、<code>.Call</code>と<code>.External</code>はRのために書かれたCの関数を呼ぶI/Fです。Cの関数の引数や戻り値をRのオブジェクトにする場合は、<code>.Call</code>か<code>.External</code>を使うことになります。<code>.Call</code>は固定長呼び出し、<code>.External</code>は可変長呼び出しと言う違いがあります。<code>.C</code>は古い規格で、現在では<code>.Call</code>か<code>.External</code>を使うことが推奨されています。実際、Rらしい挙動の関数を書く場合は、<code>.Call</code>か<code>.External</code>を使うしかないです。</p>
+</div>
+<div id="cを使ってみよう" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+<code>.C</code>を使ってみよう</h1>
+<p>以下の内容の<code>example_add.c</code>と言うファイルを用意し、</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="dt">void</span> add<span class="op">(</span><span class="dt">double</span> <span class="op">*</span>a<span class="op">,</span> <span class="dt">double</span> <span class="op">*</span>b<span class="op">){</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>    <span class="op">*</span>a <span class="op">+=</span> <span class="op">*</span>b<span class="op">;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>以下のようにコンパイルを行い、</p>
+<pre><code>R CMD SHLIB example_add.c </code></pre>
+<p>Rの作業ディレクトリを<code>example_add.c</code>にあるフォルダーに移動すれば、以下のようにRから呼び出すことができます。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_add&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">.C</span>(<span class="st">&quot;add&quot;</span>, <span class="fu">as.double</span>(<span class="dv">123</span>), <span class="fu">as.double</span>(<span class="dv">321</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">dyn.unload</span>(dll)</span></code></pre></div>
+<pre><code>[[1]]
+[1] 444
+
+[[2]]
+[1] 321</code></pre>
+<p>リストの最初の要素が引数<code>123</code>と<code>321</code>の合計の<code>444</code>になっているので、Cのコードが動いたことが分かります。</p>
+<p>DLLのファイルパス名をつくってDynamic Link
+Library（以下、DLL）をロードし、C関数を呼んだ後に（もうC関数が不要になったので）DLLをアンロードしているだけです。引数の型はCの関数にあわせて変換しておきます。</p>
+<p>Cの関数は<code>void</code>型で戻り値はなく、引数のポインターの先を更新することで、計算結果を戻します。ベクトルを引数として渡せますが、ベクトルの長さは別の引数で指定する必要があります。具体的に使えるRの引数の型とC言語における対応は、Writing
+R Extensionsの以下の表にまとまっています。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">R storage mode</th>
+<th align="left">C type</th>
+<th align="left">Fortran type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">logical</td>
+<td align="left">int *</td>
+<td align="left">INTEGER</td>
+</tr>
+<tr class="even">
+<td align="left">integer</td>
+<td align="left">int *</td>
+<td align="left">INTEGER</td>
+</tr>
+<tr class="odd">
+<td align="left">double</td>
+<td align="left">double *</td>
+<td align="left">DOUBLE PRECISION</td>
+</tr>
+<tr class="even">
+<td align="left">complex</td>
+<td align="left">Rcomplex *</td>
+<td align="left">DOUBLE COMPLEX</td>
+</tr>
+<tr class="odd">
+<td align="left">character</td>
+<td align="left">char **</td>
+<td align="left">CHARACTER(255)</td>
+</tr>
+<tr class="even">
+<td align="left">raw</td>
+<td align="left">unsigned char *</td>
+<td align="left">none</td>
+</tr>
+</tbody>
+</table>
+<p><code>Rcomplex</code>を使うときは、Cのソースコードに<code>#include &lt;R.h&gt;</code>が要ります。<code>character</code>はポインタのポインタのcharになるので、引数と異なるサイズの文字列に置き換えることができますが、他は引数のサイズに制約されます。</p>
+</div>
+<div id="callを使ってみよう" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
+<code>.Call</code>を使ってみよう</h1>
+<p><code>.C</code>の機能で十分なことも多いと思いますが、引数と戻り値の型が制約されているので、現在では<code>.Call</code>と<code>.External</code>の利用が推奨されています。</p>
+<p><code>.Call</code>と<code>.External</code>は引数と戻り値が<code>SEXP</code>型になっています。Rのオブジェクトは内部的に<code>SEXPREC</code>構造体に保存されているのですが、それへのポインターになる型です。つまり、listやvectorを引数にとり、戻り値に使うことが可能になります。</p>
+<div id="ベクターを引数にとってベクターを戻す関数"
+class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span>
+ベクターを引数にとって、ベクターを戻す関数</h2>
+<p>習うより慣れろ感があるので、実際にコードを見て行きましょう。まずは、ベクターを引数にとって、ベクターを戻す関数を作ってみます。</p>
+<p>以下の内容のファイル<code>example_vector.c</code>を作成し、</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">/* 引数も戻り値もSEXP型 */</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>SEXP abs_roundup<span class="op">(</span>SEXP v<span class="op">)</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="dt">double</span> x<span class="op">;</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    SEXP r<span class="op">,</span> names<span class="op">;</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">/* 型チェック */</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isVector<span class="op">(</span>v<span class="op">))</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;v&#39; should be a vector.&quot;</span><span class="op">);</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isReal<span class="op">(</span>v<span class="op">))</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;v&#39; should be of numeric.&quot;</span><span class="op">);</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">    戻り値になるベクターを作成</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">    REALSXPは実数</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="co">    length(v)でvの要素数を取得</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">    allocVector(...)で、ベクトルを作成</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">    PROTECT(...)で、ガーベッジコレクターから保護</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">*/</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>    PROTECT<span class="op">(</span>r <span class="op">=</span> allocVector<span class="op">(</span>REALSXP<span class="op">,</span> length<span class="op">(</span>v<span class="op">)));</span> </span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span>i<span class="op">&lt;</span>length<span class="op">(</span>v<span class="op">);</span>i<span class="op">++){</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>        <span class="co">/* 欠損値か判定（説明用で無くても動作は同じ） */</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>ISNA<span class="op">(</span>REAL<span class="op">(</span>v<span class="op">)[</span>i<span class="op">])){</span></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>        <span class="co">/*</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co">            REAL(r)は、double*のポインターを意味するマクロ</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co">            ポインタに慣れていないRユーザーからポインタを隠蔽する</span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a><span class="co">        */</span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>            REAL<span class="op">(</span>r<span class="op">)[</span>i<span class="op">]</span> <span class="op">=</span> NA_REAL<span class="op">;</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>            <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>        <span class="co">/* 例えば2.3は3に、-2.3は-3にする */</span></span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span><span class="dv">0</span><span class="op">&gt;(</span>x <span class="op">=</span> REAL<span class="op">(</span>v<span class="op">)[</span>i<span class="op">]))</span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>            REAL<span class="op">(</span>r<span class="op">)[</span>i<span class="op">]</span> <span class="op">=</span> <span class="op">-</span><span class="dv">1</span><span class="op">*</span>ceill<span class="op">(</span>fabs<span class="op">(</span>x<span class="op">));</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>        <span class="cf">else</span></span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a>            REAL<span class="op">(</span>r<span class="op">)[</span>i<span class="op">]</span> <span class="op">=</span> ceill<span class="op">(</span>x<span class="op">);</span></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a><span class="co">    ベクターrの&#39;names&#39;属性として、ベクターvの&#39;names&#39;属性を代入する</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a><span class="co">    なお、`names`属性のデータもSEXP型のベクター</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a><span class="co">*/</span></span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a>    setAttrib<span class="op">(</span>r<span class="op">,</span> R_NamesSymbol<span class="op">,</span> getAttrib<span class="op">(</span>v<span class="op">,</span> R_NamesSymbol<span class="op">));</span></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a></span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a>    <span class="co">/* GCからの保護を解除 */</span></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a>    UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a>    <span class="cf">return</span> r<span class="op">;</span></span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>以下の内容の<code>example_vector.R</code>を作成し、</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># DLLのパス名を作ってロードする</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_vector&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># C関数に引数として与えるベクトルを作成</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="fu">sqrt</span>(<span class="dv">2</span>), <span class="sc">-</span><span class="dv">1</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">3</span>), <span class="fu">sqrt</span>(<span class="dv">4</span>), <span class="sc">-</span><span class="dv">1</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">5</span>), <span class="cn">NA</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="fu">names</span>(v) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;1st&quot;</span>, <span class="st">&quot;2nd&quot;</span>, <span class="st">&quot;3rd&quot;</span>, <span class="st">&quot;4th&quot;</span>, <span class="st">&quot;5th&quot;</span>, <span class="st">&quot;6th&quot;</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a><span class="co"># 引数を確認</span></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;input:&quot;</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a><span class="fu">print</span>(v)</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="co"># C関数を呼び出して結果を得る</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;output:&quot;</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">.Call</span>(<span class="st">&quot;abs_roundup&quot;</span>, v))</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="co"># 比較のためceilingの結果を示す</span></span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;ceiling:&quot;</span>)</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">ceiling</span>(v))</span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a><span class="co"># DLLをアンロードする</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a><span class="fu">dyn.unload</span>(dll)</span></code></pre></div>
+<p>2つのファイルのあるディレクトリで、</p>
+<pre><code>R CMD SHLIB example_vector.c
+R --slave -f example_vector.R</code></pre>
+<p>とコンパイルと実行を行なうと、</p>
+<pre><code>[1] &quot;input:&quot;
+      1st       2nd       3rd       4th       5th       6th
+-1.000000  1.414214 -1.732051  2.000000 -2.236068        NA
+[1] &quot;output:&quot;
+1st 2nd 3rd 4th 5th 6th
+ -1   2  -2   2  -3  NA
+[1] &quot;ceiling:&quot;
+1st 2nd 3rd 4th 5th 6th
+ -1   2  -1   2  -2  NA</code></pre>
+<p>と結果を得ることができます。符号つきで切り上げる<code>ceiling</code>と似て非なる、絶対値を切り上げて符号を戻す関数ができました。<code>3rd</code>と<code>5th</code>が異なりますね。</p>
+<p>なお、<code>sign(v)*ceiling(abs(v))</code>で同じことができてかつ高速なので、このC関数自体は役立ちません。あくまでベクトルを扱う例なので悪しからず。</p>
+<div id="error関数" class="section level3" number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span>
+<code>error</code>関数</h3>
+<p><code>void error(const char * format, ...)</code>はエラーを生じさせる関数で、<code>void warning(const char * format, ...)</code>は警告を生じさせる関数です。単に引数を出力するだけかと思いきや、何と<code>printf</code>と同じ構文が取れる優れものです。ライブラリでは計算の前提があわないときはエラーにするしかないので有用ですし、<code>printf</code>と同等の機能があってエラーや警告の理由を詳しくメッセージに載せられるので重宝します。</p>
+</div>
+<div id="sexp型の種類保持しているデータの型" class="section level3"
+number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span>
+<code>SEXP</code>型の種類（保持しているデータの型）</h3>
+<p>Rのベクターが数値や文字列といった型を持つように、Rの<code>SEXP</code>型（の参照先の<code>SEXPREC</code>構造体）も内部に型を持ちます。上の例では<code>REALSXP</code>のベクターを作っていました。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">Rの型</th>
+<th align="center">SEXP型の種類</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">numeric</td>
+<td align="center">REALSXP</td>
+</tr>
+<tr class="even">
+<td align="center">integer</td>
+<td align="center">INTSXP</td>
+</tr>
+<tr class="odd">
+<td align="center">logical</td>
+<td align="center">LGLSXP</td>
+</tr>
+<tr class="even">
+<td align="center">single</td>
+<td align="center">SINGLESXP</td>
+</tr>
+<tr class="odd">
+<td align="center">character</td>
+<td align="center">STRSXP</td>
+</tr>
+<tr class="even">
+<td align="center">list</td>
+<td align="center">VECSXP</td>
+</tr>
+</tbody>
+</table>
+<p>Rのベクターと異なり、SEXP型はlistも表すことに注意してください。</p>
+<p>型変換は<code>new_vector = PROTECT(coerceVector(old_vector, REALSXP));</code>と言う風にできます<a
+href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>が、bad
+practiceになり勝ちなので避けましょう。</p>
+</div>
+<div id="is関数" class="section level3" number="4.1.3">
+<h3><span class="header-section-number">4.1.3</span>
+<code>is*</code>関数</h3>
+<p>変数の型は<code>TYPEOF(SEXP)</code>を使って<code>INTSXP</code>や<code>REALSXP</code>などになっているか確認してもよいのですが、<code>is*</code>関数も用意されています。</p>
+<pre><code>Rboolean isVector(SEXP);
+Rboolean isVectorAtomic(SEXP);
+Rboolean isVectorList(SEXP);
+Rboolean isMatrix(SEXP);
+Rboolean isPairList(SEXP);
+Rboolean isPrimitive(SEXP);
+Rboolean isTs(SEXP);
+Rboolean isNumeric(SEXP);
+Rboolean isArray(SEXP);
+Rboolean isFactor(SEXP);
+Rboolean isObject(SEXP);
+Rboolean isFunction(SEXP);
+Rboolean isLanguage(SEXP);
+Rboolean isNewList(SEXP);
+Rboolean isList(SEXP);
+Rboolean isOrdered(SEXP);
+Rboolean isUnordered(SEXP);</code></pre>
+</div>
+<div id="欠損値非数値無限" class="section level3" number="4.1.4">
+<h3><span class="header-section-number">4.1.4</span>
+欠損値，非数値，無限</h3>
+<p>欠損値や無限のテストには以下のマクロが使えます。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">関数</th>
+<th align="center">R’s NA</th>
+<th align="center">IEEE NaN</th>
+<th align="center">Inf/-Inf</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">ISNA(x)</td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+<tr class="even">
+<td align="left">ISNAN(x)</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="left">R_FINITE(x)</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+</tbody>
+</table>
+<p>実数値としては<code>NA_REAL</code>，<code>R_NaN</code>,<code>R_PosInf</code>,<code>R_NegInf</code>が用意されています。</p>
+</div>
+<div id="protectとunprotect" class="section level3" number="4.1.5">
+<h3><span class="header-section-number">4.1.5</span>
+PROTECTとUNPROTECT</h3>
+<p>Rの内部の挙動をコントロールするおまじないのようなものですが、<code>allocVector</code>してベクトルを作ったあと、ベクトルの要素をセットするまでは<code>PROTECT</code>マクロでガーベッジコレクターから<code>SEXP</code>型が指し示す<code>SEXPREC</code>構造体を保護します。スタック構造になっており、保護を解除するときは<code>UNPROTECT</code>マクロで解除する数を指定します。複雑なリスト構造の戻り値をつくったときなどは、<code>UNPROTECT(4)</code>のように複数同時に保護解除もできます。</p>
+</div>
+<div id="属性の取得と付与" class="section level3" number="4.1.6">
+<h3><span class="header-section-number">4.1.6</span>
+属性の取得と付与</h3>
+<p><code>getAttrib</code>関数で引数の変数から<code>names</code>属性のベクトルを取得し、<code>setAttrib</code>で戻り値になる変数にそれを設定しているわけですが、Rでの属性名とCのSymbol
+Tableには以下のような対応があります。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">R</th>
+<th align="center">C</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>class</code></td>
+<td align="center"><code>R_ClassSymbol</code></td>
+</tr>
+<tr class="even">
+<td align="center"><code>names</code></td>
+<td align="center"><code>R_NamesSymbol</code></td>
+</tr>
+<tr class="odd">
+<td align="center"><code>dim</code></td>
+<td align="center"><code>R_DimSymbol</code></td>
+</tr>
+<tr class="even">
+<td align="center"><code>dimnames</code></td>
+<td align="center"><code>R_DimNamesSymbol</code></td>
+</tr>
+<tr class="odd">
+<td align="center"><code>levels</code></td>
+<td align="center"><code>R_LevelsSymbol</code></td>
+</tr>
+</tbody>
+</table>
+<p>直接使う機会が多いのは以上だと思いますが、<code>Rinternals.h</code>を参照すると他のSymbolも分かります。</p>
+</div>
+</div>
+<div id="行列を引数にとって行列を戻す関数" class="section level2"
+number="4.2">
+<h2><span class="header-section-number">4.2</span>
+行列を引数にとって、行列を戻す関数</h2>
+<p>Rの行列はベクトルに属性がついただけの構造なので、ベクトルと同様に処理できます。ライフゲームの1回だけ動かす関数を作ってみましょう。ライフゲームは生命の誕生や死を計算機上でシミュレーションするゲームで、今回は典型的な周囲のセルに応じて生まれたり(=<code>1</code>)死んだり(=<code>0</code>)するものを作成します。</p>
+<p>以下の内容のファイル<code>LifeGame.c</code>を作ります。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>SEXP LifeGame<span class="op">(</span>SEXP m<span class="op">)</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>    SEXP  ans<span class="op">,</span> dim<span class="op">;</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>    <span class="dt">int</span>  nor<span class="op">,</span> noc<span class="op">,</span> i<span class="op">,</span> j<span class="op">,</span> nol<span class="op">,</span> x<span class="op">,</span> y<span class="op">,</span> r<span class="op">,</span> c<span class="op">;</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="co">/* 第一引数が行列か確認 */</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isMatrix<span class="op">(</span>m<span class="op">)){</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;A matrix is required for the first argument.&quot;</span><span class="op">);</span></span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a><span class="co">/* 型チェック*/</span></span>
+<span id="cb11-15"><a href="#cb11-15" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isInteger<span class="op">(</span>m<span class="op">)){</span></span>
+<span id="cb11-16"><a href="#cb11-16" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;A integer matrix is required.&quot;</span><span class="op">);</span></span>
+<span id="cb11-17"><a href="#cb11-17" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-18"><a href="#cb11-18" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" tabindex="-1"></a><span class="co">/* 行列の行数、列数を得る */</span></span>
+<span id="cb11-20"><a href="#cb11-20" tabindex="-1"></a>    dim <span class="op">=</span> getAttrib<span class="op">(</span>m<span class="op">,</span> R_DimSymbol<span class="op">);</span></span>
+<span id="cb11-21"><a href="#cb11-21" tabindex="-1"></a>    nor <span class="op">=</span> INTEGER<span class="op">(</span>dim<span class="op">)[</span><span class="dv">0</span><span class="op">];</span> <span class="co">/* 行数 */</span></span>
+<span id="cb11-22"><a href="#cb11-22" tabindex="-1"></a>    noc <span class="op">=</span> INTEGER<span class="op">(</span>dim<span class="op">)[</span><span class="dv">1</span><span class="op">];</span> <span class="co">/* 列数 */</span></span>
+<span id="cb11-23"><a href="#cb11-23" tabindex="-1"></a></span>
+<span id="cb11-24"><a href="#cb11-24" tabindex="-1"></a><span class="co">/* 戻り値の行列を作成（注意：REALSXPではなくINTSXPを指定） */</span></span>
+<span id="cb11-25"><a href="#cb11-25" tabindex="-1"></a>    PROTECT<span class="op">(</span>ans <span class="op">=</span> allocMatrix<span class="op">(</span>INTSXP<span class="op">,</span> nor<span class="op">,</span> noc<span class="op">));</span></span>
+<span id="cb11-26"><a href="#cb11-26" tabindex="-1"></a></span>
+<span id="cb11-27"><a href="#cb11-27" tabindex="-1"></a><span class="co">/* 端は消去 */</span></span>
+<span id="cb11-28"><a href="#cb11-28" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i<span class="op">&lt;</span>nor<span class="op">;</span> i<span class="op">++){</span></span>
+<span id="cb11-29"><a href="#cb11-29" tabindex="-1"></a>        INTEGER<span class="op">(</span>ans<span class="op">)[</span>i<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-30"><a href="#cb11-30" tabindex="-1"></a>        INTEGER<span class="op">(</span>ans<span class="op">)[</span>i <span class="op">+</span> nor<span class="op">*(</span>noc<span class="op">-</span><span class="dv">1</span><span class="op">)]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-31"><a href="#cb11-31" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-32"><a href="#cb11-32" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>j<span class="op">=</span><span class="dv">0</span><span class="op">;</span> j<span class="op">&lt;</span>noc<span class="op">;</span> j<span class="op">++){</span></span>
+<span id="cb11-33"><a href="#cb11-33" tabindex="-1"></a>        INTEGER<span class="op">(</span>ans<span class="op">)[</span>nor<span class="op">*</span>j<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-34"><a href="#cb11-34" tabindex="-1"></a>        INTEGER<span class="op">(</span>ans<span class="op">)[</span>nor<span class="op">-</span><span class="dv">1</span> <span class="op">+</span> nor<span class="op">*</span>j<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-35"><a href="#cb11-35" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-36"><a href="#cb11-36" tabindex="-1"></a></span>
+<span id="cb11-37"><a href="#cb11-37" tabindex="-1"></a><span class="co">/* 中央部分だけを処理 */</span></span>
+<span id="cb11-38"><a href="#cb11-38" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">1</span><span class="op">;</span> i<span class="op">&lt;</span>nor<span class="op">-</span><span class="dv">1</span><span class="op">;</span> i<span class="op">++){</span></span>
+<span id="cb11-39"><a href="#cb11-39" tabindex="-1"></a>        <span class="cf">for</span><span class="op">(</span>j<span class="op">=</span><span class="dv">1</span><span class="op">;</span> j<span class="op">&lt;</span>noc<span class="op">-</span><span class="dv">1</span><span class="op">;</span> j<span class="op">++){</span></span>
+<span id="cb11-40"><a href="#cb11-40" tabindex="-1"></a>    <span class="co">/* 周辺の8マスの状態を確認 */</span></span>
+<span id="cb11-41"><a href="#cb11-41" tabindex="-1"></a>            nol <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-42"><a href="#cb11-42" tabindex="-1"></a>            <span class="cf">for</span><span class="op">(</span>y<span class="op">=-</span><span class="dv">1</span><span class="op">;</span> y<span class="op">&lt;=</span><span class="dv">1</span><span class="op">;</span> y<span class="op">++){</span></span>
+<span id="cb11-43"><a href="#cb11-43" tabindex="-1"></a>                <span class="cf">for</span><span class="op">(</span>x<span class="op">=-</span><span class="dv">1</span><span class="op">;</span> x<span class="op">&lt;=</span><span class="dv">1</span><span class="op">;</span> x<span class="op">++){</span></span>
+<span id="cb11-44"><a href="#cb11-44" tabindex="-1"></a>                    <span class="cf">if</span><span class="op">(!</span>y <span class="op">&amp;&amp;</span> <span class="op">!</span>x<span class="op">)</span></span>
+<span id="cb11-45"><a href="#cb11-45" tabindex="-1"></a>                    <span class="cf">continue</span><span class="op">;</span></span>
+<span id="cb11-46"><a href="#cb11-46" tabindex="-1"></a>                    <span class="cf">if</span><span class="op">(</span><span class="dv">0</span><span class="op">&lt;</span>INTEGER<span class="op">(</span>m<span class="op">)[</span>i<span class="op">+</span>y <span class="op">+</span> nor<span class="op">*(</span>j<span class="op">+</span>x<span class="op">)])</span></span>
+<span id="cb11-47"><a href="#cb11-47" tabindex="-1"></a>                    nol<span class="op">++;</span></span>
+<span id="cb11-48"><a href="#cb11-48" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb11-49"><a href="#cb11-49" tabindex="-1"></a>            <span class="op">}</span></span>
+<span id="cb11-50"><a href="#cb11-50" tabindex="-1"></a>    <span class="co">/* 周囲のマスの状態で生死を決定 */</span></span>
+<span id="cb11-51"><a href="#cb11-51" tabindex="-1"></a>            <span class="cf">if</span><span class="op">(</span><span class="dv">0</span><span class="op">&lt;</span>INTEGER<span class="op">(</span>m<span class="op">)[</span>i <span class="op">+</span> nor<span class="op">*</span>j<span class="op">])</span></span>
+<span id="cb11-52"><a href="#cb11-52" tabindex="-1"></a>                INTEGER<span class="op">(</span>ans<span class="op">)[</span>i <span class="op">+</span> nor<span class="op">*</span>j<span class="op">]</span> <span class="op">=</span> nol<span class="op">&lt;=</span><span class="dv">1</span> <span class="op">?</span> <span class="dv">0</span> <span class="op">:</span> <span class="op">(</span>nol<span class="op">&gt;=</span><span class="dv">4</span> <span class="op">?</span> <span class="dv">0</span> <span class="op">:</span> <span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-53"><a href="#cb11-53" tabindex="-1"></a>    <span class="co">/* 周囲のマスの状態で発生を決定 */</span></span>
+<span id="cb11-54"><a href="#cb11-54" tabindex="-1"></a>            <span class="cf">else</span></span>
+<span id="cb11-55"><a href="#cb11-55" tabindex="-1"></a>                INTEGER<span class="op">(</span>ans<span class="op">)[</span>i <span class="op">+</span> nor<span class="op">*</span>j<span class="op">]</span> <span class="op">=</span> nol<span class="op">==</span><span class="dv">3</span> <span class="op">?</span> <span class="dv">1</span> <span class="op">:</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb11-56"><a href="#cb11-56" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb11-57"><a href="#cb11-57" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb11-58"><a href="#cb11-58" tabindex="-1"></a></span>
+<span id="cb11-59"><a href="#cb11-59" tabindex="-1"></a>    <span class="co">/* 引数のrownamesとcolnamesを戻り値にコピーする */</span></span>
+<span id="cb11-60"><a href="#cb11-60" tabindex="-1"></a>    setAttrib<span class="op">(</span>ans<span class="op">,</span> R_DimNamesSymbol<span class="op">,</span> getAttrib<span class="op">(</span>m<span class="op">,</span> R_DimNamesSymbol<span class="op">));</span></span>
+<span id="cb11-61"><a href="#cb11-61" tabindex="-1"></a></span>
+<span id="cb11-62"><a href="#cb11-62" tabindex="-1"></a>    UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb11-63"><a href="#cb11-63" tabindex="-1"></a>    <span class="cf">return</span><span class="op">(</span>ans<span class="op">);</span></span>
+<span id="cb11-64"><a href="#cb11-64" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>コンパイルします。</p>
+<pre><code>R CMD SHLIB LifeGame.c</code></pre>
+<p>次に、<code>LifeGame.c</code>があるディレクトリに、以下の内容のファイル<code>LifeGame.R</code>を作成します。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># ライブラリを呼び出す</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>dll <span class="ot">&lt;-</span><span class="fu">paste</span>(<span class="st">&quot;LifeGame&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co"># Rの関数でラッピングして使う</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>lgame <span class="ot">&lt;-</span> <span class="cf">function</span>(m){</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>  <span class="fu">.Call</span>(<span class="st">&quot;LifeGame&quot;</span>, m)</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>}</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co"># グライダー</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>mg <span class="ot">&lt;-</span><span class="fu">matrix</span>(<span class="fu">as.integer</span>(<span class="fu">c</span>(</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>    <span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>    <span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">0</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>    <span class="dv">0</span>,<span class="dv">1</span>,<span class="dv">0</span>)), <span class="dv">3</span>, <span class="dv">3</span>, <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co"># 移動物体なので広めの行列を作る</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">as.integer</span>(<span class="fu">rep</span>(<span class="dv">0</span>,<span class="dv">12</span><span class="sc">*</span><span class="dv">12</span>)),<span class="dv">12</span>,<span class="dv">12</span>)</span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co"># 広い行列にグライダーを写す</span></span>
+<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="cf">for</span>(r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(mg)){</span>
+<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a>  <span class="cf">for</span>(c <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(mg)){</span>
+<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a>    m[r<span class="sc">+</span><span class="fu">nrow</span>(m)<span class="sc">-</span><span class="fu">nrow</span>(mg)<span class="sc">-</span><span class="dv">1</span>,c<span class="sc">+</span><span class="fu">ncol</span>(m)<span class="sc">-</span><span class="fu">ncol</span>(mg)<span class="sc">-</span><span class="dv">1</span>] <span class="ot">&lt;-</span> mg[r,c]</span>
+<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a>  }</span>
+<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a>}</span>
+<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a><span class="co"># 移動させてみる</span></span>
+<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">15</span>){</span>
+<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a>  <span class="fu">print</span>(m)</span>
+<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a>  m <span class="ot">&lt;-</span> <span class="fu">lgame</span>(m)</span>
+<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a>}</span>
+<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a><span class="co"># DLLをアンロードする</span></span>
+<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="fu">dyn.unload</span>(dll)</span></code></pre></div>
+<p>二つのファイルがあるディレクトリで、</p>
+<pre><code>R --slave -f example_vector.R</code></pre>
+<p>と入力すると、結果をここに書くのは省略しますが、1と0で表現されたライフゲームの15ステップが連続で表示されます。<code>|more</code>（Linuxだと<code>|less</code>）をつけないと、ちょっと状況が把握できないかもですが。</p>
+</div>
+<div id="リストを引数にとってリストを戻す関数" class="section level2"
+number="4.3">
+<h2><span class="header-section-number">4.3</span>
+リストを引数にとって、リストを戻す関数</h2>
+<p>Rの構造データはリストになるので、Cでリストを処理できるとデータの受け渡しがスムーズになります。</p>
+<p>引数のリストの中の整数、実数、複素数のベクトルは合計値を、それ以外は引数のリストの中をコピーして戻す関数を作ってみましょう。</p>
+<p>以下の内容のファイル<code>example_list.c</code>を作ります。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R_ext/Complex.h&gt;</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a><span class="co">/* 引数も戻り値もSEXP型 */</span></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>SEXP listsum<span class="op">(</span>SEXP lst<span class="op">)</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    SEXP r<span class="op">,</span> e<span class="op">,</span> k<span class="op">;</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">,</span> j<span class="op">,</span> s_i<span class="op">;</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>    <span class="dt">double</span> s_d<span class="op">;</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>    Rcomplex in<span class="op">;</span></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>    <span class="co">/* 型チェック/Listは内部的にはNewList */</span> </span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isNewList<span class="op">(</span>lst<span class="op">))</span></span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;A list is required for the first argument.&quot;</span><span class="op">);</span></span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" tabindex="-1"></a>    <span class="co">/* 戻り値となるlength(lst)の大きさのリスト（になるベクター）を確保 */</span></span>
+<span id="cb15-18"><a href="#cb15-18" tabindex="-1"></a>    PROTECT<span class="op">(</span>r <span class="op">=</span> allocVector<span class="op">(</span>VECSXP<span class="op">,</span> length<span class="op">(</span>lst<span class="op">)));</span></span>
+<span id="cb15-19"><a href="#cb15-19" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i<span class="op">&lt;</span>length<span class="op">(</span>lst<span class="op">);</span> i<span class="op">++){</span></span>
+<span id="cb15-21"><a href="#cb15-21" tabindex="-1"></a>        <span class="co">/* Listのi番目の要素を取り出す */</span></span>
+<span id="cb15-22"><a href="#cb15-22" tabindex="-1"></a>        e <span class="op">=</span> VECTOR_ELT<span class="op">(</span>lst<span class="op">,</span> i<span class="op">);</span></span>
+<span id="cb15-23"><a href="#cb15-23" tabindex="-1"></a>        <span class="co">/* Integer/Real/Complexは入力ベクトルの合計値を、それ以外は入力ベクトルをコピー */</span></span>
+<span id="cb15-24"><a href="#cb15-24" tabindex="-1"></a>        <span class="cf">switch</span><span class="op">(</span>TYPEOF<span class="op">(</span>e<span class="op">)){</span></span>
+<span id="cb15-25"><a href="#cb15-25" tabindex="-1"></a>            <span class="cf">case</span> INTSXP<span class="op">:</span></span>
+<span id="cb15-26"><a href="#cb15-26" tabindex="-1"></a>                <span class="cf">for</span><span class="op">(</span>j<span class="op">=</span><span class="dv">0</span><span class="op">,</span>s_i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> j<span class="op">&lt;</span>length<span class="op">(</span>e<span class="op">);</span> j<span class="op">++)</span></span>
+<span id="cb15-27"><a href="#cb15-27" tabindex="-1"></a>                    s_i <span class="op">+=</span> INTEGER<span class="op">(</span>e<span class="op">)[</span>j<span class="op">];</span></span>
+<span id="cb15-28"><a href="#cb15-28" tabindex="-1"></a>                <span class="co">/* ScalarIntegerを使わないと長くなる */</span></span>
+<span id="cb15-29"><a href="#cb15-29" tabindex="-1"></a>                <span class="co">/* 要素の数が1のベクターを作成, GCから保護 */</span></span>
+<span id="cb15-30"><a href="#cb15-30" tabindex="-1"></a>                k <span class="op">=</span> PROTECT<span class="op">(</span>allocVector<span class="op">(</span>INTSXP<span class="op">,</span> <span class="dv">1</span><span class="op">));</span></span>
+<span id="cb15-31"><a href="#cb15-31" tabindex="-1"></a>                <span class="co">/* 要素に値を代入 */</span></span>
+<span id="cb15-32"><a href="#cb15-32" tabindex="-1"></a>                INTEGER<span class="op">(</span>k<span class="op">)[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> s_i<span class="op">;</span></span>
+<span id="cb15-33"><a href="#cb15-33" tabindex="-1"></a>                <span class="co">/* Listのi番目の要素としてベクターをセット */</span></span>
+<span id="cb15-34"><a href="#cb15-34" tabindex="-1"></a>                SET_VECTOR_ELT<span class="op">(</span>r<span class="op">,</span> i<span class="op">,</span> k<span class="op">);</span></span>
+<span id="cb15-35"><a href="#cb15-35" tabindex="-1"></a>                <span class="co">/* GCからの保護を解除 */</span></span>
+<span id="cb15-36"><a href="#cb15-36" tabindex="-1"></a>                UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb15-37"><a href="#cb15-37" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb15-38"><a href="#cb15-38" tabindex="-1"></a>            <span class="cf">case</span> REALSXP<span class="op">:</span></span>
+<span id="cb15-39"><a href="#cb15-39" tabindex="-1"></a>                <span class="cf">for</span><span class="op">(</span>j<span class="op">=</span><span class="dv">0</span><span class="op">,</span>s_d<span class="op">=</span><span class="dv">0</span><span class="op">;</span> j<span class="op">&lt;</span>length<span class="op">(</span>e<span class="op">);</span> j<span class="op">++)</span></span>
+<span id="cb15-40"><a href="#cb15-40" tabindex="-1"></a>                    s_d <span class="op">+=</span> REAL<span class="op">(</span>e<span class="op">)[</span>j<span class="op">];</span></span>
+<span id="cb15-41"><a href="#cb15-41" tabindex="-1"></a>                <span class="co">/* double型の引数を長さ1の配列の要素の値にしたSEXP構造体に変換するScalarRealを使うと短く済む */</span></span>
+<span id="cb15-42"><a href="#cb15-42" tabindex="-1"></a>                SET_VECTOR_ELT<span class="op">(</span>r<span class="op">,</span> i<span class="op">,</span> ScalarReal<span class="op">(</span>s_d<span class="op">));</span></span>
+<span id="cb15-43"><a href="#cb15-43" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb15-44"><a href="#cb15-44" tabindex="-1"></a>            <span class="cf">case</span> CPLXSXP<span class="op">:</span></span>
+<span id="cb15-45"><a href="#cb15-45" tabindex="-1"></a>                <span class="cf">for</span><span class="op">(</span>j<span class="op">=</span><span class="dv">0</span><span class="op">,</span>in<span class="op">.</span>r<span class="op">=</span><span class="dv">0</span><span class="op">,</span>in<span class="op">.</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> j<span class="op">&lt;</span>length<span class="op">(</span>e<span class="op">);</span> j<span class="op">++){</span></span>
+<span id="cb15-46"><a href="#cb15-46" tabindex="-1"></a>                    in<span class="op">.</span>r <span class="op">+=</span> COMPLEX<span class="op">(</span>e<span class="op">)[</span>j<span class="op">].</span>r<span class="op">;</span></span>
+<span id="cb15-47"><a href="#cb15-47" tabindex="-1"></a>                    in<span class="op">.</span>i <span class="op">+=</span> COMPLEX<span class="op">(</span>e<span class="op">)[</span>j<span class="op">].</span>i<span class="op">;</span></span>
+<span id="cb15-48"><a href="#cb15-48" tabindex="-1"></a>                <span class="op">}</span></span>
+<span id="cb15-49"><a href="#cb15-49" tabindex="-1"></a>                SET_VECTOR_ELT<span class="op">(</span>r<span class="op">,</span> i<span class="op">,</span> ScalarComplex<span class="op">(</span>in<span class="op">));</span></span>
+<span id="cb15-50"><a href="#cb15-50" tabindex="-1"></a>                <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb15-51"><a href="#cb15-51" tabindex="-1"></a>            <span class="cf">default</span><span class="op">:</span></span>
+<span id="cb15-52"><a href="#cb15-52" tabindex="-1"></a>                SET_VECTOR_ELT<span class="op">(</span>r<span class="op">,</span> i<span class="op">,</span> e<span class="op">);</span></span>
+<span id="cb15-53"><a href="#cb15-53" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb15-54"><a href="#cb15-54" tabindex="-1"></a>    <span class="op">}</span> </span>
+<span id="cb15-55"><a href="#cb15-55" tabindex="-1"></a></span>
+<span id="cb15-56"><a href="#cb15-56" tabindex="-1"></a>    setAttrib<span class="op">(</span>r<span class="op">,</span> R_NamesSymbol<span class="op">,</span> getAttrib<span class="op">(</span>lst<span class="op">,</span> R_NamesSymbol<span class="op">));</span></span>
+<span id="cb15-57"><a href="#cb15-57" tabindex="-1"></a></span>
+<span id="cb15-58"><a href="#cb15-58" tabindex="-1"></a>    UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb15-59"><a href="#cb15-59" tabindex="-1"></a>    <span class="cf">return</span> r<span class="op">;</span></span>
+<span id="cb15-60"><a href="#cb15-60" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>これを呼び出す以下のRのコードのファイル<code>example_list.R</code>を作ります。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_list&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>lst <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>    <span class="at">i =</span> <span class="fu">as.integer</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>),</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>    <span class="at">r =</span> <span class="fu">rnorm</span>(<span class="dv">5</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>    <span class="at">c =</span> <span class="fu">c</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="dv">2</span><span class="dt">i</span>, <span class="dv">2</span> <span class="sc">+</span> <span class="dv">3</span><span class="dt">i</span><span class="sc">/</span><span class="dv">2</span>),</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>    <span class="at">t =</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>    <span class="at">l =</span> <span class="fu">list</span>(<span class="at">a=</span><span class="dv">1</span>, <span class="at">b=</span><span class="dv">2</span>, <span class="at">c=</span><span class="dv">3</span>)</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>)</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a></span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;input:&quot;</span>)</span>
+<span id="cb16-13"><a href="#cb16-13" tabindex="-1"></a><span class="fu">print</span>(lst)</span>
+<span id="cb16-14"><a href="#cb16-14" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" tabindex="-1"></a><span class="fu">print</span>(<span class="st">&quot;output:&quot;</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">.Call</span>(<span class="st">&quot;listsum&quot;</span>, lst))</span>
+<span id="cb16-17"><a href="#cb16-17" tabindex="-1"></a></span>
+<span id="cb16-18"><a href="#cb16-18" tabindex="-1"></a><span class="fu">dyn.unload</span>(dll)</span></code></pre></div>
+<p>コンパイルして実行したら、数値データだけ合計されているのが分かります。</p>
+<pre><code>R CMD SHLIB example_list.R
+R --slave -f example_list.R</code></pre>
+<pre><code>[1] &quot;input:&quot;
+$i
+[1] 1 2 3 4 5
+
+$r
+[1] -0.8556567 -2.7258396  0.4328710  1.5457363 -0.6162747
+
+$c
+[1] 1-2.0i 2+1.5i
+
+$t
+[1] &quot;a&quot; &quot;b&quot; &quot;c&quot;
+
+$l
+$l$a
+[1] 1
+
+$l$b
+[1] 2
+
+$l$c
+[1] 3
+
+
+[1] &quot;output:&quot;
+$i
+[1] 15
+
+$r
+[1] -2.219164
+
+$c
+[1] 3-0.5i
+
+$t
+[1] &quot;a&quot; &quot;b&quot; &quot;c&quot;
+
+$l
+$l$a
+[1] 1
+
+$l$b
+[1] 2
+
+$l$c
+[1] 3</code></pre>
+<div id="scalar関数" class="section level3" number="4.3.1">
+<h3><span class="header-section-number">4.3.1</span>
+<code>Scalar*</code>関数</h3>
+<p>Cのソースコード中にも説明を入れましたが、Rにはスカラー型が無く、要素1のベクターの唯一の要素をスカラー変数として扱います。このため、スカラー変数をつくるときすら、まずは型を指定して要素1のベクターをつくり、その唯一の要素に値を代入する必要があって煩雑でした。今は、以下の関数が用意されており、手軽にスカラー変数を作ることが出来ます。</p>
+<pre><code>SEXP ScalarReal(double);
+SEXP ScalarInteger(int);
+SEXP ScalarLogical(int)
+SEXP ScalarRaw(Rbyte);
+SEXP ScalarComplex(Rcomplex);
+SEXP ScalarString(SEXP);
+SEXP mkString(const char *);</code></pre>
+</div>
+<div id="名前でリストの要素を参照する" class="section level3"
+number="4.3.2">
+<h3><span class="header-section-number">4.3.2</span>
+名前でリストの要素を参照する</h3>
+<p>ベクトルでも可能ですが、リストは名前で要素を参照することが多く、Writing
+R Extensionsにその典型的なコードが紹介されています。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>SEXP getListElement<span class="op">(</span>SEXP list<span class="op">,</span> <span class="dt">const</span> <span class="dt">char</span> <span class="op">*</span>str<span class="op">)</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>    SEXP elmt <span class="op">=</span> R_NilValue<span class="op">,</span> names <span class="op">=</span> getAttrib<span class="op">(</span>list<span class="op">,</span> R_NamesSymbol<span class="op">);</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>    <span class="cf">for</span> <span class="op">(</span><span class="dt">int</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> length<span class="op">(</span>list<span class="op">);</span> i<span class="op">++)</span></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>strcmp<span class="op">(</span>CHAR<span class="op">(</span>STRING_ELT<span class="op">(</span>names<span class="op">,</span> i<span class="op">)),</span> str<span class="op">)</span> <span class="op">==</span> <span class="dv">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>           elmt <span class="op">=</span> VECTOR_ELT<span class="op">(</span>list<span class="op">,</span> i<span class="op">);</span></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>           <span class="cf">break</span><span class="op">;</span></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>    <span class="cf">return</span> elmt<span class="op">;</span></span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>これをこのままコピペして、</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="dt">double</span> g <span class="op">=</span> REAL<span class="op">(</span>getListElement<span class="op">(</span>a<span class="op">,</span> <span class="st">&quot;g&quot;</span><span class="op">))[</span><span class="dv">0</span><span class="op">];</span></span></code></pre></div>
+<p>と言うようなことが出来るわけですが、この関数、標準で提供されないのでしょうか。</p>
+</div>
+<div id="listと言う言葉が指し示すモノ" class="section level3"
+number="4.3.3">
+<h3><span class="header-section-number">4.3.3</span>
+Listと言う言葉が指し示すモノ</h3>
+<p>現在のRでListとされているモノは、昔のRでListとされていたモノとは違い、Cから呼ぶコードにはその痕跡が残っています。上述の例では、<code>isNewList</code>で型チェックをしていた他、<code>allocList</code>ではなく<code>allocVector</code>でListを作成しています。</p>
+</div>
+</div>
+<div id="表現式を引数にとって実行する関数" class="section level2"
+number="4.4">
+<h2><span class="header-section-number">4.4</span>
+表現式を引数にとって、実行する関数</h2>
+<p>Cのコード中で表現式の評価もできます。</p>
+<p>以下の内容のファイル<code>example_eval.c</code>を作ります。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>SEXP example_eval<span class="op">(</span>SEXP expr<span class="op">,</span> SEXP rho<span class="op">)</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>    SEXP x<span class="op">;</span></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="co">/* 型チェック */</span></span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isEnvironment<span class="op">(</span>rho<span class="op">))</span></span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;rho&#39; should be an environment&quot;</span><span class="op">);</span></span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>    x <span class="op">=</span> PROTECT<span class="op">(</span>allocVector<span class="op">(</span>REALSXP<span class="op">,</span> <span class="dv">3</span><span class="op">));</span></span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>    REAL<span class="op">(</span>x<span class="op">)[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="fl">1.0</span><span class="op">;</span></span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>    REAL<span class="op">(</span>x<span class="op">)[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="fl">1.5</span><span class="op">;</span></span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>    REAL<span class="op">(</span>x<span class="op">)[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> <span class="fl">3.1</span><span class="op">;</span></span>
+<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a></span>
+<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a><span class="co">    環境変数rhoに変数xを定義する</span></span>
+<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a><span class="co">    installは文字列をSEXP構造体に変換し、変数xがsymbol tableにないときには付け加える</span></span>
+<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a><span class="co">*/</span></span>
+<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a>    defineVar<span class="op">(</span>install<span class="op">(</span><span class="st">&quot;x&quot;</span><span class="op">),</span> x<span class="op">,</span> rho<span class="op">);</span></span>
+<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a></span>
+<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a>    UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb22-24"><a href="#cb22-24" tabindex="-1"></a></span>
+<span id="cb22-25"><a href="#cb22-25" tabindex="-1"></a>    <span class="cf">return</span> eval<span class="op">(</span>expr<span class="op">,</span> rho<span class="op">);</span></span>
+<span id="cb22-26"><a href="#cb22-26" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>今回は<code>example_eval.c</code>のコンパイルをしてから、Rを起動して、</p>
+<pre><code>R CMD SHLIB example_eval.c
+R --slave -e &quot;system(file.path(R.home(\&quot;bin\&quot;), \&quot;Rgui.exe\&quot;))&quot;</code></pre>
+<p>以下のように命令して実行してみましょう。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_eval&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co"># エラーが出たときにもDLLがunloadされるようにすると、Rを起動したままデバッグしやすい</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">.Call</span>(<span class="st">&quot;example_eval&quot;</span>, <span class="fu">quote</span>(<span class="fu">sum</span>(x)), <span class="fu">new.env</span>()))</span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>}, <span class="at">finally =</span> {</span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a>    <span class="fu">dyn.unload</span>(dll)</span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a></span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a>})</span></code></pre></div>
+<p><code>x</code>に<code>c(1.0, 1.5, 3.1)</code>が代入されて、<code>sum(x)</code>が評価されます。</p>
+<pre><code>[1] 5.6</code></pre>
+<div id="globalenvを含む任意の環境にオブジェクトをつくれる"
+class="section level3" number="4.4.1">
+<h3><span class="header-section-number">4.4.1</span>
+<code>.GlobalEnv</code>を含む任意の環境にオブジェクトをつくれる</h3>
+<p>環境を渡しているので自明ですが、<code>new.env()</code>を<code>.GlobalEnv</code>に書き換えると、グローバル領域に変数<code>x</code>をつくって計算します。確認しておきましょう。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_eval&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co"># 変数xがあれば消す</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">exists</span>(<span class="st">&quot;x&quot;</span>)) <span class="fu">rm</span>(x)</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a></span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">.Call</span>(<span class="st">&quot;example_eval&quot;</span>, <span class="fu">quote</span>(<span class="fu">sum</span>(x)), .GlobalEnv))</span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a><span class="co"># 変数xを表示</span></span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">exists</span>(<span class="st">&quot;x&quot;</span>)){</span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;&#39;x&#39; doesn&#39;t exist.&quot;</span>)</span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>    <span class="fu">print</span>(x)</span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>}</span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a></span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a><span class="fu">dyn.unload</span>(dll)</span></code></pre></div>
+<pre><code>[1] 1.0 1.5 3.1</code></pre>
+</div>
+</div>
+<div id="関数を引数にとって実行する関数" class="section level2"
+number="4.5">
+<h2><span class="header-section-number">4.5</span>
+関数を引数にとって、実行する関数</h2>
+<p>関数を引数にとることもできます。</p>
+<p>これまでと同様に<code>example_call.c</code>と<code>example_call.R</code>を用意します。</p>
+<p><code>example_call.c</code>:</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>SEXP example_call<span class="op">(</span>SEXP x<span class="op">,</span> SEXP fn<span class="op">,</span> SEXP rho<span class="op">)</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>    SEXP R_fcall<span class="op">,</span> r<span class="op">;</span></span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isNumeric<span class="op">(</span>x<span class="op">))</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;x&#39; must be numeric.&quot;</span><span class="op">);</span></span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isFunction<span class="op">(</span>fn<span class="op">))</span></span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;fn&#39; must be a function&quot;</span><span class="op">);</span></span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isEnvironment<span class="op">(</span>rho<span class="op">))</span></span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;rho&#39; should be an environment&quot;</span><span class="op">);</span></span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a></span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a>    <span class="co">/* fnのAbstract Syntax Treeを構築 */</span></span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a>    R_fcall <span class="op">=</span> PROTECT<span class="op">(</span>lang2<span class="op">(</span>fn<span class="op">,</span> R_NilValue<span class="op">));</span></span>
+<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a></span>
+<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a>    <span class="co">/* 引数にxをセット */</span></span>
+<span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a>    SETCADR<span class="op">(</span>R_fcall<span class="op">,</span> x<span class="op">);</span></span>
+<span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a> </span>
+<span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a>    <span class="co">/* ASTを環境rhoで評価する */</span></span>
+<span id="cb28-24"><a href="#cb28-24" tabindex="-1"></a>    r <span class="op">=</span> eval<span class="op">(</span>R_fcall<span class="op">,</span> rho<span class="op">);</span></span>
+<span id="cb28-25"><a href="#cb28-25" tabindex="-1"></a>  </span>
+<span id="cb28-26"><a href="#cb28-26" tabindex="-1"></a>    UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb28-27"><a href="#cb28-27" tabindex="-1"></a></span>
+<span id="cb28-28"><a href="#cb28-28" tabindex="-1"></a>    <span class="cf">return</span> r<span class="op">;</span></span>
+<span id="cb28-29"><a href="#cb28-29" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>CADR</code>や<code>nil</code>といった語が見えて、Rが関数型プログラミング言語であることが分かります。</p>
+<p><code>example_call.R</code>:</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_call&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>    <span class="fu">.Call</span>(<span class="st">&quot;example_call&quot;</span>, <span class="fu">as.numeric</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>), sum, <span class="fu">new.env</span>())</span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>)</span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a><span class="fu">dyn.unload</span>(dll)</span></code></pre></div>
+<p><code>example_call.c</code>をコンパイルして<code>example_call.R</code>を実行しましょう。</p>
+<pre><code>R CMD SHLIB example_call.c
+R --slave -f example_call.R</code></pre>
+<p>計算できました。</p>
+<pre><code>[1] 55</code></pre>
+</div>
+<div id="関数内部でrの式を組み立てて実行する関数" class="section level2"
+number="4.6">
+<h2><span class="header-section-number">4.6</span>
+関数内部でRの式を組み立てて実行する関数</h2>
+<p>引数に無くてもRの関数を呼ぶことができます。</p>
+<p>これまでと同様に<code>example_llcall.c</code>と<code>example_llcall.R</code>を用意します。</p>
+<p><code>example_llcall.c</code>:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>SEXP example_llcall<span class="op">(</span>SEXP x<span class="op">,</span> SEXP rho<span class="op">)</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>    SEXP R_fcall<span class="op">,</span> ans<span class="op">,</span> s<span class="op">,</span> t<span class="op">;</span></span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isNumeric<span class="op">(</span>x<span class="op">))</span></span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;x&#39; must be numeric.&quot;</span><span class="op">);</span></span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a></span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isEnvironment<span class="op">(</span>rho<span class="op">))</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;rho&#39; should be an environment&quot;</span><span class="op">);</span></span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a></span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a>    <span class="co">/* mean(x, na.rm=TRUE)のAbstract Syntax Treeを構築 */</span></span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a></span>
+<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a>    <span class="co">/* 命令用の領域を確保; tとsには同じポインタが入る */</span></span>
+<span id="cb32-17"><a href="#cb32-17" tabindex="-1"></a>    t <span class="op">=</span> s <span class="op">=</span> PROTECT<span class="op">(</span>allocList<span class="op">(</span><span class="dv">3</span><span class="op">));</span></span>
+<span id="cb32-18"><a href="#cb32-18" tabindex="-1"></a></span>
+<span id="cb32-19"><a href="#cb32-19" tabindex="-1"></a>    <span class="co">/* LANGSXPを指定 */</span></span>
+<span id="cb32-20"><a href="#cb32-20" tabindex="-1"></a>    SET_TYPEOF<span class="op">(</span>s<span class="op">,</span> LANGSXP<span class="op">);</span></span>
+<span id="cb32-21"><a href="#cb32-21" tabindex="-1"></a></span>
+<span id="cb32-22"><a href="#cb32-22" tabindex="-1"></a>    <span class="co">/* 最初の領域には &quot;mean&quot; を入れる */</span></span>
+<span id="cb32-23"><a href="#cb32-23" tabindex="-1"></a>    SETCAR<span class="op">(</span>t<span class="op">,</span> install<span class="op">(</span><span class="st">&quot;mean&quot;</span><span class="op">));</span></span>
+<span id="cb32-24"><a href="#cb32-24" tabindex="-1"></a></span>
+<span id="cb32-25"><a href="#cb32-25" tabindex="-1"></a>    <span class="co">/* tを次の領域に移動させる; sは最初の領域のまま */</span></span>
+<span id="cb32-26"><a href="#cb32-26" tabindex="-1"></a>    t <span class="op">=</span> CDR<span class="op">(</span>t<span class="op">);</span></span>
+<span id="cb32-27"><a href="#cb32-27" tabindex="-1"></a></span>
+<span id="cb32-28"><a href="#cb32-28" tabindex="-1"></a>    <span class="co">/* 次の領域には x（へのポインタ）を入れる */</span></span>
+<span id="cb32-29"><a href="#cb32-29" tabindex="-1"></a>    SETCAR<span class="op">(</span>t<span class="op">,</span> x<span class="op">);</span></span>
+<span id="cb32-30"><a href="#cb32-30" tabindex="-1"></a></span>
+<span id="cb32-31"><a href="#cb32-31" tabindex="-1"></a>    t <span class="op">=</span> CDR<span class="op">(</span>t<span class="op">);</span></span>
+<span id="cb32-32"><a href="#cb32-32" tabindex="-1"></a></span>
+<span id="cb32-33"><a href="#cb32-33" tabindex="-1"></a>    <span class="co">/* 最後の領域には論理型でTRUE（非0）を入れて、</span></span>
+<span id="cb32-34"><a href="#cb32-34" tabindex="-1"></a><span class="co">    名前&quot;na.rm&quot;をつける */</span></span>
+<span id="cb32-35"><a href="#cb32-35" tabindex="-1"></a>    SETCAR<span class="op">(</span>t<span class="op">,</span> ScalarLogical<span class="op">(</span><span class="dv">1</span><span class="op">));</span></span>
+<span id="cb32-36"><a href="#cb32-36" tabindex="-1"></a>    SET_TAG<span class="op">(</span>t<span class="op">,</span> install<span class="op">(</span><span class="st">&quot;na.rm&quot;</span><span class="op">));</span></span>
+<span id="cb32-37"><a href="#cb32-37" tabindex="-1"></a></span>
+<span id="cb32-38"><a href="#cb32-38" tabindex="-1"></a>    ans <span class="op">=</span> eval<span class="op">(</span>s<span class="op">,</span> rho<span class="op">);</span></span>
+<span id="cb32-39"><a href="#cb32-39" tabindex="-1"></a></span>
+<span id="cb32-40"><a href="#cb32-40" tabindex="-1"></a>    UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb32-41"><a href="#cb32-41" tabindex="-1"></a></span>
+<span id="cb32-42"><a href="#cb32-42" tabindex="-1"></a>    <span class="cf">return</span> ans<span class="op">;</span></span>
+<span id="cb32-43"><a href="#cb32-43" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>example_llcall.R</code>:</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_llcall&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">11</span></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>x[<span class="dv">5</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>    <span class="fu">.Call</span>(<span class="st">&quot;example_llcall&quot;</span>, x, <span class="fu">new.env</span>())</span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>)</span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a><span class="fu">dyn.unload</span>(dll)</span></code></pre></div>
+<p><code>example_llcall.c</code>をコンパイルして<code>example_llcall.R</code>を実行しましょう。</p>
+<pre><code>R CMD SHLIB example_llcall.c
+R --slave -f example_llcall.R</code></pre>
+<p>計算できました。</p>
+<pre><code>[1] 6.1</code></pre>
+</div>
+</div>
+<div id="デバッガー" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> デバッガー</h1>
+<p>CやFortranで書いたRの共有ライブラリには、gdbをデバッガーに利用することができます。構造上、Rごとデバッガー上で動かすことになります。</p>
+<p>標準ではデバッグ情報が生成ファイルに追加されないので、<code>~/.R/Makevar</code>もしくは<code>%R_USER%\.R\Makevars.win</code>の<code>CFLAGS</code><a
+href="#fn7" class="footnote-ref"
+id="fnref7"><sup>7</sup></a>に<code>-g</code>を追加して、共有ファイルを作り直します。<code>LifeGame.c</code>を例にすると、</p>
+<pre><code>R CMD SHLIB LifeGame.c</code></pre>
+<p>となります。<code>LifeGame.o</code>が残っていると、<code>Makevar</code>を修正しただけでは共有ファイルを作り直さないので注意してください。</p>
+<p>この後、<code>-d gdb</code>をつけてRを起動します。ここではバッチモードで<code>LifeGame.R</code>を動かします。</p>
+<pre><code>R -d gdb --vanilla -f LifeGame.R</code></pre>
+<p>Rが動く前にgdbが起動します。</p>
+<pre><code>Enable debuginfod for this session? (y or [n])</code></pre>
+<p>などと聞かれますが、とりあえずは<code>n</code>として問題はないです。</p>
+<p>操作はgdbの取扱説明書を参考にして頂きたいのですが、Cで書いた共有ライブラリはまだ読み込まれていないことに注意してください。</p>
+<pre><code>(gdb) b LifeGame.c:10</code></pre>
+<p>などと、ブレークポイントを設定すると</p>
+<pre><code>No symbol table is loaded.  Use the &quot;file&quot; command.
+Make breakpoint pending on future shared library load? (y or [n]) </code></pre>
+<p>と聞かれます。<code>y</code>とすれば、</p>
+<pre><code>Breakpoint 1 (LifeGame.c:10) pending.</code></pre>
+<p>と共有ライブラリをリンク後にブレークポイントを設定してくれます。動時はgdbの対話モードですが、<code>run</code>をするとRが実行されます。</p>
+<p>Rの対話モードに入っているときは、<code>CTRL+C</code>でgdbの対話モードに抜けることができます。Rで共有ライブラリを読み込んだ後であれば、ブレークポイントの設定はペンディングなしでできます。</p>
+<p><code>gdb /usr/bin/R core.12345</code>と言う風にコアダンプを読み込ませたり、<code>gdb -p 12345</code>と言う風にプロセスIDを指定しての起動中のRの接続もできます。</p>
+</div>
+<div id="dllで引数の型や呼び出し名を指定する" class="section level1"
+number="6">
+<h1><span class="header-section-number">6</span>
+DLLで引数の型や呼び出し名を指定する</h1>
+<p>利用上必須ではないですし大きなメリットも無いのですが、DLLで<code>.C</code>と<code>.Call</code>と<code>.Fortran</code>と<code>.External</code>で呼び出し名をつけることができ、<code>.C</code>と<code>.Fortran</code>に型制約をつけられます<a
+href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>。
+試しに関数<code>repetitiveness</code>を<code>tautology</code>に、<code>minusplus</code>を<code>plusminus</code>に置き換えてみましょう。</p>
+<p><code>example_nr.c</code>:</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R_ext/Rdynload.h&gt;</span></span>
+<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a></span>
+<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a><span class="dt">static</span> <span class="dt">double</span> minusplus<span class="op">(</span><span class="dt">double</span> <span class="op">*</span>x<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>len<span class="op">)</span></span>
+<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">,</span> z<span class="op">=</span><span class="dv">1</span><span class="op">;</span></span>
+<span id="cb42-8"><a href="#cb42-8" tabindex="-1"></a>    <span class="dt">double</span> y <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb42-9"><a href="#cb42-9" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="#cb42-10" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i<span class="op">&lt;*</span>len<span class="op">;</span> i<span class="op">++){</span></span>
+<span id="cb42-11"><a href="#cb42-11" tabindex="-1"></a>        y <span class="op">=</span> z <span class="op">*</span> x<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb42-12"><a href="#cb42-12" tabindex="-1"></a>        z <span class="op">=</span> <span class="op">-</span><span class="dv">1</span> <span class="op">*</span> z<span class="op">;</span></span>
+<span id="cb42-13"><a href="#cb42-13" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb42-14"><a href="#cb42-14" tabindex="-1"></a></span>
+<span id="cb42-15"><a href="#cb42-15" tabindex="-1"></a>    <span class="cf">return</span> y<span class="op">;</span></span>
+<span id="cb42-16"><a href="#cb42-16" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb42-17"><a href="#cb42-17" tabindex="-1"></a></span>
+<span id="cb42-18"><a href="#cb42-18" tabindex="-1"></a><span class="dt">static</span> SEXP repetitiveness<span class="op">(</span>SEXP obj<span class="op">){</span></span>
+<span id="cb42-19"><a href="#cb42-19" tabindex="-1"></a>    <span class="cf">return</span> obj<span class="op">;</span></span>
+<span id="cb42-20"><a href="#cb42-20" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb42-21"><a href="#cb42-21" tabindex="-1"></a></span>
+<span id="cb42-22"><a href="#cb42-22" tabindex="-1"></a><span class="dt">static</span> R_NativePrimitiveArgType minusplus_type<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb42-23"><a href="#cb42-23" tabindex="-1"></a>    REALSXP<span class="op">,</span> INTSXP</span>
+<span id="cb42-24"><a href="#cb42-24" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb42-25"><a href="#cb42-25" tabindex="-1"></a></span>
+<span id="cb42-26"><a href="#cb42-26" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> R_CMethodDef cMethods<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb42-27"><a href="#cb42-27" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;plusminus&quot;</span><span class="op">,</span> <span class="op">(</span>DL_FUNC<span class="op">)</span> <span class="op">&amp;</span>minusplus<span class="op">,</span> <span class="dv">2</span><span class="op">,</span> minusplus_type<span class="op">},</span></span>
+<span id="cb42-28"><a href="#cb42-28" tabindex="-1"></a>    NULL</span>
+<span id="cb42-29"><a href="#cb42-29" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb42-30"><a href="#cb42-30" tabindex="-1"></a></span>
+<span id="cb42-31"><a href="#cb42-31" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> R_CallMethodDef callMethods<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb42-32"><a href="#cb42-32" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;tautology&quot;</span><span class="op">,</span> <span class="op">(</span>DL_FUNC<span class="op">)</span> <span class="op">&amp;</span>repetitiveness<span class="op">,</span> <span class="dv">1</span><span class="op">},</span></span>
+<span id="cb42-33"><a href="#cb42-33" tabindex="-1"></a>    NULL</span>
+<span id="cb42-34"><a href="#cb42-34" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb42-35"><a href="#cb42-35" tabindex="-1"></a></span>
+<span id="cb42-36"><a href="#cb42-36" tabindex="-1"></a><span class="co">/* `example_nr`はsuffixなしファイル名の部分なので、ファイル名が変われば変わる */</span></span>
+<span id="cb42-37"><a href="#cb42-37" tabindex="-1"></a><span class="dt">void</span> R_init_example_nr<span class="op">(</span>DllInfo <span class="op">*</span>info<span class="op">)</span></span>
+<span id="cb42-38"><a href="#cb42-38" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb42-39"><a href="#cb42-39" tabindex="-1"></a>    <span class="co">/* .Fortran，.Externalの定義があれば、第4，第5引数に指定する */</span></span>
+<span id="cb42-40"><a href="#cb42-40" tabindex="-1"></a>    R_registerRoutines<span class="op">(</span>info<span class="op">,</span> cMethods<span class="op">,</span> callMethods<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb42-41"><a href="#cb42-41" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p><code>example_nr.R</code>:</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_nr&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">dyn.load</span>(dll)</span>
+<span id="cb43-3"><a href="#cb43-3" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb43-5"><a href="#cb43-5" tabindex="-1"></a>    <span class="fu">.Call</span>(<span class="st">&quot;tautology&quot;</span>, <span class="dv">443</span>)</span>
+<span id="cb43-6"><a href="#cb43-6" tabindex="-1"></a>)</span>
+<span id="cb43-7"><a href="#cb43-7" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb43-9"><a href="#cb43-9" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb43-10"><a href="#cb43-10" tabindex="-1"></a>    <span class="fu">.C</span>(<span class="st">&quot;plusminus&quot;</span>, <span class="fu">as.numeric</span>(x), <span class="fu">as.integer</span>(<span class="fu">length</span>(x)))</span>
+<span id="cb43-11"><a href="#cb43-11" tabindex="-1"></a>)</span>
+<span id="cb43-12"><a href="#cb43-12" tabindex="-1"></a></span>
+<span id="cb43-13"><a href="#cb43-13" tabindex="-1"></a><span class="fu">dyn.unload</span>(dll)</span></code></pre></div>
+<p>これまで通り、<code>example_nr.c</code>をコンパイルして、<code>example_nr.R</code>を実行します。</p>
+<pre><code>R CMD SHLIB example_nr.c
+R --slave -f example_nr.R</code></pre>
+<p>計算できました。</p>
+<pre><code>[1] 443
+[[1]]
+ [1]  1  2  3  4  5  6  7  8  9 10
+
+[[2]]
+[1] 10</code></pre>
+<p>なお、不正な型を入れると、</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="fu">.C</span>(<span class="st">&quot;plusminus&quot;</span>, <span class="fu">as.numeric</span>(x), <span class="fl">3.1</span>)</span></code></pre></div>
+<p>型があわないとエラーが出て止まります。</p>
+<pre><code> .C(&quot;plusminus&quot;, as.numeric(x), 3.1) でエラー:
+   2 引数に対する不正な型です（plusminus への呼び出しにおいて）
+ 呼び出し:  print -&gt; .C
+ 実行が停止されました</code></pre>
+</div>
+<div id="可変長引数のときに使う.external" class="section level1"
+number="7">
+<h1><span class="header-section-number">7</span>
+可変長引数のときに使う<code>.External</code></h1>
+<p><code>.Call</code>でだいたい間に合うと思いますが、<code>.Call</code>は可変長引数<code>...</code>をとることができません<a
+href="#fn9" class="footnote-ref"
+id="fnref9"><sup>9</sup></a>。<code>.External</code>は可変長引数を取れる呼び出しで、Cの関数では<code>CAR</code>で可変長引数の最初の要素を参照し、<code>CDR</code>で可変長引数の最初の要素を消すことを、可変長引数が<code>R_NilValue</code>になるまで繰り返すLispの中身感のあるコーディングを行ないます。具体的例は<a
+href="https://cran.r-project.org/doc/manuals/R-exts.html">Writing R
+Extensions</a>の<code>SEXP showArgs(SEXP args)</code>関数が過不足ないので、参照してください。</p>
+</div>
+<div id="c言語から利用できるrのapi" class="section level1" number="8">
+<h1><span class="header-section-number">8</span>
+C言語から利用できるRのAPI</h1>
+<p>RからCの関数を呼び、RとCでデータをやり取りし、CでRのデータ型を操作するための機能を提供するだけではなく、Rで標準で使える積分と最適化を含む数学・確率統計関数やソートなどの関数が提供されています。<a
+href="https://cran.r-project.org/doc/manuals/R-exts.html">Writing R
+Extensions</a>の[6 The R API: entry points for C
+code]に列挙されているので目を通されるとよいと思いますが、利用頻度の高そうなものを紹介します。</p>
+<div id="rコンソール出力関数reprintf" class="section level2"
+number="8.1">
+<h2><span class="header-section-number">8.1</span>
+Rコンソール出力関数<code>REprintf</code></h2>
+<p><code>REprintf</code>はC言語の<code>printf</code>と同様に使える、Rコンソール出力関数です。Windows版Rで開発すると<code>gdb</code>の利用が制限されるので、<code>printf</code>デバッグforeverと重宝するかもです。</p>
+</div>
+<div id="メモリー管理関数群" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span>
+メモリー管理関数群</h2>
+<p><code>R_alloc</code>は一時メモリーを割り当ててもらう関数で、エラーの発生やユーザーによる中断を含めて、<code>.C</code>と<code>.Call</code>と<code>.External</code>によるC呼び出しが終了したら、自動的にメモリーが開放され8ます。メモリーリークの防止に有用です。</p>
+<p><code>R_Calloc</code>/<code>R_Realloc</code>/<code>R_Free</code>はRを通してメモリーを割り当ててもらう関数です。昔のドキュメントでは<code>Calloc</code>/<code>Free</code>が説明されていたのですが非推奨になっており、<code>#define STRICT_R_HEADERS</code>をしてから使うとエラーになります。GitHubにあげているあれが･･･。</p>
+<p>これらの関数は、<code>double *a = (double *)R_alloc(100, sizeof(double));</code>と言う風に、対応するC言語の標準関数と同様に使えます<a
+href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>。</p>
+</div>
+<div id="ユーザー中断の許可" class="section level2" number="8.3">
+<h2><span class="header-section-number">8.3</span>
+ユーザー中断の許可</h2>
+<p>Cのコードの実行中はユーザー中断が許可されないのですが、ループ中に<code>R_CheckUserInterrupt(void);</code>を挟んでおくと、CTRL+Cなどが押されていれば、そこで中断されます。</p>
+</div>
+<div id="乱数生成関数" class="section level2" number="8.4">
+<h2><span class="header-section-number">8.4</span> 乱数生成関数</h2>
+<p>マルコフ連鎖モンテカルロ法などで必須になる乱数です。C言語のメルセンヌ・ツイスタのライブラリを探してくるのは難しくないわけですが、Rに内蔵されているものを使うこともできます。</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="co">/* 乱数利用開始前に必ず */</span></span>
+<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a><span class="dt">void</span> GetRNGstate<span class="op">(</span><span class="dt">void</span><span class="op">);</span> </span>
+<span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a><span class="co">/* user_unif_init(Int32)に変わるseed設定関数 */</span></span>
+<span id="cb48-5"><a href="#cb48-5" tabindex="-1"></a><span class="dt">double</span> R_unif_index<span class="op">(</span><span class="dt">double</span><span class="op">);</span> </span>
+<span id="cb48-6"><a href="#cb48-6" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" tabindex="-1"></a><span class="co">/* 正規化された一様分布，正規分布，指数分布からの乱数 */</span></span>
+<span id="cb48-8"><a href="#cb48-8" tabindex="-1"></a><span class="dt">double</span> unif_rand<span class="op">();</span></span>
+<span id="cb48-9"><a href="#cb48-9" tabindex="-1"></a><span class="dt">double</span> norm_rand<span class="op">();</span></span>
+<span id="cb48-10"><a href="#cb48-10" tabindex="-1"></a><span class="dt">double</span> exp_rand<span class="op">();</span></span>
+<span id="cb48-11"><a href="#cb48-11" tabindex="-1"></a></span>
+<span id="cb48-12"><a href="#cb48-12" tabindex="-1"></a><span class="co">/* 乱数利用終了時に必ず唱える（seed更新） */</span></span>
+<span id="cb48-13"><a href="#cb48-13" tabindex="-1"></a><span class="dt">void</span> PutRNGstate<span class="op">(</span><span class="dt">void</span><span class="op">);</span></span></code></pre></div>
+<p><code>R_ext/Random.h</code>に定義されているので、使う前には<code>include</code>してください。なお、<code>dnorm</code>/<code>pnorm</code>/<code>qnorm</code>/<code>rnorm</code>と言った確率統計に関するRの同名の関数とほぼ同様のC関数も提供されていて、<code>Rmath.h</code>に定義されています。</p>
+</div>
+<div id="数学関数定数" class="section level2" number="8.5">
+<h2><span class="header-section-number">8.5</span> 数学関数/定数</h2>
+<p><code>Rmath.h</code>を見ると、実装はもちろんライブラリを探すのも手がかかる最適化と積分も含めて、Rの基本パッケージで使える関数と定数と同様の関数と定数がCに提供されていることが分かります。</p>
+<div id="最適化" class="section level3" number="8.5.1">
+<h3><span class="header-section-number">8.5.1</span> 最適化</h3>
+<p><code>optim</code>関数の中にあるNelder Mead法、BFGS法、Conjugate
+gradients法、L-BFGS法、Simulated
+annealing法それぞれの関数<code>nmmi</code>, <code>vmmin</code>,
+<code>cgmin</code>, <code>lbfgsb</code>,
+<code>samin</code>を呼ぶことができ、最適化問題を解けます。これらの手法につきもののエラーや警告の扱いは<code>R_tryCatchError</code>,
+<code>R_tryCatch</code>,
+<code>R_withCallingErrorHandler</code>関数で行なえます。</p>
+<p>試しにL-BFGS法で、正規分布を仮定して平均と標準偏差を推定してみましょう。</p>
+<p><code>example_lbfgs.c</code>:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R_ext/Applic.h&gt;</span></span>
+<span id="cb49-4"><a href="#cb49-4" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;math.h&gt;</span></span>
+<span id="cb49-5"><a href="#cb49-5" tabindex="-1"></a></span>
+<span id="cb49-6"><a href="#cb49-6" tabindex="-1"></a><span class="co">/* データセットを表す構造体 */</span></span>
+<span id="cb49-7"><a href="#cb49-7" tabindex="-1"></a><span class="kw">typedef</span> <span class="kw">struct</span> <span class="op">{</span></span>
+<span id="cb49-8"><a href="#cb49-8" tabindex="-1"></a>    <span class="dt">unsigned</span> <span class="dt">int</span>    n<span class="op">;</span></span>
+<span id="cb49-9"><a href="#cb49-9" tabindex="-1"></a>    <span class="dt">double</span> <span class="op">*</span>y<span class="op">;</span></span>
+<span id="cb49-10"><a href="#cb49-10" tabindex="-1"></a><span class="op">}</span> DATASET<span class="op">;</span></span>
+<span id="cb49-11"><a href="#cb49-11" tabindex="-1"></a></span>
+<span id="cb49-12"><a href="#cb49-12" tabindex="-1"></a><span class="dt">double</span> objf<span class="op">(</span><span class="dt">int</span> n<span class="op">,</span> <span class="dt">double</span> <span class="op">*</span>par<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>ex<span class="op">)</span></span>
+<span id="cb49-13"><a href="#cb49-13" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb49-14"><a href="#cb49-14" tabindex="-1"></a><span class="co">/* 正規分布の対数尤度関数（なのでnは2で決まっているので使わない） */</span></span>
+<span id="cb49-15"><a href="#cb49-15" tabindex="-1"></a>    DATASET <span class="op">*</span>ds <span class="op">=</span> ex<span class="op">;</span></span>
+<span id="cb49-16"><a href="#cb49-16" tabindex="-1"></a>    <span class="dt">double</span> theta <span class="op">=</span> par<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb49-17"><a href="#cb49-17" tabindex="-1"></a>    <span class="dt">double</span> mu <span class="op">=</span> par<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb49-18"><a href="#cb49-18" tabindex="-1"></a>    <span class="dt">double</span> s<span class="op">,</span> d<span class="op">;</span></span>
+<span id="cb49-19"><a href="#cb49-19" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb49-20"><a href="#cb49-20" tabindex="-1"></a></span>
+<span id="cb49-21"><a href="#cb49-21" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>s<span class="op">=</span><span class="dv">0</span><span class="op">,</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i<span class="op">&lt;</span>ds<span class="op">-&gt;</span>n<span class="op">;</span> i<span class="op">++){</span></span>
+<span id="cb49-22"><a href="#cb49-22" tabindex="-1"></a>        d <span class="op">=</span> ds<span class="op">-&gt;</span>y<span class="op">[</span>i<span class="op">]</span> <span class="op">-</span> mu<span class="op">;</span></span>
+<span id="cb49-23"><a href="#cb49-23" tabindex="-1"></a>        s <span class="op">+=</span> d<span class="op">*</span>d<span class="op">;</span></span>
+<span id="cb49-24"><a href="#cb49-24" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb49-25"><a href="#cb49-25" tabindex="-1"></a></span>
+<span id="cb49-26"><a href="#cb49-26" tabindex="-1"></a>    <span class="cf">return</span> <span class="op">-</span><span class="fl">1.0</span><span class="op">*(-</span><span class="fl">1.0</span><span class="op">*(</span><span class="dt">double</span><span class="op">)(</span>ds<span class="op">-&gt;</span>n<span class="op">)*</span>log<span class="op">(</span>theta<span class="op">*</span>theta<span class="op">)/</span><span class="dv">2</span> <span class="op">-</span> s<span class="op">/(</span>theta<span class="op">*</span>theta<span class="op">)/</span><span class="dv">2</span><span class="op">);</span></span>
+<span id="cb49-27"><a href="#cb49-27" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb49-28"><a href="#cb49-28" tabindex="-1"></a></span>
+<span id="cb49-29"><a href="#cb49-29" tabindex="-1"></a><span class="dt">void</span> objfg<span class="op">(</span><span class="dt">int</span> n<span class="op">,</span> <span class="dt">double</span> <span class="op">*</span>par<span class="op">,</span> <span class="dt">double</span> <span class="op">*</span>gr<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>ex<span class="op">)</span></span>
+<span id="cb49-30"><a href="#cb49-30" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb49-31"><a href="#cb49-31" tabindex="-1"></a><span class="co">/* objfのグラディエントの計算; 一般的には数値微分した方が使い勝手は良い */</span></span>
+<span id="cb49-32"><a href="#cb49-32" tabindex="-1"></a>    DATASET <span class="op">*</span>ds <span class="op">=</span> ex<span class="op">;</span></span>
+<span id="cb49-33"><a href="#cb49-33" tabindex="-1"></a>    <span class="dt">double</span> theta <span class="op">=</span> par<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb49-34"><a href="#cb49-34" tabindex="-1"></a>    <span class="dt">double</span> mu <span class="op">=</span> par<span class="op">[</span><span class="dv">1</span><span class="op">];</span></span>
+<span id="cb49-35"><a href="#cb49-35" tabindex="-1"></a>    <span class="dt">double</span> s<span class="op">,</span> d<span class="op">,</span> res<span class="op">;</span></span>
+<span id="cb49-36"><a href="#cb49-36" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb49-37"><a href="#cb49-37" tabindex="-1"></a></span>
+<span id="cb49-38"><a href="#cb49-38" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>s<span class="op">=</span><span class="dv">0</span><span class="op">,</span>res<span class="op">=</span><span class="dv">0</span><span class="op">,</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i<span class="op">&lt;</span>ds<span class="op">-&gt;</span>n<span class="op">;</span> i<span class="op">++){</span></span>
+<span id="cb49-39"><a href="#cb49-39" tabindex="-1"></a>        d <span class="op">=</span> ds<span class="op">-&gt;</span>y<span class="op">[</span>i<span class="op">]</span> <span class="op">-</span> mu<span class="op">;</span></span>
+<span id="cb49-40"><a href="#cb49-40" tabindex="-1"></a>        res <span class="op">+=</span> <span class="dv">2</span><span class="op">*</span>d<span class="op">;</span></span>
+<span id="cb49-41"><a href="#cb49-41" tabindex="-1"></a>        s <span class="op">+=</span> d<span class="op">*</span>d<span class="op">;</span></span>
+<span id="cb49-42"><a href="#cb49-42" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb49-43"><a href="#cb49-43" tabindex="-1"></a></span>
+<span id="cb49-44"><a href="#cb49-44" tabindex="-1"></a>    gr<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="op">(</span><span class="dt">double</span><span class="op">)(</span>ds<span class="op">-&gt;</span>n<span class="op">)/</span>theta <span class="op">-</span> s<span class="op">/(</span>theta<span class="op">*</span>theta<span class="op">*</span>theta<span class="op">);</span></span>
+<span id="cb49-45"><a href="#cb49-45" tabindex="-1"></a>    gr<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span><span class="op">*</span>res<span class="op">/(</span>theta<span class="op">*</span>theta<span class="op">)/</span><span class="dv">2</span><span class="op">;</span></span>
+<span id="cb49-46"><a href="#cb49-46" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb49-47"><a href="#cb49-47" tabindex="-1"></a></span>
+<span id="cb49-48"><a href="#cb49-48" tabindex="-1"></a>SEXP mle_nd<span class="op">(</span>SEXP init<span class="op">,</span> SEXP y<span class="op">)</span></span>
+<span id="cb49-49"><a href="#cb49-49" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb49-50"><a href="#cb49-50" tabindex="-1"></a>    DATASET ds<span class="op">;</span></span>
+<span id="cb49-51"><a href="#cb49-51" tabindex="-1"></a>    <span class="dt">int</span> n<span class="op">,</span> i<span class="op">;</span></span>
+<span id="cb49-52"><a href="#cb49-52" tabindex="-1"></a>    SEXP r<span class="op">;</span></span>
+<span id="cb49-53"><a href="#cb49-53" tabindex="-1"></a>    <span class="dt">double</span> <span class="op">*</span>x<span class="op">,</span> lower<span class="op">=-</span><span class="fl">1e+10</span><span class="op">,</span> upper<span class="op">=</span><span class="fl">1e+10</span><span class="op">,</span> Fmin<span class="op">;</span></span>
+<span id="cb49-54"><a href="#cb49-54" tabindex="-1"></a>    <span class="dt">int</span> fail<span class="op">=</span><span class="dv">0</span><span class="op">,</span> fncount<span class="op">=</span><span class="dv">0</span><span class="op">,</span> grcount<span class="op">=</span><span class="dv">0</span><span class="op">,</span> <span class="op">*</span>nbd<span class="op">;</span></span>
+<span id="cb49-55"><a href="#cb49-55" tabindex="-1"></a>    <span class="dt">char</span> <span class="op">*</span>msg <span class="op">=</span> R_alloc<span class="op">(</span><span class="dv">60</span><span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">char</span><span class="op">));</span></span>
+<span id="cb49-56"><a href="#cb49-56" tabindex="-1"></a></span>
+<span id="cb49-57"><a href="#cb49-57" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isVector<span class="op">(</span>init<span class="op">))</span></span>
+<span id="cb49-58"><a href="#cb49-58" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;x&#39; should be a vector.&quot;</span><span class="op">);</span></span>
+<span id="cb49-59"><a href="#cb49-59" tabindex="-1"></a></span>
+<span id="cb49-60"><a href="#cb49-60" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isReal<span class="op">(</span>init<span class="op">))</span></span>
+<span id="cb49-61"><a href="#cb49-61" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;x&#39; should be of numeric.&quot;</span><span class="op">);</span></span>
+<span id="cb49-62"><a href="#cb49-62" tabindex="-1"></a></span>
+<span id="cb49-63"><a href="#cb49-63" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isVector<span class="op">(</span>y<span class="op">))</span></span>
+<span id="cb49-64"><a href="#cb49-64" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;y&#39; should be a vector.&quot;</span><span class="op">);</span></span>
+<span id="cb49-65"><a href="#cb49-65" tabindex="-1"></a></span>
+<span id="cb49-66"><a href="#cb49-66" tabindex="-1"></a>    <span class="cf">if</span><span class="op">(!</span>isReal<span class="op">(</span>y<span class="op">))</span></span>
+<span id="cb49-67"><a href="#cb49-67" tabindex="-1"></a>        error<span class="op">(</span><span class="st">&quot;&#39;y&#39; should be of numeric.&quot;</span><span class="op">);</span></span>
+<span id="cb49-68"><a href="#cb49-68" tabindex="-1"></a></span>
+<span id="cb49-69"><a href="#cb49-69" tabindex="-1"></a>    n <span class="op">=</span> length<span class="op">(</span>init<span class="op">);</span></span>
+<span id="cb49-70"><a href="#cb49-70" tabindex="-1"></a>    x <span class="op">=</span> <span class="op">(</span><span class="dt">double</span> <span class="op">*)</span>R_alloc<span class="op">(</span>n<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb49-71"><a href="#cb49-71" tabindex="-1"></a>    nbd <span class="op">=</span> <span class="op">(</span><span class="dt">int</span> <span class="op">*)</span>R_alloc<span class="op">(</span>n<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb49-72"><a href="#cb49-72" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span>i<span class="op">&lt;</span>n<span class="op">;</span>i<span class="op">++){</span></span>
+<span id="cb49-73"><a href="#cb49-73" tabindex="-1"></a>        x<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> REAL<span class="op">(</span>init<span class="op">)[</span>i<span class="op">];</span> <span class="co">/* set the initial value */</span></span>
+<span id="cb49-74"><a href="#cb49-74" tabindex="-1"></a>        nbd<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> <span class="co">/* unbounded */</span></span>
+<span id="cb49-75"><a href="#cb49-75" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb49-76"><a href="#cb49-76" tabindex="-1"></a></span>
+<span id="cb49-77"><a href="#cb49-77" tabindex="-1"></a>    n <span class="op">=</span> length<span class="op">(</span>y<span class="op">);</span></span>
+<span id="cb49-78"><a href="#cb49-78" tabindex="-1"></a>    ds<span class="op">.</span>n <span class="op">=</span> n<span class="op">;</span></span>
+<span id="cb49-79"><a href="#cb49-79" tabindex="-1"></a>    ds<span class="op">.</span>y <span class="op">=</span> <span class="op">(</span><span class="dt">double</span><span class="op">*)</span>R_alloc<span class="op">(</span>n<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb49-80"><a href="#cb49-80" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span>i<span class="op">&lt;</span>n<span class="op">;</span>i<span class="op">++){</span></span>
+<span id="cb49-81"><a href="#cb49-81" tabindex="-1"></a>        ds<span class="op">.</span>y<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> REAL<span class="op">(</span>y<span class="op">)[</span>i<span class="op">];</span></span>
+<span id="cb49-82"><a href="#cb49-82" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb49-83"><a href="#cb49-83" tabindex="-1"></a></span>
+<span id="cb49-84"><a href="#cb49-84" tabindex="-1"></a>    lbfgsb<span class="op">(</span>length<span class="op">(</span>init<span class="op">),</span> <span class="dv">5</span><span class="op">,</span> x<span class="op">,</span> <span class="op">&amp;</span>lower<span class="op">,</span> <span class="op">&amp;</span>upper<span class="op">,</span> nbd<span class="op">,</span> <span class="op">&amp;</span>Fmin<span class="op">,</span> objf<span class="op">,</span> objfg<span class="op">,</span></span>
+<span id="cb49-85"><a href="#cb49-85" tabindex="-1"></a>        <span class="op">&amp;</span>fail<span class="op">,</span> <span class="op">&amp;</span>ds<span class="op">,</span> <span class="fl">1e+7</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="op">&amp;</span>fncount<span class="op">,</span> <span class="op">&amp;</span>grcount<span class="op">,</span> <span class="dv">100</span><span class="op">,</span> msg<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="dv">10</span><span class="op">);</span></span>
+<span id="cb49-86"><a href="#cb49-86" tabindex="-1"></a></span>
+<span id="cb49-87"><a href="#cb49-87" tabindex="-1"></a>    PROTECT<span class="op">(</span>r <span class="op">=</span> allocVector<span class="op">(</span>REALSXP<span class="op">,</span> <span class="dv">2</span><span class="op">));</span> </span>
+<span id="cb49-88"><a href="#cb49-88" tabindex="-1"></a>    REAL<span class="op">(</span>r<span class="op">)[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> x<span class="op">[</span><span class="dv">0</span><span class="op">];</span> <span class="co">/* sd */</span></span>
+<span id="cb49-89"><a href="#cb49-89" tabindex="-1"></a>    REAL<span class="op">(</span>r<span class="op">)[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> x<span class="op">[</span><span class="dv">1</span><span class="op">];</span> <span class="co">/* mean */</span></span>
+<span id="cb49-90"><a href="#cb49-90" tabindex="-1"></a>    UNPROTECT<span class="op">(</span><span class="dv">1</span><span class="op">);</span></span>
+<span id="cb49-91"><a href="#cb49-91" tabindex="-1"></a></span>
+<span id="cb49-92"><a href="#cb49-92" tabindex="-1"></a>    <span class="cf">return</span> r<span class="op">;</span></span>
+<span id="cb49-93"><a href="#cb49-93" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>Writing R
+Extensionsのアドバイス通りに、パラメーターは<code>optim</code>のヘルプを見ながらRの省略値にあわせつつ、<code>nbd</code>と<code>msg</code>はソースコードにあったコメントの記述を参考に入れました。</p>
+<p><code>example_lbfgs.R</code>:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_lbfgs&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb50-3"><a href="#cb50-3" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb50-5"><a href="#cb50-5" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="at">mean=</span><span class="dv">1</span>, <span class="at">sd=</span><span class="dv">2</span>)</span>
+<span id="cb50-6"><a href="#cb50-6" tabindex="-1"></a>    init <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb50-7"><a href="#cb50-7" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">.Call</span>(<span class="st">&quot;mle_nd&quot;</span>, init, y));</span>
+<span id="cb50-8"><a href="#cb50-8" tabindex="-1"></a>}, <span class="at">finally =</span> {</span>
+<span id="cb50-9"><a href="#cb50-9" tabindex="-1"></a>    <span class="fu">dyn.unload</span>(dll)</span>
+<span id="cb50-10"><a href="#cb50-10" tabindex="-1"></a>})</span></code></pre></div>
+<p>これまで通り、<code>example_lbfgs.c</code>をコンパイルして、<code>example_lbfgs.R</code>を実行します。</p>
+<pre><code>R CMD SHLIB example_lbfgs.c
+R --slave -f example_lbfgs.R</code></pre>
+<p>計算できました。</p>
+<pre><code>[1] 2.1553354 0.9978105</code></pre>
+<p>なお、乱数でデータセットを作っているので、推定量は動かす度に変わります。</p>
+</div>
+<div id="積分関数" class="section level3" number="8.5.2">
+<h3><span class="header-section-number">8.5.2</span> 積分関数</h3>
+<p>Gauss–Legendre法のような積分アルゴリズムを考えたくないときには<a
+href="#fn11" class="footnote-ref"
+id="fnref11"><sup>11</sup></a>、Rの<code>integrate</code>関数の中にある関数で積分することができます。</p>
+<p><code>example_integrate.c</code>:</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb53-3"><a href="#cb53-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R_ext/Applic.h&gt;</span></span>
+<span id="cb53-4"><a href="#cb53-4" tabindex="-1"></a></span>
+<span id="cb53-5"><a href="#cb53-5" tabindex="-1"></a><span class="co">/*</span></span>
+<span id="cb53-6"><a href="#cb53-6" tabindex="-1"></a><span class="co">  n個の点における被積分関数の値を引数のポインターに書き込むユーザー定義函数 </span></span>
+<span id="cb53-7"><a href="#cb53-7" tabindex="-1"></a><span class="co">*/</span></span>
+<span id="cb53-8"><a href="#cb53-8" tabindex="-1"></a><span class="dt">void</span> vectorized_integrand<span class="op">(</span><span class="dt">double</span> <span class="op">*</span>x<span class="op">,</span> <span class="dt">int</span> n<span class="op">,</span> <span class="dt">void</span> <span class="op">*</span>ex<span class="op">)</span></span>
+<span id="cb53-9"><a href="#cb53-9" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb53-10"><a href="#cb53-10" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">;</span></span>
+<span id="cb53-11"><a href="#cb53-11" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i<span class="op">&lt;</span>n<span class="op">;</span> i<span class="op">++){</span></span>
+<span id="cb53-12"><a href="#cb53-12" tabindex="-1"></a><span class="co">/* 区間[0 1)で11.21をとる被積分関数を例にしている */</span></span>
+<span id="cb53-13"><a href="#cb53-13" tabindex="-1"></a>        <span class="cf">if</span><span class="op">(</span>x<span class="op">[</span>i<span class="op">]&lt;</span><span class="dv">0</span><span class="op">)</span></span>
+<span id="cb53-14"><a href="#cb53-14" tabindex="-1"></a>            x<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb53-15"><a href="#cb53-15" tabindex="-1"></a>        <span class="cf">else</span> <span class="cf">if</span><span class="op">(</span>x<span class="op">[</span>i<span class="op">]&gt;=</span><span class="dv">1</span><span class="op">)</span></span>
+<span id="cb53-16"><a href="#cb53-16" tabindex="-1"></a>            x<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb53-17"><a href="#cb53-17" tabindex="-1"></a>        <span class="cf">else</span></span>
+<span id="cb53-18"><a href="#cb53-18" tabindex="-1"></a>            x<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> <span class="fl">11.21</span><span class="op">;</span></span>
+<span id="cb53-19"><a href="#cb53-19" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb53-20"><a href="#cb53-20" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb53-21"><a href="#cb53-21" tabindex="-1"></a></span>
+<span id="cb53-22"><a href="#cb53-22" tabindex="-1"></a>SEXP example_integral<span class="op">(</span><span class="dt">void</span><span class="op">)</span></span>
+<span id="cb53-23"><a href="#cb53-23" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb53-24"><a href="#cb53-24" tabindex="-1"></a>    <span class="co">/* 入力 */</span></span>
+<span id="cb53-25"><a href="#cb53-25" tabindex="-1"></a>    <span class="dt">void</span> <span class="op">*</span>ex <span class="op">=</span> NULL<span class="op">;</span> <span class="co">/* 定義する被積分関数が内部で使うユーザー定義の補助データの構造体へのポインター */</span></span>
+<span id="cb53-26"><a href="#cb53-26" tabindex="-1"></a>    <span class="dt">double</span> a <span class="op">=</span> <span class="op">-</span><span class="dv">2</span><span class="op">,</span> b <span class="op">=</span> <span class="dv">2</span><span class="op">;</span> <span class="co">/* 区間[-2 2)を積分 */</span></span>
+<span id="cb53-27"><a href="#cb53-27" tabindex="-1"></a>    <span class="dt">double</span> epsabs<span class="op">,</span> epsrel<span class="op">;</span> <span class="co">/* 絶対/相対精度 */</span></span>
+<span id="cb53-28"><a href="#cb53-28" tabindex="-1"></a>    <span class="co">/* 作業領域とその大きさ */</span></span>
+<span id="cb53-29"><a href="#cb53-29" tabindex="-1"></a>    <span class="dt">int</span>  limit<span class="op">,</span> lenw<span class="op">,</span> <span class="op">*</span>iwork<span class="op">;</span> </span>
+<span id="cb53-30"><a href="#cb53-30" tabindex="-1"></a>    <span class="dt">double</span> <span class="op">*</span>work<span class="op">;</span></span>
+<span id="cb53-31"><a href="#cb53-31" tabindex="-1"></a>    <span class="co">/* 出力 */</span></span>
+<span id="cb53-32"><a href="#cb53-32" tabindex="-1"></a>    <span class="dt">int</span> last<span class="op">;</span> <span class="co">/* the output components value, abs.err and subdivisions of the R function integrate */</span></span>
+<span id="cb53-33"><a href="#cb53-33" tabindex="-1"></a>    <span class="dt">int</span> neval<span class="op">,</span> ier<span class="op">;</span> <span class="co">/* 不明, 被積分関数が評価された回数, エラーコード */</span> </span>
+<span id="cb53-34"><a href="#cb53-34" tabindex="-1"></a>    <span class="dt">double</span> result <span class="op">=</span> NAN<span class="op">,</span> abserr <span class="op">=</span> NAN<span class="op">;</span> <span class="co">/* 積分値, 絶対誤差 */</span></span>
+<span id="cb53-35"><a href="#cb53-35" tabindex="-1"></a></span>
+<span id="cb53-36"><a href="#cb53-36" tabindex="-1"></a>    <span class="co">/* Rのintegrate関数にあわせて入力値を設定 */</span></span>
+<span id="cb53-37"><a href="#cb53-37" tabindex="-1"></a>    epsabs <span class="op">=</span> epsrel <span class="op">=</span> sqrt<span class="op">(</span>sqrt<span class="op">(</span>DBL_EPSILON<span class="op">));</span></span>
+<span id="cb53-38"><a href="#cb53-38" tabindex="-1"></a>    limit <span class="op">=</span> <span class="dv">100</span><span class="op">;</span> <span class="co">/* limitはRのintegrate関数のsubdivisionsに該当*/</span></span>
+<span id="cb53-39"><a href="#cb53-39" tabindex="-1"></a>    lenw <span class="op">=</span> <span class="dv">4</span> <span class="op">*</span> limit<span class="op">;</span></span>
+<span id="cb53-40"><a href="#cb53-40" tabindex="-1"></a>    iwork <span class="op">=</span>   <span class="op">(</span><span class="dt">int</span> <span class="op">*)</span> R_alloc<span class="op">(</span>limit<span class="op">,</span> <span class="kw">sizeof</span><span class="op">(</span><span class="dt">int</span><span class="op">));</span></span>
+<span id="cb53-41"><a href="#cb53-41" tabindex="-1"></a>    work <span class="op">=</span> <span class="op">(</span><span class="dt">double</span> <span class="op">*)</span> R_alloc<span class="op">(</span>lenw<span class="op">,</span>  <span class="kw">sizeof</span><span class="op">(</span><span class="dt">double</span><span class="op">));</span></span>
+<span id="cb53-42"><a href="#cb53-42" tabindex="-1"></a></span>
+<span id="cb53-43"><a href="#cb53-43" tabindex="-1"></a>    <span class="co">/* 有界区間の積分関数 */</span></span>
+<span id="cb53-44"><a href="#cb53-44" tabindex="-1"></a>    Rdqags<span class="op">(</span>vectorized_integrand<span class="op">,</span> ex<span class="op">,</span></span>
+<span id="cb53-45"><a href="#cb53-45" tabindex="-1"></a>        <span class="op">&amp;</span>a<span class="op">,</span> <span class="op">&amp;</span>b<span class="op">,</span></span>
+<span id="cb53-46"><a href="#cb53-46" tabindex="-1"></a>        <span class="op">&amp;</span>epsabs<span class="op">,</span> <span class="op">&amp;</span>epsrel<span class="op">,</span></span>
+<span id="cb53-47"><a href="#cb53-47" tabindex="-1"></a>        <span class="op">&amp;</span>result<span class="op">,</span> <span class="op">&amp;</span>abserr<span class="op">,</span> <span class="op">&amp;</span>neval<span class="op">,</span></span>
+<span id="cb53-48"><a href="#cb53-48" tabindex="-1"></a>        <span class="op">&amp;</span>ier<span class="op">,</span></span>
+<span id="cb53-49"><a href="#cb53-49" tabindex="-1"></a>        <span class="op">&amp;</span>limit<span class="op">,</span> <span class="op">&amp;</span>lenw<span class="op">,</span> <span class="op">&amp;</span>last<span class="op">,</span></span>
+<span id="cb53-50"><a href="#cb53-50" tabindex="-1"></a>        iwork<span class="op">,</span> work<span class="op">);</span></span>
+<span id="cb53-51"><a href="#cb53-51" tabindex="-1"></a></span>
+<span id="cb53-52"><a href="#cb53-52" tabindex="-1"></a>    <span class="cf">return</span> ScalarReal<span class="op">(</span>result<span class="op">);</span></span>
+<span id="cb53-53"><a href="#cb53-53" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>連続で積分するときのオーバーヘッドを抑えるためか、作業領域が使いまわせる仕様です。なお非有界区間の場合は<code>Rdqagi</code>関数を用います。</p>
+<p><code>example_integrate.R</code>:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_integral&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a></span>
+<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb54-5"><a href="#cb54-5" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">.Call</span>(<span class="st">&quot;example_integral&quot;</span>))</span>
+<span id="cb54-6"><a href="#cb54-6" tabindex="-1"></a>}, <span class="at">finally =</span> {</span>
+<span id="cb54-7"><a href="#cb54-7" tabindex="-1"></a>    <span class="fu">dyn.unload</span>(dll)</span>
+<span id="cb54-8"><a href="#cb54-8" tabindex="-1"></a>})</span></code></pre></div>
+<p>これまでと同じように<code>example_integrate.c</code>と<code>example_integrate.R</code>を作成したディレクトリで、</p>
+<pre><code>R CMD SHLIB example_integrate.c
+R --slave -f example_integrate.R</code></pre>
+<p>とすると、自明な積分値が出力されます。</p>
+<pre><code>[1] 11.21</code></pre>
+</div>
+</div>
+<div id="その他" class="section level2" number="8.6">
+<h2><span class="header-section-number">8.6</span> その他</h2>
+<p>ソートや文字コード変換、一時ファイル名の取得のAPIも提供されています。</p>
+</div>
+</div>
+<div id="openmpによる並列化" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> OpenMPによる並列化</h1>
+<p>何重にもループするような処理を高速化、さらに並列処理をする例をあげます。
+<code>.Call</code>ではなくて<code>.C</code>を使っているのは、Rのオブジェクトがスレッドセーフで無いためコードがさらに冗長になるためです。</p>
+<p>OpenMPと聞くと高度な技能が要求される気がするかも知れませんが、難しく煩雑なことはコンパイラがやってくれるので利用者は楽ができる技術です。
+以下の例では<code>for</code>の前に1行、OpenMPでループを並列化すること、変数a,
+b,
+mは並列スレッド間で同期処理を行なわないことを宣言しているだけです。</p>
+<p><code>example_openmp.c</code>:</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode c"><code class="sourceCode c"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R.h&gt;</span></span>
+<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;Rinternals.h&gt;</span></span>
+<span id="cb57-3"><a href="#cb57-3" tabindex="-1"></a><span class="pp">#include </span><span class="im">&lt;R_ext/Rdynload.h&gt;</span></span>
+<span id="cb57-4"><a href="#cb57-4" tabindex="-1"></a></span>
+<span id="cb57-5"><a href="#cb57-5" tabindex="-1"></a><span class="dt">void</span> gcd<span class="op">(</span><span class="dt">int</span> <span class="op">*</span>len<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>v<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>w<span class="op">,</span> <span class="dt">int</span> <span class="op">*</span>r<span class="op">)</span></span>
+<span id="cb57-6"><a href="#cb57-6" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb57-7"><a href="#cb57-7" tabindex="-1"></a>    <span class="dt">int</span> i<span class="op">,</span> a<span class="op">,</span> b<span class="op">,</span> m<span class="op">;</span></span>
+<span id="cb57-8"><a href="#cb57-8" tabindex="-1"></a></span>
+<span id="cb57-9"><a href="#cb57-9" tabindex="-1"></a>    <span class="pp">#pragma omp parallel for private(a, b, m)</span></span>
+<span id="cb57-10"><a href="#cb57-10" tabindex="-1"></a>    <span class="cf">for</span><span class="op">(</span>i<span class="op">=</span><span class="dv">0</span><span class="op">;</span> i<span class="op">&lt;*</span>len<span class="op">;</span> i<span class="op">++){</span></span>
+<span id="cb57-11"><a href="#cb57-11" tabindex="-1"></a>        a <span class="op">=</span> v<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb57-12"><a href="#cb57-12" tabindex="-1"></a>        b <span class="op">=</span> w<span class="op">[</span>i<span class="op">];</span></span>
+<span id="cb57-13"><a href="#cb57-13" tabindex="-1"></a>        <span class="cf">while</span><span class="op">(</span><span class="dv">0</span><span class="op">!=</span> <span class="op">(</span>m <span class="op">=</span> a <span class="op">%</span> b<span class="op">)){</span></span>
+<span id="cb57-14"><a href="#cb57-14" tabindex="-1"></a>            a <span class="op">=</span> b<span class="op">;</span></span>
+<span id="cb57-15"><a href="#cb57-15" tabindex="-1"></a>            b <span class="op">=</span> m<span class="op">;</span></span>
+<span id="cb57-16"><a href="#cb57-16" tabindex="-1"></a>        <span class="op">}</span></span>
+<span id="cb57-17"><a href="#cb57-17" tabindex="-1"></a>        r<span class="op">[</span>i<span class="op">]</span> <span class="op">=</span> b<span class="op">;</span></span>
+<span id="cb57-18"><a href="#cb57-18" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb57-19"><a href="#cb57-19" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb57-20"><a href="#cb57-20" tabindex="-1"></a></span>
+<span id="cb57-21"><a href="#cb57-21" tabindex="-1"></a><span class="co">/* 以下は無くても型チェックが弱くなるだけ */</span></span>
+<span id="cb57-22"><a href="#cb57-22" tabindex="-1"></a></span>
+<span id="cb57-23"><a href="#cb57-23" tabindex="-1"></a><span class="dt">static</span> R_NativePrimitiveArgType gcd_type<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb57-24"><a href="#cb57-24" tabindex="-1"></a>    INTSXP<span class="op">,</span> INTSXP<span class="op">,</span> INTSXP<span class="op">,</span> INTSXP</span>
+<span id="cb57-25"><a href="#cb57-25" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb57-26"><a href="#cb57-26" tabindex="-1"></a></span>
+<span id="cb57-27"><a href="#cb57-27" tabindex="-1"></a><span class="dt">static</span> <span class="dt">const</span> R_CMethodDef cMethods<span class="op">[]</span> <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb57-28"><a href="#cb57-28" tabindex="-1"></a>    <span class="op">{</span><span class="st">&quot;gcd&quot;</span><span class="op">,</span> <span class="op">(</span>DL_FUNC<span class="op">)</span> <span class="op">&amp;</span>gcd<span class="op">,</span> <span class="dv">4</span><span class="op">,</span> gcd_type<span class="op">},</span></span>
+<span id="cb57-29"><a href="#cb57-29" tabindex="-1"></a>    NULL</span>
+<span id="cb57-30"><a href="#cb57-30" tabindex="-1"></a><span class="op">};</span></span>
+<span id="cb57-31"><a href="#cb57-31" tabindex="-1"></a></span>
+<span id="cb57-32"><a href="#cb57-32" tabindex="-1"></a><span class="dt">void</span> R_init_example_openmp<span class="op">(</span>DllInfo <span class="op">*</span>info<span class="op">)</span></span>
+<span id="cb57-33"><a href="#cb57-33" tabindex="-1"></a><span class="op">{</span></span>
+<span id="cb57-34"><a href="#cb57-34" tabindex="-1"></a>    R_registerRoutines<span class="op">(</span>info<span class="op">,</span> cMethods<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">,</span> NULL<span class="op">);</span></span>
+<span id="cb57-35"><a href="#cb57-35" tabindex="-1"></a><span class="op">}</span></span></code></pre></div>
+<p>C/OpenMPで書いた最小公倍数の計算コードと、Rで書いたものの処理時間を比較します。</p>
+<p><code>example_openmp.R</code>:</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>dll <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">&quot;example_openmp&quot;</span>, .Platform<span class="sc">$</span>dynlib.ext, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="fu">dyn.load</span>(dll)</span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a></span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a>gcd_c <span class="ot">&lt;-</span> <span class="cf">function</span>(v, w){</span>
+<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">length</span>(v)<span class="sc">!=</span><span class="fu">length</span>(w)) <span class="fu">stop</span>(<span class="st">&quot;v and w need to have the same length.&quot;</span>)</span>
+<span id="cb58-6"><a href="#cb58-6" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">.C</span>(<span class="st">&quot;gcd&quot;</span>, <span class="fu">length</span>(v), <span class="fu">as.integer</span>(v), <span class="fu">as.integer</span>(w), <span class="fu">integer</span>(<span class="fu">length</span>(v)))</span>
+<span id="cb58-7"><a href="#cb58-7" tabindex="-1"></a>    r[[<span class="dv">4</span>]]</span>
+<span id="cb58-8"><a href="#cb58-8" tabindex="-1"></a>}</span>
+<span id="cb58-9"><a href="#cb58-9" tabindex="-1"></a></span>
+<span id="cb58-10"><a href="#cb58-10" tabindex="-1"></a>gcd_r <span class="ot">&lt;-</span> <span class="cf">function</span>(v, w){</span>
+<span id="cb58-11"><a href="#cb58-11" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">length</span>(v)<span class="sc">!=</span><span class="fu">length</span>(w)) <span class="fu">stop</span>(<span class="st">&quot;v and w need to have the same length.&quot;</span>)</span>
+<span id="cb58-12"><a href="#cb58-12" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">integer</span>(<span class="fu">length</span>(v))</span>
+<span id="cb58-13"><a href="#cb58-13" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(v)){</span>
+<span id="cb58-14"><a href="#cb58-14" tabindex="-1"></a>        a <span class="ot">&lt;-</span> v[i]</span>
+<span id="cb58-15"><a href="#cb58-15" tabindex="-1"></a>        b <span class="ot">&lt;-</span> w[i]</span>
+<span id="cb58-16"><a href="#cb58-16" tabindex="-1"></a>        <span class="cf">while</span>(<span class="dv">0</span> <span class="sc">!=</span> (<span class="at">m =</span> a <span class="sc">%%</span> b)){</span>
+<span id="cb58-17"><a href="#cb58-17" tabindex="-1"></a>            a <span class="ot">&lt;-</span> b</span>
+<span id="cb58-18"><a href="#cb58-18" tabindex="-1"></a>            b <span class="ot">&lt;-</span> m</span>
+<span id="cb58-19"><a href="#cb58-19" tabindex="-1"></a>        }</span>
+<span id="cb58-20"><a href="#cb58-20" tabindex="-1"></a>        r[i] <span class="ot">&lt;-</span> b</span>
+<span id="cb58-21"><a href="#cb58-21" tabindex="-1"></a>    }</span>
+<span id="cb58-22"><a href="#cb58-22" tabindex="-1"></a>    r</span>
+<span id="cb58-23"><a href="#cb58-23" tabindex="-1"></a>}</span>
+<span id="cb58-24"><a href="#cb58-24" tabindex="-1"></a></span>
+<span id="cb58-25"><a href="#cb58-25" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span><span class="sc">^</span><span class="dv">7</span></span>
+<span id="cb58-26"><a href="#cb58-26" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span>n<span class="fl">-0.5</span>))</span>
+<span id="cb58-27"><a href="#cb58-27" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span>n<span class="fl">-0.5</span>))</span>
+<span id="cb58-28"><a href="#cb58-28" tabindex="-1"></a></span>
+<span id="cb58-29"><a href="#cb58-29" tabindex="-1"></a><span class="fu">tryCatch</span>({</span>
+<span id="cb58-30"><a href="#cb58-30" tabindex="-1"></a></span>
+<span id="cb58-31"><a href="#cb58-31" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;.C and OpenMP:&quot;</span>)</span>
+<span id="cb58-32"><a href="#cb58-32" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">system.time</span>({</span>
+<span id="cb58-33"><a href="#cb58-33" tabindex="-1"></a>        <span class="fu">gcd_c</span>(v, w)</span>
+<span id="cb58-34"><a href="#cb58-34" tabindex="-1"></a>    }))</span>
+<span id="cb58-35"><a href="#cb58-35" tabindex="-1"></a></span>
+<span id="cb58-36"><a href="#cb58-36" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;R:&quot;</span>)</span>
+<span id="cb58-37"><a href="#cb58-37" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">system.time</span>({</span>
+<span id="cb58-38"><a href="#cb58-38" tabindex="-1"></a>        <span class="fu">gcd_r</span>(v, w)</span>
+<span id="cb58-39"><a href="#cb58-39" tabindex="-1"></a>    }))</span>
+<span id="cb58-40"><a href="#cb58-40" tabindex="-1"></a></span>
+<span id="cb58-41"><a href="#cb58-41" tabindex="-1"></a>}, <span class="at">finally =</span> {</span>
+<span id="cb58-42"><a href="#cb58-42" tabindex="-1"></a>    <span class="fu">dyn.unload</span>(dll)</span>
+<span id="cb58-43"><a href="#cb58-43" tabindex="-1"></a>})</span></code></pre></div>
+<p>これまでと同じように<code>example_openmp.c</code>と<code>example_openmp.R</code>を作成したディレクトリで、</p>
+<pre><code>R CMD SHLIB example_openmp.c
+R --slave -f example_openmp.R</code></pre>
+<p>とするとDLLの作成と実行ができます。準備が不十分で<code>Makevars</code>/<code>Makevars.win</code>が適切に作られていない場合、OpenMPが有効にならずにコンパイルエラーが出るので注意してください。</p>
+<pre><code>[1] &quot;.C and OpenMP:&quot;
+   ユーザ   システム       経過
+      0.18       0.02       0.07
+[1] &quot;R:&quot;
+   ユーザ   システム       経過
+      5.72       0.00       5.84</code></pre>
+<p>Rより.Cのコードの方が圧倒的に速いですね。また、.Cはユーザ時間よりも経過時間の方が小さいので、OpenMPによる平行処理が出来ていることがわかります。
+ユーザ時間が経過時間よりも短い場合、並列処理はされていません。環境変数<code>OMP_NUM_THREADS</code>に2以上の値を設定してから、再度、実行してみてください。</p>
+</div>
+<div id="rのゾンビがメモリに残ってファイルを放さない"
+class="section level1" number="10">
+<h1><span class="header-section-number">10</span>
+Rのゾンビがメモリに残ってファイルを放さない！</h1>
+<p>Rから呼んでいるCのコードが異常終了するとRも心中することになるのですが、そのときRのゾンビプロセスが残って、メモリーが圧迫される他、RやCのコードが開いていたファイルやフォルダーがロックされて更新や削除ができなくなったりします。
+複数のゾンビがあって始末するのが手間なときは、Linuxであれば<code>pkill -9 R</code>をシェルで、Windowsであれば<code>taskkill /IM Rterm.exe /F</code>をコマンドプロンプトで入力すればまとめて始末できます。</p>
+</div>
+<div id="まとめ" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> まとめ</h1>
+<p>Rからデータを貰って、Rに処理結果を返すだけなので、Rから呼ぶCのコードは（Rに新たなUIを提供する目的でなければ）UIを書かなくて済みますし、さらにライブラリが色々と提供されているので、CでOSのAPIを叩いてアプリケーションを書くよりは楽です。
+そして有用さが確認できたら（本稿では説明しませんでしたが）すかさずパッケージ化できます。もはやRはC言語の開発フレームワークの一つと見做せます。
+数値解析の高速化のためと考えるとRcppの方が労力対効果で効率的ですが、ライブラリ的なものを整備するのには<code>.Call</code>と<code>.Externl</code>の方がRcppが不要になるので便利な場面もあります。
+Rを使っているCプログラマであれば、試して見る価値は大きいです。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>1990年代中盤から広範に一世を風靡したPerlだってXS言語と言うC言語を埋め込む仕込むがありましたし、Fortranも2003からCから呼ばれたり、Cを呼ぶための機能拡張がされました。Python，Ruby,
+Java, JuliaからもC-callは可能です。<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>定型的な決まりきった記述。<a href="#fnref2"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>線形代数の演算子が使えること、最適化をしてくれたり疎行列の固有値を戻す線形代数ライブラリが使える点が大きな違いになります。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p>2001年1月版の翻訳もあるのですが、例示されているコードがまだ動く一方で、21年の間に加筆された部分もそれなりあり、古くなった記述もあります。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn5"><p><code>%R_HOME%</code>は標準インストール時は<code>C:\Program Files\R\R-4.2.2\bin</code>になります。<a
+href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn6"><p><code>coerceVector</code>でSEXP型の内部型の変換時に、<code>PROTECT_INDEX</code>型の変数を用意しておき、<code>PROTECT_WITH_INDEX</code>マクロでインデックスを保存、<code>REPROTECT</code>マクロでインデックスを指定してスタックの中身を入れ替える例が示されていました。<a
+href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>Fortran 90以降の場合は<code>FCFLAGS</code>になります。<a
+href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn8"><p>Fortranに関してはヘッダーファイルを見ただけで、実際のコードで確認していません。<code>extern</code>したFortranのサブルーチンを指定することになるのだと思いますが。<a
+href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn9"><p>Rの関数で可変長引数をリストに変換できるので、困ることは少ないと思いますが。<a
+href="#fnref9" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn10"><p>厳密にはちょっと違っていて、なぜか<code>void *</code>ではなく<code>char *</code>で定義されているので型キャストがいります。<a
+href="#fnref10" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn11"><p>パフォーマンス向上にはより良い積分アルゴリズムを探してくるのが重要ですが、限界を攻めないときはこれで十分だと思います。<a
+href="#fnref11" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

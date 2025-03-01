@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>Mercurial初心者が絶対にブックマークすべきページ - ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<meta name="description" content=""/>
+<style type="text/css">
+#article span.type, #article span.jpn, #article span.ext {
+ border: 1px solid #008800;
+ background-color: #338833;
+ color: white;
+ font-size: 11px;
+ padding: 1px 2px 0 2px;
+ margin-left: 8px;
+ font-weight: bold;
+}
+#article span.jpn {
+ border: 1px solid #440000;
+ background-color: #441111;
+ color: #ffa0a0;
+}
+#article span.ext {
+ border: 1px solid #222200;
+ background-color: #555500;
+ color: #ffff00;
+ white-space: nowrap;
+}
+#article span.example {
+ color: yellow;
+}
+
+</style>
+<script src="/parts/include_parts.js"></script>
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/tool/menu.txt');</script>
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+<h2>Mercurial初心者が絶対にブックマークすべきページ</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+<p>『<a href="http://mercurial.selenic.com/wiki/JapaneseTutorial" target="_blank">Mercurial の使い方のチュートリアル</a>』を一読しておけば、日常作業に困る事は無いと思います。しかし、たまにはリポジトリに間違ったコミットをしてしまうものですし、最初は誰でも間違いがちです。そこで間違えたときに打つべきコマンドの覚え書きとして、以下のコマンド入力例を公開します。</p>
+<p>ワーキングツリーにカレント・ディレクトリを移動している状態を前提にした操作例なので注意してください。また、各コマンドの詳細なオプションは hg help [コマンド] を見て確認してください。なお、Mercurialはバージョン1.7.3で動作確認しています。</p>
+<ol>
+<li><a href="#chg01">リポジトリへの追加登録を取り消す</a></li>
+<li><a href="#chg02">編集を取り消し、あるチェンジセットの状態に戻す</a></li>
+<li><a href="#chg03">コミットをやり直す、コミット・メッセージを変更する</a></li>
+<li><a href="#chg04">チェンジセットを消す</a></li>
+<li><a href="#chg05">チェンジセットを打ち消す</a></li>
+<li><a href="#chg06">チェンジセットの内容を変更する</a></li>
+<li><a href="#chg07">複数のチェンジセットを一つにまとめる</a></li>
+<li><a href="#chg08">(4)(6)(7)とチェンジセットの入れ替えを手軽に行なう</a></li>
+<li><a href="#chg13">「中止: 作業領域の変更が未コミットです」を回避する</a></li>
+<li><a href="#chg09">pushしたのを無かったことにする</a></li>
+<li><a href="#chg10">履歴をさかのぼって特定のファイルを削除する</a></li>
+<li><a href="#chg11">履歴をさかのぼってファイル名を変換する</a></li>
+<li><a href="#chg12">コミットしている著者名を変更する</a></li>
+</ol>
+<a name="chg01"><h4>1. リポジトリへの追加登録を取り消す<span class="type">標準コマンド</span></h4></a>
+<p>間違ってhg-addした場合は、hg-revertで構成管理へのファイルの追加登録を取り消す事ができます。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg revert <span class="example">example.cpp</span></span>
+<span class="coutput"></span>
+</div>
+<p>登録後にコミット済みのファイルを、次回以降のコミットから除外するにはhg-forgetを用いてください。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg forget <span class="example">example.cpp</span></span>
+<span class="coutput"></span>
+</div>
+
+<a name="chg02"><h4>2. 編集を取り消し、あるチェンジセットの状態に戻す</h4></a>
+<p>簡単にワーキングツリーの状態を、チェンジセットの状態に戻すことができます。</p>
+<h5>2.1. hg revert<span class="type">標準コマンド</span><span class="jpn">戻す</span></h5>
+<p>特定もしくは全体のファイルを、あるチェンジセットの状態に戻せます。ワーキングツリー全体に影響を与えなくて済みます。</p>
+<p>example.cppを最新のチェンジセットの状態に戻すときは、以下のようにコマンドを打ちます。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg revert <span class="example">example.cpp</span></span>
+<span class="coutput"></span>
+</div>
+<p>-r [リビジョン番号]で、どのチェンジセットから戻すかを選択できます。</p>
+
+<h5>2.2. hg update -C<span class="type">標準コマンド</span><span class="type">ペアレント変更</span><span class="jpn">切り替え</span></h5>
+<p>チェンジセットを切り替えるコマンドで、ワーキングツリー全体に影響が及びます。また、コミット時の親チェンジセットも変化します。</p>
+<p>リビジョン番号42のチェンジセットに切り替える場合は、以下のように入力します。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg update -C <span class="example">42</span></span><br />
+<span class="coutput">ファイル状態: 更新数 5、 マージ数 0、 削除数 0、 衝突未解決数 0</span>
+</div>
+<p>hg-updateで古いチェンジセットを指定した後にコミットを行うと、そのチェンジセットの子孫としてチェンジセットが作られるので注意してください。</p>
+
+<a name="chg03"><h4>3. コミットをやり直す、コミット・メッセージを変更する</h4></a>
+
+<h5>3.1. hg rollback<span class="type">標準コマンド</span><span class="type">リポジトリ変更</span><span class="jpn">ロールバック</span></h4>
+<p>1回分だけコミットを取り消せます。ワーキングツリーは維持されます。</p>
+<p>コミット・メッセージを書き換えたいとき、コミットに追加するファイルを忘れたとき、誤ってpullしたとき、誤ってpushされたときに使えます。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg rollback</span><br />
+<span class="coutput">リビジョン 43 へ巻き戻し中 (commit の取り消し)</span>
+</div>
+
+<a name="chg04"><h4>4. チェンジセットを消す<span class="ext">mq</span><span class="type">リポジトリ変更</span><span class="jpn">ストリップ</span></h4></a>
+<p>特定のチェンジセットと、その子孫を消す事ができます。</p>
+<p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/MqExtension" target="_blank">Mercurial Queues Extension</a>を有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
+<div class="code">
+[extensions]<br />
+mq =</div>
+<p>使い方は簡単です。リビジョン42とその子孫のチェンジセットを消去します。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg strip <span class="example">42</span></span><br />
+<span class="coutput">ファイル状態: 更新数 5、 マージ数 0、 削除数 0、 衝突未解決数 0</span><br />
+<span class="coutput">バックアップのバンドルを /home/user/Repository/.hg/strip-backup/000c73753833-backup.hg に保存</span>
+</div>
+<p>間違って消した場合は、バックアップ・ファイルから復元する事ができます。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg unbundle .hg/strip-backup/<span class="example">000c73753833-backup.hg</span></span><br/>
+<span class="coutput">チェンジセットを追加中<br/>
+マニフェストを追加中<br/>
+ファイルの変更を追加中<br/>
+2 のチェンジセット(0 の変更を 0 ファイルに適用)を追加（-2個のヘッド）<br/>
+(作業領域の更新は 'hg update')</span>
+</div>
+
+<a name="chg05"><h4>5. チェンジセットを打ち消す<span class="type">標準コマンド</span><span class="type">リポジトリ変更</span><span class="jpn">バックアウト</span></h4></a>
+<p>共有リポジトリにpush後は、コミットを取り消したり、チェンジセットを消したりは原則としてできません。チェンジセットの更新内容を打ち消すチェンジセットを作る事になります。</p>
+<p>リビジョン39を打ち消すチェンジセットを作るには、以下のように入力します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg backout <span class="example">39</span></span><br />
+<span class="coutput">deleated.cpp の復旧中</span><br />
+<span class="coutput">ファイル状態: 更新数 6、 マージ数 0、 削除数 0、 衝突未解決数 0</span></div>
+
+<p>自動でコミットはされません。</p>
+
+<a name="chg06"><h4>6. チェンジセットの内容を変更する<span class="ext">mq</span><span class="type">リポジトリ変更</span></h4></a>
+<p>何回かコミットした後でも、マージや分岐の発生前でpush前であれば、チェンジセットの内容を変更することができます。</p>
+<p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/MqExtension" target="_blank">Mercurial Queues Extension</a>を有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
+<div class="code">
+[extensions]<br />
+mq =</div>
+<p>まずは現在のチェンジセットのうち、変更対象から最新版までをパッチに変換します。リビジョン34～36までが対象とすると、以下のようになります。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qimport -r <span class="example">34</span>:tip</span></div>
+<p>変換したパッチを、いったんワーキングツリーに適応します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qapplied</span><br/>
+<span class="coutput">34.diff</span><br />
+<span class="coutput">35.diff</span><br />
+<span class="coutput">36.diff</span></div>
+<p>変更したいリビジョンまでのパッチがワーキングツリーに適応されている状態にします。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qgoto <span class="example">34</span>.diff</span><br />
+<span class="coutput">36.diff の適用解除</span><br />
+<span class="coutput">35.diff の適用解除</span><br />
+<span class="coutput">適用中の最上位パッチは 34.diff です</span></div>
+<p>変更したいリビジョンの状態になっているので、変更を加えます。</p>
+<p>ワーキングツリーに対してでは無く、パッチに対しての編集になるので、変更後、パッチの内容を更新します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qrefresh -m &quot;<span class="example">古いチェンジセットを修正。</span>&quot;</span></div>
+<p>全てのパッチを適応します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qpush -a</span><br />
+<span class="coutput">35.diff を適用中</span><br />
+<span class="coutput">36.diff を適用中</span><br />
+<span class="coutput">適用中の最上位パッチは 36.diff </span>です</div>
+<p>全てのパッチをワーキングツリーに適応した状態にして、パッチ処理を終了します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qfinish -a</span></div>
+<p>これで、チェンジセットの改編は終わりです。</p>
+
+<a name="chg07"><h4>7. 複数のチェンジセットを一つにまとめる</h4></a>
+<p>マージや分岐の発生前でpush前であれば、後述するMQ Extensionで複数のチェンジセットをまとめて一つにできます。オーソドックスな方法と、強引な方法と、後の節で説明する楽な方法の三種類があります。</p>
+
+<h5>7.1. MQ Extensionを使う<span class="ext">mq</span><span class="type">リポジトリ変更</span></h5>
+<p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/MqExtension" target="_blank">Mercurial Queues Extension</a>を有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
+<div class="code">
+[extensions]<br />
+mq =</div>
+<p>まずは現在のチェンジセットのうち、変更対象から最新版までをパッチに変換します。以下の例では、リビジョン34を指定しています。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qimport -r <span class="example">34</span>:tip</span></div>
+<p>変換したパッチを、いったんワーキングツリーに適応します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qapplied</span><br/>
+<span class="coutput">34.diff</span><br />
+<span class="coutput">35.diff</span><br />
+<span class="coutput">36.diff</span></div>
+<p>合成するチェンジセットのうち、最も古いチェンジセットに対応するパッチを選択します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qgoto <span class="example">34</span>.diff</span><br />
+<span class="coutput">36.diff の適用解除</span><br />
+<span class="coutput">35.diff の適用解除</span><br />
+<span class="coutput">適用中の最上位パッチは 34.diff です</span></div>
+<p>パッチを合成します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qfold -m '<span class="example">チェンジセットをまとめる。</span>'</span> <span class="example">35</span>.diff <span class="example">36</span>.diff</div>
+<p>全てのパッチをワーキングツリーに適応した状態にして、パッチ処理を終了します。</p>
+<div class="console">~/Repository$ <span class="cinput">hg qfinish -a</span></div>
+<p>これで、チェンジセットの合成は終わりです。</p>
+
+<h5>7.2. hg archive &amp; hg update -C &amp; hg clone<span class="type">標準コマンド</span><span class="type">リポジトリ変更</span></h5>
+<p>マージや分岐を含めてチェンジセットを統合する荒業もあります。</p>
+<p>まずは、テンポラリ・ディレクトリに最新版のアーカイブを吐き出します。テンポラリ・ディレクトリは空フォルダであれば、任意の場所で問題ないでしょう。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg archive -r tip <span class="example">/var/tmp/Repository</span></span>
+</div>
+<p>38～tipをまとめるので、リビジョン37にワーキングディレクトリを切り替えます。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg update -r <span class="example">37</span></span>
+</div>
+<p>テンポラリ・ディレクトリの最新版のファイルを、ワーキングディレクトリにコピーします。</p>
+<div class="console">
+~/Repository$ <span class="cinput">cp -r <span class="example">/var/tmp/Repository/*</span> .</span>
+</div>
+<p>増えたファイルをトラッキングします。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg add</span>
+</div>
+<p>コミットを行います。これで、リビジョン37から昔の枝と、新しい枝が分岐した状態になります。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg commit -m '<span class="example">複数チェンジセットを統合。</span>'</span>
+</div>
+<p>古い枝の消去はhg-stripを使うのが容易ですが、hg-cloneでリビジョン番号を指定しても消すことができます。</p>
+<div class="console">~/Repository$ <span class="cinput">cd ..</span><br />
+~/Repository$ <span class="cinput">hg clone -r tip <span class="example">Repository</span> <span class="example">NewRepository</span></span></div>
+<p>最後に、新しいリポジトリで、古いリポジトリを置き換えれば完了です。</p>
+<div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span>
+</div>
+
+<a name="chg08"><h4 style="width:150%;">8. (4)(6)(7)とチェンジセットの入れ替えを手軽に行なう<span class="ext">Histedit</span></h4></a>
+
+<p>見てきたようにチェンジセットをまとめるのは手間暇ですが、作業を簡略化してくれるHistedit Extensionと言うのがあります。</p>
+
+8<p>標準では無効になっている、<a href="https://www.mercurial-scm.org/wiki/HisteditExtension" target="_blank">Histedit Extension</a>を有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
+<div class="code">
+[extensions]<br />
+histedit =</div>
+
+<p>あとは、例えばリビジョン34からtipまでを編集する場合は、</p>
+
+<div class="console">~/Repository$ <span class="cinput">hg histedit</span> -r <span class="example">34</span>:tip</div>
+
+<p>と入力すると、git rebase --iと同様に、テキストエディタでチェンジセットの編集を行なうことができます。書かれている通りに編集をして保存をすると、それにそってチェンジセットをまとめたり、消したり、入れ替えたりしてくれます。</p>
+<p>変更時はテキストエディタで edit を指定したチェンジセットに移動するので、ファイルを更新し、</p>
+
+<div class="console">~/Repository$ <span class="cinput">hg histedit</span> --continue</div>
+
+<p>と、再度、histeditを用います。</p>
+
+<a name="chg13"><h4 style="width:150%;">9. 「中止: 作業領域の変更が未コミットです」を回避する<span class="type">標準コマンド</span></h4></a>
+
+<p>ワーキングツリーにコミット前の編集中ファイルが残っている場合、「中止: 作業領域の変更が未コミットです」とエラーが出て履歴改変ができませんが、</p>
+
+<div class="console">~/Repository$ <span class="cinput">hg shelve</span></div>
+
+<p>として未コミットのファイルを退避すれば利用できます。履歴改変後に、</p>
+
+<div class="console">~/Repository$ <span class="cinput">hg unshelve</span></div>
+
+<p>して戻しましょう。なお、shelveはMercurialのバージョン5.1で標準になったので、それ以前の（しかし2.8以降の）バージョンを利用している場合は、</p>
+
+<div class="code">
+[extensions]<br />
+shelve=</div>
+
+<p>とする必要があります。</p>
+
+<a name="chg09"><h4>10. pushしたのを無かったことにする<span class="jpn">戻す</span><span class="type">標準コマンド</span></h4></a>
+
+<p>一度、サーバーにpushすると履歴改変ができなくなりますが、それを管理しているフェーズを変更することで可能になります。以下の例では、リビジョン34からtipまでのフェーズをdraftに戻すことでサーバーへのpushを可能にしています。</p>
+
+<div class="console">~/Repository$ <span class="cinput">hg phase -d  -r <span class="example">34</span>:tip --force</span></div>
+
+<a name="chg10"><h4>11. 履歴をさかのぼって特定のファイルを削除する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
+<p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/ConvertExtension" target="_blank">ConvertExtension</a>有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
+<div class="code">
+[extensions]<br />
+hgext.convert=</div>
+<p>以下のような、除外するファイル名を含んだファイルを作成します。</p>
+<p>以下の例では、ftp_account_information.txtを除外します。パス区切りはWindowsでも、常に / となっています。また、ワイルドカード（e.g. *.cpp）を利用する事もできます。</p>
+<div class="code">
+exclude &quot;ftp_account_information.txt&quot;</div>
+<p>作成したファイル名は、exclude.txt としましょう。--filemapオプションでexclude.txtを指定して、hg-convertを行います。</p>
+<div class="console">~/Repository$ <span class="cinput">cd ..</span><br />
+~/Repository$ <span class="cinput">hg convert --filemap <span class="example">exclude.txt</span> <span class="example">Repository</span> <span class="example">Repository2</span></span></div>
+<p>最後に、新しいリポジトリで、古いリポジトリを置き換えれば完了です。</p>
+<div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span></div>
+<p>なお、上記の例では除外するファイルを指定していますが、includeで含むファイルを指定したり、includeとexcludeを組み合わせることも可能です。</p>
+
+<a name="chg11"><h4>12. 履歴をさかのぼってファイル名を変換する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
+<p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/ConvertExtension" target="_blank">ConvertExtension</a>有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
+<div class="code">
+[extensions]<br />
+hgext.convert=</div>
+<p>以下のような、除外するファイル名を含んだファイルを作成します。</p>
+<p>以下の例では、old_filename.txtをnew_filename.txtに変換します。パス区切りはWindowsでも、常に / となっています。</p>
+<div class="code">
+rename &quot;old_filename.txt&quot; &quot;new_filename.txt&quot;</div>
+<p>作成したファイル名は、exclude.txt としましょう。--filemapオプションでexclude.txtを指定して、hg-convertを行います。</p>
+<div class="console">~/Repository$ <span class="cinput">cd ..</span><br />
+~/Repository$ <span class="cinput">hg convert --filemap <span class="example">exclude.txt</span> <span class="example">Repository</span> <span class="example">Repository2</span></span></div>
+<p>最後に、新しいリポジトリで、古いリポジトリを置き換えれば完了です。</p>
+<div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span></div>
+<p>なお、ファイルの削除と同時に行う事ができます。</p>
+
+<a name="chg12"><h4>13. コミットしている著者名を変更する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
+<p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/ConvertExtension" target="_blank">ConvertExtension</a>有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
+<div class="code">
+[extensions]<br />
+hgext.convert=</div>
+<p>除外するファイル名を含んだファイルを作成します。以下の例では、uncorrelatedをuncorrelated zombie &lt;uncorrelated@yahoo.co.jp&gt;に変換します。</p>
+<div class="code">
+uncorrelated=uncorrelated zombie &lt;uncorrelated@yahoo.co.jp&gt;</div>
+<p>作成したファイル名は、authors.txtとしましょう。--authorsオプションでauthors.txtを指定して、hg-convertを行います。</p>
+<div class="console">~/Repository$ <span class="cinput">cd ..</span><br />
+~/Repository$ <span class="cinput">hg convert --authors <span class="example">authors.txt</span> <span class="example">Repository</span> <span class="example">Repository2</span></span></div>
+<p>最後に、新しいリポジトリで、古いリポジトリを置き換えれば完了です。</p>
+<div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span></div>
+
+
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+</div>
+</div>
+</body>
+</html>

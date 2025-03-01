@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>特性関数が同じならば、確率密度関数も同じ</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">特性関数が同じならば、確率密度関数も同じ</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>教科書に載っていますが、コーシー分布の再生性の証明に要るのでまとめておきました。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#ディリクレ積分" id="toc-ディリクレ積分"><span
+class="toc-section-number">1</span> ディリクレ積分</a></li>
+<li><a href="#テント関数の定義" id="toc-テント関数の定義"><span
+class="toc-section-number">2</span> テント関数の定義</a></li>
+<li><a href="#テント関数の特性関数" id="toc-テント関数の特性関数"><span
+class="toc-section-number">3</span> テント関数の特性関数</a></li>
+<li><a href="#テント関数の期待値" id="toc-テント関数の期待値"><span
+class="toc-section-number">4</span> テント関数の期待値</a></li>
+<li><a href="#台形関数の定義" id="toc-台形関数の定義"><span
+class="toc-section-number">5</span> 台形関数の定義</a></li>
+<li><a href="#特性関数が同じならば同じ分布"
+id="toc-特性関数が同じならば同じ分布"><span
+class="toc-section-number">6</span>
+特性関数が同じならば、同じ分布</a></li>
+</ul>
+</div>
+
+<div id="ディリクレ積分" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> ディリクレ積分</h1>
+<p>複素数の教科書に例として載っていることが多いと思いますが，</p>
+<p><span class="math display">\[
+\int_0^\infty \frac{\sin(x)}{x} = \frac{\pi}{2}
+\]</span></p>
+<p>の証明を確認していきましょう．</p>
+<p>複素関数<span class="math inline">\(f(z) = \exp(iz) /
+z\)</span>の以下の積分路<span
+class="math inline">\(C\)</span>の値を考えます。</p>
+<p><img src="common_files/figure-html/Dirichlet%20integral-1.png" width="576" /></p>
+<p>特異点<span
+class="math inline">\(z=0\)</span>は閉路の外側にあるので，コーシーの積分定理によりこの積分は<span
+class="math inline">\(0\)</span>となります．</p>
+<p><span class="math display">\[
+\oint_C \frac{e^{iz}}{z} dz = 0
+\]</span></p>
+<p>積分路<span class="math inline">\(C\)</span>は<span
+class="math inline">\([-R, -r)\)</span>，<span
+class="math inline">\(\Gamma_r\)</span>，<span class="math inline">\([r,
+R]\)</span>，<span
+class="math inline">\(\Gamma_R\)</span>の4区間に分割でき，それぞれの積分することができます．</p>
+<p><span class="math display">\[
+\oint_C \frac{e^{iz}}{z} dz = \int_{-R}^{-r} \frac{e^{ix}}{x} dx +
+\int_{\Gamma_r} \frac{e^{iz}}{z} dz + \int_{r}^{R} \frac{e^{ix}}{x} dx +
+\int_{\Gamma_R} \frac{e^{iz}}{z} dz
+\]</span></p>
+<p>実軸上の積分をまとめます．</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;= \int_{r}^{R} \frac{e^{i(-x)}}{-x} (-1) dx  + \int_{r}^{R}
+\frac{e^{ix}}{x} dx + \int_{\Gamma_r} \frac{e^{iz}}{z} dz +
+\int_{\Gamma_R} \frac{e^{iz}}{z} dz \\
+&amp;= \int_{r}^{R} \frac{e^{i(-x)} + e^{ix}}{x} dx + \int_{\Gamma_r}
+\frac{e^{iz}}{z} dz + \int_{\Gamma_R} \frac{e^{iz}}{z} dz \\
+&amp;= 2i \int_{r}^{R} \frac{\sin(x)}{x} dx + \int_{\Gamma_r}
+\frac{e^{iz}}{z} dz + \int_{\Gamma_R} \frac{e^{iz}}{z} dz
+\end{align*}
+\]</span></p>
+<p>整理します．</p>
+<p><span class="math display">\[
+\int_{r}^{R} \frac{\sin(x)}{x} dx = \frac{-1}{2i} \bigg[ \int_{\Gamma_r}
+\frac{e^{iz}}{z} dz + \int_{\Gamma_R} \frac{e^{iz}}{z} dz \bigg]
+\]</span></p>
+<p><span class="math inline">\(r \rightarrow 0\)</span>，<span
+class="math inline">\(R \rightarrow
+\infty\)</span>とすれば，求める値になります．</p>
+<p>内側の円の区間<span
+class="math inline">\(\Gamma_r\)</span>の積分は，<span
+class="math inline">\(e^{iz}\)</span>をマクローリン展開すると</p>
+<p><span class="math display">\[
+\begin{align*}
+\lim_{r \rightarrow 0} \int_{\Gamma_r} \frac{e^{iz}}{z}
+&amp;= \lim_{r \rightarrow 0} \int_{\Gamma_r} \frac{1}{z} \bigg( 1 + iz
+- \frac{z^2}{2!} + i\frac{z^3}{3!} + \cdots \bigg) dz \\
+&amp;= \lim_{r \rightarrow 0} \int_{\Gamma_r} \frac{1}{z} \bigg( 1 +
+\sum_{n=1}^{\infty} \frac{i^nz^n}{n!} \bigg) dz\\
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(z =
+re^{i\theta}\)</span>と変数変換すると</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;= \lim_{r \rightarrow 0} \int_{\pi}^0 \frac{1}{re^{i\theta}} \bigg(
+1 + \sum_{n=1}^{\infty} \frac{i^n(i re^{i\theta})^n}{n!} \bigg) i r
+e^{i\theta} d\theta \\
+&amp;= \lim_{r \rightarrow 0} i \int_{\pi}^0 \bigg( 1 +
+\sum_{n=1}^{\infty} \frac{(-1)^n r^n (e^{i\theta})^n}{n!} \bigg) d\theta
+\\
+&amp;= \lim_{r \rightarrow 0} \bigg( i \int_{\pi}^0 1 d\theta +
+\sum_{n=1}^{\infty} \int_{\pi}^0 i \frac{(-1)^n r^n (e^{i\theta})^n}{n!}
+d\theta \bigg) \\
+&amp;= \lim_{r \rightarrow 0} \bigg( i \big[ \theta \big]_{\pi}^0 +
+\sum_{n=1}^{\infty} \bigg[ \frac{(-1)^n r^n
+(e^{i\theta})^{n+1}}{n!(n+1)} \bigg]_{\pi}^0 \bigg) \\
+&amp;= \lim_{r \rightarrow 0} \bigg( -i\pi + \sum_{n=1}^{\infty}
+\frac{(-1)^nr^n(1 - (-1)^{n+1})}{n!(n+1)} \bigg) \\
+&amp;= -i\pi + 0
+\end{align*}
+\]</span></p>
+<p>外側の円の区間<span
+class="math inline">\(\Gamma_R\)</span>の積分は，<span
+class="math inline">\(z=Re^{i\theta}\)</span>と置いて，<a
+href="./cauchy_dist.shtml#%E6%A3%AE%E6%9D%89%E5%8E%9F%E8%A4%87%E7%B4%A0%E9%96%A2%E6%95%B0%E8%AB%96%E3%81%AE%E8%A3%9C%E9%A1%8C7.3">森・杉原『複素関数論』の補題7.3</a>を使うか，</p>
+<p><span class="math display">\[
+\begin{align*}
+\bigg|\int_{\Gamma_R}\frac{e^iz}{z}dz\bigg|
+&amp;= \bigg| \int_0^\pi \frac{e^{iRe^{i\theta}}}{Re^i\theta}
+iRe^i\theta d\theta \bigg| \\
+&amp;= \bigg| \int_0^\pi e^{iR(\cos(\theta)+i\sin(\theta))} i d\theta
+\bigg| \\
+&amp;= \bigg| \int_0^\pi e^{iR\cos(\theta)}e^{-R\sin(\theta)} i d\theta
+\bigg| \\
+&amp;\le \int_0^\pi
+\bigg|e^{iR\cos(\theta)}\bigg|\bigg|e^{-R\sin(\theta)}\bigg|\bigg| i
+\bigg| d\theta  \\
+&amp;= \int_0^\pi \bigg|e^{-R\sin(\theta)}\bigg| d\theta  \\
+&amp;\le \int_0^\pi \bigg|e^{-R\theta}\bigg| d\theta \\
+&amp;= \bigg[ \frac{e^{-R\theta}}{-R} \bigg]_0^\pi = \frac{1 -
+e^{-R\pi}}{R}\\
+\end{align*}
+\]</span></p>
+<p>から，</p>
+<p><span class="math display">\[
+\lim_{R \rightarrow \infty} \int_{\Gamma_R} \frac{e^{iz}}{z} = 0
+\]</span></p>
+<p>になります．</p>
+<p>よって</p>
+<p><span class="math display">\[
+\int_{0}^{\infty} \frac{\sin(x)}{x} dx = \frac{-1}{2i} \bigg[ -i\pi + 0
+\bigg] = \frac{\pi}{2}
+\]</span></p>
+</div>
+<div id="テント関数の定義" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> テント関数の定義</h1>
+<p>図を見たら名前の由来が分かります．</p>
+<p><span class="math display">\[
+T(x) = \begin{cases}
+x + 1 &amp; -1 \le x \le 0 \\
+-x + 1 &amp; 0 \le x \le 1 \\
+0 &amp; \mathrm{elsewhere}
+\end{cases}
+\]</span></p>
+<p><span class="math display">\[
+T_{a,b,c}(x) = c T\bigg(\frac{2}{b - a}\big(x - \frac{a +
+b}{2}\big)\bigg) \quad (a \le b,\ c \ge 0)
+\]</span></p>
+<p><img src="common_files/figure-html/cf_same1-1.png" width="576" /></p>
+</div>
+<div id="テント関数の特性関数" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+テント関数の特性関数</h1>
+<p><span class="math inline">\(U,V \sim U(0, a)\)</span>のとき，<span
+class="math inline">\(U-V\)</span>の確率密度関数は<span
+class="math inline">\(T_{-a, a, 1/a}\)</span>となる．</p>
+<p><span class="math inline">\(U-V\)</span>の累積分布関数を考える．</p>
+<p><span class="math display">\[
+\begin{align*}
+    F(t) &amp;= P(U-V \le t) \\
+    &amp;= \begin{cases}
+            0 &amp; t \lt -a \\
+            \frac{1}{2a^2}(a^2 + t^2) + \frac{t}{a} &amp; -a \le t \lt 0
+\\
+            \frac{1}{2a^2}(a^2 - t^2) + \frac{t}{a} &amp; 0 \le t \le a
+\\
+            1 &amp; t \gt a
+        \end{cases}
+\end{align*}
+\]</span></p>
+<p>なぜならば，</p>
+<p><span class="math display">\[
+\begin{align*}
+    F(t) &amp;= P(U-V \le t) \\
+    &amp;= \int_0^a \frac{1}{a} \int_0^a \frac{1}{a} 1_{(-\infty, t]}(u
+- v) du dv \\
+    &amp;= \frac{1}{a^2} \int_0^a \int_0^a 1_{(-\infty, t]}(u - v) du
+dv\\
+    &amp;= \frac{1}{a^2} \int_0^a \int_0^a 1_{(-\infty, t+v]}(u) du dv
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(0 \le t \le a\)</span>のとき</p>
+<p><span class="math display">\[
+\begin{align*}
+    F(t) &amp;= \frac{1}{a^2} \int_0^a \mathrm{min}(t+v, a) dv \\
+    &amp;= \frac{1}{a^2} \bigg[ \frac{1}{2}(t+v)^2 \bigg]_0^{a-t} +
+\frac{t}{a} \\
+    &amp;= \frac{1}{2a^2}(a^2 - t^2) + \frac{t}{a}
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(-a \le t \le 0\)</span>のとき</p>
+<p><span class="math display">\[
+\begin{align*}
+    F(t) &amp;= \frac{1}{a^2} \int_0^a \mathrm{max}(t+v, 0) dv \\
+    &amp;= \frac{1}{a^2} \int_{-t}^{a} t + v \ dv \\
+    &amp;= \frac{1}{2a^2}(a^2 + t^2) + \frac{t}{a}
+\end{align*}
+\]</span></p>
+<p>累積分布関数を微分した確率密度関数は</p>
+<p><span class="math display">\[
+\begin{align*}
+F&#39;(t) &amp;= \begin{cases}
+    \frac{1}{a^2}(a + t) &amp; \ -a \lt t \lt 0 \\
+    \frac{1}{a^2}(a - t) &amp; \ 0 \le t \lt a
+\end{cases} \\
+&amp;= \frac{1}{a^2}(a - |t|) \\
+&amp;= T_{-a,a,1/a}(t)
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(T_{-a,a,1/a}\)</span>は<span
+class="math inline">\(U-V\)</span>と同値であるため，特性関数も同じである．
+<span class="math inline">\(\exp(iaz) = \cos(az) +
+i\sin(az)\)</span>に注意して，</p>
+<p><span class="math display">\[
+\begin{align*}
+\int e^{izx}T_{-a,a,1/a}(x)\ dx &amp;= \int_0^a \int_0^a \frac{1}{a^2}
+e^{iz(u-v)}\ dudv \\
+&amp;= \frac{e^{iaz} - 1}{iaz} \cdot \frac{e^{-iaz} - 1}{-iaz} \\
+&amp;= \frac{2 - e^{iaz} - e^{-iaz}}{a^2z^2} \\
+&amp;= \frac{2}{a^2z^2}(1 - \cos(az))
+\end{align*}
+\]</span></p>
+</div>
+<div id="テント関数の期待値" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> テント関数の期待値</h1>
+<p>確率変数Xの特性関数を<span
+class="math inline">\(\varphi_X\)</span>とするとき</p>
+<p><span class="math display">\[
+\begin{align*}
+E\big[T(X)\big] = \frac{1}{\pi} \int_{-\infty}^{\infty} \varphi_X(z)
+\frac{1 - \cos(az)}{z^2}\ dz \\
+E\big[T_{a,b,c}(X)\big] = \frac{2c}{\pi(b-a)}\int_{-\infty}^{\infty}
+\varphi_X(z) e^{-i\frac{(a+b)z}{2}} \frac{1 -
+\cos(\frac{b-a}{2}z)}{z^2}\ dz
+\end{align*}
+\]</span></p>
+<p>なぜならば，<span
+class="math inline">\(T(x)=T_{1,1,1}(x)\)</span>なので，</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{-\infty}^{\infty} e^{izx} T(x) dz = \frac{2(1 - \cos(z))}{z^2}
+\end{align*}
+\]</span></p>
+<p>また，</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{-\infty}^{\infty} e^{izx} \frac{2(1 - \cos(z))}{z^2} dz = \pi T(x)
+\end{align*}
+\]</span></p>
+<p>なぜならば，<span
+class="math inline">\((1-\cos(z))/z^2\)</span>が偶関数なので，<span
+class="math inline">\(\exp(izx) = \cos(zx) + i\sin(zx)\)</span>で，<span
+class="math inline">\(\int i\sin(zx) (1-\cos(z))/z^2 dz =
+0\)</span>になることに注意すると</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{-\infty}^{\infty} e^{izx} \frac{2(1 - \cos(z))}{z^2} dz =
+\int_{-\infty}^{\infty} \cos(zx) \frac{2(1 - \cos(z))}{z^2} dz
+\end{align*}
+\]</span></p>
+<p>また</p>
+<p><span class="math display">\[
+\begin{align*}
+\cos(z(x+1)) &amp;= \cos(zx)\cos(z) - \sin(zx)\sin(z)\\
+\cos(z(x-1)) &amp;= \cos(zx)\cos(z) + \sin(zx)\sin(z)\\
+\cos(z(x+1)) + \cos(z(x-1)) &amp;= 2\cos(zx)\cos(z)
+\end{align*}
+\]</span></p>
+<p>なので，</p>
+<p><span class="math display">\[
+\cos(zx)(1-\cos(z)) = \cos(zx) - \frac{1}{2}(\cos(z(x+1)) +
+\cos(z(x-1)))
+\]</span></p>
+<p>だから，</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{-\infty}^{\infty} e^{izx} \frac{2(1 - \cos(z))}{z^2} dz
+&amp;= \int_{-\infty}^{\infty} e^{izx} \frac{2(1 - \cos(z))}{z^2} dz
+\end{align*}
+\]</span></p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;= \int_{-\infty}^{\infty} \cos(zx) - \frac{1}{2}(\cos(z(x+1)) +
+\cos(z(x-1))) dz \\
+&amp;= \int_{-\infty}^{\infty} \frac{1 - \cos(zx)}{z^2} dz - \frac{1}{2}
+\int_{-\infty}^{\infty} \frac{1 - \cos(z(x+1))}{z^2} dz - \frac{1}{2}
+\int_{\infty}^{-\infty} \frac{1 - \cos(z(x-1))}{z^2} dz
+\end{align*}
+\]</span></p>
+<p>右辺第1項を<span
+class="math inline">\(\xi=-z|x|\)</span>，第2項を<span
+class="math inline">\(\xi=-z|x+1|\)</span>，第3項を<span
+class="math inline">\(\xi=-z|x-1|\)</span>で変数変換をすると</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{-\infty}^{\infty} \frac{1 - \cos(zx)}{z^2} dz
+&amp;= \int_{\infty}^{-\infty} \frac{1 - \cos(-\xi)}{(-\xi)^2} |x|^2
+\frac{-1}{|x|} d\xi \\
+&amp;= - |x| \int_{\infty}^{-\infty} \frac{1 - \cos(-\xi)}{(-\xi)^2}
+d\xi \\
+&amp;= - |x| \int_{-\infty}^{\infty} \frac{1 - \cos(\xi)}{\xi^2} d\xi
+\end{align*}
+\]</span></p>
+<p><span class="math display">\[
+\begin{align*}
+\frac{1}{2} \int_{-\infty}^{\infty} \frac{1 - \cos(z(x+1))}{z^2} dz
+&amp;= - \frac{1}{2} |x + 1| \int_{-\infty}^{\infty} \frac{1 -
+\cos(\xi)}{\xi^2} d\xi \\
+\frac{1}{2} \int_{-\infty}^{\infty} \frac{1 - \cos(z(x-1))}{z^2} dz
+&amp;= - \frac{1}{2} |x - 1| \int_{-\infty}^{\infty} \frac{1 -
+\cos(\xi)}{\xi^2} d\xi
+\end{align*}
+\]</span></p>
+<p>合成関数の積分とディリクレ積分の結果を用いると</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{-\infty}^{\infty} \frac{1 - \cos(z)}{z^2} dz
+&amp;= \bigg[ \frac{-(1-\cos(z))}{z}\bigg]_{\infty}^{\infty} +
+\int_{-\infty}^{\infty} \frac{\sin(z)}{z} dz \\
+&amp;= 0 + 2 \int_0^\infty \frac{\sin(z)}{z} dz \\
+&amp;= \pi
+\end{align*}
+\]</span></p>
+<p>これらの式で整理すると</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{-\infty}^{\infty} e^{izx} \frac{2(1 - \cos(z))}{z^2} dz
+&amp;= \pi \bigg( \frac{1}{2}|x+1| + \frac{1}{2}|x-1| - |x| \bigg) = \pi
+T(x)
+\end{align*}
+\]</span></p>
+<p>よって<span
+class="math inline">\(T(X)\)</span>の期待値を計算すると</p>
+<p><span class="math display">\[
+\begin{align*}
+E[T(X)] &amp;= \frac{1}{\pi} E\bigg[ \int_{-\infty}^{\infty} e^{izX}
+\frac{2(1 - \cos(z))}{z^2} dz \bigg] \\
+&amp;= \frac{1}{\pi} \int_{-\infty}^{\infty} E\big[ e^{izX} \big]
+\frac{2(1 - \cos(z))}{z^2} dz\\
+&amp;= \frac{1}{\pi} \int_{-\infty}^{\infty} \varphi_X(z) \frac{2(1 -
+\cos(z))}{z^2} dz
+\end{align*}
+\]</span></p>
+<p>さらに</p>
+<p><span class="math display">\[
+\varphi_{\frac{2}{b-a}\big(X - \frac{a+b}{2}\big)} =
+\varphi_X\bigg(\frac{2z}{b-a}\bigg)e^{-i\frac{a+b}{b-a}}
+\]</span></p>
+<p>に注意すれば</p>
+<p><span class="math display">\[
+E\big[T_{a,b,c}(X) \big] = \frac{c}{\pi} \int_{-\infty}^{\infty}
+\varphi_X\big( \frac{2z}{b-a} \big) e^{-i\frac{a+b}{b-a}} \frac{2(1 -
+\cos(z))}{z^2} dz
+\]</span></p>
+</div>
+<div id="台形関数の定義" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> 台形関数の定義</h1>
+<p>名前の通りですが，<span
+class="math inline">\(c\)</span>を大きくすると長方形に近づいていきます．</p>
+<p><span class="math display">\[
+\begin{align*}
+D_{a,b,c}(x) &amp;= \mathrm{min}(T_{a,b,c}(x), 1) \\
+&amp;= T_{a,b,c}(x) - T_{a + \frac{b - a}{2c}, b - \frac{b - a}{2c}, c -
+1}(x)
+\end{align*}
+\]</span></p>
+<p><img src="common_files/figure-html/cf_same2-1.png" width="576" /></p>
+</div>
+<div id="特性関数が同じならば同じ分布" class="section level1"
+number="6">
+<h1><span class="header-section-number">6</span>
+特性関数が同じならば、同じ分布</h1>
+<p>確率変数<span class="math inline">\(X, Y\)</span>の特性関数を<span
+class="math inline">\(\varphi_X, \varphi_Y\)</span>とするとき，<span
+class="math inline">\(\varphi_X(z) = \varphi_Y(z) \quad \forall z \in
+\mathbb{R}\)</span>ならば，<span class="math inline">\(X\)</span>と<span
+class="math inline">\(Y\)</span>の分布は一致する． なぜならば</p>
+<p><span class="math display">\[
+\begin{align*}
+    E\big[ T_{a,b,c}(X) \big] &amp;= E\big[ T_{a,b,c}(Y) \big] \\
+    E\big[ D_{a,b,c}(X) \big] &amp;= E\big[ D_{a,b,c}(Y) \big]
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(\lim_{c\rightarrow \infty} D_{a,b,c}(x) =
+1_{(a,b)}(x)\)</span>となるため，<span class="math inline">\(E\big[
+1_{(a,b)}(X) \big] = P(a \lt X \lt b)\)</span>に注意すると，</p>
+<p><span class="math display">\[
+P(a \lt X \lt b) = P(a \lt X \lt b)
+\]</span></p>
+<p>となる．<span class="math inline">\(a\)</span>と<span
+class="math inline">\(b\)</span>は任意なので、<span
+class="math inline">\(X\)</span>と<span
+class="math inline">\(Y\)</span>の分布は一致する．</p>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

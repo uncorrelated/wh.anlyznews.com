@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>Windows 7の.jarファイルの関連付け - ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<meta name="DESCRIPTION" content="Java6 update 4, update 5でApplet起動不能？"/>
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<h2>Windows 7の.jarファイルの関連付け</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<p>Javaの.jarファイルの関連付けがおかしくなるときがあります。例えば、複数のJVMをインストールしている状態で、一つJVMをアンインストールすると、関連付けの設定が消えてしまうようです。その修復方法をまとめておきます。</p>
+
+<h4>1. レジストリの設定を消去</h4>
+<p>ファイル名を指定して実行でregeditを動かし、以下のレジストリ・キーを削除してください。エクスプローラからの関連付けの設定が残っている場合、そちらが優先されて上手く動かないためです。</p>
+<div class="code">
+HKEY_CLASSES_ROOT&yen;.jar<br />
+HKEY_CLASSES_ROOT&yen;javaw.exe
+</div>
+
+<h4>2. コマンドラインで関連付けの設定</h4>
+<p>次に、コマンドラインで関連付けの設定を行います。二つの設定が必要なので、注意してください。</p>
+<div class="console">
+C:&yen;&gt;<span class="cinput">assoc .jar=jarfile</span><br/>
+C:&yen;&gt;<span class="cinput">ftype jarfile=&quot;C:\Program Files\Java\jre6\bin\javaw.exe&quot; -jar &quot;%1&quot; %*</span>
+</div>
+<p>=より右側の設定無しでassocコマンドとftypeコマンドを実行すると設定状況が分かるので、設定をしたら確認しておきましょう。</p>
+<div class="console">
+C:&yen;&gt;<span class="cinput">assoc</span><br/>
+<span class="coutput">.jar=jarfile</span><br />
+C:&yen;&gt;<span class="cinput">ftype jarfile</span><br />
+<span class="coutput">jarfile=&quot;C:\Program Files\Java\jre6\bin\javaw.exe&quot; -jar &quot;%1&quot; %*</span>
+</div>
+
+<div class="footer"><!--#include virtual="/parts/footer.txt"--></div>
+</div>
+</div>
+</body>
+</html>

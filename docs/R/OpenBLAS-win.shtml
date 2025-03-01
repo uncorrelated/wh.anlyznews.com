@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Windows版RでOpenBLASをリンクする</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Windows版RでOpenBLASをリンクする</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>Rのベクトル計算、線形代数演算を速くしたい場合はOpenBLASをリンクするのが有効な手段なので、Windows版での利用方法を紹介します。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#補助ツールのインストール"
+id="toc-補助ツールのインストール"><span
+class="toc-section-number">1</span> 補助ツールのインストール</a>
+<ul>
+<li><a href="#inno-setupのインストール"
+id="toc-inno-setupのインストール"><span
+class="toc-section-number">1.1</span> Inno Setupのインストール</a></li>
+<li><a href="#miktexのインストール" id="toc-miktexのインストール"><span
+class="toc-section-number">1.2</span> MikTeXのインストール</a></li>
+<li><a href="#qpdfのインストール" id="toc-qpdfのインストール"><span
+class="toc-section-number">1.3</span> QPDFのインストール</a></li>
+</ul></li>
+<li><a href="#rtools42のインストール"
+id="toc-rtools42のインストール"><span
+class="toc-section-number">2</span> Rtools42のインストール</a></li>
+<li><a href="#r-4.2のコンパイル" id="toc-r-4.2のコンパイル"><span
+class="toc-section-number">3</span> R 4.2のコンパイル</a></li>
+<li><a href="#動作確認" id="toc-動作確認"><span
+class="toc-section-number">4</span> 動作確認</a></li>
+</ul>
+</div>
+
+<p>ループでスカラ演算を繰り返すよりもベクトル演算をした方が速いRですが、標準構成ではNetlib
+BLASと言う線形代数ライブラリBLASのリファレンス実装を使っていて、行列演算、ベクトル演算も速いとは言えないものとなっています。</p>
+<p>解決方法はあって、チューニングされたOpenBLASに差し替えることで高速化が可能です。</p>
+<p>UNIX/UNIX
+Clone環境では、リンクするDLLをOpenBLASに変更するだけで高速化ができることが多いです。Ubuntu
+Linuxでは</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">sudo</span> apt install libopenblas0-pthread</span></code></pre></div>
+<p>とすれば、OpenBLASがインストールされ、aptでインストールしたRはOpenBLASを使うようになります。簡単ですね。</p>
+<p>しかし、Windowsだと時間のかかる煩雑な作業が必要です。Windows版R
+4.2における手順をまとめておきます。なお、ちょっとだけ<a
+href="https://www.r-bloggers.com/2022/01/building-r-4-2-for-windows-with-openblas/">チートペーパー</a>と手順を変えました。</p>
+<div id="補助ツールのインストール" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+補助ツールのインストール</h1>
+<p>Windows版のRの場合は、R全体のコンパイルからやり直す必要があります。現在ではコンパイル方法はまとめられていて専門的な知識なくできるのですが、コンパイルに補助ツールが必要になったりと、手間暇はかかります。</p>
+<div id="inno-setupのインストール" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Inno
+Setupのインストール</h2>
+<p>公式サイトからインストーラー<code>innosetup-6.2.1.exe</code>をダウンロードしてきて、Inno
+Setupをインストール<a href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。インストール先はデフォルトで<a href="#fn2"
+class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
+</div>
+<div id="miktexのインストール" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span>
+MikTeXのインストール</h2>
+<p>MikTeXのダウンロードとインストール、アップデートとアップデートにあわせた設定の更新をします。</p>
+<ol style="list-style-type: decimal">
+<li><a
+href="https://miktex.org/">公式サイト</a>から<code>basic-miktex-22.3-x64.exe</code>をダウンロードしてきて、MikTeXをインストール</li>
+<li>付属ユーティリティMiKTeX Consoleで、
+<ol style="list-style-type: decimal">
+<li>administration modeを選択し、Check for updates、Update
+nowを実行</li>
+<li>メニューのTasksのRefresh file name database、Refresh font map
+files、Update package databaseを順番に実行</li>
+</ol></li>
+</ol>
+<p>なお、LaTeXが入っている環境でRをコンパイルしないときは、システム環境変数<code>PATH</code>からMikTeXは外しておいたほうがよいです。</p>
+</div>
+<div id="qpdfのインストール" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span>
+QPDFのインストール</h2>
+<p><a
+href="https://sourceforge.net/projects/qpdf/">SourceForgeのQPDFのリポジトリ</a>からバイナリ<code>qpdf-10.6.3-bin-mingw32.zip</code>をダウンロードしてきて、<code>C:</code>で展開。</p>
+</div>
+</div>
+<div id="rtools42のインストール" class="section level1" number="2">
+<h1><span class="header-section-number">2</span>
+Rtools42のインストール</h1>
+<p><a
+href="https://cran.r-project.org/bin/windows/Rtools/rtools42/files">Rの公式サイトのRtools42のフォルダー</a>からRtools42
+installer（<code>rtools42-5253-5107.exe</code>）をダウンロードしてきてインストールします。</p>
+<p>続いて、<code>Rtools42 Bash</code>を起動して、<code>wget</code>コマンドを追加して、Rtoolsのアップデートをします。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">pacman</span> <span class="at">-Sy</span> wget</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="ex">pacman</span> <span class="at">-Syuu</span></span></code></pre></div>
+<p>アップデート後、自動終了します。</p>
+</div>
+<div id="r-4.2のコンパイル" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> R 4.2のコンパイル</h1>
+<p>Rtools42
+Bashを再び起動して、（一時的に使う）<code>PATH</code>などを設定します</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span>/c/rtools42/x86_64-w64-mingw32.static.posix/bin:/c/rtools42/usr/bin:<span class="va">$PATH</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="bu">export</span> <span class="va">PATH</span><span class="op">=</span>/c/Program\ Files/MiKTeX/miktex/bin/x64:<span class="va">$PATH</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="bu">export</span> <span class="va">TAR</span><span class="op">=</span><span class="st">&quot;/usr/bin/tar&quot;</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="bu">export</span> <span class="va">TAR_OPTIONS</span><span class="op">=</span><span class="st">&quot;--force-local&quot;</span></span></code></pre></div>
+<p><code>Rtools42 Bash</code>を終了したら、再設定になるので注意してください。
+<a
+href="https://cran.r-project.org/src/base-prerelease/R-latest.tar.gz">最新ソースコード</a>をダウンロードしてきて、<code>C:</code>に置きます。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="bu">cd</span> /c</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">wget</span> https://cran.r-project.org/src/base-prerelease/R-latest.tar.gz</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">tar</span> zxf R-latest.tar.gz <span class="at">--force-local</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="co"># 「シンボリックリンクが作れません」とエラーが出た場合は、展開したファイルを残したまま、同じコマンドで展開すると誤魔化せる[^4]</span></span></code></pre></div>
+<p><code>C:\R-patched</code>が出来ます<a href="#fn3"
+class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+<p><a
+href="https://cran.r-project.org/bin/windows/Rtools/rtools42/files">Rの公式サイトのRtools42のフォルダー</a>にあるTcl/Tkのソースコードをダウンロードしてきて、<code>C:\R-patched</code>に展開します。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">wdir</span><span class="op">=</span>/c/R-patched <span class="co"># 展開先がC:\R-patchedでない場合は、ここを修正</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$wdir</span></span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">wget</span> https://cran.r-project.org/bin/windows/Rtools/rtools42/files/tcltk-5355-5175.zip</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">unzip</span> tcltk-5355-5175.zip</span></code></pre></div>
+<p>なお、ファイル名<code>tcltk-5355-5175.zip</code>は、今後、変わっていく可能性があるので<a
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>、適時変更してください。</p>
+<p>そして、<code>src/gnuwin32</code>に移動して、<code>MkRules.local</code>をつくります。qpdfのフォルダ名に注意してください。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$wdir</span>/src/gnuwin32</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">cat</span> <span class="op">&lt;&lt;EOF</span> <span class="op">&gt;</span>MkRules.local</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="st">USE_ATLAS = YES</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="st">EOPTS = -march=native -pipe -mno-rtm -mno-fma</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="st">LTO = -flto -ffat-lto-objects -fuse-linker-plugin</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="st">LTO_OPT = -flto -ffat-lto-objects -fuse-linker-plugin</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="st">LTO_FC_OPT = -flto -ffat-lto-objects -fuse-linker-plugin</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="st">QPDF = C:/qpdf-10.6.3</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="st">OPENMP = -fopenmp</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="op">EOF</span></span></code></pre></div>
+<p>QPDFのパスはインストール先にあわせてください。</p>
+<p><code>src/extra/blas/Makefile.win</code>を<code>sed</code>で置換します。<code>notepad</code>で編集したいのですが、UNIX改行コードを認識しないので。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$wdir</span>/src/extra/blas</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">mv</span> Makefile.win Makefile.win.old</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">sed</span> <span class="st">&#39;s/-L&quot;$(ATLAS_PATH)&quot; -lf77blas -latlas/-fopenmp -lopenblas/&#39;</span> <span class="op">&lt;</span> Makefile.win.old <span class="op">&gt;</span> Makefile.win</span></code></pre></div>
+<p><code>Makefile.win</code>が変わっているとパターンマッチしないので、<code>cat Makefile.win</code>をして、しっかり書き換わっているかチェックしてください。</p>
+<p><code>PATH</code>が通っているか確認します。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">which</span> make gcc pdflatex tar</span></code></pre></div>
+<p>エラーが出なければ問題なしです。 コンパイルを開始します。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$wdir</span>/src/gnuwin32</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">make</span> distribution</span></code></pre></div>
+<p>無事、終われば<code>C:\R-patched\src\gnuwin32\installer</code>に<code>R-4.2.2patched-win.exe</code>が出来上がっています。</p>
+<p>一度で上手くはいかないことが多いと思います。私はMikTeXのアップデート後の処理が抜けて<code>!pdfTeX error: pdflatex.exe (file ts1-zi4r): Font ts1-zi4r at 540 not found</code>と言われたり、QPDFのパス指定を誤ったりして、修正後、<code>make distribution</code>をやり直しました<a
+href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>。</p>
+</div>
+<div id="動作確認" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> 動作確認</h1>
+<p>Windows版では<code>sessionInfo()</code>をしても使っているBLASの種類を教えてくれないのですが、マルチコアの計算機で以下のように行列演算をさせて、ユーザー時間が経過時間よりも大きければ並行処理ができているので、OpenBLASとリンクしているのが分かります。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1013</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>M1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n<span class="sc">^</span><span class="dv">2</span>, <span class="at">min=</span><span class="dv">1</span>, <span class="at">max=</span><span class="dv">10</span>), n, n)</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>M2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">runif</span>(n<span class="sc">^</span><span class="dv">2</span>, <span class="at">min=</span><span class="dv">1</span>, <span class="at">max=</span><span class="dv">10</span>), n, n)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="fu">system.time</span>({ M3 <span class="ot">&lt;-</span> M1 <span class="sc">%*%</span> M2 })</span></code></pre></div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>本当は古いバージョンのInno
+Setupが残っていたので、それで済ましています。<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p>インストール先をカスタマイズした場合は、<code>Mkrules.local</code>に、<code>ISDIR = /path/to/Inno</code>を付け加える必要があります。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>リリース候補版だと<code>R-rc</code>になり、リリース版だと<code>R-4.2.1</code>のようなバージョン番号がつきます。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p>実際、<code>tcltk-5253-5175.zip</code>から変わったので、入れ替えています。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>試行錯誤はリリース候補版で行ないました。<a
+href="#fnref5" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

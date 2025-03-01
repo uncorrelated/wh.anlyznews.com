@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rのapply関数群のざっとした説明</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rのapply関数群のざっとした説明</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>ループ処理を簡潔に書けるので、使いこなせると便利な関数群の説明です。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#データセットの作成" id="toc-データセットの作成"><span
+class="toc-section-number">1</span> データセットの作成</a></li>
+<li><a href="#引数がベクターもしくはリスト"
+id="toc-引数がベクターもしくはリスト"><span
+class="toc-section-number">2</span> 引数がベクターもしくはリスト</a>
+<ul>
+<li><a href="#lapply" id="toc-lapply"><span
+class="toc-section-number">2.1</span> lapply</a></li>
+<li><a href="#sapply" id="toc-sapply"><span
+class="toc-section-number">2.2</span> sapply</a></li>
+<li><a href="#vapply" id="toc-vapply"><span
+class="toc-section-number">2.3</span> vapply</a></li>
+</ul></li>
+<li><a href="#引数が行列もしくはデータフレーム"
+id="toc-引数が行列もしくはデータフレーム"><span
+class="toc-section-number">3</span> 引数が行列もしくはデータフレーム</a>
+<ul>
+<li><a href="#引数がデータフレーム" id="toc-引数がデータフレーム"><span
+class="toc-section-number">3.1</span> 引数がデータフレーム</a></li>
+<li><a href="#引数が行列" id="toc-引数が行列"><span
+class="toc-section-number">3.2</span> 引数が行列</a></li>
+</ul></li>
+<li><a href="#カテゴリ変数ごとの関数に適応"
+id="toc-カテゴリ変数ごとの関数に適応"><span
+class="toc-section-number">4</span>
+カテゴリ変数ごとの関数に適応</a></li>
+<li><a href="#引数の関数に渡す引数" id="toc-引数の関数に渡す引数"><span
+class="toc-section-number">5</span> 引数の関数に渡す引数</a></li>
+<li><a href="#関数の省略表記" id="toc-関数の省略表記"><span
+class="toc-section-number">6</span> 関数の省略表記</a></li>
+<li><a href="#慣れたら便利" id="toc-慣れたら便利"><span
+class="toc-section-number">7</span> 慣れたら便利</a></li>
+</ul>
+</div>
+
+<p><code>lapply</code>, <code>sapply</code>, <code>vapply</code>,
+<code>apply</code>, <code>tapply</code>の順番に説明していきます。</p>
+<div id="データセットの作成" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> データセットの作成</h1>
+<p><code>apply</code>を試す前に、処理するデータをつくります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">with</span>(<span class="fu">list</span>(<span class="at">n=</span><span class="dv">100</span>), {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    d <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(p<span class="sc">&lt;</span><span class="fl">0.3</span>, <span class="st">&quot;A&quot;</span>, <span class="fu">ifelse</span>(p<span class="sc">&lt;</span><span class="fl">0.7</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n) <span class="sc">+</span> p</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">-</span> z <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="fu">data.frame</span>(y, x, z, d)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>})</span></code></pre></div>
+<p>中は<code>head(df01)</code>とでもして確認してください。</p>
+</div>
+<div id="引数がベクターもしくはリスト" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+引数がベクターもしくはリスト</h1>
+<p>ベクターもしくはリストの引数を取れる<code>sapply</code>/<code>lapply</code>は、名前からすると簡素版と言った感じですが、（ベクターに二次元構造を持たせた）行列や、（リストに各要素の長さが等しいという制約のついた）データフレームを要求する<code>apply</code>よりも、構造的にはむしろ基本です。</p>
+<div id="lapply" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> lapply</h2>
+<p><code>lapply</code>がもっとも単純な関数で、戻り値としてリストを返してきます。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">unique</span>(df01<span class="sc">$</span>d), <span class="cf">function</span>(n){ <span class="fu">sprintf</span>(<span class="st">&quot;列名%s&quot;</span>, n)})</span></code></pre></div>
+<pre><code>[[1]]
+[1] &quot;列名B&quot;
+
+[[2]]
+[1] &quot;列名C&quot;
+
+[[3]]
+[1] &quot;列名A&quot;</code></pre>
+<p>第1引数がベクターもしくはリストで、第2引数がベクターもしくはリストのそれぞれの要素を処理していく関数となります。
+<code>lapply</code>に渡す関数の引数が複数ある場合は、<code>lapply</code>の第3引数以降に、例えば以下のように指定します。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">unique</span>(df01<span class="sc">$</span>d), <span class="cf">function</span>(n, m){ <span class="fu">sprintf</span>(<span class="st">&quot;列名%s%s&quot;</span>, n, m)}, <span class="st">&quot;です&quot;</span>)</span></code></pre></div>
+<pre><code>[[1]]
+[1] &quot;列名Bです&quot;
+
+[[2]]
+[1] &quot;列名Cです&quot;
+
+[[3]]
+[1] &quot;列名Aです&quot;</code></pre>
+</div>
+<div id="sapply" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> sapply</h2>
+<p>戻り値がリストのままでは使いづらいことが多いので、ラッパー関数<code>sapply</code>が用意されていて、ベクトルで結果を得ることができます。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">unique</span>(df01<span class="sc">$</span>d), <span class="cf">function</span>(n){ <span class="fu">sprintf</span>(<span class="st">&quot;列名%s&quot;</span>, n)})</span></code></pre></div>
+<pre><code>      B       C       A 
+&quot;列名B&quot; &quot;列名C&quot; &quot;列名A&quot; </code></pre>
+<p>以下のようにオプションをつけると、<code>sapply</code>は<code>lapply</code>と同じ動作になります。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">sapply</span>(<span class="fu">unique</span>(df01<span class="sc">$</span>d), <span class="cf">function</span>(n){ <span class="fu">sprintf</span>(<span class="st">&quot;列名%s&quot;</span>, n)}, <span class="at">simplify =</span> <span class="cn">FALSE</span>, <span class="at">USE.NAMES =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="vapply" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> vapply</h2>
+<p><code>vapply</code>は<code>sapply</code>と同じ目的に使いますが、戻り値の型をチェックするところが<code>sapply</code>と異なります。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">sapply</span>(df01, max) <span class="co"># エラーにならない</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">vapply</span>(df01, max, <span class="fu">numeric</span>(<span class="dv">1</span>)) <span class="co"># エラーになる</span></span></code></pre></div>
+<p>利用頻度は低いようです。</p>
+</div>
+</div>
+<div id="引数が行列もしくはデータフレーム" class="section level1"
+number="3">
+<h1><span class="header-section-number">3</span>
+引数が行列もしくはデータフレーム</h1>
+<p>引数が行列もしくはデータフレームのときは<code>apply</code>関数を用います。行ごと、もしくは列ごとに関数を用いることができます。
+まずはmean関数と行列にする都合で、numeric型の列だけ選んでおきます。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>df02 <span class="ot">&lt;-</span> df01[,<span class="fu">c</span>(<span class="st">&quot;y&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;z&quot;</span>)] </span></code></pre></div>
+<div id="引数がデータフレーム" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span>
+引数がデータフレーム</h2>
+<p>第2引数が<code>1</code>だと行ごとの処理、<code>2</code>だと列ごとの処理になります。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">apply</span>(df02, <span class="dv">1</span>, mean) <span class="co"># 行ごとに合計</span></span></code></pre></div>
+<pre><code>  [1]   2.148507   2.808693   3.592545   3.408740   5.862681   6.275644
+  [7]   6.859732   8.381733   9.319093  10.425042  10.628468  12.352579
+ [13]  13.321620  13.771991  15.396994  16.214455  17.649765  18.841002
+ [19]  19.054818  20.632367  21.280506  22.435104  23.430766  24.534064
+ [25]  25.546526  26.115597  27.674055  27.837187  29.340145  30.395691
+ [31]  30.888120  32.165604  32.604890  34.813334  35.257019  36.668818
+ [37]  37.109323  37.843648  39.003415  40.272893  41.496002  42.490272
+ [43]  43.088541  43.963004  45.321158  46.251095  47.050991  48.548980
+ [49]  49.253420  50.412183  51.510090  52.232884  53.769973  53.947695
+ [55]  55.288680  56.044641  57.564320  58.426295  59.562063  60.338447
+ [61]  60.941623  62.750436  63.174948  64.332510  65.525537  66.639497
+ [67]  67.872272  68.323446  69.373623  70.550177  71.429091  71.914146
+ [73]  73.081721  74.394770  75.465444  76.183336  77.817141  78.642595
+ [79]  79.481254  79.975997  80.835012  82.748137  82.642287  84.298794
+ [85]  85.356045  86.139909  87.098656  88.725484  89.724155  90.189025
+ [91]  91.773052  92.272288  92.792678  93.984802  95.504618  96.421991
+ [97]  97.574773  98.687522  99.859107 100.283764</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">apply</span>(df02, <span class="dv">2</span>, mean) <span class="co"># 列ごとに合計</span></span></code></pre></div>
+<pre><code>          y           x           z 
+101.5788253  50.5000000   0.4263418 </code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">apply</span>(df02, <span class="dv">2</span>, mean, <span class="at">simplify=</span><span class="cn">FALSE</span>) <span class="co"># 結果をlistにする</span></span></code></pre></div>
+<pre><code>$y
+[1] 101.5788
+
+$x
+[1] 50.5
+
+$z
+[1] 0.4263418</code></pre>
+<p>行列やデータフレームの行ごと、列ごとの合計と平均をとるだけであれば、<code>colSums</code>,
+<code>rowSums</code>, <code>colMeans</code>,
+<code>rowMeans</code>を使う方が高速です。</p>
+</div>
+<div id="引数が行列" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> 引数が行列</h2>
+<p>行列でもデータフレームと同様に処理できます。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(df02) <span class="co"># データフレームを行列にする</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">apply</span>(X, <span class="dv">1</span>, max) <span class="co"># 行ごとに最大値</span></span></code></pre></div>
+<pre><code>  [1]   5.575355   4.482252   6.184366   6.936873  13.816381  12.164989
+  [7]  13.736850  16.446137  19.829365  20.956880  21.317179  26.685183
+ [13]  26.979306  25.897898  30.691625  32.537407  37.106218  38.578099
+ [19]  35.372825  39.539666  42.129310  43.019563  46.961406  51.341433
+ [25]  51.698436  51.281754  55.722249  55.012191  58.070626  58.722266
+ [31]  59.277179  64.024715  65.220989  69.353020  70.366368  71.185812
+ [37]  73.143104  74.723164  77.275330  81.930696  82.361660  84.882314
+ [43]  86.906068  86.197302  89.603207  91.183188  94.284516  97.763282
+ [49] 101.954752 101.115562 103.162408 103.865940 110.045337 108.443894
+ [55] 110.873589 110.315316 117.263397 116.860230 118.132124 120.010923
+ [61] 120.397517 125.840065 126.425628 129.218537 132.564670 134.331262
+ [67] 135.392665 137.607316 138.151054 141.679776 143.157877 143.297121
+ [73] 143.434346 149.167708 151.936342 152.437569 156.760725 158.639181
+ [79] 159.063902 160.432364 161.307687 162.921173 165.104194 167.387090
+ [85] 169.898819 171.886070 173.277552 177.700193 178.291831 180.296001
+ [91] 182.220004 186.829930 183.994168 188.078932 191.950919 192.471836
+ [97] 196.330529 196.689377 199.368327 201.422797</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">apply</span>(X, <span class="dv">2</span>, min) <span class="co"># 列ごとに最小値</span></span></code></pre></div>
+<pre><code>        y         x         z 
+ 4.482252  1.000000 -3.194494 </code></pre>
+</div>
+</div>
+<div id="カテゴリ変数ごとの関数に適応" class="section level1"
+number="4">
+<h1><span class="header-section-number">4</span>
+カテゴリ変数ごとの関数に適応</h1>
+<p>カテゴリ変数ごとに平均値を求めるようなことはよくします。こういうときは<code>tapply</code>が使えます。</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">with</span>(df01, <span class="fu">tapply</span>(y, d, mean))</span></code></pre></div>
+<pre><code>        A         B         C 
+103.82354 106.06086  89.68655 </code></pre>
+<p>これだけならば<code>xtabs(y ~ d, data=df01)</code>を用いても同様ですが、2位グループのスコアを求めるような処理も同様にかけます。</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">with</span>(df01, <span class="fu">tapply</span>(y, d, <span class="cf">function</span>(v){</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>    <span class="fu">unique</span>(<span class="fu">sort</span>(v))[<span class="dv">2</span>]</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>}))</span></code></pre></div>
+<pre><code>        A         B         C 
+16.446137  6.184366 13.736850 </code></pre>
+</div>
+<div id="引数の関数に渡す引数" class="section level1" number="5">
+<h1><span class="header-section-number">5</span>
+引数の関数に渡す引数</h1>
+<p><code>apply</code>関数群は自分が利用しない引数を、そのまま引数の関数に受け渡します。以下の例では、<code>sapply</code>に渡す<code>mean</code>関数に第2引数<code>na.rm = TRUE</code>を与えています。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="co"># NAを含むデータセットをつくる</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>df02 <span class="ot">&lt;-</span> df01[, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]; df02[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="co"># デフォルトではNAがあると計算できない</span></span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a><span class="fu">sapply</span>(df02, mean)</span></code></pre></div>
+<pre><code>         y          x          z 
+        NA 50.5000000  0.4263418 </code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># NAを無視させれば計算できる</span></span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="fu">sapply</span>(df02, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>          y           x           z 
+102.5485573  50.5000000   0.4263418 </code></pre>
+<p>なお、<code>sapply(df02, function(x) mean(x, na.rm = TRUE) )</code>と書いても同じ結果になります。</p>
+</div>
+<div id="関数の省略表記" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> 関数の省略表記</h1>
+<p>R
+4.1から、<code>function(x){ ... }</code>を<code>\(x){ ... }</code>と書けるようになっていて、<code>apply</code>関数群での利用が多くなっていくかも知れません。</p>
+</div>
+<div id="慣れたら便利" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> 慣れたら便利</h1>
+<p>最近は他のプログラミング言語でもラムダ式は一般化したのでそうでもないでもですが、慣れるまで違和感があるかも知れません。しかし、覚えたら便利なので、積極的に使っていきましょう。</p>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

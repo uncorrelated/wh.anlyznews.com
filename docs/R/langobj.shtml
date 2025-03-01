@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rの言語オブジェクトの存在を知っておこう</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rの言語オブジェクトの存在を知っておこう</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>ぼーっとRを使っているとおまじないにしか思えない表現式のようなRの言語オブジェクトを知っておきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#表現式オブジェクトを使ってみる"
+id="toc-表現式オブジェクトを使ってみる"><span
+class="toc-section-number">1</span> 表現式オブジェクトを使ってみる</a>
+<ul>
+<li><a href="#expressionとevalの基本的な挙動"
+id="toc-expressionとevalの基本的な挙動"><span
+class="toc-section-number">1.1</span>
+<code>expression</code>と<code>eval</code>の基本的な挙動</a></li>
+<li><a href="#expressionには関数も行列も入る"
+id="toc-expressionには関数も行列も入る"><span
+class="toc-section-number">1.2</span>
+<code>expression</code>には関数も行列も入る</a></li>
+<li><a href="#文字列を表現式オブジェクトにする"
+id="toc-文字列を表現式オブジェクトにする"><span
+class="toc-section-number">1.3</span>
+文字列を表現式オブジェクトにする</a></li>
+<li><a href="#表現式オブジェクトを文字列にできる"
+id="toc-表現式オブジェクトを文字列にできる"><span
+class="toc-section-number">1.4</span>
+表現式オブジェクトを文字列にできる</a></li>
+<li><a href="#表現式オブジェクトをプロットに用いる"
+id="toc-表現式オブジェクトをプロットに用いる"><span
+class="toc-section-number">1.5</span>
+表現式オブジェクトをプロットに用いる</a></li>
+</ul></li>
+<li><a href="#表現式以外の言語オブジェクト"
+id="toc-表現式以外の言語オブジェクト"><span
+class="toc-section-number">2</span> 表現式以外の言語オブジェクト</a>
+<ul>
+<li><a href="#クロージャをつくる" id="toc-クロージャをつくる"><span
+class="toc-section-number">2.1</span> クロージャをつくる</a></li>
+<li><a href="#表現式の変数に値を代入してクロージャをつくる"
+id="toc-表現式の変数に値を代入してクロージャをつくる"><span
+class="toc-section-number">2.2</span>
+表現式の変数に値を代入してクロージャをつくる</a>
+<ul>
+<li><a href="#表現式オブジェクトの中には代入ができない"
+id="toc-表現式オブジェクトの中には代入ができない"><span
+class="toc-section-number">2.2.1</span>
+表現式オブジェクトの中には代入ができない</a></li>
+</ul></li>
+<li><a href="#クロージャをリストにする"
+id="toc-クロージャをリストにする"><span
+class="toc-section-number">2.3</span> クロージャをリストにする</a></li>
+<li><a href="#クロージャを書き換える"
+id="toc-クロージャを書き換える"><span
+class="toc-section-number">2.4</span> クロージャを書き換える</a></li>
+</ul></li>
+<li><a href="#evalが使う環境" id="toc-evalが使う環境"><span
+class="toc-section-number">3</span> <code>eval</code>が使う環境</a></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">4</span> まとめ</a></li>
+</ul>
+</div>
+
+<p>Rは関数型プログラミング言語なので、コード<a href="#fn1"
+class="footnote-ref"
+id="fnref1"><sup>1</sup></a>とデータの境界は曖昧です。四則演算<code>+</code>,<code>-</code>,<code>*</code>,<code>/</code>も関数で、コードと言っても引数がセットされた関数オブジェクト<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>のリスト構造のデータの集まりに過ぎません<a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>。Rではコードを格納した変数を、表現式オブジェクトと言って、<code>expression</code>や<code>parse</code>でつくって<code>eval</code>で評価<a
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>します･･･と書いても、慣れていないと理解し難いモノなので、ぽちぽちと関係した命令を入力して反応を見て行きましょう。</p>
+<div id="表現式オブジェクトを使ってみる" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span>
+表現式オブジェクトを使ってみる</h1>
+<p>習うより慣れろと言うことで、試しに動かしてみましょう。</p>
+<div id="expressionとevalの基本的な挙動" class="section level2"
+number="1.1">
+<h2><span class="header-section-number">1.1</span>
+<code>expression</code>と<code>eval</code>の基本的な挙動</h2>
+<p><code>expression</code>と<code>eval</code>の振る舞いを把握するのは難しくなく、以下の4行で済むと思います。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">expression</span>(x <span class="sc">*</span> y)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%sを評価すると%sになります&quot;</span>, e, <span class="fu">eval</span>(e))</span></code></pre></div>
+<pre><code>[1] &quot;x * yを評価すると6になります&quot;</code></pre>
+<p>すぐに、<code>expression</code>はRが計算する式を表す式オブジェクトを返し、<code>eval</code>に渡すと実際に評価してくれることが想像つくと思います。</p>
+</div>
+<div id="expressionには関数も行列も入る" class="section level2"
+number="1.2">
+<h2><span class="header-section-number">1.2</span>
+<code>expression</code>には関数も行列も入る</h2>
+<p>追加と言うよりは確認の説明ですが、<code>expression</code>には関数も行列も入ります。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="cf">function</span>(j){ j<span class="sc">^</span><span class="dv">2</span> }</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">expression</span>(x <span class="sc">*</span> y <span class="sc">-</span> <span class="fu">z</span>(<span class="dv">4</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%sを評価すると%sになります&quot;</span>, e, <span class="fu">eval</span>(e))</span></code></pre></div>
+<pre><code>[1] &quot;x * y - z(4)を評価すると-10になります&quot;</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">2</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">expression</span>(X <span class="sc">%*%</span> Y)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>e</span></code></pre></div>
+<pre><code>expression(X %*% Y)</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">eval</span>(e)</span></code></pre></div>
+<pre><code>     [,1] [,2]
+[1,]    9   19
+[2,]    7   17</code></pre>
+</div>
+<div id="文字列を表現式オブジェクトにする" class="section level2"
+number="1.3">
+<h2><span class="header-section-number">1.3</span>
+文字列を表現式オブジェクトにする</h2>
+<p>文字列を表現式オブジェクトにできます。これは<code>sprintf</code>関数と組み合わせると便利なので、よく使います。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">parse</span>(<span class="at">text =</span> <span class="st">&quot;x + y&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%sを評価すると%sになります&quot;</span>, e, <span class="fu">eval</span>(e))</span></code></pre></div>
+<pre><code>[1] &quot;x + yを評価すると5になります&quot;</code></pre>
+</div>
+<div id="表現式オブジェクトを文字列にできる" class="section level2"
+number="1.4">
+<h2><span class="header-section-number">1.4</span>
+表現式オブジェクトを文字列にできる</h2>
+<p>逆もできますが、今日まで使ったことがありませんでした。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">deparse</span>(e)</span></code></pre></div>
+<pre><code>[1] &quot;expression(x + y)&quot;</code></pre>
+<p>元に戻すわけではないです。</p>
+</div>
+<div id="表現式オブジェクトをプロットに用いる" class="section level2"
+number="1.5">
+<h2><span class="header-section-number">1.5</span>
+表現式オブジェクトをプロットに用いる</h2>
+<p>Rの<code>plot</code>は、題名や軸名や凡例に表現式オブジェクトをとることで、数式を表示することができます。
+<code>?plotmath</code>でヘルプが出るので描画可能な数式が分かり、<code>demo(plotmath)</code>でプロットの実例が見られますが、試しに使ってみましょう。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="at">length.out=</span><span class="dv">100</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">2-1</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="fu">plot</span>(x, <span class="fu">eval</span>(y), <span class="at">type=</span><span class="st">&quot;l&quot;</span>, <span class="at">ylab=</span>y)</span></code></pre></div>
+<div class="figure">
+<img src="common_files/figure-html/langobj-1.png" alt="縦軸のラベルが数式" width="768" />
+<p class="caption">
+縦軸のラベルが数式
+</p>
+</div>
+<p>また<code>curve</code>関数は表現式をプロットできます。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">curve</span>(x<span class="sc">^</span><span class="dv">2-1</span>, <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="at">xname =</span> <span class="st">&quot;x&quot;</span>, <span class="at">ylab =</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="dv">2-1</span>))</span></code></pre></div>
+<p>あまり綺麗な数式ではなく文法も独特になるので、<code>latex2exp</code>パッケージを用いてTeX表記を使う人が多いのですが、ちょっとしたものであれば有用です。</p>
+</div>
+</div>
+<div id="表現式以外の言語オブジェクト" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+表現式以外の言語オブジェクト</h1>
+<p>表現式オブジェクトの感覚を養ったところで、Rの言語オブジェクトについて説明します。Rにはコール、表現式、ネームの3種類の言語オブジェクトがあります。</p>
+<p><code>call</code>は一般にはクロージャと呼ばれるもので、関数に値をセットしたオブジェクトです。表現式オブジェクトは内部にクロージャを持つオブジェクトになります。クロージャと表現式オブジェクトは似た存在ですが別の扱いなので、表現式オブジェクトを引数にとる関数にクロージャは入れられないですし、逆も同様です。</p>
+<p><code>name</code>は間接的に参照できるオブジェクトです。<code>eval("x")</code>をしても<code>"x"</code>が文字列として評価されるだけですが、<code>eval(as.name("x"))</code>とすると、変数<code>x</code>として評価されます。</p>
+<table style="width:100%;">
+<colgroup>
+<col width="25%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+<col width="18%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">オブジェクト</th>
+<th align="center"><code>is.call</code></th>
+<th align="center"><code>is.expression</code></th>
+<th align="center"><code>is.name</code></th>
+<th align="center"><code>is.language</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><code>call</code></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+</tr>
+<tr class="even">
+<td align="center">表現式</td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center"></td>
+<td align="center">✓</td>
+</tr>
+<tr class="odd">
+<td align="center"><code>name</code></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center">✓</td>
+<td align="center">✓</td>
+</tr>
+</tbody>
+</table>
+<div id="クロージャをつくる" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span>
+クロージャをつくる</h2>
+<p><code>exprssion</code>関数で表現式オブジェクトをつくれるように、<code>quote</code>関数でクロージャ（<code>call</code>オブジェクト）をつくれます。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">quote</span>(x <span class="sc">-</span> y)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>cl</span></code></pre></div>
+<pre><code>x - y</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">is.call</span>(cl)</span></code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">is.expression</span>(cl)</span></code></pre></div>
+<pre><code>[1] FALSE</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">is.name</span>(cl)</span></code></pre></div>
+<pre><code>[1] FALSE</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">is.language</span>(cl)</span></code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div id="表現式の変数に値を代入してクロージャをつくる"
+class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+表現式の変数に値を代入してクロージャをつくる</h2>
+<p>後述する理由で使い勝手が悪いのですが、<code>substitute</code>関数を使うと代入できます。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>e1 <span class="ot">&lt;-</span> <span class="fu">expression</span>(x<span class="sc">^</span>y)</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>e2 <span class="ot">&lt;-</span> <span class="fu">substitute</span>(x<span class="sc">^</span>y, <span class="fu">list</span>(<span class="at">x=</span><span class="dv">2</span>))</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>e2</span></code></pre></div>
+<pre><code>2^y</code></pre>
+<p><code>bquote</code>関数を使うと、リストを作らなくても代入できます。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>e1 <span class="ot">&lt;-</span> <span class="fu">expression</span>(x<span class="sc">^</span>y)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>e2 <span class="ot">&lt;-</span> <span class="fu">bquote</span>(.(x)<span class="sc">^</span>y)</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>e2</span></code></pre></div>
+<pre><code>3^y</code></pre>
+<p>環境にある変数の値を代入する変数名を<code>.(</code>と<code>)</code>で囲います。</p>
+<p><code>substitute</code>も<code>bquote</code>も表現式オブジェクトを引数にとり、クロージャ（<code>call</code>オブジェクト）を戻します。</p>
+<div id="表現式オブジェクトの中には代入ができない"
+class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span>
+表現式オブジェクトの中には代入ができない</h3>
+<p>さて<code>substitute</code>は第1引数にRの式をとるわけですが、表現式オブジェクトを代入しようとすると、表現式オブジェクトの式として処理します。<code>e1</code>を引数にとると<code>e1</code>と言う式だと考えて、<code>x^y</code>だとは考えないので、<code>x</code>や<code>y</code>に何かを代入することはできません。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">substitute</span>(e1, <span class="fu">list</span>(<span class="at">x=</span><span class="dv">123</span>))</span></code></pre></div>
+<pre><code>e1</code></pre>
+<p><code>eval</code>時に参照する環境を代えれば、評価時に使う変数の値を代えられるので、明示的に代入する必要は無いのですが、<code>substitute</code>を繰り返してプロットに表示する式を作るようなことはできないので注意してください。</p>
+</div>
+</div>
+<div id="クロージャをリストにする" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
+クロージャをリストにする</h2>
+<p>例えば以下のようにすると、<code>-</code>も関数であることが分かります。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">as.list</span>(<span class="fu">quote</span>(x <span class="sc">-</span> y))</span></code></pre></div>
+<pre><code>[[1]]
+`-`
+
+[[2]]
+x
+
+[[3]]
+y</code></pre>
+</div>
+<div id="クロージャを書き換える" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span>
+クロージャを書き換える</h2>
+<p>クロージャは<code>list</code>ではないのですが、リスト構造を持つオブジェクトで書き換えることもできます。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">quote</span>(x <span class="sc">+</span> y)</span></code></pre></div>
+<p><code>eval(e)</code>とすれば<code>5</code>になるわけですが、</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>e[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="fu">as.name</span>(<span class="st">&quot;-&quot;</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="fu">eval</span>(e)</span></code></pre></div>
+<pre><code>[1] 1</code></pre>
+<p>関数<code>+</code>を呼ぶところを、関数<code>-</code>に差し替えることで<code>1</code>の計算結果を得ています。</p>
+<p>以下のようにすると、同様の結果が得られますが、関数<code>-</code>への参照ではなく、関数<code>-</code>の中身が入るので注意してください。</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>e[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="st">`</span><span class="at">-</span><span class="st">`</span> <span class="co"># notice: backquote</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="fu">eval</span>(e)</span></code></pre></div>
+<pre><code>[1] 1</code></pre>
+</div>
+</div>
+<div id="evalが使う環境" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+<code>eval</code>が使う環境</h1>
+<p><code>eval</code>関数が使う環境は、デフォルトでは<code>eval</code>関数を呼び出す親の環境になり、引数<code>envir</code>を指定することで変えられます。</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>e1 <span class="ot">&lt;-</span> <span class="fu">expression</span>(x<span class="sc">^</span>y)</span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">2</span>; y <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a>myenv <span class="ot">&lt;-</span> <span class="fu">new.env</span>()</span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a>myenv<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb38-5"><a href="#cb38-5" tabindex="-1"></a>myenv<span class="sc">$</span>y <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb38-6"><a href="#cb38-6" tabindex="-1"></a><span class="fu">eval</span>(e1) <span class="co"># x=2, y=3で計算</span></span></code></pre></div>
+<pre><code>[1] 8</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">eval</span>(e1, <span class="at">envir=</span>myenv) <span class="co"># x=3, y=4で計算</span></span></code></pre></div>
+<pre><code>[1] 81</code></pre>
+<p>関数内では別環境になるので、以上のようにわざわざ指定することは少ないと思います。</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>e1 <span class="ot">&lt;-</span> <span class="fu">expression</span>(x<span class="sc">^</span>y)</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a>fn <span class="ot">&lt;-</span> <span class="cf">function</span>(e){</span>
+<span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb42-4"><a href="#cb42-4" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb42-5"><a href="#cb42-5" tabindex="-1"></a>    <span class="fu">eval</span>(e) <span class="co"># 関数のenvironmentを参照して評価する</span></span>
+<span id="cb42-6"><a href="#cb42-6" tabindex="-1"></a>}</span>
+<span id="cb42-7"><a href="#cb42-7" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">2</span>; y <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb42-8"><a href="#cb42-8" tabindex="-1"></a><span class="fu">eval</span>(e1) <span class="co"># x=2, y=3で計算</span></span></code></pre></div>
+<pre><code>[1] 8</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="fu">fn</span>(e1) <span class="co"># x=3, y=4で計算</span></span></code></pre></div>
+<pre><code>[1] 81</code></pre>
+</div>
+<div id="まとめ" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> まとめ</h1>
+<p>表現式オブジェクトなどの言語オブジェクトは、多くのユーザーがプロットに数式を入れるとき以外は意識していない存在で、使うときもおまじないぐらいに捉えられていると思いますが、汎用的な関数を作るときには役立つときもあります。知っていれば使いたくなるものなので、大雑把に目を通されると、後々、ためになるかも知れません。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>厳密なR用語では文（statement）になります。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>一般にはクロージャと呼びます。<a href="#fnref2"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>取扱説明書では非推奨ですが、<code>as.list</code>と<code>as.function</code>とリストと相互変換ができます。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p>評価と言っても、プロットなどの「副作用」がある式だと、実行と言う感じです。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+<h1 class="menu">ツール群</h1>
+<a href="../">トップページ</a><br/>
+<dl class="menu">
+<dt class="menu"><a href="t02.shtml">Mercurial初心者が絶対にブックマークすべきページ</a></dt>
+</dl>
+<br/>

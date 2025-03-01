@@ -1,0 +1,11 @@
+MIDlet-1: the Locus,/locus/image/monner.png,locus.GameMIDlet
+MIDlet-Data-Size: 1024
+MIDlet-Description: 線が重ならないように十字キー/数字キーで操作しよう。
+MIDlet-Icon: /locus/image/monner.png
+MIDlet-Jar-Size: 32371
+MIDlet-Jar-URL: http://uncorrelated.servehttp.com/mbapps/Locus.jar
+MIDlet-Name: 線引きゲーム
+MIDlet-Vendor: uncorrelated@yahoo.co.jp
+MIDlet-Version: 0.9.7
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0

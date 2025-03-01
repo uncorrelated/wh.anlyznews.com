@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rのベクトルの扱い方のざっとした説明</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rのベクトルの扱い方のざっとした説明</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>スカラーとベクトル（配列）を分けて扱うことが多いプログラミング言語ですが、Rはスカラーを要素1のベクトルとして扱うため、もっとも基本的なデータ構造がベクトルとなります。他のプログラミング言語と大きく異なる部分なので、R以外のプログラミングに慣れている人にも注意がいります。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#ベクトルの作成" id="toc-ベクトルの作成"><span
+class="toc-section-number">1</span> ベクトルの作成</a></li>
+<li><a href="#ベクトルの抽出" id="toc-ベクトルの抽出"><span
+class="toc-section-number">2</span> ベクトルの抽出</a></li>
+<li><a href="#ベクトルへの代入" id="toc-ベクトルへの代入"><span
+class="toc-section-number">3</span> ベクトルへの代入</a></li>
+<li><a href="#ベクトルの長さ" id="toc-ベクトルの長さ"><span
+class="toc-section-number">4</span> ベクトルの長さ</a></li>
+<li><a href="#ベクトルの演算" id="toc-ベクトルの演算"><span
+class="toc-section-number">5</span> ベクトルの演算</a>
+<ul>
+<li><a href="#ベクトルの長さが異なるとき"
+id="toc-ベクトルの長さが異なるとき"><span
+class="toc-section-number">5.1</span>
+ベクトルの長さが異なるとき</a></li>
+<li><a href="#集合演算" id="toc-集合演算"><span
+class="toc-section-number">5.2</span> 集合演算</a></li>
+<li><a href="#比較演算" id="toc-比較演算"><span
+class="toc-section-number">5.3</span> 比較演算</a></li>
+<li><a href="#行列として計算する" id="toc-行列として計算する"><span
+class="toc-section-number">5.4</span> 行列として計算する</a></li>
+</ul></li>
+<li><a href="#重複の処理" id="toc-重複の処理"><span
+class="toc-section-number">6</span> 重複の処理</a>
+<ul>
+<li><a href="#重複になっている要素を見つける"
+id="toc-重複になっている要素を見つける"><span
+class="toc-section-number">6.1</span>
+重複になっている要素を見つける</a></li>
+<li><a href="#重複の無いベクトルをつくる"
+id="toc-重複の無いベクトルをつくる"><span
+class="toc-section-number">6.2</span>
+重複の無いベクトルをつくる</a></li>
+</ul></li>
+<li><a href="#ベクトルの並び替え" id="toc-ベクトルの並び替え"><span
+class="toc-section-number">7</span> ベクトルの並び替え</a>
+<ul>
+<li><a href="#逆順" id="toc-逆順"><span
+class="toc-section-number">7.1</span> 逆順</a></li>
+<li><a href="#ソート" id="toc-ソート"><span
+class="toc-section-number">7.2</span> ソート</a></li>
+</ul></li>
+<li><a href="#ベクトルの中から指定した要素の位置を特定する"
+id="toc-ベクトルの中から指定した要素の位置を特定する"><span
+class="toc-section-number">8</span>
+ベクトルの中から指定した要素の位置を特定する</a></li>
+<li><a href="#ベクトルの要素の名前" id="toc-ベクトルの要素の名前"><span
+class="toc-section-number">9</span> ベクトルの要素の名前</a>
+<ul>
+<li><a href="#名前の消し方" id="toc-名前の消し方"><span
+class="toc-section-number">9.1</span> 名前の消し方</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="ベクトルの作成" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> ベクトルの作成</h1>
+<p>もっとも基本的なデータ構造なのでベクトルの作り方は様々ですが、</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>vc <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;s&quot;</span>, <span class="st">&quot;t&quot;</span>, <span class="st">&quot;a&quot;</span>, <span class="st">&quot;t&quot;</span>, <span class="st">&quot;i&quot;</span>, <span class="st">&quot;s&quot;</span>, <span class="st">&quot;t&quot;</span>, <span class="st">&quot;i&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;s&quot;</span>)</span></code></pre></div>
+<p>と数字や文字列を並べて<code>c</code>（combineの略です）で接続するのが簡単です。数式やモデル式も並べられます。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span></code></pre></div>
+<p><code>:</code>演算子を使うと、1つづつ増減するベクトルを作ることができます。<code>:</code>よりも複雑なことをしたい場合は<code>seq</code>関数を使います。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>v3 <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">9</span>, <span class="dv">2</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>v3</span></code></pre></div>
+<pre><code>[1] 1 3 5 7 9</code></pre>
+<p>1から9（以下の間）2づつ増加するベクトルをつくりました。
+ベクトルの長さを指定することもできます。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>v3 <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">9</span>, <span class="at">length.out =</span> <span class="dv">5</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>v3</span></code></pre></div>
+<pre><code>[1] 1 3 5 7 9</code></pre>
+<p>等間隔に1から9まで5つの数字をつくりました。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>v4 <span class="ot">&lt;-</span> <span class="fu">c</span>(v1, v2)</span></code></pre></div>
+<p><code>c</code>はベクトルとベクトル、リストとベクトル、リストとリストを結合することもできます。</p>
+</div>
+<div id="ベクトルの抽出" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> ベクトルの抽出</h1>
+<p>ベクトルは添字で位置を指定して、一部を取り出せませす。添字もベクトルで指定できます。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>v1[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+<p>1番目の数字を取り出しました。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>v1[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>]</span></code></pre></div>
+<pre><code>[1] 2 1</code></pre>
+<p>2から3番目の数字を取り出しました。
+要素にマイナスをつけて指定すると、その要素以外を取り出せます。任意の要素を削除したベクトルをつくるときに使えます。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>v1[<span class="sc">-</span><span class="dv">1</span>]</span></code></pre></div>
+<pre><code>[1] 2 1</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>v1[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)]</span></code></pre></div>
+<pre><code>[1] 2</code></pre>
+<p>同じ要素を何度も取り出すことができます。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>vc[<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>)]</span></code></pre></div>
+<pre><code>[1] &quot;t&quot; &quot;t&quot; &quot;t&quot; &quot;t&quot; &quot;t&quot;</code></pre>
+<p>真偽値を使って選択もできます。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>, <span class="st">&quot;D&quot;</span>, <span class="st">&quot;E&quot;</span>)[<span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>)]</span></code></pre></div>
+<pre><code>[1] &quot;A&quot; &quot;E&quot;</code></pre>
+<p><code>A</code>と<code>E</code>に対応する真偽値だけ<code>TRUE</code>だったので、<code>A</code>と<code>E</code>が選択されました。</p>
+</div>
+<div id="ベクトルへの代入" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> ベクトルへの代入</h1>
+<p>ベクトルの一部分だけを書き換えることもできます。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>v1[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>v1</span></code></pre></div>
+<pre><code>[1] 4 2 1</code></pre>
+</div>
+<div id="ベクトルの長さ" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> ベクトルの長さ</h1>
+<p><code>length</code>関数で調べることができます。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">length</span>(v1)</span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+</div>
+<div id="ベクトルの演算" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> ベクトルの演算</h1>
+<p>要素が数字であれば、ベクトルは計算ができます。ベクトルとベクトルの四則演算は、ベクトルとベクトルの長さが同じ場合、左項のベクトルのi番目の要素が、右項のベクトルのi番目の要素に対応した計算になります。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">3</span> <span class="sc">+</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span></span></code></pre></div>
+<pre><code>[1] 5 7 9</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">3</span> <span class="sc">-</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span></span></code></pre></div>
+<pre><code>[1] -3 -3 -3</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">3</span> <span class="sc">*</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span></span></code></pre></div>
+<pre><code>[1]  4 10 18</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">3</span> <span class="sc">/</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">6</span></span></code></pre></div>
+<pre><code>[1] 0.25 0.40 0.50</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="dv">4</span><span class="sc">:</span><span class="dv">6</span> <span class="sc">%/%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span> <span class="co"># 整数商</span></span></code></pre></div>
+<pre><code>[1] 2 1 1</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="dv">4</span><span class="sc">:</span><span class="dv">6</span> <span class="sc">%%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span> <span class="co"># 剰余</span></span></code></pre></div>
+<pre><code>[1] 0 2 2</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>(<span class="dv">4</span><span class="sc">:</span><span class="dv">6</span>)<span class="sc">^</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="co"># 累乗</span></span></code></pre></div>
+<pre><code>[1]   4  25 216</code></pre>
+<p>累乗<code>^</code>は<code>:</code>よりも先に計算されるので括弧をつけました。</p>
+<div id="ベクトルの長さが異なるとき" class="section level2"
+number="5.1">
+<h2><span class="header-section-number">5.1</span>
+ベクトルの長さが異なるとき</h2>
+<p>長いほうが短いほうの<span
+class="math inline">\(1\)</span>以上の整数倍のときのみ、短い方が繰り返しで長くされてから、演算されます。つまり、</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">6</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span></code></pre></div>
+<pre><code>[1] 2 4 6 5 7 9</code></pre>
+<p>は、</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">6</span> <span class="sc">+</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<pre><code>[1] 2 4 6 5 7 9</code></pre>
+</div>
+<div id="集合演算" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> 集合演算</h2>
+<p>ベクトルとベクトルで集合演算ができます。</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>))</span></code></pre></div>
+<pre><code>[1] 1 2 2 3 4 5</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a>(y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">8</span>))</span></code></pre></div>
+<pre><code>[1] 4 5 6 7 7 8</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="fu">union</span>(x, y) <span class="co"># 和集合</span></span></code></pre></div>
+<pre><code>[1] 1 2 3 4 5 6 7 8</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="fu">intersect</span>(x, y) <span class="co"># 積集合</span></span></code></pre></div>
+<pre><code>[1] 4 5</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="fu">setdiff</span>(x, y) <span class="co"># 差集合</span></span></code></pre></div>
+<pre><code>[1] 1 2 3</code></pre>
+</div>
+<div id="比較演算" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> 比較演算</h2>
+<p>比較演算子も要素それぞれで計算されます。</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>))</span></code></pre></div>
+<pre><code>[1] 1 2 3</code></pre>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a>(y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>))</span></code></pre></div>
+<pre><code>[1] 1 3 2</code></pre>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a>(z <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>))</span></code></pre></div>
+<pre><code>[1] 2 3 1</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>x <span class="sc">==</span> x</span></code></pre></div>
+<pre><code>[1] TRUE TRUE TRUE</code></pre>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a>x <span class="sc">==</span> y</span></code></pre></div>
+<pre><code>[1]  TRUE FALSE FALSE</code></pre>
+<p><code>if</code>や<code>while</code>といった条件文の中で使う場合は、<code>all</code>や<code>any</code>でまとめましょう。
+<code>all</code>はすべての要素が一致しているときのみ<code>TRUE</code>になります。</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a><span class="fu">all</span>(x <span class="sc">==</span> x)</span></code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a><span class="fu">all</span>(x <span class="sc">==</span> y)</span></code></pre></div>
+<pre><code>[1] FALSE</code></pre>
+<p><code>any</code>はどれかが一致しているときに<code>TRUE</code>になります。</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" tabindex="-1"></a><span class="fu">any</span>(x <span class="sc">==</span> y)</span></code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" tabindex="-1"></a><span class="fu">any</span>(x <span class="sc">==</span> z)</span></code></pre></div>
+<pre><code>[1] FALSE</code></pre>
+<p>並び順や重複を無視して、含まれる要素の種類のみで比較することもできます。</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" tabindex="-1"></a><span class="fu">setequal</span>(x, y)</span></code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<p>と同じ計算結果になります。この長さの自動拡張は便利なのですが、混乱を招くので注意しましょう。</p>
+</div>
+<div id="行列として計算する" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span>
+行列として計算する</h2>
+<p>実は、行列積<code>%*%</code>などでは、ベクトルはn行1列（n∈ℕ）の縦行列として計算されます。<code>t</code>で転置すると1行n列の横行列です。</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" tabindex="-1"></a><span class="fu">t</span>(v2) <span class="sc">%*%</span> v1 <span class="co"># 内積になる</span></span></code></pre></div>
+<pre><code>     [,1]
+[1,]   11</code></pre>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" tabindex="-1"></a>v2 <span class="sc">%*%</span> <span class="fu">t</span>(v1)</span></code></pre></div>
+<pre><code>     [,1] [,2] [,3]
+[1,]    4    2    1
+[2,]    8    4    2
+[3,]   12    6    3</code></pre>
+</div>
+</div>
+<div id="重複の処理" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> 重複の処理</h1>
+<p>データフレーム内の列に対してかけて、同じ人が重複して一覧に載っているときの割り出しに使えたりします。</p>
+<div id="重複になっている要素を見つける" class="section level2"
+number="6.1">
+<h2><span class="header-section-number">6.1</span>
+重複になっている要素を見つける</h2>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" tabindex="-1"></a>vc</span></code></pre></div>
+<pre><code> [1] &quot;s&quot; &quot;t&quot; &quot;a&quot; &quot;t&quot; &quot;i&quot; &quot;s&quot; &quot;t&quot; &quot;i&quot; &quot;c&quot; &quot;s&quot;</code></pre>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" tabindex="-1"></a><span class="fu">duplicated</span>(vc)</span></code></pre></div>
+<pre><code> [1] FALSE FALSE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE</code></pre>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" tabindex="-1"></a>vc[<span class="fu">duplicated</span>(vc)]</span></code></pre></div>
+<pre><code>[1] &quot;t&quot; &quot;s&quot; &quot;t&quot; &quot;i&quot; &quot;s&quot;</code></pre>
+</div>
+<div id="重複の無いベクトルをつくる" class="section level2"
+number="6.2">
+<h2><span class="header-section-number">6.2</span>
+重複の無いベクトルをつくる</h2>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" tabindex="-1"></a><span class="fu">unique</span>(vc)</span></code></pre></div>
+<pre><code>[1] &quot;s&quot; &quot;t&quot; &quot;a&quot; &quot;i&quot; &quot;c&quot;</code></pre>
+</div>
+</div>
+<div id="ベクトルの並び替え" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> ベクトルの並び替え</h1>
+<p>ベクトルの要素の参照で、ベクトルを並び替えることができます。</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" tabindex="-1"></a><span class="fu">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>, <span class="st">&quot;c&quot;</span>)[<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>)]</span></code></pre></div>
+<pre><code>[1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+<p>2番目の<code>a</code>、1番目の<code>b</code>、3番目の<code>c</code>の並びになりました。
+ベクトルの要素の順番を<code>order</code>関数で調べることができます。</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" tabindex="-1"></a>v6 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">6.075</span>,<span class="fl">1.181</span>,<span class="fl">7.717</span>,<span class="fl">1.433</span>,<span class="fl">4.301</span>,<span class="fl">9.158</span>,<span class="fl">5.997</span>,<span class="fl">3.991</span>,<span class="fl">0.806</span>,<span class="fl">6.86</span>)</span>
+<span id="cb86-2"><a href="#cb86-2" tabindex="-1"></a><span class="fu">order</span>(v6) <span class="co"># 小さい方から要素の位置を列挙</span></span></code></pre></div>
+<pre><code> [1]  9  2  4  8  5  7  1 10  3  6</code></pre>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" tabindex="-1"></a><span class="fu">order</span>(v6, <span class="at">decreasing =</span> <span class="cn">TRUE</span>) <span class="co"># 大きい方から要素の位置を列挙</span></span></code></pre></div>
+<pre><code> [1]  6  3 10  1  7  5  8  4  2  9</code></pre>
+<div id="逆順" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> 逆順</h2>
+<p><code>rev</code>でベクトルの順序を逆にできます。</p>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" tabindex="-1"></a><span class="fu">rev</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code></pre></div>
+<pre><code> [1] 10  9  8  7  6  5  4  3  2  1</code></pre>
+</div>
+<div id="ソート" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> ソート</h2>
+<p><code>order</code>の結果で整列することができます。</p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" tabindex="-1"></a>v6[<span class="fu">order</span>(v6)]</span></code></pre></div>
+<pre><code> [1] 0.806 1.181 1.433 3.991 4.301 5.997 6.075 6.860 7.717 9.158</code></pre>
+<p><code>sort</code>を使うと、この手順をまとめて処理できます。</p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" tabindex="-1"></a><span class="fu">sort</span>(v6)</span></code></pre></div>
+<pre><code> [1] 0.806 1.181 1.433 3.991 4.301 5.997 6.075 6.860 7.717 9.158</code></pre>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" tabindex="-1"></a><span class="fu">sort</span>(v6, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code> [1] 9.158 7.717 6.860 6.075 5.997 4.301 3.991 1.433 1.181 0.806</code></pre>
+</div>
+</div>
+<div id="ベクトルの中から指定した要素の位置を特定する"
+class="section level1" number="8">
+<h1><span class="header-section-number">8</span>
+ベクトルの中から指定した要素の位置を特定する</h1>
+<p><code>which</code>関数で簡単にできます。試しに1から10までの並びがランダムなベクトルを作って使ってみましょう。</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" tabindex="-1"></a>(v <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)[<span class="fu">order</span>(<span class="fu">runif</span>(<span class="dv">10</span>))])</span></code></pre></div>
+<pre><code> [1]  8  6  2  7  1 10  5  3  4  9</code></pre>
+<p><code>6</code>の位置を探します。</p>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" tabindex="-1"></a>(i <span class="ot">&lt;-</span> <span class="fu">which</span>(v <span class="sc">==</span> <span class="dv">6</span>))</span></code></pre></div>
+<pre><code>[1] 2</code></pre>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" tabindex="-1"></a>v[i]</span></code></pre></div>
+<pre><code>[1] 6</code></pre>
+</div>
+<div id="ベクトルの要素の名前" class="section level1" number="9">
+<h1><span class="header-section-number">9</span>
+ベクトルの要素の名前</h1>
+<p>ベクトルの要素には名前をつけて、ラベルとして扱うことができます。他のプログラミング言語では、見かけない仕様です。</p>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)</span>
+<span id="cb104-2"><a href="#cb104-2" tabindex="-1"></a>v1</span></code></pre></div>
+<pre><code>a b c 
+4 2 1 </code></pre>
+<p>ちょっと気味の悪い代入演算に思えるかも知れませんが、<code>names&lt;-</code>と言う関数を呼び出しています。
+つけた名前を使ってアクセスできます。</p>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" tabindex="-1"></a>v1[<span class="st">&quot;a&quot;</span>]</span></code></pre></div>
+<pre><code>a 
+4 </code></pre>
+<p>計算結果のベクトルや行列に名前をつけておいたほうが分かりやすくなりますし、関数の戻り値のオブジェクトの一部がベクトルや行列になっているとき、数字で位置を指定するよりも、名前でアクセスした方がコードの見通しが良くなります。</p>
+<div id="名前の消し方" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> 名前の消し方</h2>
+<p>名前が邪魔な場合は剥がしましょう。</p>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a>v1[[<span class="st">&quot;a&quot;</span>]] <span class="co"># 参照時は[[で剥がせる</span></span></code></pre></div>
+<pre><code>[1] 4</code></pre>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" tabindex="-1"></a><span class="fu">c</span>(v1, v2, <span class="at">use.names =</span> <span class="cn">FALSE</span>) <span class="co"># 結合時はuse.names=FALSEで剥がせる</span></span></code></pre></div>
+<pre><code>[1] 4 2 1 1 2 3</code></pre>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">=</span> <span class="cn">NULL</span> <span class="co"># NULLを代入すれば消せる</span></span>
+<span id="cb112-2"><a href="#cb112-2" tabindex="-1"></a>v1</span></code></pre></div>
+<pre><code>[1] 4 2 1</code></pre>
+</div>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

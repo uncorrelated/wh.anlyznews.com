@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<meta name="DESCRIPTION" content="JavaのCLASSPATHの設定方法"/>
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<h2>JavaのCLASSPATHの設定方法</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<p>Javaはクラス・ファイルをメモリー上のロードし実行していくアプリケーション実行環境ですが、普段はインストーラーや統合開発環境に任せていて、そのクラスをどこに配置すればいいのか、どうやってどこにクラスを配置しているか指定するのか、意識しない事が多いと思われます。しかしながら、運用環境の構築では正しく設定することが求められてきます。Javaのクラスの配置場所（CLASSPATH）の設定方法を確認してみましょう。</p>
+<p>まずクラスの配置場所ですが、以下の二つがあげられます。</p>
+<ol>
+<li>環境変数CLASSPATH</li>
+<li>java、javacコマンドの-cpオプション</li>
+<li>$JAVA_HOME/jre/lib/ext/</li>
+<li>java、javacコマンドの-extdirsオプション</li>
+</ol>
+<p>$JAVA_HOMEは、Javaのインストール・フォルダーをあらわす環境変数で、MS-Windows上のコマンド・プロンプトでは%CLASSPATH%で表されます。</p>
+
+<h3>環境変数CLASSPATH</h3>
+<p>環境変数CLASSPATHは、1つのjarファイルか、クラスを展開したディレクトリーを指定することができます。</p>
+<div class="code">
+CLASSPATH=.:/var/tomcat/common/lib/servlet.jar
+</div>
+<p>以上は実際のクラスパスの例ですが、ディレクトリーかjarファイルをコロン(:)で区切って指定してきます。ここではカレントディレクトリー(.)と、servlet.jarが指定されています。</p>
+
+<h3>java、javacコマンドの-cpオプション</h3>
+<p>-cpオプションをつけることで、環境変数CLASSPATHの指定をコンパイル時や、アプリケーション実行時に指定することができます。</p>
+<div class="code">
+java -cp /var/tomcat/common/lib/servlet.jar ExampleServlet.java
+</div>
+<p>以上は実際のクラスパスの例ですが、ディレクトリーかjarファイルをコロン(:)で区切って指定してきます。</p>
+
+<h3>$JAVA_HOME/jre/lib/ext/</h3>
+<p>環境変数やオプションをいちいち指定するのが面倒な場合、環境変数JAVA_HOME以下のjre/lib/ext/ディレクトリーにjarファイルを配置することで、クラスを利用可能にできます。</p>
+
+<h3>-extdirs</h3>
+<p>往々にして、Javaでは色々なjarファイルに依存したアプリケーションを書くことになります。この場合は、-cpやclasspathによる指定は冗長になりますが、JAVA_HOME以下にjarファイルを配置したくないものです。そういう場合は-extdirsオプションで、jarファイルの格納ディレクトリーを変更しましょう。</p>
+
+<h3>利用例</h3>
+<p>実際の利用例を見た方が理解が早いときが多いので、ウェブ・アプリケーションをコマンド・プロンプトからjavacコマンドを使ってコンパイルする例をあげておきます。</p>
+<div class="code">
+javac -extdirs ../../common/lib:WEB-INF/lib -classpath WEB-INF/classes:$CLASSPATH -d WEB-INF/classes -encoding Shift_JIS -sourcepath WEB-INF/src WEB-INF/src/com/uncorrelated/imagebbs/RSS.java
+</div>
+<p>MS-Windows環境では、設定値の区切りがコロン（:）からセミコロン（;）になることと、環境変数$CLASSPATHが%CLASSPATH%になることに注意してください。</p>
+<p>まず、-extdirsでTomcatの共通ライブラリー群と、ウェブ・アプリケーションが用いるライブラリー群を指定しています。次に、-classpathで、環境変数$CLASSPATHの中身とともにウェブ・アプリケーション本体のクラス群を指定しています。なお、-dは生成するクラスファイルの出力先であり、-encodingはShift_JISのソースコードをEUC_JPの環境でコンパイルするため、-sourcepathはウェブアプリケーションのトップ・ディレクトリーでコンパイルを行ったために付記しています。</p>
+
+<div class="footer"><!--#include virtual="/parts/footer.txt"--></div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>知らなくても何とかなるが、知っていると便利なRの関数</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">知らなくても何とかなるが、知っていると便利なRの関数</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>便利存在に気づかず遠回りをしていることが多いので、まとめてみました。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#三項演算関数ifelse" id="toc-三項演算関数ifelse"><span
+class="toc-section-number">1</span>
+三項演算関数（<code>ifelse</code>）</a></li>
+<li><a href="#オブジェクトの保存と読み込み"
+id="toc-オブジェクトの保存と読み込み"><span
+class="toc-section-number">2</span>
+オブジェクトの保存と読み込み</a></li>
+<li><a href="#分岐switch" id="toc-分岐switch"><span
+class="toc-section-number">3</span> 分岐（<code>switch</code>）</a></li>
+<li><a href="#ベクトルやデータフレームを分割"
+id="toc-ベクトルやデータフレームを分割"><span
+class="toc-section-number">4</span>
+ベクトルやデータフレームを分割</a></li>
+<li><a href="#ランクを計算" id="toc-ランクを計算"><span
+class="toc-section-number">5</span> ランクを計算</a></li>
+<li><a href="#正規表現" id="toc-正規表現"><span
+class="toc-section-number">6</span> 正規表現</a></li>
+<li><a href="#mc_n" id="toc-mc_n"><span
+class="toc-section-number">7</span> <span
+class="math inline">\({}_m\!C_n\)</span></a></li>
+<li><a href="#対話モードで動いているか"
+id="toc-対話モードで動いているか"><span
+class="toc-section-number">8</span> 対話モードで動いているか？</a></li>
+<li><a href="#guiのファイルダイアログを使う"
+id="toc-guiのファイルダイアログを使う"><span
+class="toc-section-number">9</span>
+GUIのファイル・ダイアログを使う</a></li>
+</ul>
+</div>
+
+<p>他のプログラミング言語を経験してからRをいじりだした人に多いと思うのですが、便利関数で簡潔に実現できる処理を、ループ処理で複雑に書いて、苦労した上に見通しとパフォーマンスが悪いコードを生成することがあります。</p>
+<div id="三項演算関数ifelse" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+三項演算関数（<code>ifelse</code>）</h1>
+<p>C言語の三項演算子に該当する関数があります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">ifelse</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>) <span class="sc">&gt;</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="st">&quot;left-side is bigger.&quot;</span>, <span class="st">&quot;left-side is not bigger.&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;left-side is bigger.&quot;     &quot;left-side is not bigger.&quot;</code></pre>
+</div>
+<div id="オブジェクトの保存と読み込み" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+オブジェクトの保存と読み込み</h1>
+<p>Rのあらゆる変数は同様に保存と読み込みができます。つまり、ベクトル、行列、配列、リスト、データフレーム、環境、関数、モデル式といったオブジェクトは、<code>saveRDS</code>で保存して、<code>readRDS</code>で読み込むことができます。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>fnc1 <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) (a <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span>(b <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 関数を定義</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">saveRDS</span>(fnc1, <span class="st">&quot;fnc.RDS&quot;</span>) <span class="co"># 関数を保存</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">rm</span>(fnc1) <span class="co"># 関数を消す</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>fnc2 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;fnc.RDS&quot;</span>) <span class="co"># 関数を読み込む</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="fu">fnc2</span>(<span class="dv">2</span>, <span class="dv">3</span>) <span class="co"># 関数を使う</span></span></code></pre></div>
+<pre><code>[1] 6</code></pre>
+<p>他のプログラミング言語でも似たようなことはできるのですが、パッケージなしで同じぐらい広範なオブジェクトを同じぐらい容易にできるものはちょっと思い当たりません。</p>
+<p>現在のワークスペースのすべてのオブジェクトを保存したい場合は<code>save.image</code>を用いることができます。読み込むときは<code>load</code>を使います。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="dv">100</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> x <span class="sc">-</span> z <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="fu">save.image</span>(<span class="at">file =</span> <span class="st">&quot;example.RData&quot;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">ls</span>() <span class="co"># 作成したオブジェクトを確認</span></span></code></pre></div>
+<pre><code>[1] &quot;n&quot; &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>()) <span class="co"># 前オブジェクト消去</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">ls</span>() <span class="co"># 空になったのを確認</span></span></code></pre></div>
+<pre><code>character(0)</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">&quot;example.RData&quot;</span>)</span></code></pre></div>
+<p><code>ls()</code>をすると、消したオブジェクト<code>n</code>,<code>x</code>,<code>z</code>,<code>y</code>が復活しているのが分かります。
+なお、<code>quit(save = "yes")</code>とすると、自動で<code>save.image</code>が呼び出されます。</p>
+</div>
+<div id="分岐switch" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+分岐（<code>switch</code>）</h1>
+<p>Rにも<code>switch</code>文がありました。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;a&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<pre><code>[1] 123</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;b&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<pre><code>[1] 456</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;c&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<pre><code>[1] 789</code></pre>
+<p>ベクトル処理ができないので、まとめて処理するときにはunlistとsapplyを組み合わせるしか無いようです。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), </span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>    <span class="cf">switch</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>))</span></code></pre></div>
+<pre><code>  a   b   c 
+123 456 789 </code></pre>
+</div>
+<div id="ベクトルやデータフレームを分割" class="section level1"
+number="4">
+<h1><span class="header-section-number">4</span>
+ベクトルやデータフレームを分割</h1>
+<p>男女など属性ごとにベクトルを分けたいときに便利です。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>)</span></code></pre></div>
+<pre><code>[1] 1 2 3 4 5 6 7 8 9</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>(g <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="dv">3</span>)))</span></code></pre></div>
+<pre><code>[1] a b c a b c a b c
+Levels: a b c</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">split</span>(x, g)</span></code></pre></div>
+<pre><code>$a
+[1] 1 4 7
+
+$b
+[1] 2 5 8
+
+$c
+[1] 3 6 9</code></pre>
+<p>左辺のないモデル式でデータフレーム内の変数を指定してデータフレームの分割もでき、リストにして戻してくれます。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># Rに標準添付のIris Datasetを使う</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>lst <span class="ot">&lt;-</span> <span class="fu">split</span>(iris, <span class="sc">~</span>Species)</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="fu">head</span>(lst[[<span class="dv">1</span>]])</span></code></pre></div>
+<pre><code>  Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+1          5.1         3.5          1.4         0.2  setosa
+2          4.9         3.0          1.4         0.2  setosa
+3          4.7         3.2          1.3         0.2  setosa
+4          4.6         3.1          1.5         0.2  setosa
+5          5.0         3.6          1.4         0.2  setosa
+6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">head</span>(lst[[<span class="dv">2</span>]])</span></code></pre></div>
+<pre><code>   Sepal.Length Sepal.Width Petal.Length Petal.Width    Species
+51          7.0         3.2          4.7         1.4 versicolor
+52          6.4         3.2          4.5         1.5 versicolor
+53          6.9         3.1          4.9         1.5 versicolor
+54          5.5         2.3          4.0         1.3 versicolor
+55          6.5         2.8          4.6         1.5 versicolor
+56          5.7         2.8          4.5         1.3 versicolor</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">head</span>(lst[[<span class="dv">3</span>]])</span></code></pre></div>
+<pre><code>    Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+101          6.3         3.3          6.0         2.5 virginica
+102          5.8         2.7          5.1         1.9 virginica
+103          7.1         3.0          5.9         2.1 virginica
+104          6.3         2.9          5.6         1.8 virginica
+105          6.5         3.0          5.8         2.2 virginica
+106          7.6         3.0          6.6         2.1 virginica</code></pre>
+<p>二次元、三次元の分割もモデル式で指定できます。</p>
+<p>文字列を分割する場合は<code>strsplit</code>を使います。</p>
+</div>
+<div id="ランクを計算" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> ランクを計算</h1>
+<p>ベクトル内での昇順の順位を示します。同順の場合の処理は<code>ties.method</code>で指定です。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">10</span>, <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="dv">10</span>)))</span></code></pre></div>
+<pre><code> [1]  6  6  9  4  5  3 10  3  6  9</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="fu">rank</span>(x)</span></code></pre></div>
+<pre><code> [1]  6.0  6.0  8.5  3.0  4.0  1.5 10.0  1.5  6.0  8.5</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">&quot;min&quot;</span>)</span></code></pre></div>
+<pre><code> [1]  5  5  8  3  4  1 10  1  5  8</code></pre>
+<p>ゴルフの順位のようにn位タイを計算するのはちょっと手間かもです。</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>ties <span class="ot">&lt;-</span> <span class="fu">unique</span>(x[<span class="fu">duplicated</span>(x)])</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%d位%s&quot;</span>, <span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">&quot;min&quot;</span>), <span class="fu">ifelse</span>(x <span class="sc">%in%</span> ties, <span class="st">&quot;タイ&quot;</span>, <span class="st">&quot;&quot;</span>))</span></code></pre></div>
+<pre><code> [1] &quot;5位タイ&quot; &quot;5位タイ&quot; &quot;8位タイ&quot; &quot;3位&quot;     &quot;4位&quot;     &quot;1位タイ&quot; &quot;10位&quot;   
+ [8] &quot;1位タイ&quot; &quot;5位タイ&quot; &quot;8位タイ&quot;</code></pre>
+</div>
+<div id="正規表現" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> 正規表現</h1>
+<p>Rでも正規表現によるテキスト処理ができます。</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>txt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;This is a pen.&quot;</span>, <span class="st">&quot;This is an apple.&quot;</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a><span class="co"># isが含まれる要素の位置</span></span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a><span class="fu">grep</span>(<span class="st">&quot;[^a-z]is[^a-z]&quot;</span>, txt) </span></code></pre></div>
+<pre><code>[1] 1 2</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="co"># appleが含まれる要素</span></span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a><span class="fu">grep</span>(<span class="st">&quot;apple&quot;</span>, txt, <span class="at">value =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<pre><code>[1] &quot;This is an apple.&quot;</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a><span class="co"># appleが含まれない要素</span></span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a><span class="fu">grep</span>(<span class="st">&quot;apple&quot;</span>, txt, <span class="at">value =</span> <span class="cn">TRUE</span>, <span class="at">invert =</span> <span class="cn">TRUE</span>) </span></code></pre></div>
+<pre><code>[1] &quot;This is a pen.&quot;</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="co"># isをwasに置換（1要素に複数あってもすべて置換）</span></span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a><span class="fu">gsub</span>(<span class="st">&quot;([^a-z])(is)([^a-z])&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">1was</span><span class="sc">\\</span><span class="st">3&quot;</span>, txt)</span></code></pre></div>
+<pre><code>[1] &quot;This was a pen.&quot;    &quot;This was an apple.&quot;</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="co"># 空白で分割</span></span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a><span class="fu">strsplit</span>(txt, <span class="st">&quot; &quot;</span>)</span></code></pre></div>
+<pre><code>[[1]]
+[1] &quot;This&quot; &quot;is&quot;   &quot;a&quot;    &quot;pen.&quot;
+
+[[2]]
+[1] &quot;This&quot;   &quot;is&quot;     &quot;an&quot;     &quot;apple.&quot;</code></pre>
+<p>置換時の括弧の中の文字列は<code>\\1</code>といったエスケープ文字と数字の組み合わせで表現されることに注意しましょう。
+なお、括弧自体をマッチングしたい場合は、</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">(&quot;</span>, <span class="st">&quot;括弧始&quot;</span>, <span class="st">&quot;(...)&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;括弧始...)&quot;</code></pre>
+<p>と言うように括弧の前にエスケープ文字をつけます。</p>
+</div>
+<div id="mc_n" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> <span
+class="math inline">\({}_m\!C_n\)</span></h1>
+<p>組み合わせの数の計算ができる<code>choose</code>関数があります。コンビネーションではないので注意しましょう。</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="co"># 5!/(3!2!)</span></span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a><span class="fu">choose</span>(<span class="dv">5</span>, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>[1] 10</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a><span class="co"># factorialで書くと長々として遅い</span></span>
+<span id="cb52-2"><a href="#cb52-2" tabindex="-1"></a><span class="fu">factorial</span>(<span class="dv">5</span>)<span class="sc">/</span>(<span class="fu">factorial</span>(<span class="dv">3</span>)<span class="sc">*</span><span class="fu">factorial</span>(<span class="dv">2</span>))</span></code></pre></div>
+<pre><code>[1] 10</code></pre>
+</div>
+<div id="対話モードで動いているか" class="section level1" number="8">
+<h1><span class="header-section-number">8</span>
+対話モードで動いているか？</h1>
+<p><code>interactive()</code>で<code>TRUE</code>が戻って来た場合は対話モードで動いています。バッチ処理と対話モードで挙動を変えたいときに使えます。</p>
+</div>
+<div id="guiのファイルダイアログを使う" class="section level1"
+number="9">
+<h1><span class="header-section-number">9</span>
+GUIのファイル・ダイアログを使う</h1>
+<p>使いどころは乏しい気もしますが、<code>file.choose()</code>でできます。</p>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

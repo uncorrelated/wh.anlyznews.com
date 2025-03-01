@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<meta name="DESCRIPTION" content="Java6 update 4, update 5でApplet起動不能？"/>
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<h2>Java6 update 4, update 5でApplet起動不能？</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<p>Java6 update 4とupdate 5で、Firefox上でJava Appletが起動不能になるようです。自動アップデートを設定していて、突然Java Appletが起動しなくなった人はバージョンを確認してみてください。</p>
+<p>コマンドプロンプトで以下のように java -version とコマンドを打つと、バージョンが出てきます。</p>
+
+<div class="console">
+C:&yen;Documents and Settings&yen;user name&gt;<span class="cinput">java -version</span><br/>
+<span class="coutput">java version &quot;1.6.0_05&quot;<br/>
+Java(TM) SE Runtime Environment (build 1.6.0_05-b13)<br/>
+Java HotSpot(TM) Client VM (build 10.0-b19, mixed mode, sharing)</span>
+</div>
+
+<p>解決方法は三つ考えられます。</p>
+<ol>
+<li>Javaをバージョンアップする。ただし、執筆時点ではupdate 5が最新です。</li>
+<li>Javaをバージョンダウンする。Java6 update 3にすると、Java Appletは問題なく起動するようです。</li>
+<li>Javaのネットワーク設定を変更する。</li>
+</ol>
+
+<h3>Javaのネットワーク設定を変更</h3>
+
+<p>以下では、解決方法3について説明します。</p>
+<ol>
+<li>設定 → コントロールパネル → Javaコントロールパネル → 基本 → ネットワーク設定を開く。</li>
+<li>ブラウザの設定を使用を<strong>使わない</strong>。一般家庭の場合は、直接接続で大丈夫です。</li>
+<li>了解を押す。</li>
+</ol>
+<p>以上で問題が解決しない場合は、一時的にJava6 update 3にバージョンを落とした方が無難です。古いバージョンのJavaは、<a href="http://java.sun.com/products/archive/" target="_blank">Archive: Java[tm] Technology Products Download</a>でダウンロードすることができます。</p>
+
+<div class="footer"><!--#include virtual="/parts/footer.txt"--></div>
+</div>
+</div>
+</body>
+</html>

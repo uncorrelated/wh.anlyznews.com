@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rでべたべたと最尤法</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rでべたべたと最尤法</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>尤度関数しか分からない手法でも推定を試みることができるように、最尤法の仕組みと実践を学んでおきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#対数尤度関数" id="toc-対数尤度関数"><span
+class="toc-section-number">1</span> 対数尤度関数</a></li>
+<li><a href="#対数尤度関数のグラディエント"
+id="toc-対数尤度関数のグラディエント"><span
+class="toc-section-number">2</span>
+対数尤度関数のグラディエント</a></li>
+<li><a href="#ニュートンラフソン法で推定"
+id="toc-ニュートンラフソン法で推定"><span
+class="toc-section-number">3</span> ニュートン・ラフソン法で推定</a>
+<ul>
+<li><a href="#解析学的な意味" id="toc-解析学的な意味"><span
+class="toc-section-number">3.1</span> 解析学的な意味</a></li>
+<li><a href="#実際に計算するコード" id="toc-実際に計算するコード"><span
+class="toc-section-number">3.2</span> 実際に計算するコード</a></li>
+</ul></li>
+<li><a href="#パラメーターの標準誤差"
+id="toc-パラメーターの標準誤差"><span
+class="toc-section-number">4</span> パラメーターの標準誤差</a>
+<ul>
+<li><a href="#統計学的な意味" id="toc-統計学的な意味"><span
+class="toc-section-number">4.1</span> 統計学的な意味</a></li>
+<li><a href="#実際に計算するコード-1"
+id="toc-実際に計算するコード-1"><span
+class="toc-section-number">4.2</span> 実際に計算するコード</a>
+<ul>
+<li><a href="#z値" id="toc-z値"><span
+class="toc-section-number">4.2.1</span> z値</a></li>
+<li><a href="#t値" id="toc-t値"><span
+class="toc-section-number">4.2.2</span> t値</a></li>
+</ul></li>
+<li><a href="#wald検定" id="toc-wald検定"><span
+class="toc-section-number">4.3</span> Wald検定</a></li>
+</ul></li>
+<li><a href="#rの関数で推定" id="toc-rの関数で推定"><span
+class="toc-section-number">5</span> Rの関数で推定</a>
+<ul>
+<li><a href="#尤度比lr検定" id="toc-尤度比lr検定"><span
+class="toc-section-number">5.1</span> 尤度比（LR）検定</a></li>
+<li><a href="#ラグランジェ乗数lm検定"
+id="toc-ラグランジェ乗数lm検定"><span
+class="toc-section-number">5.2</span>
+ラグランジェ乗数（LM）検定</a></li>
+<li><a href="#wald検定lm検定lr検定の使い分け"
+id="toc-wald検定lm検定lr検定の使い分け"><span
+class="toc-section-number">5.3</span>
+Wald検定，LM検定，LR検定の使い分け</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>計量分析で最初に習うOLSは性質がよく計算しやすい推定ですが、非線形モデルの推定に使えません。非線形関数を推定する場合は、その非線形関数を推定するパッケージを用いない限りは、最尤法が手っ取り早い選択になります<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。最尤法は、一般化線形回帰モデル（GLM）やベイズ統計学の理解の前提になるなど、統計学の学習にも避けて通ることができない手法です。</p>
+<p>実用上は尤度関数を書いて、何らかの凸最適化のアルゴリズムを実装して走らせるか、<code>nlm</code>か<code>optim</code>といったパラメーターの最適化をしてくれる関数を呼べば簡単に最適点と最適点におけるヘッシアンを推定でき、ヘッシアンの意味を理解していたら標準誤差を計算することができ、それで推定したパラメーターを検定することができます。理解のために実際に、最尤法を試してみましょう。</p>
+<div id="対数尤度関数" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> 対数尤度関数</h1>
+<p>最尤法は、観測値それぞれが抽出される確率（密度）を乗じた同時確率（密度）を尤度と定義し、尤度が最大化になるように確率モデルのパラメーターを推定する方法です。ただし、パラメーターの標準誤差を計算する都合などで、尤度ではなく対数尤度関数を用いて推定を行ないます。</p>
+<p>例えば平均<span class="math inline">\(\mu\)</span>，分散<span
+class="math inline">\(\sigma^2\)</span>の正規分布を推定するときの尤度関数<span
+class="math inline">\(\mathfrak{L}\)</span>は、観測値を<span
+class="math inline">\(y\)</span>，観測数を<span
+class="math inline">\(n\)</span>として、</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathfrak{L}(\mu, \sigma^2)
+&amp;= \frac{1}{\sqrt{2 \pi \sigma^2}}\exp \big( - \frac{(y_1 -
+\mu)^2}{2\sigma^2} \big )
+\cdots
+\frac{1}{\sqrt{2 \pi \sigma^2}}\exp \big( -\frac{(y_n -
+\mu)^2}{2\sigma^2} \big) \\
+&amp;= \big( \frac{1}{\sqrt{2\pi}} \big)^n \big(
+\frac{1}{\sqrt{\sigma^2}} \big)^n \exp{ \big( - \frac{1}{2\sigma^2}
+\sum^n_{i=1} (y_i-\mu)^2 \big) }
+\end{aligned}
+\]</span></p>
+<p>となり、これを対数化したものを最適化の目的関数とします。</p>
+<p><span class="math display">\[
+\begin{aligned}
+\log{ \mathfrak{L}(\mu, \sigma^2)} \\
+&amp;= \log{ (2\pi)^{-\frac{n}{2}}} + \log{ (\sigma^2)^{-\frac{n}{2}}} +
+\log{ \exp \big( -\frac{1}{2\sigma^2} \sum^n_{i=1} (y_i - \mu)^2
+\big)  } \\
+&amp;= - \frac{n}{2} \log{2\pi} - \frac{n}{2} \log{\sigma^2} -
+\frac{1}{2\sigma^2} \sum^n_{i=1} (y_i - \mu)^2
+\end{aligned}
+\]</span></p>
+</div>
+<div id="対数尤度関数のグラディエント" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+対数尤度関数のグラディエント</h1>
+<p>平均<span class="math inline">\(\mu\)</span>，分散<span
+class="math inline">\(\sigma^2\)</span>の最大化の一階条件を整理しましょう。</p>
+<p><span class="math display">\[
+\begin{aligned}
+\frac{ \partial \log{ \mathfrak{L}(\mu, \sigma^2)} }{ \partial \mu }
+&amp;= (-1) \cdot 2 \cdot \frac{1}{2\sigma^2} \sum^n_{i=1} (y_i - \mu) =
+- \frac{1}{\sigma^2} \sum^n_{i=1} (y_i - \mu) = 0 \\
+\frac{ \partial \log{ \mathfrak{L}(\mu, \sigma^2)} }{ \partial \sigma^2
+} &amp;= \frac{n}{2\sigma^2} + \frac{1}{2 ( \sigma^2 )^2 } \sum^n_{i=1}
+(y_i - \mu)^2 = 0
+\end{aligned}
+\]</span></p>
+<p>この連立方程式の解が求めるものです。</p>
+</div>
+<div id="ニュートンラフソン法で推定" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+ニュートン・ラフソン法で推定</h1>
+<p>実践的ではないですが、理解のために古典的なニュートン・ラフソン法で連立方程式を解いてみましょう。このアルゴリズムは手順が簡単で収束が速いと言う利点があります。</p>
+<div id="解析学的な意味" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> 解析学的な意味</h2>
+<p><span class="math inline">\(\mu\)</span>と<span
+class="math inline">\(\sigma^2\)</span>の2元の連立方程式をベクトル値関数<span
+class="math inline">\(f(\mu, \sigma^2)\)</span>にまとめます。</p>
+<p><span class="math display">\[
+\begin{aligned}
+f(\mu, \sigma^2) &amp;= \begin{bmatrix} \frac{1}{\sigma^2} \sum^n_{i=1}
+(y_i - \mu) \\
+\frac{n}{2\sigma^2} + \frac{1}{2 ( \sigma^2 )^2 } \sum^n_{i=1} (y_i -
+\mu)^2
+\end{bmatrix} = 0
+\end{aligned}
+\]</span></p>
+<p>テイラー展開で<span class="math inline">\(f(\mu,
+\sigma^2)\)</span>の一次近似式をつくると</p>
+<p><span class="math display">\[
+\begin{aligned}
+f(\mu, \sigma^2) = f(\mu_0, \sigma_0^2) + \frac{\partial
+f}{\partial(\mu_0, \sigma_0^2)} \begin{bmatrix} \mu_0 - \mu \\
+\sigma_0^2 - \sigma^2 \end{bmatrix}
+\end{aligned}
+\]</span></p>
+<p>になり、この零点を整理すると以下になります。</p>
+<p><span class="math display">\[
+\begin{aligned}
+\begin{bmatrix} \mu \\
+\sigma^2 \end{bmatrix}  = \begin{bmatrix} \mu_0 \\
+\sigma_0^2 \end{bmatrix} - \frac{\partial f}{\partial(\mu_0,
+\sigma_0^2)}^{-1} f(\mu_0, \sigma_0^2)
+\end{aligned}
+\]</span></p>
+<p><span
+class="math inline">\(f\)</span>が凸関数であれば、右辺の値は<span
+class="math inline">\(f(\mu_0, \sigma_0^2)\)</span>よりも<span
+class="math inline">\(f(\mu,
+\sigma^2)\)</span>に近づくので、右辺の計算を繰り返し行なえば解になる不動点に辿り着けます。</p>
+</div>
+<div id="実際に計算するコード" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span>
+実際に計算するコード</h2>
+<p>上述の説明をだいたい忠実に実装したコードは以下になります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># サンプル</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">31</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="at">mean=</span><span class="dv">12</span>, <span class="at">sd=</span><span class="dv">7</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># 連立方程式を設定</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="sc">-</span><span class="fu">sum</span>(y<span class="sc">-</span>mu)<span class="sc">/</span>s2)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="sc">-</span>n<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>s2) <span class="sc">+</span> <span class="fu">sum</span>((y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>(s2<span class="sc">^</span><span class="dv">2</span>)))</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># muとs2で一階微分を作っておく</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>g11 <span class="ot">&lt;-</span> <span class="fu">expression</span>(n<span class="sc">/</span>s2)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>g12 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="fu">sum</span>(y <span class="sc">-</span> mu)<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>g21 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="fu">sum</span>(mu <span class="sc">-</span> y)<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>g22 <span class="ot">&lt;-</span> <span class="fu">expression</span>(n<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>(s2<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">-</span> <span class="fu">sum</span>( (y <span class="sc">-</span> mu)<span class="sc">^</span><span class="dv">2</span> )<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">3</span>))</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co"># 初期値を設定</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="dv">11</span> <span class="co"># 正規分布の平均値</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>s2 <span class="ot">&lt;-</span> <span class="dv">16</span> <span class="co"># 正規分布の分散</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>){</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="co"># (mu, s2)を2x1行列にする</span></span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(mu, s2), <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    <span class="co"># (mu, s2)で評価したf1とf2の値を2x1行列にする</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>    f <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">eval</span>(f1), <span class="fu">eval</span>(f2)), <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>    <span class="co"># ヤコビアンに(mu, s2)を代入した行列を作る</span></span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>    j <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">eval</span>(g11), <span class="fu">eval</span>(g21), <span class="fu">eval</span>(g12), <span class="fu">eval</span>(g22)), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>    <span class="co"># 行列mから、ヤコビアンの逆行列と評価式を乗じたものを引く</span></span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>    m <span class="ot">&lt;-</span> m <span class="sc">-</span> <span class="fu">solve</span>(j)<span class="sc">%*%</span>f</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>    <span class="co"># 行列mを(x, y)に展開しておく</span></span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> m[<span class="dv">1</span>]; s2 <span class="ot">&lt;-</span> m[<span class="dv">2</span>]</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;[%d] (mu,s2)=(%f,%f)&quot;</span>, i, mu, s2))</span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>[1] &quot;[1] (mu,s2)=(11.666249,21.695600)&quot;
+[1] &quot;[2] (mu,s2)=(11.920991,28.383352)&quot;
+[1] &quot;[3] (mu,s2)=(12.009620,34.606119)&quot;
+[1] &quot;[4] (mu,s2)=(12.031770,38.413427)&quot;
+[1] &quot;[5] (mu,s2)=(12.034435,39.431333)&quot;
+[1] &quot;[6] (mu,s2)=(12.034508,39.488142)&quot;
+[1] &quot;[7] (mu,s2)=(12.034508,39.488307)&quot;
+[1] &quot;[8] (mu,s2)=(12.034508,39.488307)&quot;
+[1] &quot;[9] (mu,s2)=(12.034508,39.488307)&quot;
+[1] &quot;[10] (mu,s2)=(12.034508,39.488307)&quot;</code></pre>
+<p>7順目ぐらいで収束して解が得られています。最適化までの経路をプロットすると以下になります。横軸が<span
+class="math inline">\(\sigma^2\)</span>ではなくて<span
+class="math inline">\(\sigma\)</span>なのに注意してください。</p>
+<p><img src="common_files/figure-html/MLE-1.png" width="672" /></p>
+</div>
+</div>
+<div id="パラメーターの標準誤差" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
+パラメーターの標準誤差</h1>
+<p>実際のところ分析では色々と検定する事になるので、パラメーターの標準誤差の算出方法を確認しましょう。</p>
+<div id="統計学的な意味" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> 統計学的な意味</h2>
+<p>パラメーターの値の次は、標準誤差を求ます。
+まず、2つのパラメーター<span class="math inline">\(\mu,
+\sigma\)</span>をベクトル<span
+class="math inline">\(\theta\)</span>に置きなおします。</p>
+<p><span class="math display">\[
+\theta = \begin{bmatrix} \mu \\
+\sigma^2 \end{bmatrix}
+\]</span></p>
+<p>上の例のヤコビアン<span class="math inline">\(\partial f/\partial
+\theta\)</span>は、対数尤度関数を2階偏微分した行列なので、対数尤度関数のヘッシアン<span
+class="math inline">\(H(\theta)\)</span>になるのに注意して、真のパラメーター<span
+class="math inline">\(\theta_p\)</span>の周りで、テイラーの定理を用います。2階微分の引数<span
+class="math inline">\(\bar{\theta}\)</span>は、平均値の定理から存在することが分かる、<span
+class="math inline">\(\hat{\theta}\)</span>と<span
+class="math inline">\(\theta_p\)</span>の間にある値です。</p>
+<p><span class="math display">\[
+f(\hat{\theta}) = f(\theta_p) + H(\bar{\theta})(\hat{\theta} - \theta_p)
+= 0
+\]</span></p>
+<p><span class="math display">\[
+\hat{\theta} - \theta_p = - H(\bar{\theta})^{-1} f(\theta_p)
+\]</span></p>
+<p>両辺に<span class="math inline">\(\sqrt{n}\)</span>を乗じます。</p>
+<p><span class="math display">\[
+\sqrt{n} (\hat{\theta} - \theta_p) = - H(\bar{\theta})^{-1} \sqrt{n}
+f(\theta_p)
+\DeclareMathOperator{\plim}{plim}
+\]</span></p>
+<p><span class="math inline">\(\plim \hat{\theta} - \theta_p =
+0\)</span>と言うことは、<span
+class="math inline">\(\hat{\theta}\)</span>と<span
+class="math inline">\(\theta_p\)</span>の間にある<span
+class="math inline">\(\bar{\theta}\)</span>も<span
+class="math inline">\(\theta_p\)</span>に確率収束するので、<span
+class="math inline">\(\sqrt{n} (\hat{\theta} - \theta_p)\)</span>が<span
+class="math inline">\(- H(\theta_p)^{-1} \sqrt{n}
+f(\theta_p)\)</span>に分布収束することが分かります。</p>
+<p><span class="math display">\[
+\sqrt{n} (\hat{\theta} - \theta_p) \xrightarrow{d} - H(\theta_p)^{-1}
+\sqrt{n} f(\theta_p)
+\]</span></p>
+<p><span class="math inline">\(f(\theta_p)\)</span>に<span
+class="math inline">\(n\)</span>で割り、<span
+class="math inline">\(H(\theta_p)^{-1}\)</span>に<span
+class="math inline">\(n\)</span>を乗じます。<span
+class="math inline">\(\bar{f}(\theta_p)=f(\theta_p)/n\)</span>に注意すると、</p>
+<p><span class="math display">\[
+\sqrt{n} (\hat{\theta} - \theta_p) \xrightarrow{d} - \big[ \frac{1}{n}
+H(\theta_p) \big]^{-1} \sqrt{n} \bar{f}(\theta_p)
+\]</span></p>
+<p>と書けます。</p>
+<p><span
+class="math inline">\(\sqrt{n}\bar{f}(\theta_p)\)</span>は乱数の平均値になるので、Lindberg–Levy中心極限定理を用いることができ、</p>
+<p><span class="math display">\[
+\sqrt{n} \bar{f}(\theta_p) \xrightarrow{d} \mathcal{N} \bigg \{ 0, -E
+\big[ \frac{1}{n} H(\theta_p) \big] \bigg \}
+\]</span></p>
+<p>と書けます。大数の弱法則から<span class="math inline">\(\plim
+(-1/n)H(\theta_p) = - E [ (-1/n)H(\theta_p) ]\)</span>なので、</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;- \big[ \frac{1}{n} H(\theta_p) \big]^{-1} \sqrt{n}
+\bar{f}(\theta_p) \xrightarrow{d} \\
+&amp;\mathcal{N} \bigg \{ 0,  \bigg [ -E \big[ \frac{1}{n} H(\theta_p)
+\big] \bigg ]^{-1} \bigg [ -E \big[ \frac{1}{n} H(\theta_p) \big] \bigg
+] \bigg [ -E \big[ \frac{1}{n} H(\theta_p) \big ] \bigg ]^{-1} \bigg \}
+\end{aligned}
+\]</span></p>
+<p>になり、</p>
+<p><span class="math display">\[
+\sqrt{n} (\hat{\theta} - \theta_p) \xrightarrow{d} \mathcal{N} \bigg \{
+0,  -E \big[ \frac{1}{n} H(\theta_p) \big]^{-1} \bigg \}
+\]</span></p>
+<p>パラメーターの真の値と推定量の差の分散が、ヘッセ行列の逆行列の対角成分に漸近することが分かります。</p>
+</div>
+<div id="実際に計算するコード-1" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span>
+実際に計算するコード</h2>
+<p>説明は長いわけですが、計算は簡単です。上のコードのヤコビアン<code>j</code>がヘッシアンになるので、分散共分散行列は以下のように計算できます。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>vcov <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">solve</span>(j)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>vcov</span></code></pre></div>
+<pre><code>       [,1]  [,2]
+[1,] -1e+00 3e-16
+[2,] -3e-16 1e+02</code></pre>
+<p>標準誤差は分散共分散行列の平方根なので、</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>SEs <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">abs</span>(<span class="fu">diag</span>(vcov)))</span></code></pre></div>
+<div id="z値" class="section level3" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> z値</h3>
+<p>それぞれの係数<code>m</code>を、それぞれの標準誤差<code>SEs</code>で割ると、帰無仮説（<span
+class="math inline">\(H_0\)</span>）が<span
+class="math inline">\(0\)</span>のz値が出て来ます。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>zv <span class="ot">&lt;-</span> m <span class="sc">/</span> SEs</span></code></pre></div>
+<p>両側検定を行えば、パッケージが表示するP値になります。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>zp <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(zv)))</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;z値%2.3f P値%2.3f&quot;</span>, zv, zp)</span></code></pre></div>
+<pre><code>[1] &quot;z値10.489 P値0.000&quot; &quot;z値3.873 P値0.000&quot; </code></pre>
+</div>
+<div id="t値" class="section level3" number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span> t値</h3>
+<p>昔の統計解析パッケージでは、最尤法の推定量にもt値とそのP値が計算されていました。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>tv <span class="ot">&lt;-</span> m <span class="sc">/</span> SEs</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>tp <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pt</span>(<span class="fu">abs</span>(tv), n <span class="sc">-</span> <span class="fu">length</span>(tv)))</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;t値%2.3f P値%2.3f&quot;</span>,tv,tp)</span></code></pre></div>
+<pre><code>[1] &quot;t値10.489 P値0.000&quot; &quot;t値3.873 P値0.001&quot; </code></pre>
+<p>自由度は(サンプルサイズ−パラメーターの数)になります。ただし、自由度の導出方法は確認できませんでした。</p>
+<p>標準誤差の不偏推定量を使っていないので適切な計算方法では無いかも知れませんが、昔の統計解析パッケージのマニュアルを読む限りは特別に何か調整しているわけでは無さそうでした。</p>
+</div>
+</div>
+<div id="wald検定" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> Wald検定</h2>
+<p>複数のパラメーターの値の合計を検定するときは、制約なしモデルの推定結果から検定等計量が計算できるWald検定の使い勝手が、t検定と似ていてよいです。
+試しに<span class="math inline">\(\mu + \sigma^2 =
+25\)</span>を検定してみましょう。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">matrix</span>(m, <span class="dv">2</span>, <span class="dv">1</span>) <span class="co"># 推定された係数を行列にする</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>C <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">1</span>, <span class="dv">2</span>) <span class="co"># 制約を行列にする</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">9</span> <span class="sc">+</span> <span class="dv">4</span><span class="sc">^</span><span class="dv">2</span>), <span class="dv">1</span>, <span class="dv">1</span>) <span class="co"># 帰無仮説はゼロでなくてもよい</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>ws <span class="ot">&lt;-</span> <span class="fu">t</span>(C <span class="sc">%*%</span> b <span class="sc">-</span> R) <span class="sc">%*%</span> <span class="fu">solve</span>(C <span class="sc">%*%</span> vcov <span class="sc">%*%</span> <span class="fu">t</span>(C)) <span class="sc">%*%</span> (C <span class="sc">%*%</span> b <span class="sc">-</span> R)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co"># χ二乗検定の自由度は制約の行列の行数</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(<span class="fu">abs</span>(ws), <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>     [,1]        
+[1,] &quot;8.8456e-03&quot;</code></pre>
+<p>複数の仮説、例えば<span class="math inline">\(\mu = 9\)</span>で<span
+class="math inline">\(\sigma^2 =
+16\)</span>を検定することもできます。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">matrix</span>(m, <span class="dv">2</span>, <span class="dv">1</span>) <span class="co"># 推定された係数を行列にする</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>C <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>) <span class="co"># 制約を行列にする</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">9</span>, <span class="dv">4</span><span class="sc">^</span><span class="dv">2</span>), <span class="dv">2</span>, <span class="dv">1</span>) <span class="co"># 帰無仮説はゼロでなくてもよい</span></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co"># 仮説</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>ws <span class="ot">&lt;-</span> <span class="fu">t</span>(C <span class="sc">%*%</span> b <span class="sc">-</span> R) <span class="sc">%*%</span> <span class="fu">solve</span>(C <span class="sc">%*%</span> vcov <span class="sc">%*%</span> <span class="fu">t</span>(C)) <span class="sc">%*%</span> (C <span class="sc">%*%</span> b <span class="sc">-</span> R)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(<span class="fu">abs</span>(ws), <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>     [,1]     
+[1,] &quot;0.42987&quot;</code></pre>
+<p>なお、<code>vcov</code>はクラスター頑強分散共分散行列であることが求められるので、パネルデータのときは注意してください。</p>
+</div>
+</div>
+<div id="rの関数で推定" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Rの関数で推定</h1>
+<p>上の例では制約条件がありませんでした。つまり重回帰分析の係数は無く、単に平均と分散を求めただけになります。重回帰分析の場合でも、対数尤度関数の<code>y-mu</code>の部分が<code>y-b0-b1*x1-b2*x2</code>などと置き換わるだけなので、概念的には簡単です。ただし推定するパラメーター数と同じだけ一階条件の式が増え、ヤコビアンはその二乗の大きさになる事に注意してください。とてもでは無いですが、上の例のようにパッケージ無しで計算するのには無理があります。</p>
+<p>Rには<code>nlm</code>と<code>optim</code>と言う関数で関数を最小化（もしくは最大化）するパラメーターを求めることができます。試しに<code>nlm</code>を使ってみましょう。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># 対数尤度関数を定義</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>llf <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>    <span class="co"># p[1]がμ，p[2]がσ^2</span></span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    s <span class="ot">&lt;-</span> <span class="fu">sum</span>((y <span class="sc">-</span> p[<span class="dv">1</span>])<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    <span class="sc">-</span>n<span class="sc">*</span><span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi)<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span>n<span class="sc">*</span><span class="fu">log</span>(p[<span class="dv">2</span>])<span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> s<span class="sc">/</span>p[<span class="dv">2</span>]<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>}</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a><span class="co"># 基本的に目的関数と初期値を与えれば計算してくれる</span></span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="co"># グラディエントとヘッシアンは数値微分で内部的に計算</span></span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co"># nlm関数は最小化するパラメーターを探すので、対数尤度関数の符号を反転して目的関数にしている</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>r_nlm <span class="ot">&lt;-</span> <span class="fu">nlm</span>(<span class="cf">function</span>(theta){ <span class="sc">-</span><span class="fu">llf</span>(theta) }, <span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">16</span>), <span class="at">hessian =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>r_nlm</span></code></pre></div>
+<pre><code>$minimum
+[1] 98
+
+$estimate
+[1] 12 39
+
+$gradient
+[1] 1e-06 1e-06
+
+$hessian
+       [,1]   [,2]
+[1,]  8e-01 -1e-05
+[2,] -1e-05  1e-02
+
+$code
+[1] 1
+
+$iterations
+[1] 13</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">solve</span>(r_nlm<span class="sc">$</span>hessian)</span></code></pre></div>
+<pre><code>      [,1]  [,2]
+[1,] 1e+00 2e-03
+[2,] 2e-03 1e+02</code></pre>
+<p><code>optim</code>関数は、引数<code>control</code>に渡す値で、目的関数を最大化するパラメーターを探す事ができます。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">11</span>, <span class="dv">16</span>), llf, <span class="at">hessian =</span> <span class="cn">TRUE</span>, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span></code></pre></div>
+<p>もの凄く楽ですね。今までは何であったのかと言わないでください。なお、対数尤度関数やデータの都合によってはグラディエントをユーザー定義関数として与えた方がよいです。</p>
+<div id="尤度比lr検定" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> 尤度比（LR）検定</h2>
+<p>最尤法ではWald検定以外にも、尤度比検定とラグランジェ乗数検定がよく使われます。その中で、よく考えるとWilks定理が出てくるのでややこしい一方で、ぱっと見で直観的なのは尤度比検定です。帰無仮説<span
+class="math inline">\(\mu=10,
+\sigma=5\)</span>を検定してみましょう。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># 尤度比検定の統計量; H0: μ=11, σ=6</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>lrs <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">llf</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">5</span><span class="sc">^</span><span class="dv">2</span>)) <span class="sc">-</span> <span class="fu">llf</span>(r_optim<span class="sc">$</span>par))</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="co"># χ二乗分布からp値を求める; パラメーター2つを同時検定なので自由度は2</span></span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(lrs, <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>[1] &quot;1.3305e-02&quot;</code></pre>
+<p>上の例では不要でしたが、一般には制約無しのモデルと、制約付きのモデルをそれぞれ推定する必要があります。制約されていないパラメーターの値が分からないからです。制約に<span
+class="math inline">\(\mu=10\)</span>を置いて、尤度比検定をかけてみましょう。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># 対数尤度関数をカリー化して、制約μ=10を置いて最適化</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>r_optim_restricted <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">11</span>), <span class="cf">function</span>(p) <span class="fu">llf</span>(<span class="fu">c</span>(<span class="dv">10</span>, p)), <span class="at">hessian =</span> <span class="cn">TRUE</span>, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co"># 尤度比検定の統計量; H0: μ=11, σ=6</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>lrs <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">llf</span>(<span class="fu">c</span>(<span class="dv">10</span>, r_optim_restricted<span class="sc">$</span>par)) <span class="sc">-</span> <span class="fu">llf</span>(r_optim<span class="sc">$</span>par))</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="co"># χ二乗分布からp値を求める; パラメーター1つを検定なので自由度は1</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(lrs, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>[1] &quot;8.3754e-02&quot;</code></pre>
+<p><code>lm</code>や<code>optim</code>に慣れれば尤度比検定をかけるのが楽です。</p>
+<p>似たような検定が3種類あっても感があるわけですが、推定を2回する必要があるのが欠点</p>
+</div>
+<div id="ラグランジェ乗数lm検定" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span>
+ラグランジェ乗数（LM）検定</h2>
+<p>スコア検定とも呼ばれるもので、直観的にはややこしそうですが、説明はそうでもないものです。制約付きモデルの推定と、グラディエントとヘッシアンの計算で検定統計量が計算できます。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># 数値微分を計算してくれるパッケージ</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;numDeriv&quot;</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co"># 制約付きモデルの推定結果から、制約付きパラメーターをつくる</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co"># 今回の例は数学的にグラディエントとヘッシアンが導出してあるので、</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co"># g &lt;- matrix(c(eval(f1), eval(f2)), 2, 1)</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co"># h &lt;- matrix(c(eval(g11), eval(g21), eval(g12), eval(g22)), 2, 2)</span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co"># としても良いが、一般的には数値微分してしまうほうが手っ取り早いし、間違いが少ない</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>param_restricted <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, r_optim_restricted<span class="sc">$</span>par)</span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co"># 制約なしモデルに、制約付きパラメーターを入れて、グラディエントをつくる</span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">grad</span>(llf, param_restricted), <span class="dv">1</span>)</span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="co"># 制約なしモデルに、制約付きパラメーターを入れて、ヘッシアンをつくる</span></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">hessian</span>(llf, param_restricted)</span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a><span class="co"># -hはフィッシャー情報行列</span></span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a>lmt <span class="ot">&lt;-</span> g <span class="sc">%*%</span> <span class="fu">solve</span>(<span class="sc">-</span>h) <span class="sc">%*%</span> <span class="fu">t</span>(g)</span>
+<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a><span class="co"># 制約されたパラメーターは1つなので、自由度1のχ二乗検定</span></span>
+<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(lmt, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>     [,1]        
+[1,] &quot;6.0894e-02&quot;</code></pre>
+</div>
+<div id="wald検定lm検定lr検定の使い分け" class="section level2"
+number="5.3">
+<h2><span class="header-section-number">5.3</span>
+Wald検定，LM検定，LR検定の使い分け</h2>
+<p>この3つは本質的には同一の検定である事が示されているわけですが、Wald検定は制約無しモデルを推定すれば利用でき、LR検定は制約付きモデルを推定すれば利用でき、LR検定は2つのモデルをそれぞれ推定しないと利用できないです。計算量から言えばWald検定が優れているような気がしますが、現在の計算機の速度から言えば誤差ですし、コーディング量はLR検定が少ないです。Breusch-Pagan検定のような定番の手法で使っている場合でなければ、説明がしやすい手法を選びましょう。計量経済学を履修していれば、全部、試験範囲だと思いますが。</p>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>指数分布族で制約が線形など典型的な場合はGLMを用いることで、収束しやすくなり、標準誤差が小さくなります。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

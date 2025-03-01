@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>コーシー分布とのつきあい方</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">コーシー分布とのつきあい方</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>そうは出会わないと思いますが，妙に裾野が厚い分布に備えましょう．</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#コーシー分布の導出" id="toc-コーシー分布の導出"><span
+class="toc-section-number">1</span> コーシー分布の導出</a></li>
+<li><a href="#コーシー分布の特性関数の展開"
+id="toc-コーシー分布の特性関数の展開"><span
+class="toc-section-number">2</span> コーシー分布の特性関数の展開</a>
+<ul>
+<li><a href="#森杉原複素関数論の補題7.3"
+id="toc-森杉原複素関数論の補題7.3"><span
+class="toc-section-number">2.1</span>
+森・杉原『複素関数論』の補題7.3</a>
+<ul>
+<li><a href="#定理" id="toc-定理"><span
+class="toc-section-number">2.1.1</span> 定理</a></li>
+<li><a href="#jordanの不等式" id="toc-jordanの不等式"><span
+class="toc-section-number">2.1.2</span> Jordanの不等式</a></li>
+<li><a href="#証明" id="toc-証明"><span
+class="toc-section-number">2.1.3</span> 証明</a></li>
+</ul></li>
+<li><a href="#コーシー分布の特性関数"
+id="toc-コーシー分布の特性関数"><span
+class="toc-section-number">2.2</span> コーシー分布の特性関数</a></li>
+</ul></li>
+<li><a href="#コーシー分布の性質" id="toc-コーシー分布の性質"><span
+class="toc-section-number">3</span> コーシー分布の性質</a>
+<ul>
+<li><a href="#期待値が定義されない" id="toc-期待値が定義されない"><span
+class="toc-section-number">3.1</span> 期待値が定義されない</a></li>
+<li><a href="#コーシー分布の再生性" id="toc-コーシー分布の再生性"><span
+class="toc-section-number">3.2</span> コーシー分布の再生性</a>
+<ul>
+<li><a href="#線形結合はコーシー分布"
+id="toc-線形結合はコーシー分布"><span
+class="toc-section-number">3.2.1</span> 線形結合はコーシー分布</a></li>
+<li><a href="#平均もコーシー分布" id="toc-平均もコーシー分布"><span
+class="toc-section-number">3.2.2</span> 平均もコーシー分布</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#コーシー分布とのつきあい方"
+id="toc-コーシー分布とのつきあい方"><span
+class="toc-section-number">4</span> コーシー分布とのつきあい方</a>
+<ul>
+<li><a href="#二標本のランク検定" id="toc-二標本のランク検定"><span
+class="toc-section-number">4.1</span> 二標本のランク検定</a></li>
+<li><a href="#ランク基準推定" id="toc-ランク基準推定"><span
+class="toc-section-number">4.2</span> ランク基準推定</a>
+<ul>
+<li><a href="#データセット" id="toc-データセット"><span
+class="toc-section-number">4.2.1</span> データセット</a></li>
+<li><a href="#誤差項がコーシー分布に従うときの推定"
+id="toc-誤差項がコーシー分布に従うときの推定"><span
+class="toc-section-number">4.2.2</span>
+誤差項がコーシー分布に従うときの推定</a></li>
+<li><a href="#誤差項が正規分布に従うときの推定"
+id="toc-誤差項が正規分布に従うときの推定"><span
+class="toc-section-number">4.2.3</span>
+誤差項が正規分布に従うときの推定</a></li>
+<li><a href="#モデル選択" id="toc-モデル選択"><span
+class="toc-section-number">4.2.4</span> モデル選択</a></li>
+<li><a href="#分散分析" id="toc-分散分析"><span
+class="toc-section-number">4.2.5</span> 分散分析</a></li>
+<li><a href="#olsとの使い分け" id="toc-olsとの使い分け"><span
+class="toc-section-number">4.2.6</span> OLSとの使い分け</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<p>内生性や不均一性の問題は生じないはずなのに，分布の裾野が厚くなって，ウェルチのt検定などで比較ができなかったり，最小二乗法やモーメント法やそれらのバリエーションになる推定方法で上手く推定できないときがあります．誤差項の分布がコーシー分布になっていて，中心極限定理が働いていないのかも知れません．</p>
+<p>経験的にはそうは見かけないデータですが，何らかの都合で確率変数を確率変数で割った値を被説明変数にとると，原理的にコーシー分布を推定することになります．コーシー分布の導出を行い，その性質を確認した上で，コーシー分布でも上手く扱える統計手法の取り扱い方を抑えておきましょう．</p>
+<div id="コーシー分布の導出" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> コーシー分布の導出</h1>
+<p>正規分布に従う確率変数を，正規分布に従う確率変数で割ると，コーシー分布に従う確率変数になることが知られています．簡単のために，標準正規分布に従う確率変数の同時確率密度を考えましょう．</p>
+<p><span class="math display">\[
+u,v \sim \mathcal{N}(0, 1)
+\]</span></p>
+<p><span class="math display">\[
+f(u,v) = \frac{1}{\sqrt{2\pi}}e^{-\frac{u^2}{2}} \cdot
+\frac{1}{\sqrt{2\pi}}e^{-\frac{v^2}{2}}
+\]</span></p>
+<p>変数変換をして基底を変えます．</p>
+<p><span class="math display">\[
+\begin{align*}
+x &amp;= \frac{u}{v} \\
+y &amp;= v
+\end{align*}
+\]</span></p>
+<p>ヤコビアンは</p>
+<p><span class="math display">\[
+\begin{vmatrix}
+\frac{\partial(u,v)}{\partial(x,y)}
+\end{vmatrix} = \begin{vmatrix}
+\frac{\partial u}{\partial x} &amp; \frac{\partial u}{\partial y} \\
+\frac{\partial v}{\partial x} &amp; \frac{\partial v}{\partial y}
+\end{vmatrix} = \begin{vmatrix}
+y &amp; x \\
+0 &amp; 1
+\end{vmatrix} = y
+\]</span></p>
+<p>となります．</p>
+<p><span class="math inline">\(f(u,v)\)</span>に<span
+class="math inline">\(u = xy, v =
+y\)</span>を代入し，ヤコビアンを乗じたものが<span
+class="math inline">\(x\)</span>と<span
+class="math inline">\(y\)</span>の同時確率密度関数になります．</p>
+<p><span class="math display">\[
+\int_{-\infty}^\infty \frac{1}{2\pi}|y|e^{-\frac{1+x^2}{2}y^2}dy
+\]</span></p>
+<p><span class="math inline">\(y\)</span>で積分をして<span
+class="math inline">\(x\)</span>の確率密度関数を求めましょう．</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;= \int_0^\infty \frac{1}{\pi}y e^{-\frac{1+x^2}{2}y^2} dy
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(w = (1 +
+x^2)y^2/2\)</span>とし，変数変換をします．<span
+class="math inline">\(dy/dw = 1/(y(1+x^2))\)</span>から，</p>
+<p><span class="math display">\[
+\begin{align*}
+&amp;= \int_0^\infty \frac{1}{\pi}y e^{-w} \frac{1}{y(1+x^2)}dw \\
+&amp;= \frac{1}{\pi(1+x^2)} \int_0^\infty e^{-w} dw
+\end{align*}
+\]</span></p>
+<p>ここで</p>
+<p><span class="math display">\[
+\Gamma(t) = \int_0^\infty e^{-s} s^{t-1} ds
+\]</span></p>
+<p>に注意すると</p>
+<p><span class="math display">\[
+\begin{align*}
+= \frac{1}{\pi(1+x^2)}
+\end{align*}
+\]</span></p>
+<p>と標準コーシー分布が導出できます．</p>
+</div>
+<div id="コーシー分布の特性関数の展開" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+コーシー分布の特性関数の展開</h1>
+<p>特性関数は確率密度関数をフーリエ変換したもので，あらゆる分布に存在し，また分布に応じて一意に定まるものです．その性質の確認のために，コーシー分布の特性関数を整理しておきましょう．</p>
+<div id="森杉原複素関数論の補題7.3" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span>
+森・杉原『複素関数論』の補題7.3</h2>
+<p>確率分布を取り扱うときには便利そうな定理だったのですが，名前が無さそうなので教科書の説明を借りてきます．Jordanの不等式の説明は勝手に挟みました．</p>
+<div id="定理" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> 定理</h3>
+<p><span class="math inline">\(f(x)\)</span>は上半平面（<span
+class="math inline">\(0 \leq \mathrm{arg}\ z \leq
+\pi\)</span>）において<span class="math inline">\(|z| \rightarrow
+\infty\)</span>のとき，一様に<span
+class="math inline">\(0\)</span>に近づく正則関数<a href="#fn1"
+class="footnote-ref" id="fnref1"><sup>1</sup></a>で，<span
+class="math inline">\(\Gamma_R\)</span>は原点を中心とする半径<span
+class="math inline">\(R\)</span>の上半平面にある半円周からなる積分路とする．このとき，
+<span class="math display">\[
+\lim_{R\rightarrow\infty}\int_{\Gamma_R} e^{ipz}f(z)dz = 0
+\]</span> が成り立つ．ただし，<span
+class="math inline">\(p&gt;0\)</span>とする．</p>
+</div>
+<div id="jordanの不等式" class="section level3" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> Jordanの不等式</h3>
+<p><span class="math display">\[
+0 \leq x \leq \frac{\pi}{2}
+\]</span></p>
+<p>において</p>
+<p><span class="math display">\[
+\frac{2x}{\pi} \leq \sin x \leq x
+\]</span></p>
+<p>区間<span class="math inline">\([0, \pi/2]\)</span>で，<span
+class="math inline">\(x - \sin x\)</span>は非負の単調増加関数で，<span
+class="math inline">\(\sin x - 2x/\pi\)</span>は<span
+class="math inline">\(x=\cos^{-1} 2/\pi\)</span>を最大値，<span
+class="math inline">\(x=0,\pi/2\)</span>で最小値<span
+class="math inline">\(0\)</span>をとり，非負であるため．</p>
+</div>
+<div id="証明" class="section level3" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> 証明</h3>
+<p><span class="math display">\[
+I_R = \int_{\Gamma_R}e^{ipz}f(z)dz
+\]</span></p>
+<p>とおく．<span
+class="math inline">\(\epsilon\)</span>を任意の正数とするとき，<span
+class="math inline">\(R\)</span>を十分大きくとれば，仮定から上半平面で<span
+class="math inline">\(R \leq |z|\)</span>なるすべての<span
+class="math inline">\(z\)</span>に対して<span
+class="math inline">\(|f(z)| &lt;
+\epsilon\)</span>とすることができる．このとき，</p>
+<p><span class="math display">\[
+|I_R| = \int_{\Gamma_R}|e^{ipz}||f(z)||dz|
+\]</span></p>
+<p>であるが，<span class="math inline">\(z =
+Re^{i\theta}\)</span>とおくと</p>
+<p><span class="math display">\[
+\begin{align*}
+|e^{ipz}| &amp;= |\exp{(ipR\cos\theta - pR\sin\theta)}| \\
+&amp;= \exp{(-pR\sin\theta)} \\
+|dz| &amp;= |iRe^{i\theta}d\theta| = Rd\theta
+\end{align*}
+\]</span></p>
+<p>となり，したがって</p>
+<p><span class="math display">\[
+\begin{align*}
+|I_R| &amp;&lt; \epsilon R \int_0^\pi \exp(-pR\sin\theta)d\theta \\
+&amp;= 2\epsilon R \int_0^{\pi/2} \exp(-pR\sin\theta)d\theta
+\end{align*}
+\]</span></p>
+<p>が得られる．ここで，<span class="math inline">\(0\leq \theta \leq
+\pi/2\)</span>において成り立ついわゆるJordanの不等式</p>
+<p><span class="math display">\[
+\frac{2}{\pi} \theta \leq \sin\theta
+\]</span></p>
+<p>を使えば，</p>
+<p><span class="math display">\[
+\begin{align*}
+\int^{\pi/2}_0 \exp(-pR\sin\theta)d\theta &amp;\leq \int^{\pi/2}_0
+\exp(-2pR\theta/\pi)d\theta\\
+&amp;= -\frac{\pi}{2pR}\exp\bigg(-\frac{2pR}{\pi}\theta
+\bigg)\mid^{\pi/2}_0 \\
+&amp;= \frac{\pi}{2pR}(1 - e^{-pR}) \lt \frac{\pi}{2pR}
+\end{align*}
+\]</span></p>
+<p>すなわち<span
+class="math inline">\(|I_R|\lt\pi\epsilon/p\)</span>となり，したがって(7.13)が成り立つ．</p>
+</div>
+</div>
+<div id="コーシー分布の特性関数" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+コーシー分布の特性関数</h2>
+<p>コーシー分布の確率密度関数は，位置パラメーターを<span
+class="math inline">\(x_0\)</span>，尺度パラメータを<span
+class="math inline">\(\sigma\)</span>とすると</p>
+<p><span class="math display">\[
+f(x) = \frac{\sigma}{\pi} \frac{1}{\sigma^2 + (x - x_0)^2}
+\]</span></p>
+<p>となります．</p>
+<p>特性関数は，</p>
+<p><span class="math display">\[
+\begin{align*}
+\varphi(t) &amp;= E\big[ e^{itX} \big] \\
+&amp;= \int e^{itx}\frac{\sigma}{\pi} \frac{1}{\sigma^2 + (x - x_0)^2}
+\\
+&amp;= \frac{\sigma}{\pi} \int \frac{e^{itx}}{(x - x_0 + i\sigma)(x -
+x_0 - i\sigma)}dx
+\end{align*}
+\]</span></p>
+<p>となります．ここで複素平面上の<span
+class="math inline">\(-R\)</span>と<span
+class="math inline">\(R\)</span>を両端にとる上半円<span
+class="math inline">\(C_R\)</span>の線積分を考えると</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{C_R} \frac{e^{itz}}{(z - x_0 + i\sigma)(z - x_0 - i\sigma)}dz \\
+= \int^R_{-R} \frac{e^{itx}}{(x - x_0 + i\sigma)(x - x_0 - i\sigma)}dx
+\\
++ \int_{\Gamma_R} \frac{e^{itz}}{(z - x_0 + i\sigma)(z - x_0 -
+i\sigma)}dz
+\end{align*}
+\]</span></p>
+<p>となります．<span
+class="math inline">\(\Gamma_R\)</span>は複素平面上の弧を通る経路です．</p>
+<p><img src="common_files/figure-html/cauchy-1.png" width="480" /></p>
+<p>特異点は<span class="math inline">\(x_0 + i\sigma\)</span>と<span
+class="math inline">\(x_0 - i\sigma\)</span>になりますが，<span
+class="math inline">\(x_0-i\sigma\)</span>は上半円<span
+class="math inline">\(C_R\)</span>の内側に無いので，留数はよく知られた1位の極の計算技法により</p>
+<p><span class="math display">\[
+\begin{align*}
+\mathrm{Res}(i) &amp;= \lim_{z \rightarrow x_0 + i\sigma} (z - x_0 -
+i\sigma) \frac{e^{itz}}{(z - x_0 + i\sigma)(z - x_0 - i\sigma)}\\
+&amp;= \frac{e^{it(x_0 + i\sigma)}}{2i\sigma}
+\end{align*}
+\]</span></p>
+<p>となり，経路<span
+class="math inline">\(C_R\)</span>の積分は，留数定理により</p>
+<p><span class="math display">\[
+\begin{align*}
+\int_{C_R} \frac{e^{itz}}{(z - x_0 + i\sigma)(z - x_0 - i\sigma)}dz
+= 2 \pi i \frac{e^{it(x_0 + i\sigma)}}{2i\sigma}
+\end{align*}
+\]</span></p>
+<p>となります．</p>
+<p>一方，<span class="math inline">\(t&gt;0\)</span>のとき，</p>
+<p><span class="math display">\[
+\lim_{|z| \rightarrow \infty} (z - x_0 + i\sigma)(z - x_0 - i\sigma) =
+\infty
+\]</span></p>
+<p>となるため，森・杉原『複素関数論』の補題7.3より</p>
+<p><span class="math display">\[
+\lim_{R\rightarrow\infty} \int_{\Gamma_R} \frac{e^{itz}}{(z - x_0 +
+i\sigma)(z - x_0 - i\sigma)}dz = 0
+\]</span></p>
+<p>となります．</p>
+<p><span class="math display">\[
+\int^R_{-R} \frac{e^{itx}}{(x - x_0 + i\sigma)(x - x_0 - i\sigma)}dx
+\]</span></p>
+<p><span class="math display">\[
+= \int_{C_R} \frac{e^{itz}}{(z - x_0 + i\sigma)(z - x_0 - i\sigma)}dz -
+\int_{\Gamma_R} \frac{e^{itz}}{(z - x_0 + i\sigma)(z - x_0 - i\sigma)}dz
+\]</span></p>
+<p>であるため，コーシー分布の特性関数は</p>
+<p><span class="math display">\[
+\begin{align*}
+\varphi(t) &amp;= \frac{\sigma}{\pi} \lim_{R\rightarrow\infty}
+\int^R_{-R} \frac{e^{itx}}{(x - x_0 + i\sigma)(x - x_0 - i\sigma)}dx\\
+&amp;= e^{i t x_0 - \sigma t}
+\end{align*}
+\]</span></p>
+<p>と整理できます．<span
+class="math inline">\(t&lt;0\)</span>のときは，<span
+class="math inline">\(z=-k\)</span>で変数変換を行なうと，<span
+class="math inline">\(\exp{(itz)} = \exp{(i(-t)(-z))} =
+\exp{(i(-t)k)}\)</span>と補題7.3を使えるようにでき，1位の極が<span
+class="math inline">\(-x_0 + i\sigma\)</span>になることに注意すると</p>
+<p><span class="math display">\[
+\begin{align*}
+\varphi(t) &amp;= e^{i t x_0 - \sigma (-t)}
+\end{align*}
+\]</span></p>
+<p>となることがわかります．<span class="math inline">\(0 \lt
+t\)</span>と<span class="math inline">\(0 \gt
+t\)</span>の場合をまとめると</p>
+<p><span class="math display">\[
+\begin{align*}
+\varphi(t) &amp;= e^{i t x_0 - \sigma |t|}
+\end{align*}
+\]</span></p>
+<p>と，よく知られた簡素な形式になります．</p>
+</div>
+</div>
+<div id="コーシー分布の性質" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> コーシー分布の性質</h1>
+<p>t検定や線形回帰が使えないことを確認しましょう．</p>
+<div id="期待値が定義されない" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span>
+期待値が定義されない</h2>
+<p>実際に期待値の計算をしてみると</p>
+<p><span class="math display">\[
+\begin{align*}
+E[x] &amp;= \int^\infty_{-\infty} x \bigg[ \frac{1}{\pi}
+\frac{\sigma}{\sigma^2 + (x-x_0)^2} \bigg] dx \\
+&amp;=x_0 + \frac{\sigma}{\pi} \int^\infty_{-\infty} \frac{x -
+x_0}{\sigma^2 + (x-x_0)^2} dx \\
+&amp;=x_0 + \frac{\sigma}{\pi} \lim_{R_1,R_2\rightarrow\infty}
+\int^{R_2}_{-R_1} \frac{z}{1 + z^2} dz\qquad(z = \frac{x - x_0}{\sigma})
+\\
+&amp;=x_0 + \frac{\sigma}{2\pi} \lim_{R_1,R_2\rightarrow\infty} \bigg[
+\log(1 + z^2) \bigg]^{R_2}_{-R_1} \\
+&amp;=x_0 + \frac{\sigma}{2\pi} \lim_{R_1,R_2\rightarrow\infty}
+\log{\bigg(\frac{1 + R_2^2}{1 + R_1^2}\bigg)}
+\end{align*}
+\]</span></p>
+<p>となるのですが，最後の行の右辺第2項に値が存在しません．</p>
+</div>
+<div id="コーシー分布の再生性" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span>
+コーシー分布の再生性</h2>
+<p>検定や推定がしづらいのに，安定的なのがコーシー分布です．<a
+href="./if_cfuncs_are_the_same.shtml">特性関数が同じならば，同じ分布になる</a>ことから，再生性を確認しましょう．</p>
+<div id="線形結合はコーシー分布" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span>
+線形結合はコーシー分布</h3>
+<p>2つの確率変数の線形結合の特性関数は，それぞれの特性関数を乗じたものとなります．</p>
+<p>確率変数<span class="math inline">\(x,y\)</span>の線形結合<span
+class="math inline">\(z = \alpha x + \beta y\ (\alpha,\beta \in
+\mathbb{R})\)</span>の特性関数は</p>
+<p><span class="math display">\[
+\begin{align*}
+\varphi_{f+g}(t) &amp;= \int_{-\infty}^\infty e^{izt}
+\int_{-\infty}^\infty f\bigg(\frac{z - \beta y}{\alpha}\bigg)g(y) dy
+dz\\
+&amp;= \int_{-\infty}^\infty g(y) \bigg( \int_{-\infty}^\infty e^{izt}
+f\bigg(\frac{z - \beta y}{\alpha}\bigg) dz \bigg) dy \\
+&amp;= \int_{-\infty}^\infty g(y) \bigg( \int_{-\infty}^\infty
+e^{i\frac{z - \beta y}{\alpha}\alpha t} e^{\beta y}{\alpha}t
+f\bigg(\frac{z - \beta y}{\alpha}\bigg) dz \bigg) dy \\
+&amp;= \int_{-\infty}^\infty e^{iy\beta t} g(y) \bigg(
+\int_{-\infty}^\infty e^{i\frac{z - \beta y}{\alpha}\alpha t}
+f\bigg(\frac{z - \beta y}{\alpha}\bigg) dz \bigg) dy \\
+&amp;= \int_{-\infty}^\infty e^{iy\beta t} g(y) dy \int_{-\infty}^\infty
+e^{iw \alpha t} f(w) dw \\
+&amp;= \varphi_f(\alpha t) \cdot \varphi_g(\beta t)
+\end{align*}
+\]</span></p>
+<p>正規分布の特性関数には接近しません．</p>
+</div>
+<div id="平均もコーシー分布" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span>
+平均もコーシー分布</h3>
+<p>コーシー分布に従う2つの確率変数の平均はコーシー分布に従います．</p>
+<p><span class="math display">\[
+\begin{align*}
+\varphi_{f+g}(t) &amp;= e^{i \frac{t}{2} x_{0f} - \sigma_f
+|\frac{t}{2}|}e^{i \frac{t}{2} x_{0g} - \sigma_g |\frac{t}{2}|} \\
+&amp;= e^{i t \frac{x_{0f} + x_{0g}}{2} - \frac{\sigma_f + \sigma_g}{2}
+|t|} \\
+\end{align*}
+\]</span></p>
+<p>i.i.d.であれば，元の分布に従い，パラメータは変化しません．サンプルサイズを大きくしていっても，その平均の推定量は改善されません．</p>
+</div>
+</div>
+</div>
+<div id="コーシー分布とのつきあい方" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
+コーシー分布とのつきあい方</h1>
+<p>原理的に中心極限定理に依存した分析手法が使えないコーシー分布ですが，実際にシミュレーションしてみると確かにt検定もOLSもうまく動きません．しかしランクを用いた分析手法を使うと，コーシー分布に従う確率変数でも上手く分析することができます．</p>
+<div id="二標本のランク検定" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span>
+二標本のランク検定</h2>
+<p>コーシー分布には期待値がないので，それに従うサンプルの平均や分散の差は上手く検定できませんが，2標本それぞれからの観測値<span
+class="math inline">\(X_1,X_2\)</span>において<span
+class="math inline">\(P(X_1 \le X_2) + P(X_1=X_2)/2 =
+0.5\)</span>を帰無仮説とするランク検定は問題なく使えます．</p>
+<p>ただし，伝統的に使われてきたマン=ホイットニーのU検定（ウィルコクソンの順位和検定）は比較するに二標本の分散やサンプルサイズが大きく異なると精度が落ちる事が知られており，現在では代わりにBrunner-Munzel検定を使うことが推奨されています．</p>
+<p>対応しているパッケージは色々あるのですが，比較的最近開発された<code>brunnermunzel</code>パッケージは速度に優れ，精度も検証され改良されたので安心感があります．</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(brunnermunzel)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20230303</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> <span class="fu">rcauchy</span>(n)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> <span class="fu">rcauchy</span>(n)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">brunnermunzel.test</span>(y1, y2)</span></code></pre></div>
+<pre><code>
+    Brunner-Munzel Test
+
+data:  y1 and y2
+Brunner-Munzel Test Statistic = 1, df = 2e+02, p-value = 2e-01
+95 percent confidence interval:
+ 5e-01 6e-01
+sample estimates:
+P(X&lt;Y)+.5*P(X=Y) 
+           6e-01 </code></pre>
+</div>
+<div id="ランク基準推定" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> ランク基準推定</h2>
+<p><code>Rfit</code>パッケージで提供されている手法で，Kloke and McKean
+(2012) "<a
+href="https://journal.r-project.org/archive/2012/RJ-2012-014/index.html">Rfit:
+Rank-based Estimation for Linear Models</a>," <em>The R Journal</em>,
+Vol.4(2)にアルゴリズムの概要と利用方法の詳細が書いてあるので説明する必要はないのですが，ランク基準線形モデル推定はランク<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>を用いた線形回帰で，OLSでは一致推定量が得られない誤差項がコーシー分布である場合なども，頑強な結果を示してくれます．また，ノンパラ手法の紹介ページで存在を知ったのですが，カーネル回帰のように大きなサンプルサイズが必要になるわけではないです．</p>
+<p>モデルと推定はそうややこしくなく，正規化したら以下の条件を満たすようにできるスコア関数<span
+class="math inline">\(\varphi\)</span>を定義して，</p>
+<p><span class="math display">\[
+\int_0^1 \varphi(u)du = 0, \quad \int_0^1 \varphi(u)^2 du = 1
+\]</span></p>
+<p>誤差項からつくったランクを，<span
+class="math inline">\((0,1)\)</span>の範囲に収まるようにサンプルサイズ<span
+class="math inline">\(n\)</span>で割った値を，スコア関数に入れた値を，誤差項と乗じたものの総和を，最小化するように最適化アルゴリズムで推定します．</p>
+<p><span class="math display">\[
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+\begin{align*}
+u &amp;= y-X\beta \\
+\parallel u \parallel_\varphi &amp;= \sum^n_{i=1}
+\varphi\bigg(\frac{\mathrm{Rank}(u_i)}{n + 1}\bigg)u_i \\
+\hat{\beta}_\varphi &amp;= \argmin_{\beta} \parallel u \parallel_\varphi
+\end{align*}
+\]</span></p>
+<p><span class="math inline">\(y\)</span>は被説明変数のベクトル，<span
+class="math inline">\(X\)</span>は説明変数の行列，<span
+class="math inline">\(\beta\)</span>はその係数，<span
+class="math inline">\(u\)</span>は残差のベクトルです．スコア関数は幾つかオプションがあり，標準では以下のWilcoxon
+Scoreが使われます．</p>
+<p><span class="math display">\[
+\varphi_{WS}(u) := \sqrt{12}(u-0.5)
+\]</span></p>
+<p>ランク基準推定量は一致性と漸近正規性があって，</p>
+<p><span class="math display">\[
+\hat{\beta}_\varphi \overset{a}{\sim} \mathcal{N}(\beta, \gamma_\varphi
+(^t\!XX)^{-1})
+\]</span></p>
+<p>と書くことができ<a href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>，OLSと同様に検定が扱えるのが利点です．<span
+class="math inline">\(\gamma_\varphi\)</span>はスケールパラメーターで，<a
+href="https://www.jstor.org/stable/4616057">Koul et al. (1987)</a><a
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>で提案されている方法で推定します．</p>
+<p>試しに誤差項がコーシー分布と正規分布に従う2つのサンプル生成して，ランク基準推定とOLSで推定量の比較をしてみましょう．</p>
+<div id="データセット" class="section level3" number="4.2.1">
+<h3><span class="header-section-number">4.2.1</span> データセット</h3>
+<p>データ生成モデルは<span class="math inline">\(y = 1 + 2x - 3z +
+\epsilon\)</span>で，<span
+class="math inline">\(\epsilon\)</span>がコーシー分布もしくは正規分布に従うとします．</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># データセットを作成</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">with</span>(<span class="fu">list</span>(<span class="at">n =</span> <span class="dv">90</span>), {</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>    <span class="fu">set.seed</span>(<span class="dv">520</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>    g <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n <span class="sc">%%</span> <span class="dv">3</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>    gcoef <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.05</span>, <span class="sc">-</span><span class="fl">0.05</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>    y_c <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>z  <span class="sc">+</span> <span class="fu">rcauchy</span>(n, <span class="at">scale =</span> <span class="dv">1</span>)</span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>    y_n <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>z  <span class="sc">+</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>    <span class="fu">data.frame</span>(y_c, y_n, x, z, <span class="at">g =</span> <span class="fu">as.factor</span>(g))</span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="誤差項がコーシー分布に従うときの推定" class="section level3"
+number="4.2.2">
+<h3><span class="header-section-number">4.2.2</span>
+誤差項がコーシー分布に従うときの推定</h3>
+<p>誤差項がコーシー分布に従うときは，OLSの推定量はデータ生成プロセスとかけ離れた値になる一方，ランク基準推定はそこそこの精度で推定ができています．漸近的に正規分布に一致するのを活かしてt値が計算されていますね．</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;Rfit&quot;</span>)</span></code></pre></div>
+<pre><code>
+次のパッケージを付け加えます: &#39;Rfit&#39;</code></pre>
+<pre><code>以下のオブジェクトは &#39;package:numDeriv&#39; からマスクされています:
+
+    grad</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>r_rfit_c <span class="ot">&lt;-</span> <span class="fu">rfit</span>(y_c <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> g, <span class="at">data =</span> df01) <span class="co"># 推定</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">summary</span>(r_rfit_c) <span class="co"># 推定結果の確認</span></span></code></pre></div>
+<pre><code>Call:
+rfit.default(formula = y_c ~ x + z + g, data = df01)
+
+Coefficients:
+            Estimate Std. Error t.value p.value    
+(Intercept)    1.093      0.380    2.88 5.0e-03 ** 
+x              2.124      0.108   19.75 &lt; 2e-16 ***
+z             -3.404      0.370   -9.20 2.2e-14 ***
+g1            -0.378      0.548   -0.69 4.9e-01    
+g2            -0.146      0.546   -0.27 7.9e-01    
+---
+Signif. codes:  0 &#39;***&#39; 1e-03 &#39;**&#39; 1e-02 &#39;*&#39; 5e-02 &#39;.&#39; 1e-01 &#39; &#39; 1
+
+Multiple R-squared (Robust): 7e-01 
+Reduction in Dispersion Test: 55 p-value: 0 </code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y_c <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> g, <span class="at">data =</span> df01)) <span class="co"># OLSの場合</span></span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = y_c ~ x + z + g, data = df01)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-337.1   -0.3    2.3    9.1   34.9 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)  4.96e-01   6.92e+00    0.07     0.94
+x            2.44e+00   1.93e+00    1.26     0.21
+z           -6.78e+00   6.63e+00   -1.02     0.31
+g1          -1.31e+01   9.82e+00   -1.34     0.19
+g2          -1.94e+00   9.79e+00   -0.20     0.84
+
+Residual standard error: 38 on 85 degrees of freedom
+Multiple R-squared:  0.0491,    Adjusted R-squared:  0.00433 
+F-statistic:  1.1 on 4 and 85 DF,  p-value: 0.364</code></pre>
+</div>
+<div id="誤差項が正規分布に従うときの推定" class="section level3"
+number="4.2.3">
+<h3><span class="header-section-number">4.2.3</span>
+誤差項が正規分布に従うときの推定</h3>
+<p>OLSもランク基準推定も大差のない結果となっています．</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>r_rfit_n <span class="ot">&lt;-</span> <span class="fu">rfit</span>(y_n <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> g, <span class="at">data =</span> df01) <span class="co"># 推定</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">summary</span>(r_rfit_n) <span class="co"># 推定結果の確認</span></span></code></pre></div>
+<pre><code>Call:
+rfit.default(formula = y_n ~ x + z + g, data = df01)
+
+Coefficients:
+             Estimate Std. Error t.value p.value    
+(Intercept)  1.11e+00   1.89e-01    5.88 7.7e-08 ***
+x            2.05e+00   5.12e-02   40.00 &lt; 2e-16 ***
+z           -3.03e+00   1.76e-01  -17.19 &lt; 2e-16 ***
+g1          -8.86e-02   2.61e-01   -0.34    0.74    
+g2           9.24e-02   2.60e-01    0.36    0.72    
+---
+Signif. codes:  0 &#39;***&#39; 1e-03 &#39;**&#39; 1e-02 &#39;*&#39; 5e-02 &#39;.&#39; 1e-01 &#39; &#39; 1
+
+Multiple R-squared (Robust): 9e-01 
+Reduction in Dispersion Test: 2e+02 p-value: 0 </code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y_n <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> g, <span class="at">data =</span> df01)) <span class="co"># OLSの場合</span></span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = y_n ~ x + z + g, data = df01)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-3.180 -0.706  0.099  0.663  1.756 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  9.76e-01   1.80e-01    5.42  5.4e-07 ***
+x            2.01e+00   5.01e-02   40.15  &lt; 2e-16 ***
+z           -3.05e+00   1.72e-01  -17.69  &lt; 2e-16 ***
+g1          -1.80e-02   2.55e-01   -0.07     0.94    
+g2           1.07e-01   2.54e-01    0.42     0.68    
+---
+Signif. codes:  0 &#39;***&#39; 1e-03 &#39;**&#39; 1e-02 &#39;*&#39; 5e-02 &#39;.&#39; 1e-01 &#39; &#39; 1
+
+Residual standard error: 1 on 85 degrees of freedom
+Multiple R-squared:  0.957, Adjusted R-squared:  0.955 
+F-statistic:  468 on 4 and 85 DF,  p-value: &lt;2e-16</code></pre>
+</div>
+<div id="モデル選択" class="section level3" number="4.2.4">
+<h3><span class="header-section-number">4.2.4</span> モデル選択</h3>
+<p>モデル選択は<code>lm</code>の<code>anov</code>と同様にできます．</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">drop.test</span>(r_rfit_c, <span class="fu">rfit</span>(y_c <span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data =</span> df01)) <span class="co"># モデル選択</span></span></code></pre></div>
+<pre><code>
+Drop in Dispersion Test
+F-Statistic     p-value 
+    0.30283     0.73952 </code></pre>
+</div>
+<div id="分散分析" class="section level3" number="4.2.5">
+<h3><span class="header-section-number">4.2.5</span> 分散分析</h3>
+<p>一元配置分散分析は<code>oneway.rfit</code>で，n元配置分散分析は<code>raov</code>でできます．</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>r_oneway_anova <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">oneway.rfit</span>(y_c, g)) <span class="co"># 一元配置分散分析</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">summary</span>(r_oneway_anova, <span class="at">method =</span> <span class="st">&quot;tukey&quot;</span>) <span class="co"># 多重比較の補正をして結果表示</span></span></code></pre></div>
+<pre><code>
+Multiple Comparisons
+Method Used  tukey 
+
+  I J Estimate St Err Lower Bound CI Upper Bound CI
+1 1 2   -1e+00      2             -5              2
+2 1 0    4e-02      2             -4              4
+3 2 0   -1e+00      2             -5              2</code></pre>
+</div>
+<div id="olsとの使い分け" class="section level3" number="4.2.6">
+<h3><span class="header-section-number">4.2.6</span>
+OLSとの使い分け</h3>
+<p>ランク基準推定は一致推定量ですが，有効推定量ではないです．また，OLSの場合は内生性や不均一分散やパネルデータを処理するためのパッケージが各種揃っていますが，ランク基準推定を用いる場合は自分でコーディングをしないといけない事が現状では多いです．原則としてはOLSを使う方がよいでしょう．</p>
+</div>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>ある大きさより大の<span
+class="math inline">\(R\)</span>で正則であればよいです．<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Rの<code>rank</code>で計算した値が使われています．<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>リファレンスで参照されているテキストの他に，Hettmansperger,
+McKean and Sheather (1997) "<a
+href="https://www.ism.ac.jp/editsec/aism/pdf/s10463-017-0618-9.pdf">Rank-Based
+Analyses of Linear Models</a>" <em>Handbook of Statistics</em>, Vol.15,
+pp.145–173に説明があります．ただし，具体的な証明はHeiler and Willers
+(1988)
+“<a href="https://doi.org/10.1080/02331888808802084" target="_blank">Asympotic
+normality of r-estimates in the linear model</a>,” <em>Statistics: A
+Journal of Theretical and Applied Statistics</em>, Vol.19(2),
+pp.172–184などを読まないと確認できません．<a href="#fnref3"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Koul et al. (1987) "An Estimator of the Scale Parameter
+for the Rank Analysis of Linear Models under General Score Functions"
+<em>Scandinavian Journal of Statistics</em>, Vol.14(2), pp.131–141<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

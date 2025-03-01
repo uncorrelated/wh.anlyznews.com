@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<!--#include virtual="/parts/head.txt"-->
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<!--#include virtual="/parts/header.txt"-->
+<h2>15 パズル</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<p>Java Applet 版の 15 パズルです。任意の画像を、任意の分割でトライできます。</p>
+<p>15パズルとは、 サム・ロイドという人が発明したパズルで、一枚の絵を4×4に分割して、そのうち一枚を抜き去ります。そして分割した絵を適当に並び替えた上で、抜いた一枚のスペースに絵をスライドして元の絵を再構成していくパズルです。</p>
+<p>完成したときに隣り合う絵が並んで入れ替わっていると、絶対に解けないパズルであることが数学的に証明されています。</p>
+<p>上述のように、オリジナルの15パズルは解けないときがありますが、この Java applet では、必ず答えが出るように絵を並び替えてあるので、安心してトライしていただけます。時間制限があるので、急いでトライしてください。</p>
+<p>なお、プレイの難易度を調整するために4×3のバージョンにしてあります。</p>
+
+<div align="center">
+<div style="width:480px; height:319px; text-align:right; margin:8px 0px 0px 8px;">
+<applet code="Puzzle15" codebase="jar" width="480" height="319" archive="P15.jar">
+<param name="Image" value="p15img/P15.jpg">
+<param name="Column" value="4">
+<param name="Row" value="3">
+<param name="HiScoreURL" value="http://uncorrelated.servehttp.com/cgi-bin/game.cgi">
+<param name="HiScoreID" value="3">
+Java Virtual Machine がインストールされていません。<a href="http://java.com/ja/">http://java.com/ja/</a> から Java Plug-in をダウンロードして、インストールしてください。
+</applet>
+<span>背景提供者ページ：<a href="http://blog.imagenerationes.com/" Target="_blank">BicRe | imagenerationes</a></span>
+</div>
+</div>
+
+<h3>遊び方</h3>
+
+<ol>
+<li>画面をクリックしてスタートしてください。
+<li>１５パズルが開始されるので並び替えてください。
+<li>灰色のパネルと、縦横の並びが同じパネルをクリックすると、灰色のパネルの部分に移動します。
+<li>スコアは減点方式です。3000点から、クリック回数×5点、経過秒数×1点が<strong>マイナス</strong>されてスコアになります。
+<li>高得点者はランキングにエントリーできます。ゲーム後のランキング画面で、Please type your name と言われたら、キーボードで名前をタイプしてください。
+</ol>
+
+<h3>効果音&amp;BGM</h3>
+
+<p>このパズルの効果音は、「<a href="http://www.s-t-t.com/wwl/index.html" target="_blank">WEB WAVE LIB</a>」で配布されている WAVE データを、au 形式に加工して使っています。</p>
+
+<h3>設置</h3>
+<p>このゲームを、貴方のページに設置したいというかたは、<a href="jar/P15.jar">P15.jar</a> をダウンロードして、貴方のページにアップロードしてください。</p>
+<p>次に P15.jar があるディレクトリーに以下のようなタグが含まれる html を書きましょう。</p>
+
+<h4>通常の場合のタグ</h4>
+<div class="code">
+&lt;applet code=&quot;Puzzle15&quot; width=&quot;<strong class="frame">480</strong>&quot; height=&quot;<strong class="frame">319</strong>&quot; archive=&quot;P15.jar&quot;&gt;<br>
+&lt;param name=&quot;Image&quot; value=&quot;<span class="color:red;">P15.jpg</span>&quot;&gt;<br>
+&lt;param name=&quot;Column&quot; value=&quot;4&quot;&gt;<br>
+&lt;param name=&quot;Row&quot; value=&quot;3&quot;&gt;<br>
+&lt;/applet&gt;
+</div>
+
+<p>Applet タグの縦横サイズ指定は、画像ファイルの縦横サイズと同一にしてください。パズルで使う画像は、Image で指定し、必須です。縦分割数は COLUMN、横分割数は ROW で指定します。</p>
+<p>デフォルトの元点数である 3000 を変えたい場合は、パラメーター BaseScore を指定してください。</p>
+
+<h4>ランキングを用いた場合のタグ</h4>
+<div class="code">
+&lt;applet code=&quot;Puzzle15&quot; width=&quot;<strong class="frame">480</strong>&quot; height=&quot;<strong class="frame">319</strong>&quot; archive=&quot;P15.jar&quot;&gt;<br>
+&lt;param name=&quot;Image&quot; value=&quot;<span class="color:red;">P15.jpg</span>&quot;&gt;<br>
+&lt;param name=&quot;Column&quot; value=&quot;4&quot;&gt;<br>
+&lt;param name=&quot;Row&quot; value=&quot;3&quot;&gt;<br>
+&lt;param name=&quot;HiScoreURL&quot; value=&quot;<strong class="frame">http://uncorrelated.no-ip.com/cgi-bin/game.cgi</strong>&quot;&gt;<br>
+&lt;param name=&quot;HiScoreID&quot; value=&quot;<strong class="frame">3</strong>&quot;&gt;<br>
+&lt;/applet&gt;
+</div>
+
+<p>ランキング表示をつけるときは、上記のように HiScoreURL と HiScoreID を設定してください。HiScoreURL には、P15.jar 内部に含まれる game.cgi を設置した場所、HiScoreID は、任意の数字です。game.cgi 内部に記載してありますが、game.dat.[HiScoreID] のようなファイルにランキング・データを格納するので、game.dat.[HiScoreID] というファイルをあらかじめ作成し、chmod 666 でウェブサーバーが読み込み変更が可能なようにファイル属性を変更しておく必要があります。</p>
+
+<h3>ソースコード等</h3>
+
+<p><a href="jar/P15.jar">P15.jar</a> の中に Puzzle15.java というソース・コードを添付しています。結構、ぐちゃぐちゃですが、読みたい人はどうぞ。</p>
+
+</div>
+<div class="footer">
+<!--#include virtual="/parts/footer.txt"-->
+</div>
+</div>
+</body>
+</html>

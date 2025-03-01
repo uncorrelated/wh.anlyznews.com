@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>ペンギンで覚えるRの集計関数</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">ペンギンで覚えるRの集計関数</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>palmerpenguinsデータセットで、Rの集計関数を確認していきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#パッケージのインストール"
+id="toc-パッケージのインストール"><span
+class="toc-section-number">1</span> パッケージのインストール</a></li>
+<li><a href="#パッケージのロード" id="toc-パッケージのロード"><span
+class="toc-section-number">2</span> パッケージのロード</a></li>
+<li><a href="#列名の確認" id="toc-列名の確認"><span
+class="toc-section-number">3</span> 列名の確認</a></li>
+<li><a href="#因子の種類" id="toc-因子の種類"><span
+class="toc-section-number">4</span> 因子の種類</a></li>
+<li><a href="#集計" id="toc-集計"><span
+class="toc-section-number">5</span> 集計</a></li>
+<li><a href="#クロス集計" id="toc-クロス集計"><span
+class="toc-section-number">6</span> クロス集計</a>
+<ul>
+<li><a href="#一次元" id="toc-一次元"><span
+class="toc-section-number">6.1</span> 一次元</a></li>
+<li><a href="#多次元" id="toc-多次元"><span
+class="toc-section-number">6.2</span> 多次元</a></li>
+<li><a href="#プロット" id="toc-プロット"><span
+class="toc-section-number">6.3</span> プロット</a></li>
+</ul></li>
+<li><a href="#データフレームまるごとの要約統計量"
+id="toc-データフレームまるごとの要約統計量"><span
+class="toc-section-number">7</span>
+データフレームまるごとの要約統計量</a></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">8</span> まとめ</a></li>
+</ul>
+</div>
+
+<p>統計解析手法の説明や学習のためのデータセットとしては統計学の大家であるロナルド・フィッシャーの1936年の論文で使われた、もともとは植物学者のエドガー・アンダーソンが整備したアヤメ（Iris）のデータセットが長らく愛用されて来ました。最近は、他にも様々なデータセットが使われているのですが、<a
+href="https://allisonhorst.github.io/palmerpenguins/">パルマーペンギンのデータセット</a>が人気のようです。これでRの集計関数を確認していきましょう。</p>
+<div id="パッケージのインストール" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+パッケージのインストール</h1>
+<p>標準添付ではないのでインストールが要ります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;palmerpenguins&quot;</span>)</span></code></pre></div>
+</div>
+<div id="パッケージのロード" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> パッケージのロード</h1>
+<p><code>palmerpenguins::penguins</code>としてもアクセスできるのですが、ロードします。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span></code></pre></div>
+<p>標準のデータフレームではなく<code>tibble</code>形式で提供されていますが、今回の範囲では標準のデータフレームと同様に利用できます。</p>
+</div>
+<div id="列名の確認" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 列名の確認</h1>
+<p>billがくちばしで、flipperがひれ、body massが体重になります。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">colnames</span>(penguins)</span></code></pre></div>
+<pre><code>[1] &quot;species&quot;           &quot;island&quot;            &quot;bill_length_mm&quot;   
+[4] &quot;bill_depth_mm&quot;     &quot;flipper_length_mm&quot; &quot;body_mass_g&quot;      
+[7] &quot;sex&quot;               &quot;year&quot;             </code></pre>
+</div>
+<div id="因子の種類" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> 因子の種類</h1>
+<p>因子データは<code>levels</code>でどんな種類があるのか確認できます。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">levels</span>(penguins<span class="sc">$</span>island)</span></code></pre></div>
+<pre><code>[1] &quot;Biscoe&quot;    &quot;Dream&quot;     &quot;Torgersen&quot;</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">levels</span>(penguins<span class="sc">$</span>species)</span></code></pre></div>
+<pre><code>[1] &quot;Adelie&quot;    &quot;Chinstrap&quot; &quot;Gentoo&quot;   </code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">levels</span>(penguins<span class="sc">$</span>sex)</span></code></pre></div>
+<pre><code>[1] &quot;female&quot; &quot;male&quot;  </code></pre>
+</div>
+<div id="集計" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> 集計</h1>
+<p>平均値をとってみましょう。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">mean</span>(penguins<span class="sc">$</span>body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>[1] 4201.754</code></pre>
+<p>列（ベクトル）と<code>na.rm</code>を指定します。<code>na.rm</code>は欠損値を無視するかどうかのオプションで、デフォルトでは<code>FALSE</code>で欠損値があるとエラーが出ます。</p>
+<p>標準偏差（<code>sd</code>）、分散（<code>var</code>）、合計（<code>sum</code>）、最小値（<code>min</code>）、最大値（<code>max</code>）、中央値（<code>median</code>）などは同様に扱えます。尖度と歪度を確認したい場合は、<code>moments</code>パッケージの<code>kurtosis</code>と<code>skewness</code>を使うのが楽です。</p>
+<p><code>range</code>は最小値と最大値を同時に求めることができます。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">range</span>(penguins<span class="sc">$</span>body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>[1] 2700 6300</code></pre>
+<p>四分位をもとめる<code>quantile</code>は、実は任意の点を求める事ができます。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">quantile</span>(penguins<span class="sc">$</span>body_mass_g, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>  0%  25%  50%  75% 100% 
+2700 3550 4050 4750 6300 </code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">quantile</span>(penguins<span class="sc">$</span>body_mass_g, <span class="at">prob =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.05</span>, <span class="fl">0.95</span>, <span class="dv">1</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>  0%   5%  95% 100% 
+2700 3150 5650 6300 </code></pre>
+<p>データが無限にあるわけではないので、<code>quantile</code>の計算結果は概算です。具体的な計算方法は<code>?quantile</code>で詳しく読めます。</p>
+</div>
+<div id="クロス集計" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> クロス集計</h1>
+<p>何次元でも同様ですが、一次元と二次元の場合を試します。</p>
+<div id="一次元" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> 一次元</h2>
+<p>因子ごとの頻度を調べる場合は、<code>xtabs</code><a href="#fn1"
+class="footnote-ref" id="fnref1"><sup>1</sup></a>が便利です。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">xtabs</span>(<span class="sc">~</span> island, penguins, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>island
+   Biscoe     Dream Torgersen 
+      168       124        52 </code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">xtabs</span>(<span class="sc">~</span> species, penguins, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>species
+   Adelie Chinstrap    Gentoo 
+      152        68       124 </code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">xtabs</span>(<span class="sc">~</span> sex, penguins, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>sex
+female   male 
+   165    168 </code></pre>
+<p>頻度から比率を求めることもできます。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>(r_xtabs <span class="ot">&lt;-</span> <span class="fu">xtabs</span>(<span class="sc">~</span> sex, penguins, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<pre><code>sex
+female   male 
+   165    168 </code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">proportions</span>(r_xtabs)</span></code></pre></div>
+<pre><code>sex
+   female      male 
+0.4954955 0.5045045 </code></pre>
+<p>モデル式で変数を指定していますが、</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">xtabs</span>(body_mass_g <span class="sc">~</span> species, penguins, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>species
+   Adelie Chinstrap    Gentoo 
+   558800    253850    624350 </code></pre>
+<p>左辺を指定することで、その合計値を求めることもできます。</p>
+<p>合計以外の平均などの場合は、<code>aggregate</code>を使うのが簡単です。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co"># 種ごとの平均を求める</span></span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="fu">aggregate</span>(body_mass_g <span class="sc">~</span> species, penguins, mean)</span></code></pre></div>
+<pre><code>    species body_mass_g
+1    Adelie    3700.662
+2 Chinstrap    3733.088
+3    Gentoo    5076.016</code></pre>
+<p>ベクトルの集計をとる関数であれば何でも用いることができ、ユーザー定義関数も入ります。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="co"># 種ごとの最大と最小の差を求める</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="fu">aggregate</span>(body_mass_g <span class="sc">~</span> species, penguins, \(x) <span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x))</span></code></pre></div>
+<pre><code>    species body_mass_g
+1    Adelie        1925
+2 Chinstrap        2100
+3    Gentoo        2350</code></pre>
+<p><code>na.rm</code>はデフォルトで<code>TRUE</code>が指定されます。</p>
+</div>
+<div id="多次元" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> 多次元</h2>
+<p>モデル式の右辺の変数を +
+で連結して増やせば、多次元の集計がとれます。</p>
+<p><code>xtabs</code>で因子ごとの頻度を計算してみましょう。</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">xtabs</span>(<span class="sc">~</span> species <span class="sc">+</span> sex, penguins, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>           sex
+species     female male
+  Adelie        73   73
+  Chinstrap     34   34
+  Gentoo        58   61</code></pre>
+<p>xtabsのクロス表の行や列ごとの合計は、<code>addmargins</code>関数で追加できます。</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">addmargins</span>(<span class="fu">xtabs</span>(<span class="sc">~</span> species <span class="sc">+</span> sex, penguins, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<pre><code>           sex
+species     female male Sum
+  Adelie        73   73 146
+  Chinstrap     34   34  68
+  Gentoo        58   61 119
+  Sum          165  168 333</code></pre>
+<p>合計がデフォルトですが、<code>FUN = mean</code>のように関数を指定することで、合計以外を付け加えることもできます。</p>
+<p><code>aggregate</code>で因子ごとの平均を求めるのも同様です。</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">aggregate</span>(body_mass_g <span class="sc">~</span> species <span class="sc">+</span> sex, penguins, mean)</span></code></pre></div>
+<pre><code>    species    sex body_mass_g
+1    Adelie female    3368.836
+2 Chinstrap female    3527.206
+3    Gentoo female    4679.741
+4    Adelie   male    4043.493
+5 Chinstrap   male    3938.971
+6    Gentoo   male    5484.836</code></pre>
+<p>また、左辺の変数を<code>cbind</code>でつなげば、同時に複数の変数の集計が出せます。</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="co"># 集計する（mean関数を使っているので平均値が出る）</span></span>
+<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a><span class="fu">aggregate</span>(<span class="fu">cbind</span>(flipper_length_mm, body_mass_g) <span class="sc">~</span> species <span class="sc">+</span> sex, penguins, mean)</span></code></pre></div>
+<pre><code>    species    sex flipper_length_mm body_mass_g
+1    Adelie female          187.7945    3368.836
+2 Chinstrap female          191.7353    3527.206
+3    Gentoo female          212.7069    4679.741
+4    Adelie   male          192.4110    4043.493
+5 Chinstrap   male          199.9118    3938.971
+6    Gentoo   male          221.5410    5484.836</code></pre>
+<p>なお、<code>aggregate</code>は<code>data.frame</code>オブジェクトを戻すので、戻り値に<code>addmargins</code>は使えません。</p>
+</div>
+<div id="プロット" class="section level2" number="6.3">
+<h2><span class="header-section-number">6.3</span> プロット</h2>
+<p>なお、クロス集計もざっと見て異常がないか確認する場合などは、数字を見ていくよりも視覚化した方がわかりやすいです。</p>
+<p><a
+href="./boxplot.shtml">箱ひげ図</a>を見ると異常値が入っているのとか、サブサンプル間の大きな違いがあれば把握できます。オプションですが箱の太さでサンプルサイズの違いもチェックできます。</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">boxplot</span>(body_mass_g <span class="sc">~</span> sex <span class="sc">+</span> species, <span class="at">data =</span> penguins, <span class="at">varwidth =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">&quot;pink&quot;</span>, <span class="st">&quot;skyblue&quot;</span>), <span class="dv">3</span>))</span></code></pre></div>
+<p><img src="common_files/figure-html/aggregate_boxplot-1.png" width="672" /></p>
+</div>
+</div>
+<div id="データフレームまるごとの要約統計量" class="section level1"
+number="7">
+<h1><span class="header-section-number">7</span>
+データフレームまるごとの要約統計量</h1>
+<p>実はここまで計算してきた統計量の多くは、データフレームに<code>summary</code>をかけるとまとめて計算してくれます。</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="fu">summary</span>(penguins)</span></code></pre></div>
+<pre><code>      species          island    bill_length_mm  bill_depth_mm  
+ Adelie   :152   Biscoe   :168   Min.   :32.10   Min.   :13.10  
+ Chinstrap: 68   Dream    :124   1st Qu.:39.23   1st Qu.:15.60  
+ Gentoo   :124   Torgersen: 52   Median :44.45   Median :17.30  
+                                 Mean   :43.92   Mean   :17.15  
+                                 3rd Qu.:48.50   3rd Qu.:18.70  
+                                 Max.   :59.60   Max.   :21.50  
+                                 NA&#39;s   :2       NA&#39;s   :2      
+ flipper_length_mm  body_mass_g       sex           year     
+ Min.   :172.0     Min.   :2700   female:165   Min.   :2007  
+ 1st Qu.:190.0     1st Qu.:3550   male  :168   1st Qu.:2007  
+ Median :197.0     Median :4050   NA&#39;s  : 11   Median :2008  
+ Mean   :200.9     Mean   :4202                Mean   :2008  
+ 3rd Qu.:213.0     3rd Qu.:4750                3rd Qu.:2009  
+ Max.   :231.0     Max.   :6300                Max.   :2009  
+ NA&#39;s   :2         NA&#39;s   :2                                 </code></pre>
+<p>次の計算に再利用しない場合は、これが手っ取り早いです。</p>
+</div>
+<div id="まとめ" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> まとめ</h1>
+<p>Palmer Penguins datasetを用いてRの集計関数をざっと見て来ました。Iris
+datasetでは因子は品種の1つしかない一方、Palmer Penguins
+datasetは観察地点、種類、性別の3つの因子があるので、モデル式で複数の因子を簡単に指定できることを示せました。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p><code>base::table</code>でも計算できますが、こちらはモデル式とデータフレームの指定ができません。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

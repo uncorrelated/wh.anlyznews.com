@@ -1,0 +1,11 @@
+<h1 class="menu">サーバー関連メニュー</h1>
+<a href="../">トップページ</a><br/>
+<dl class="menu">
+<dt class="menu"><a href="t01.shtml">.htaccess で文字コード指定</a></dt>
+<dd class="menu">.htaccess で MIME ヘッダーによる文字コード指定方法を解説</dd>
+<dt class="menu"><a href="t02.shtml">.htaccess によるアクセス制限</a></dt>
+<dd class="menu">.htaccess によるアクセス制限の仕方を解説。アドレス制限、ユーザー認証、Satisfy 条件、データベース認証、環境変数などを網羅</dd>
+<dt class="menu"><a href="t03.shtml">.htaccess によるリダイレクト</a></dt>
+<dd class="menu">.htaccess によるリダイレクト処理の行い方を紹介。httpd.conf と .htaccess の記述方法を簡単に説明しています。</dd>
+</dl>
+<br/>

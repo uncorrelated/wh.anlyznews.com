@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rのパッケージの管理に関するあれこれ</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rのパッケージの管理に関するあれこれ</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>Rには様々なパッケージが提供されており、無しでは仕事ができない人も多いと思いますが、リポジトリーから自動的にインストールしてロードする以外のことも知っておくと便利です。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#インストール" id="toc-インストール"><span
+class="toc-section-number">1</span> インストール</a>
+<ul>
+<li><a href="#ダウンロード" id="toc-ダウンロード"><span
+class="toc-section-number">1.1</span> ダウンロード</a></li>
+<li><a href="#ローカルからインストール"
+id="toc-ローカルからインストール"><span
+class="toc-section-number">1.2</span> ローカルからインストール</a></li>
+</ul></li>
+<li><a href="#インストールの確認" id="toc-インストールの確認"><span
+class="toc-section-number">2</span> インストールの確認</a>
+<ul>
+<li><a href="#インストールを促す" id="toc-インストールを促す"><span
+class="toc-section-number">2.1</span> インストールを促す</a></li>
+</ul></li>
+<li><a href="#取扱説明書" id="toc-取扱説明書"><span
+class="toc-section-number">3</span> 取扱説明書</a></li>
+<li><a href="#ロード" id="toc-ロード"><span
+class="toc-section-number">4</span> ロード</a></li>
+<li><a href="#アンロード" id="toc-アンロード"><span
+class="toc-section-number">5</span> アンロード</a></li>
+<li><a href="#アップデート" id="toc-アップデート"><span
+class="toc-section-number">6</span> アップデート</a></li>
+<li><a href="#削除" id="toc-削除"><span
+class="toc-section-number">7</span> 削除</a></li>
+</ul>
+</div>
+
+<div id="インストール" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> インストール</h1>
+<p>パッケージは、インターネット上のパッケージ・リポジトリー<abbr title="Comprehensive R Archive Network">CRAN</abbr>から、自動でダウンロードしてきて、自動でインストールする<code>install.packages</code>を使うのが一般的です。<code>png</code>パッケージをインストールしてみましょう。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;png&quot;</span>, <span class="at">repos =</span> <span class="st">&quot;https://ftp.yz.yamagata-u.ac.jp/pub/cran/&quot;</span>)</span></code></pre></div>
+<p><code>repos</code>はCRANの場所を指定するオプションで、ここでは日本のミラーサイトを指定しています。指定せず、<code>options</code>での設定もないと、選択することになります。<code>options</code>で指定する場合は、以下のようにします。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repos =</span> <span class="st">&quot;https://ftp.yz.yamagata-u.ac.jp/pub/cran/&quot;</span>)</span></code></pre></div>
+<p>Rtoolsをインストールしてある場合、<code>type = "source"</code>をつけることで、ソースコードをダウンロードしてきて、コンパイルしてからインストールさせることもできます。</p>
+<div id="ダウンロード" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> ダウンロード</h2>
+<p>パッケージはダウンロードだけすることもできます。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>(r_dp <span class="ot">&lt;-</span> <span class="fu">download.packages</span>(<span class="st">&quot;png&quot;</span>, <span class="fu">Sys.getenv</span>(<span class="st">&quot;TEMP&quot;</span>)))</span></code></pre></div>
+<p>上の例では一時フォルダーにダウンロードしています。なお、戻り値の行列の2列目にファイルパスが入っています。</p>
+</div>
+<div id="ローカルからインストール" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span>
+ローカルからインストール</h2>
+<p>ファイルパスを指定して、インストールすることもできます。ダウンロードしたpngパッケージをインストールしてみましょう。ファイル名がバージョンごとに変わることに注意してください。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">file.path</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;TEMP&quot;</span>), <span class="st">&quot;png_0.1-8.tar.gz&quot;</span>), <span class="at">repos =</span> <span class="cn">NULL</span>, <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="インストールの確認" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> インストールの確認</h1>
+<p>パッケージ名とインストール先とタイトルの一覧を確認できます。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">library</span>(<span class="at">quietly=</span><span class="cn">TRUE</span>, <span class="at">verbose=</span><span class="cn">FALSE</span>), {</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    results[results[, <span class="st">&quot;Package&quot;</span>]<span class="sc">==</span><span class="st">&quot;png&quot;</span>, ]</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>})</span></code></pre></div>
+<div id="インストールを促す" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span>
+インストールを促す</h2>
+<p>「～という名前のパッケージはありません」と言うエラーメッセージが混乱を招きそうな場合、別のメッセージを用意することもできます。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>loadpkg <span class="ot">&lt;-</span> <span class="cf">function</span>(pkgs){</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>    pkgnames <span class="ot">&lt;-</span> <span class="fu">library</span>(<span class="at">quietly=</span><span class="cn">TRUE</span>, <span class="at">verbose=</span><span class="cn">FALSE</span>)<span class="sc">$</span>results[,<span class="st">&quot;Package&quot;</span>]</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    <span class="cf">for</span>(pkg <span class="cf">in</span> pkgs){</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>        <span class="cf">if</span>(<span class="sc">!</span><span class="fu">any</span>(<span class="fu">suppressWarnings</span>(pkgnames <span class="sc">==</span> pkg))){</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>            <span class="fu">stop</span>(<span class="fu">sprintf</span>(<span class="st">&quot;Do install.packages(</span><span class="sc">\&quot;</span><span class="st">%s</span><span class="sc">\&quot;</span><span class="st">) before runnning this script.&quot;</span>, pkg))</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>        }</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>        <span class="fu">library</span>(pkg, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    }</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>}</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="fu">loadpkg</span>(<span class="st">&quot;png&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="取扱説明書" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 取扱説明書</h1>
+<p>Rのパッケージにはビネットと呼ばれる取扱説明書を添付する仕組みがあります。</p>
+<p>ビネットが無い場合も多いですし、あっても簡単な利用例から推定方法の理論的説明まで内容は様々なのですが、分からないことがあったら眺めてみることをお勧めします。</p>
+<p>pngパッケージにはビネットはないので、ggplot2のビネットを見る例を示します。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># ggplot2の中のビネットの一覧を表示する</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">vignette</span>(<span class="at">package =</span> <span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="co"># 一覧にあったggplot2-specsを表示する</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;ggplot2-specs&quot;</span>, <span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a><span class="co"># ブラウザーでビネットを見る</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a><span class="fu">browseVignettes</span>(<span class="st">&quot;ggplot2&quot;</span>)</span></code></pre></div>
+</div>
+<div id="ロード" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> ロード</h1>
+<p>パッケージ名を指定してロードします。ダブルコーテーションは要りません。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">library</span>(png)</span></code></pre></div>
+<p>変数でパッケージ名を指定したい場合（もしくはダブルコーテーションをつけたい場合）は、<code>character.only = TRUE</code>をつけてください。</p>
+</div>
+<div id="アンロード" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> アンロード</h1>
+<p>ロードしたパッケージを消すときは、以下のようにします。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">detach</span>(<span class="st">&quot;package:png&quot;</span>, <span class="at">unload=</span><span class="st">&quot;TRUE&quot;</span>)</span></code></pre></div>
+<p>引数はパッケージ名に<code>package:</code>のプリフィックスがついているだけですが、<code>search()</code>で確認できます。</p>
+</div>
+<div id="アップデート" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> アップデート</h1>
+<p>再インストールしてもよいのですが、<code>update.packages</code>で一括アップデートできます。<code>library</code>でロードしている場合はアップデートに失敗するので、Rの起動直後に行うのが無難です。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">update.packages</span>(<span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+</div>
+<div id="削除" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> 削除</h1>
+<p>インストール先のフォルダーを消せばよいです。間違えると惨劇になるので、OSから消した方が無難でしょう。それでもRから行う場合は、以下のようにします。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">with</span>(<span class="fu">library</span>(<span class="at">quietly=</span><span class="cn">TRUE</span>, <span class="at">verbose=</span><span class="cn">FALSE</span>), {</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>    r <span class="ot">&lt;-</span> results[results[, <span class="st">&quot;Package&quot;</span>]<span class="sc">==</span><span class="st">&quot;png&quot;</span>, ]</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="fu">file.path</span>(r[<span class="st">&quot;LibPath&quot;</span>], r[<span class="st">&quot;Package&quot;</span>])</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>}), <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

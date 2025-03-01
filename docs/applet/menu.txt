@@ -1,0 +1,15 @@
+<div class="menu">
+<h1 class="menu">Java Applet メニュー</h1>
+<a href="../">トップページ</a><br/>
+<dl class="menu">
+<dt class="menu"><a href="t01.shtml">文字打ちゲーム</a></dt>
+<dd class="menu">細々と Java で Macromedia Flash&trade; に対抗するために作ったゲームです。</dd>
+<dt class="menu"><a href="t02.shtml">15 パズル</a></dt>
+<dd class="menu">Java Applet 版の 15 パズルです。任意の画像を、任意の分割でトライできます。</dd>
+<dt class="menu"><a href="t03.shtml">立方体メニュー</a></dt>
+<dd class="menu">使いづらいキューブ型のメニューです。マウスの位置で立方体がぐるぐると回転します。</dd>
+<dt class="menu"><a href="t04.shtml">画像表示</a></dt>
+<dd class="menu">地図等を表示して、どこに何があるか示すときに地図上に目印をつけておく事ができます</dd>
+</dl>
+<br/>
+</div>

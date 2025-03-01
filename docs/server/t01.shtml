@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>.htaccess で文字コード指定 - ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<meta name="DESCRIPTION" content=".htaccess で MIME ヘッダーによる文字コード指定方法を解説"/>
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<h2>.htaccess で文字コード指定</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+<p>日本語は文字コードが何種類もあります。また言語コードが違う海外のブラウザーからウェブページを見られる可能性もあります。しかしブラウザーが文字コードを自動判別できないときがあるので、そのときは文字化けをしてしまいます。</p>
+<p>そういうことが無いように、従来はMETAタグを使ってブラウザーに文字コードを通知してきましたが、本来ならば MIME ヘッダーに文字コード情報を付加することが推奨されています。.htaccess を使って、 MIME ヘッダーに文字コード情報を付加してみましょう。</p>
+<p>まず下準備として、httpd.conf を修正します。.htaccess を用いたいディレクトリーのディレクティブ部分の AllowOverride に FileInfo を追加してください。</p>
+
+<h4>httpd.conf の修正</h4>
+<div class="code">
+# AllowOverride None を修正し、FileInfo を追加する<br/>
+&nbsp;&nbsp;AllowOverride FileInfo AuthConfig Limit
+</div>
+
+<p>httpd.conf を書き換えた後は、Apache を再起動します。</p>
+<p>準備が終わったなら .htaccess を作成もしくは修正をすれば、文字コード情報が MIME ヘッダーに追加されます。以下の例では、*.html *.shtml というファイルの文字コードを Shift_JIS に規定しています。</p>
+
+<h4>.htaccess の例</h4>
+<div class="code">
+AddType &quot;text/html; charset=Shift_JIS&quot; html shtml
+</div>
+
+<p>MIMEヘッダーによる文字コード指定は W3C 推奨なのですが、実は幾つか問題があります。Internet Explorer 6.0 が MIME ヘッダーでの指定を認識しません。また .htaccess はそれなりオーバーヘッドがある方法なので、負荷が高いサーバーは httpd.conf で直接指定したほうが良いでしょう。</p>
+
+<div class="footer"><!--#include virtual="/parts/footer.txt"--></div>
+</div>
+</div>
+</body>
+</html>

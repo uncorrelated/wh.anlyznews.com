@@ -1,0 +1,13 @@
+MIDlet-1: DFalling,/dfalling/image/nekobean.png,dfalling.DFalling
+MIDlet-Data-Size: 128
+MIDlet-Description: Duke君を操って、虫を避けつつNekobeanを回収しましょう。
+MIDlet-Icon: /dfalling/image/nekobean.png
+MIDlet-Jar-Size: 65610
+MIDlet-Jar-URL: http://uncorrelated.servehttp.com/mbapps/DukeFalling.jar
+MIDlet-Name: デューク落下する
+MIDlet-Vendor: uncorrelated@yahoo.co.jp
+MIDlet-Version: 0.9.18
+MIDxlet-ScreenSize: 240,260
+MicroEdition-Configuration: CLDC-1.1
+MicroEdition-Profile: MIDP-2.0
+JBlendWM-Screen-Expansion: 1

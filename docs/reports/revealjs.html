@@ -1,0 +1,1932 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="zombie, uncorrelated" />
+  <title>R Markdownで作るベタなプレゼン資料</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="revealjs_files/reveal.js-3.3.0.1/css/reveal.css"/>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="revealjs_files/reveal.js-3.3.0.1/css/theme/solarized.css" id="theme">
+
+
+  <!-- some tweaks to reveal css -->
+  <style type="text/css">
+    .reveal h1 { font-size: 2.0em; }
+    .reveal h2 { font-size: 1.5em;  }
+    .reveal h3 { font-size: 1.25em;	}
+    .reveal h4 { font-size: 1em;	}
+
+    .reveal .slides>section,
+    .reveal .slides>section>section {
+      padding: 0px 0px;
+    }
+
+
+
+    .reveal table {
+      border-width: 1px;
+      border-spacing: 2px;
+      border-style: dotted;
+      border-color: gray;
+      border-collapse: collapse;
+      font-size: 0.7em;
+    }
+
+    .reveal table th {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      font-weight: bold;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal table td {
+      border-width: 1px;
+      padding-left: 10px;
+      padding-right: 25px;
+      border-style: dotted;
+      border-color: gray;
+    }
+
+    .reveal .slide-menu-button {
+      left: 105px !important;
+    }
+
+  </style>
+
+    <style type="text/css">code{white-space: pre;}</style>
+
+    <link rel="stylesheet" href="styles.css"/>
+
+<!-- Printing and PDF exports -->
+<script id="paper-css" type="application/dynamic-css">
+
+/* Default Print Stylesheet Template
+   by Rob Glazebrook of CSSnewbie.com
+   Last Updated: June 4, 2008
+
+   Feel free (nay, compelled) to edit, append, and
+   manipulate this file as you see fit. */
+
+
+@media print {
+
+	/* SECTION 1: Set default width, margin, float, and
+	   background. This prevents elements from extending
+	   beyond the edge of the printed page, and prevents
+	   unnecessary background images from printing */
+	html {
+		background: #fff;
+		width: auto;
+		height: auto;
+		overflow: visible;
+	}
+	body {
+		background: #fff;
+		font-size: 20pt;
+		width: auto;
+		height: auto;
+		border: 0;
+		margin: 0 5%;
+		padding: 0;
+		overflow: visible;
+		float: none !important;
+	}
+
+	/* SECTION 2: Remove any elements not needed in print.
+	   This would include navigation, ads, sidebars, etc. */
+	.nestedarrow,
+	.controls,
+	.fork-reveal,
+	.share-reveal,
+	.state-background,
+	.reveal .progress,
+	.reveal .backgrounds {
+		display: none !important;
+	}
+
+	/* SECTION 3: Set body font face, size, and color.
+	   Consider using a serif font for readability. */
+	body, p, td, li, div {
+		font-size: 20pt!important;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		color: #000;
+	}
+
+	/* SECTION 4: Set heading font face, sizes, and color.
+	   Differentiate your headings from your body text.
+	   Perhaps use a large sans-serif for distinction. */
+	h1,h2,h3,h4,h5,h6 {
+		color: #000!important;
+		height: auto;
+		line-height: normal;
+		font-family: Georgia, "Times New Roman", Times, serif !important;
+		text-shadow: 0 0 0 #000 !important;
+		text-align: left;
+		letter-spacing: normal;
+	}
+	/* Need to reduce the size of the fonts for printing */
+	h1 { font-size: 28pt !important;  }
+	h2 { font-size: 24pt !important; }
+	h3 { font-size: 22pt !important; }
+	h4 { font-size: 22pt !important; font-variant: small-caps; }
+	h5 { font-size: 21pt !important; }
+	h6 { font-size: 20pt !important; font-style: italic; }
+
+	/* SECTION 5: Make hyperlinks more usable.
+	   Ensure links are underlined, and consider appending
+	   the URL to the end of the link for usability. */
+	a:link,
+	a:visited {
+		color: #000 !important;
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	/*
+	.reveal a:link:after,
+	.reveal a:visited:after {
+		content: " (" attr(href) ") ";
+		color: #222 !important;
+		font-size: 90%;
+	}
+	*/
+
+
+	/* SECTION 6: more reveal.js specific additions by @skypanther */
+	ul, ol, div, p {
+		visibility: visible;
+		position: static;
+		width: auto;
+		height: auto;
+		display: block;
+		overflow: visible;
+		margin: 0;
+		text-align: left !important;
+	}
+	.reveal pre,
+	.reveal table {
+		margin-left: 0;
+		margin-right: 0;
+	}
+	.reveal pre code {
+		padding: 20px;
+		border: 1px solid #ddd;
+	}
+	.reveal blockquote {
+		margin: 20px 0;
+	}
+	.reveal .slides {
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 0 !important;
+		zoom: 1 !important;
+
+		overflow: visible !important;
+		display: block !important;
+
+		text-align: left !important;
+		-webkit-perspective: none;
+		   -moz-perspective: none;
+		    -ms-perspective: none;
+		        perspective: none;
+
+		-webkit-perspective-origin: 50% 50%;
+		   -moz-perspective-origin: 50% 50%;
+		    -ms-perspective-origin: 50% 50%;
+		        perspective-origin: 50% 50%;
+	}
+	.reveal .slides section {
+		visibility: visible !important;
+		position: static !important;
+		width: auto !important;
+		height: auto !important;
+		display: block !important;
+		overflow: visible !important;
+
+		left: 0 !important;
+		top: 0 !important;
+		margin-left: 0 !important;
+		margin-top: 0 !important;
+		padding: 60px 20px !important;
+		z-index: auto !important;
+
+		opacity: 1 !important;
+
+		page-break-after: always !important;
+
+		-webkit-transform-style: flat !important;
+		   -moz-transform-style: flat !important;
+		    -ms-transform-style: flat !important;
+		        transform-style: flat !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+
+		-webkit-transition: none !important;
+		   -moz-transition: none !important;
+		    -ms-transition: none !important;
+		        transition: none !important;
+	}
+	.reveal .slides section.stack {
+		padding: 0 !important;
+	}
+	.reveal section:last-of-type {
+		page-break-after: avoid !important;
+	}
+	.reveal section .fragment {
+		opacity: 1 !important;
+		visibility: visible !important;
+
+		-webkit-transform: none !important;
+		   -moz-transform: none !important;
+		    -ms-transform: none !important;
+		        transform: none !important;
+	}
+	.reveal section img {
+		display: block;
+		margin: 15px 0px;
+		background: rgba(255,255,255,1);
+		border: 1px solid #666;
+		box-shadow: none;
+	}
+
+	.reveal section small {
+		font-size: 0.8em;
+	}
+
+}  
+</script>
+
+
+<script id="pdf-css" type="application/dynamic-css">
+    
+/**
+ * This stylesheet is used to print reveal.js
+ * presentations to PDF.
+ *
+ * https://github.com/hakimel/reveal.js#pdf-export
+ */
+
+* {
+	-webkit-print-color-adjust: exact;
+}
+
+body {
+	margin: 0 auto !important;
+	border: 0;
+	padding: 0;
+	float: none !important;
+	overflow: visible;
+}
+
+html {
+	width: 100%;
+	height: 100%;
+	overflow: visible;
+}
+
+/* Remove any elements not needed in print. */
+.nestedarrow,
+.reveal .controls,
+.reveal .progress,
+.reveal .playback,
+.reveal.overview,
+.fork-reveal,
+.share-reveal,
+.state-background {
+	display: none !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	text-shadow: 0 0 0 #000 !important;
+}
+
+.reveal pre code {
+	overflow: hidden !important;
+	font-family: Courier, 'Courier New', monospace !important;
+}
+
+ul, ol, div, p {
+	visibility: visible;
+	position: static;
+	width: auto;
+	height: auto;
+	display: block;
+	overflow: visible;
+	margin: auto;
+}
+.reveal {
+	width: auto !important;
+	height: auto !important;
+	overflow: hidden !important;
+}
+.reveal .slides {
+	position: static;
+	width: 100%;
+	height: auto;
+
+	left: auto;
+	top: auto;
+	margin: 0 !important;
+	padding: 0 !important;
+
+	overflow: visible;
+	display: block;
+
+	-webkit-perspective: none;
+	   -moz-perspective: none;
+	    -ms-perspective: none;
+	        perspective: none;
+
+	-webkit-perspective-origin: 50% 50%; /* there isn't a none/auto value but 50-50 is the default */
+	   -moz-perspective-origin: 50% 50%;
+	    -ms-perspective-origin: 50% 50%;
+	        perspective-origin: 50% 50%;
+}
+
+.reveal .slides section {
+	page-break-after: always !important;
+
+	visibility: visible !important;
+	position: relative !important;
+	display: block !important;
+	position: relative !important;
+
+	margin: 0 !important;
+	padding: 0 !important;
+	box-sizing: border-box !important;
+	min-height: 1px;
+
+	opacity: 1 !important;
+
+	-webkit-transform-style: flat !important;
+	   -moz-transform-style: flat !important;
+	    -ms-transform-style: flat !important;
+	        transform-style: flat !important;
+
+	-webkit-transform: none !important;
+	   -moz-transform: none !important;
+	    -ms-transform: none !important;
+	        transform: none !important;
+}
+
+.reveal section.stack {
+	margin: 0 !important;
+	padding: 0 !important;
+	page-break-after: avoid !important;
+	height: auto !important;
+	min-height: auto !important;
+}
+
+.reveal img {
+	box-shadow: none;
+}
+
+.reveal .roll {
+	overflow: visible;
+	line-height: 1em;
+}
+
+/* Slide backgrounds are placed inside of their slide when exporting to PDF */
+.reveal section .slide-background {
+	display: block !important;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	z-index: -1;
+}
+
+/* All elements should be above the slide-background */
+.reveal section>* {
+	position: relative;
+	z-index: 1;
+}
+
+/* Display slide speaker notes when 'showNotes' is enabled */
+.reveal .speaker-notes-pdf {
+	display: block;
+	width: 100%;
+	max-height: none;
+	left: auto;
+	top: auto;
+	z-index: 100;
+}
+
+/* Display slide numbers when 'slideNumber' is enabled */
+.reveal .slide-number-pdf {
+	display: block;
+	position: absolute;
+	font-size: 14px;
+}
+
+</script>
+
+
+<script>
+var style = document.createElement( 'style' );
+style.type = 'text/css';
+var style_script_id = window.location.search.match( /print-pdf/gi ) ? 'pdf-css' : 'paper-css';
+var style_script = document.getElementById(style_script_id).text;
+style.innerHTML = style_script;
+document.getElementsByTagName('head')[0].appendChild(style);
+</script>
+
+    <link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+    <meta content='summary' name='twitter:card'/>
+    <meta content='@uncorrelated' name='twitter:site'/>
+    <meta content='R Markdownで作るベタなプレゼン資料' name='twitter:title'/>
+    <meta content='http://wh.anlyznews.com/reports/revealjs.png' name='twitter:image'/>
+    <meta content='R Markdown Format for reveal.js Presentationsのジャンキー解説' name='twitter:description'/>
+    <script src="revealjs_files/header-attrs-2.23/header-attrs.js"></script>
+    <link href="revealjs_files/font-awesome-6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="revealjs_files/font-awesome-6.4.0/css/v4-shims.min.css" rel="stylesheet" />
+    <script src="revealjs_files/htmlwidgets-1.6.2/htmlwidgets.js"></script>
+    <link href="revealjs_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+    <script src="revealjs_files/datatables-binding-0.27/datatables.js"></script>
+    <script src="revealjs_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+    <link href="revealjs_files/dt-core-1.12.1/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="revealjs_files/dt-core-1.12.1/css/jquery.dataTables.extra.css" rel="stylesheet" />
+    <script src="revealjs_files/dt-core-1.12.1/js/jquery.dataTables.min.js"></script>
+    <link href="revealjs_files/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+    <script src="revealjs_files/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+    <script src="revealjs_files/viz-1.8.2/viz.js"></script>
+    <link href="revealjs_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+    <script src="revealjs_files/grViz-binding-1.0.9/grViz.js"></script>
+</head>
+<body>
+
+  <div class="reveal">
+    <div class="slides">
+
+<section data-background='url(revealjs_cover.png)' data-background-size='cover'>
+    <h1 class="title">R Markdownで作るベタなプレゼン資料</h1>
+    <h2 class="author">zombie, uncorrelated</h2>
+    <h3 class="date">2023/07/08</h3>
+</section>
+
+<section>
+<section id="はじめに" class="title-slide slide level1">
+<h1>はじめに</h1>
+<p>オープンソースの開発ツールのユーザーがプレゼンの道具に求めること</p>
+<ol type="1">
+<li>数式とグラフを効率よく埋め込める</li>
+<li>常用するプログラミング言語と連携させて定型処理</li>
+<li>様々な端末からブラウザーで閲覧できるHTML</li>
+<li>見栄えがよく無駄にぐりぐり動かせる</li>
+</ol>
+<p>(1)と(2)を実現したR Markdownで、(3)と(4)を達成したい</p>
+</section>
+<section id="r-markdownとは何か" class="slide level2">
+<h2>R Markdownとは何か？</h2>
+<ul>
+<li>テキスト形式で見出しやリンクなどが簡単に記述できるSNSなどで人気のMarkdown記法</li>
+<li>Markdown記法のファイル（.md）をhtml/PDF/ppt/odtに変化する文書作成ツールの<a
+href="https://pandoc.org/">Pandoc</a></li>
+<li>Pandocの設定値の管理やプログラムのコードの実行と結果表示などのための文法を追加したのが<a
+href="https://rmarkdown.rstudio.com/">R Markdown</a></li>
+<li>箇条書きやファイルの埋め込みなどMarkdown記法で簡単なことは簡単にできる</li>
+<li>R（or Rcpp/Python/Julia）で簡単なことは簡単にできる</li>
+</ul>
+</section>
+<section id="r-markdownの動作" class="slide level2 smaller">
+<h2 class="smaller">R Markdownの動作</h2>
+<ul>
+<li>R Markdown形式（.Rmd）をKnitrパッケージで.mdに変換</li>
+<li>YAMLフロントマターのoutput:以下に応じて<a
+href="https://qiita.com/kazutan/items/eb15a42607f87f57b525">パラメーターをつけて</a>Pandocを呼ぶ</li>
+<li>Pandocが.md（と.mdが参照しているファイル）からhtml/pdf/docx/odtを作成</li>
+<li>html出力時は、html/JavaScriptのフレームワークが利用可</li>
+</ul>
+<div style="text-align: center;">
+<canvas id="fig-1" style="width: 100%;">
+</canvas>
+</div>
+<script src="canvas-arrow.js"></script>
+<script src="fig1.js"></script>
+</section></section>
+<section id="r-markdown-format-for-reveal.js-presentations"
+class="title-slide slide level1 smaller">
+<h1 class="smaller">R Markdown Format for reveal.js Presentations</h1>
+<ul>
+<li>HTMLプレゼン作成フレームワーク<a
+href="https://revealjs.com/">reveal.js</a>
+<ul>
+<li><span
+class="red">画面サイズに対してスケーラブルな表示で、ケータイでの閲覧も可</span></li>
+<li>H1タグ（i.e. #）とH2タグ（i.e. ##）ごとになるスライドを、右下の十字ボタンなどで直線的にではなく平面的に推移</li>
+<li>reveal.jsの閲覧操作の詳細は ? を押すと確認できる</li>
+</ul></li>
+<li><a href="https://github.com/rstudio/revealjs">R Markdown Format for
+reveal.js
+Presentations</a>は、reveal.jsを組み込んだhtmlファイルを生成するR
+Markdownの拡張</li>
+<li>便利な拡張なのに人気がイマイチなので、利用時に気づいたことを述べて紹介としたい</li>
+</ul>
+</section>
+
+<section>
+<section id="表示のカスタマイズ" class="title-slide slide level1">
+<h1>表示のカスタマイズ</h1>
+<p>R Markdown Format for reveal.js
+Presentationsの利用をYAMLフロントマターで指定したあと、お好みで</p>
+<ul>
+<li>全体の表示を調整
+<ul>
+<li>YAMLフロントマターでオプションを指定</li>
+<li>CSSの設定を変更</li>
+<li>最初と最後に読み込むhtml部品ファイルにhtmlを書く</li>
+</ul></li>
+<li>局所的に表示を調整
+<ul>
+<li>CSSのクラスを作成・見出しの属性で指定</li>
+<li>htmlを書く</li>
+</ul></li>
+</ul>
+<p>する。必須ではない。</p>
+</section>
+<section id="yamlフロントマター" class="slide level2">
+<h2>YAMLフロントマター</h2>
+<p>YAMLフロントマターで色々指定できる。もちろんrevealjs::revealjs_presentationの指定は必須。</p>
+<pre><code>output:
+    revealjs::revealjs_presentation:
+        theme: moon
+        highlight: tango
+        center: true
+        css: styles.css</code></pre>
+<p>CSSファイル（e.g. styles.css）も指定できる。なお、Rmdファイルと同じフォルダーに置かないと、CSSで指定した画像ファイルをself-containedできない模様。</p>
+</section>
+<section id="id_for_theme" class="slide level2">
+<h2>theme</h2>
+<ul>
+<li>全体の表示を変える</li>
+<li>変化がはっきりわかるので、試して把握</li>
+<li>black, white, league, beige, sky, night, serif, simple, solarized,
+blood, moon</li>
+<li>このスライドはsolarized</li>
+<li>新たなテーマを作ることもできる</li>
+</ul>
+</section>
+<section id="highlight" class="slide level2">
+<h2>highlight</h2>
+<ul>
+<li>リンク色などを変える</li>
+<li>変化は微妙</li>
+<li>default, tango, pygments, kate, monochrome, espresso, zenburn,
+haddock, breezedark</li>
+<li>このスライドはtango</li>
+</ul>
+</section>
+<section id="center" class="slide level2">
+<h2>center</h2>
+<ul>
+<li>左右ではなく上下で中央に配置するオプション</li>
+<li>なぜデフォルトでFALSE指定なのかが謎</li>
+</ul>
+</section>
+<section id="incremental-bullets" class="slide level2">
+<h2>Incremental Bullets</h2>
+<ul>
+<li>一行一行表示する連打癖のある人には無理なオプション</li>
+<li>YAMLフロントマターでincremental: trueを指定</li>
+<li>オン/オフ指定ができる</li>
+<li>… で一時停止</li>
+</ul>
+<pre><code>::: incremental
+- incremental節は一行一行表示
+:::
+
+::: nonincremental
+- nonincremental節はまとめて表示
+:::</code></pre>
+</section>
+<section id="スライド番号" class="slide level2">
+<h2>スライド番号</h2>
+<p>slideNumber=TRUEで、右下に小さく番号が入る。よく使いそうだがオプション。</p>
+<pre><code>output:
+    revealjs::revealjs_presentation:
+        reveal_options:
+            slideNumber: true</code></pre>
+</section>
+<section id="メニュー検索スライドに書き込み" class="slide level2">
+<h2>メニュー/検索/スライドに書き込み</h2>
+<p>self_cotainedを犠牲に、標準プラグインでできる。</p>
+<pre><code>output:
+    self_cotained: false
+    revealjs::revealjs_presentation:
+        reveal_plugins: [&quot;search&quot;, &quot;menu&quot;, &quot;chalkboard&quot;]</code></pre>
+<p>searchはmやoなどのアルファベットが入ると検索できないので、後述するオーバービューでCTRL+Fで検索した方が確実。</p>
+</section>
+<section id="cssファイルの作成" class="slide level2">
+<h2>CSSファイルの作成</h2>
+<ul>
+<li>YAMLフロントマターでcssファイルを指定</li>
+<li>cssの上書き（e.g. h1.title）</li>
+<li>新規クラスの作成（e.g. section.smaller）</li>
+<li>hタグに属性をつける（e.g. # 見出し{.smaller}）</li>
+</ul>
+</section>
+<section id="タイトル文字を小さめにする" class="slide level2">
+<h2>タイトル文字を小さめにする</h2>
+<ul>
+<li>例としてタイトル文字を小さめにする</li>
+<li>スケーラブルな環境なので、サイズ指定の単位は%（親要素の値との比）,
+vw（表示画面横サイズの1/100）, vh（〃縦〃）, vmin（=min(vw, vh)）,
+vmax（=max(vw, vh)）が無難</li>
+<li>h2.authorとh3.dateの変更だけで用が足りる可能性大</li>
+</ul>
+<pre><code>h1.title {
+    font-size: 150%;
+    color: blue;
+}</code></pre>
+</section>
+<section id="スライド本文を左寄せにする" class="slide level2">
+<h2>スライド本文を左寄せにする</h2>
+<ul>
+<li>アスペルガー症候群気味のあなたに</li>
+<li>CSSファイルに以下を記述</li>
+</ul>
+<pre><code>section.slide {
+    text-align: left;
+}
+
+section.slide h1, section.slide h2 {
+    text-align: center;
+}</code></pre>
+<ul>
+<li>見出しは中央にしておく</li>
+</ul>
+</section>
+<section id="blockquoteを幅広にする" class="slide level2">
+<h2>blockquoteを幅広にする</h2>
+<ul>
+<li>背景色も変えて、スクロール表示するようにする</li>
+<li>CSSファイルに以下を記述</li>
+</ul>
+<pre><code>section.slide blockquote {
+    text-align: left;
+    overflow:auto;
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.4);
+}</code></pre>
+</section>
+<section id="rの背景色" class="slide level2">
+<h2>```{r}の背景色</h2>
+<ul>
+<li>```{r}で…をくくったときの色合いが気に入らないので調整する</li>
+</ul>
+<pre><code>section.slide blockquote, pre {
+    text-align: left;
+    overflow: auto;
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+div.sourceCode {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 10px sold black;
+}</code></pre>
+</section>
+<section id="表紙に画像をつける①" class="slide level2">
+<h2>表紙に画像をつける①</h2>
+<ul>
+<li>reveal.jsは表紙に画像がつけられる
+<ul>
+<li>html内の最初の<code>&lt;section&gt;</code>タグに属性を追加</li>
+</ul></li>
+<li>R Markdown Format for reveal.js Presentationsは設定不能の模様</li>
+<li>Pandocが生成したhtmlファイルを書き換えればOK
+<ul>
+<li>テキストエディタで編集は煩雑</li>
+<li>Rを使って正規表現で置換（速度的にsedなどを使う方がよい）</li>
+</ul></li>
+<li>外部ファイル参照で、html内に画像データは保持されない</li>
+</ul>
+</section>
+<section id="表紙に画像をつける②" class="slide level2">
+<h2>表紙に画像をつける②</h2>
+<p><code>example.Rmd</code>の表紙の背景画像に<code>cover.jpg</code>を指定する例</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmarkdown)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>input <span class="ot">&lt;-</span><span class="st">&quot;example.Rmd&quot;</span> </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="st">&quot;example.html&quot;</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>bgimg <span class="ot">&lt;-</span> <span class="st">&quot;cover.png&quot;</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>intermediate <span class="ot">&lt;-</span> <span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.[^.]*$&quot;</span>, <span class="st">&quot;.temp.html&quot;</span>, input)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">render</span>(input, <span class="at">run_pandoc=</span><span class="cn">TRUE</span>, <span class="at">output_file=</span>output)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="fu">file.rename</span>(output, intermediate)</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># localeがutf-8ではない古い処理系のRでテキストとして処理すると未対応文字が消えるので、バイナリ処理</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># なおSys.setlocale(&quot;LC_ALL&quot;, &quot;C&quot;)で処理後、Sys.setlocale(&quot;LC_ALL&quot;, &quot;Japanese&quot;)）でも誤魔化せる</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>binreplace <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, pattern, replacement, </span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">maximum=</span><span class="dv">1</span>, <span class="at">buffsize=</span><span class="dv">1024</span><span class="sc">*</span><span class="dv">1024</span><span class="sc">*</span><span class="dv">5</span>, <span class="at">skip=</span><span class="dv">0</span>){ <span class="co"># 5MBを一気読み</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    istream <span class="ot">&lt;-</span> <span class="fu">file</span>(input, <span class="st">&quot;rb&quot;</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    ostream <span class="ot">&lt;-</span> <span class="fu">file</span>(output, <span class="st">&quot;wb&quot;</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    v <span class="ot">&lt;-</span> <span class="fu">readBin</span>(istream, <span class="st">&quot;raw&quot;</span>, buffsize) </span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">0</span><span class="sc">&lt;</span>skip){</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">writeBin</span>(v[<span class="dv">1</span><span class="sc">:</span>skip], ostream)</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>        v <span class="ot">&lt;-</span> v[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>skip)]</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># raw型のvを連結してcharacter型のjvにする</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    jv <span class="ot">&lt;-</span> <span class="fu">paste</span>(v, <span class="at">collapse=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    jps <span class="ot">&lt;-</span> <span class="fu">paste</span>(pattern, <span class="at">collapse=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    jrs <span class="ot">&lt;-</span> <span class="fu">paste</span>(replacement, <span class="at">collapse=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    <span class="co"># jvを置換してrvをつくる</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    rs <span class="ot">&lt;-</span> <span class="fu">sub</span>(jps, jrs, jv)</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># jvを2文字づつ切り出し、hexmode型→raw型と変換してバイナリ出力する</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">writeBin</span>(<span class="fu">as.raw</span>(<span class="fu">as.hexmode</span>(</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">sapply</span>(<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">nchar</span>(rs), <span class="dv">2</span>), <span class="cf">function</span>(i){</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>            <span class="fu">substr</span>(rs, i, i <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>        })</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    )), ostream)</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">close</span>(ostream)</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="fu">close</span>(istream)</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a><span class="fu">binreplace</span>(intermediate, output, </span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">charToRaw</span>(<span class="st">&quot;&lt;section&quot;</span>), <span class="co"># 検索文字列</span></span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    <span class="fu">charToRaw</span>(<span class="fu">sprintf</span>(<span class="st">&quot;&lt;section data-background=&#39;url(%s)&#39; data-background-size=&#39;cover&#39;&quot;</span>, bgimg)) <span class="co"># 置換文字列</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</section>
+<section id="ヘッダーをつける①" class="slide level2">
+<h2>ヘッダーをつける①</h2>
+<p>影が薄くて名前を覚えてもらえないあなたに！</p>
+<ul>
+<li>YAMLフロントマターにincludes:after_bodyオプションでhtml部品ファイルを指定する</li>
+<li>html部品ファイルにcssのidかclassを指定したdivタグを並べる</li>
+<li>CSSのpositionとtop/right/bottom/leftを駆使して表示調整</li>
+<li>なお、画像ファイルのデータは生成ファイルに組み込まれる</li>
+</ul>
+</section>
+<section id="ヘッダーをつける②" class="slide level2">
+<h2>ヘッダーをつける②</h2>
+<p>YAMLフロントマターにオプション追加</p>
+<pre><code>output:
+    revealjs::revealjs_presentation:
+        includes:
+            after_body: doc_suffix.html</code></pre>
+</section>
+<section id="ヘッダーをつける③" class="slide level2">
+<h2>ヘッダーをつける③</h2>
+<p>html部品ファイル（i.e. doc_suffix.html）にcssのidかclassを指定したdivタグを並べる</p>
+<pre><code>&lt;div class=&quot;suffix_words&quot;&gt;
+&lt;div class=&quot;suffix_inner&quot;&gt;
+
+&lt;!-- 表示する情報 --&gt;
+
+&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;suffix_image&quot;&gt;&lt;/div&gt;</code></pre>
+</section>
+<section id="ヘッダーをつける④" class="slide level2">
+<h2>ヘッダーをつける④</h2>
+<p>CSSのpositionとtop/right/bottom/leftを駆使して表示調整</p>
+<pre><code>div.suffix_words {
+    position: fixed; top: 0; right: 7vmin;
+    height: 7vmin;
+}
+
+div.suffix_inner {
+    position: relative; top: 3vmin; right: 1vmin;
+    font-size: 2vmin;
+}</code></pre>
+<p>次ページに続く</p>
+</section>
+<section id="ヘッダーをつける⑤" class="slide level2">
+<h2>ヘッダーをつける⑤</h2>
+<p>続き</p>
+<pre><code>div.suffix_image {
+    position: fixed; top: 0; right: 0;
+    width: 7vmin; height: 7vmin;
+    background-image: url(icon.png);
+    background-size: 7vmin 7vmin;
+}</code></pre>
+<p>icon.pngは縦横同じサイズの透過色のある画像</p>
+</section>
+<section id="背景画像を設定する"
+class="slide level2 cat_feeling_terrible"
+data-background="url(cat_feeling_terrible.jpg)"
+data-background-size="cover">
+<h2 class="cat_feeling_terrible"
+data-background="url(cat_feeling_terrible.jpg)"
+data-background-size="cover">背景画像を設定する</h2>
+<p>背景画像自体は簡単に設定できるが、文字色の調整も必要</p>
+<pre><code>## 背景画像を設定する{
+.cat_feeling_terrible
+data-background=url(cat_feeling_terrible.jpg)
+data-background-size=cover}</code></pre>
+<p>見出しに属性をセットして、CSSファイルに追記</p>
+<pre><code>h1.cat_feeling_terrible, h2.cat_feeling_terrible, .cat_feeling_terrible {
+    color: white; text-shadow: 0 0 3px black;
+}
+
+section.cat_feeling_terrible pre {
+    background-color: white; color: black; text-shadow: none;
+}</code></pre>
+<p>やらない方が無難。なお、sectionタグの属性で画像ファイル名を指定するためか、画像ファイルの埋め込みはできなかった。</p>
+</section></section>
+<section>
+<section id="見出し" class="title-slide slide level1">
+<h1>見出し</h1>
+<ul>
+<li>Markdown記法通りに入力できる</li>
+<li>H1タグ（i.e. #）とH2タグ（i.e. ##）ごとにスライドをつくる</li>
+<li>H1タグに続くH2タグが紐付けされ、平面的な構造を持つ（いますぐoボタンを押せ！）</li>
+<li>H3（i.e. ###）とH4（i.e. ####）も使えるが、別のスライドにはならない</li>
+<li>見出しの日本語以外の英数字の部分がかぶると（そのままでは）画面遷移が正常に行なえなくなる</li>
+</ul>
+</section>
+<section id="見出しがかぶった場合の対処法" class="slide level2">
+<h2>見出しがかぶった場合の対処法</h2>
+<ul>
+<li>#idの付与で回避可能</li>
+</ul>
+<pre><code>## headline {#id_for_headline}</code></pre>
+<ul>
+<li>Pandocのオプションを変更する（効果未確認）</li>
+</ul>
+<pre><code>pandoc_args: [
+  &#39;--from&#39;, &#39;markdown+autolink_bare_uris+tex_math_single_backslash-implicit_figures&#39;
+]</code></pre>
+</section></section>
+<section id="太字斜体取り消し線" class="title-slide slide level1">
+<h1>太字、斜体、取り消し線</h1>
+<ul>
+<li>Markdown
+記法の通り、太字（**で挟む）、イタリック（*で挟む）、取り消し線（~~で挟む）が使える。</li>
+</ul>
+<pre><code>*Annals of Eugenics*は、**1954年**に*Annals of Human Genetics*に
+名称変更し~~ている~~た。</code></pre>
+<p><em>Annals of Eugenics</em>は、<strong>1954年</strong>に<em>Annals of
+Human Genetics</em>に 名称変更し<del>ている</del>た。</p>
+</section>
+
+<section>
+<section id="箇条書き" class="title-slide slide level1">
+<h1>箇条書き</h1>
+<ul>
+<li>順序なしと順序付きがある</li>
+<li>入れ籠構造可能（細目はスペースを順序なしで2つ、順序ありで3つ入れる）</li>
+</ul>
+</section>
+<section id="順序なし" class="slide level2">
+<h2>順序なし</h2>
+<ul>
+<li>タイプライター時代から使われている表記方法だとか</li>
+</ul>
+<pre><code>- Sir Ronald Aylmer Fisher
+- Jerzy Neyman
+- Edgar Shannon Anderson</code></pre>
+<ul>
+<li>Sir Ronald Aylmer Fisher</li>
+<li>Jerzy Neyman</li>
+<li>Edgar Shannon Anderson</li>
+</ul>
+</section>
+<section id="順序付き" class="slide level2">
+<h2>順序付き</h2>
+<ul>
+<li>数字は何でもよい</li>
+</ul>
+<pre><code>1. Sir Francis Galton
+1. Karl Pearson
+    1. Egon Sharpe Pearson
+1. Sir Francis Galton</code></pre>
+<ol type="1">
+<li>Sir Francis Galton</li>
+<li>Karl Pearson
+<ol type="1">
+<li>Egon Sharpe Pearson</li>
+</ol></li>
+<li>Sir Francis Galton</li>
+</ol>
+</section></section>
+<section>
+<section id="tex形式の数式の入力" class="title-slide slide level1">
+<h1>TeX形式の数式の入力</h1>
+<ul>
+<li>R Markdown文書とまったく同様</li>
+<li>実際はPandocがMathJax/MathML/WebTeX/KaTeXのどれかを使うように処理している</li>
+</ul>
+</section>
+<section id="インライン" class="slide level2">
+<h2>インライン</h2>
+<p>$x^2$と$で挟むとインラインで<span
+class="math inline">\(x^2\)</span>と表示できる。 $x=`r
+sum(1:10)`$とインラインコードを数式内に挿入すると、<span
+class="math inline">\(x=55\)</span>と計算され表示される。</p>
+</section>
+<section id="ブロック" class="slide level2 smaller">
+<h2 class="smaller">ブロック</h2>
+<pre><code>$$
+y = C_1 e^{-\frac{k}{2} t}
+\cos{ \Bigg ( t \sqrt{ \omega^2 - \frac{k^2}{4}} \Bigg )}
+ + 
+C_2 e^{-\frac{k}{2}t}
+\sin{ \Bigg ( t \sqrt{ \omega^2 - \frac{k^2}{4}} \Bigg ) }
+$$</code></pre>
+<p>とブロック要素で書くと、</p>
+<p><span class="math display">\[
+y = C_1 e^{-\frac{k}{2} t} \cos{ \Bigg ( t \sqrt{ \omega^2 -
+\frac{k^2}{4}} \Bigg )} + C_2 e^{-\frac{k}{2}t} \sin{ \Bigg ( t \sqrt{
+\omega^2 - \frac{k^2}{4}} \Bigg ) }
+\]</span></p>
+<p>と表示できる。</p>
+</section></section>
+<section id="引用blockquote" class="title-slide slide level1">
+<h1>引用（blockquote）</h1>
+<ul>
+<li>行の頭に &gt;  をつけるだけ</li>
+<li>プログラムのコードなどは ` と ````
+を使う方がフォントなどの表記があうので望ましい</li>
+</ul>
+<pre><code>&gt; The “intelligence” demanded of the workman, as well as of the director 
+&gt; of an industrial process, is little else than a degree of facility 
+&gt; in the apprehension of and adaptation to a quantitatively determined 
+&gt; causal sequence. – Thorstein Bunde Veblen</code></pre>
+<blockquote>
+<p>The “intelligence” demanded of the workman, as well as of the
+director of an industrial process, is little else than a degree of
+facility in the apprehension of and adaptation to a quantitatively
+determined causal sequence. – Thorstein Bunde Veblen</p>
+</blockquote>
+</section>
+
+<section>
+<section id="コードの実行と表示" class="title-slide slide level1">
+<h1>コードの実行と表示</h1>
+<p>他のR Markdown文書と同様に、インラインの場合は`r
+1+2+3`のように、コードチャンクの場合は</p>
+<div class="psudopre">
+```{r}<br/> 1+2+3<br/> ```
+</div>
+<p>とRのコードを実行し、オプションに応じて結果を表示する。RcppやPythonやJuliaのコードにも対応。</p>
+</section>
+<section id="表示オプション" class="slide level2">
+<h2>表示オプション</h2>
+<p>以下を覚えておくと、だいたい困らない。</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">コード・ブロックの開始</th>
+<th style="text-align: center;">実行</th>
+<th style="text-align: center;">コード</th>
+<th style="text-align: center;">出力</th>
+<th style="text-align: center;">警告</th>
+<th style="text-align: center;">メッセージ</th>
+<th style="text-align: center;">^##</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">```{r}</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">```{r results=“asis” }</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">```{r comment=“” }</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">```{r include=FALSE}</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;">✓</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">```{r eval=FALSE}</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">```{r echo=FALSE, include=FALSE,
+warning=FALSE, message=FALSE}</td>
+<td style="text-align: center;">✓</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;">✓</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="r-markdown記法のコード表示問題①"
+class="slide level2 smaller">
+<h2 class="smaller">R Markdown記法のコード表示問題①</h2>
+<ul>
+<li>```の中に```を入れるとコードチャンクが終了してしまうので、R
+Markdownの説明をR Markdownで上手く書けない</li>
+<li>なぜかpreタグの中の```はコードチャンクとして解釈されないので、コードチャンクだけならばpreタグで回避できる</li>
+<li>しかし`r 1 +
+2`や|や$は、preタグの中でも実行/解釈される。だからと言って\でエスケープすると、エスケープ文字ごと表示してしまう</li>
+<li>preタグと同じプロパティを設定したdivタグを用意し、HTMLのエスケープをそれぞれして、見た目を誤魔化そう</li>
+</ul>
+<pre><code>&lt;div class=&quot;psudopre&quot;&gt;&amp;#x60;r 1+2+3&amp;#x60;&lt;/div&gt;</code></pre>
+</section>
+<section id="r-markdown記法のコード表示問題②"
+class="slide level2 smaller">
+<h2 class="smaller">R Markdown記法のコード表示問題②</h2>
+<ul>
+<li>インライン要素で、冒頭が”r “と”R “のコードは必ず実行する
+<ul>
+<li>e.g. `<code>R CMD INSTALL</code>`と書くと、<code>CMD INSTALL</code>を実行しようとしてエラーになる</li>
+</ul></li>
+<li>`をつけなければ実行されないが、コード表記用のフォントにならない（e.g. R
+CMD INSTALL）</li>
+<li>Rの文字列表示を上手く使う
+<ul>
+<li>e.g. <span class="psudopre">``r "R CMD INSTALL"``</span> →
+<code>R CMD INSTALL</code></li>
+<li>外側の`でコード表記タグにして、内側の`でRのコードとして実行</li>
+</ul></li>
+<li>もしくはpreタグと同じプロパティを設定したspanタグを用意</li>
+</ul>
+</section></section>
+<section>
+<section id="表の作成" class="title-slide slide level1">
+<h1>表の作成</h1>
+<p>R Markdownとしては普通だが、サイズや配色は調整したくなる。</p>
+</section>
+<section id="べた書き" class="slide level2">
+<h2>べた書き</h2>
+<div class="psudopre">
+| x | y | z |<br /> | :------: | :---: | :---: |<br /> | `r x[1]` | `r
+y[1]` | `r z[1]` |<br /> | `r x[2]` | `r y[2]` | `r z[2]` |<br /> | `r
+x[3]` | `r y[3]` | `r z[3]` |
+</div>
+<p>以上のようなコードでパイプ表をつくることもできる。:---が左寄せ、---:が右寄せ、:---:が中央寄せ。</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">x</th>
+<th style="text-align: center;">y</th>
+<th style="text-align: center;">z</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0.2152</td>
+<td style="text-align: center;">0.63324</td>
+<td style="text-align: center;">0.13667</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0.86013</td>
+<td style="text-align: center;">-0.59059</td>
+<td style="text-align: center;">0.9731</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0.64043</td>
+<td style="text-align: center;">1.53518</td>
+<td style="text-align: center;">0.22503</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="配色の変更" class="slide level2">
+<h2>配色の変更</h2>
+<ul>
+<li>デフォルトだと背景と混じるので、CSSで色を指定している</li>
+<li>奇数行と偶数行で背景色を変えたい場合は、tr:nth-child(odd)
+tdとtr:nth-child(even) tdにそれぞれ別の色を設定</li>
+</ul>
+<pre><code>tr.header {
+  color: white;
+  background-color: black;
+}
+
+tr {
+  color: black;
+  background-color: #F0F0F0;
+}</code></pre>
+</section>
+<section id="表の作成-データフレームを表示" class="slide level2">
+<h2>表の作成 データフレームを表示</h2>
+<p>データフレームや行列を表示すると見栄えが悪い。 code
+chunkのオプションにresult=“asis”かcomment=““が無いと行頭に##をつけてくる。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df01, <span class="dv">8</span>)</span></code></pre></div>
+<pre><code>         y        x       z
+1  0.63324 0.215204 0.13667
+2 -0.59059 0.860133 0.97310
+3  1.53518 0.640434 0.22503
+4  0.75884 0.046674 0.23908
+5  0.64060 0.692636 0.55664
+6 -1.89472 0.189462 0.97329
+7  0.52616 0.707381 0.47604
+8  0.12010 0.808363 0.70775</code></pre>
+</section>
+<section id="表の作成-knitrkableで表示" class="slide level2">
+<h2>表の作成 knitr::kableで表示</h2>
+<p>データフレームをパイプ表に変換してくれる。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(df01, <span class="dv">4</span>))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">y</th>
+<th style="text-align: right;">x</th>
+<th style="text-align: right;">z</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.63324</td>
+<td style="text-align: right;">0.21520</td>
+<td style="text-align: right;">0.13667</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">-0.59059</td>
+<td style="text-align: right;">0.86013</td>
+<td style="text-align: right;">0.97310</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.53518</td>
+<td style="text-align: right;">0.64043</td>
+<td style="text-align: right;">0.22503</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.75884</td>
+<td style="text-align: right;">0.04667</td>
+<td style="text-align: right;">0.23908</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="表の作成-matrixを表示" class="slide level2">
+<h2>表の作成 matrixを表示</h2>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">23</span>, <span class="dv">19</span>, <span class="dv">7</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">dimnames=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))), </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">align=</span><span class="fu">c</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>), <span class="at">caption=</span><span class="st">&quot;2×2表&quot;</span>)</span></code></pre></div>
+<table>
+<caption>2×2表</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">a</th>
+<th style="text-align: right;">b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">7</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="表の作成-dtdatatableで表示" class="slide level2 smaller">
+<h2 class="smaller">表の作成 DT::datatableで表示</h2>
+<p>高機能だが狭い。背景色を白に指定したが、細かい調整は困難。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(df01, <span class="at">options=</span><span class="fu">list</span>(<span class="at">pageLength=</span><span class="dv">3</span>))</span></code></pre></div>
+<div class="datatables html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-78b2320ccc7b7880dd0b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-78b2320ccc7b7880dd0b">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100"],[0.633239786662666,-0.59059411865311,1.53517637763939,0.758837459749985,0.640599110684314,-1.89472281499725,0.526156738316099,0.120096351309701,3.13651102362103,-0.633553279371104,1.81736504288088,0.188989204601425,-0.311936669432525,-0.480592836350818,0.990056000842222,-1.75578603382219,1.10642612486161,3.11450442803435,0.669171605028726,-0.58378896360965,-0.456086587289524,0.696438236043347,0.131813843006643,1.58125492530787,1.08805223094201,-0.207520846015137,2.2032167916666,0.976050733589256,1.58081412197217,-0.445148304653444,1.32790028764147,-1.16447655991622,1.36574592126625,2.39978060797576,0.905276883544465,-1.53385334394349,0.932380737528924,-0.0391657802292513,1.30902254302703,0.144113843454139,-0.85828285058374,1.53327999865792,0.0561438688304972,0.450321648233035,-0.5559973963534,-1.44680595294265,1.90539556471555,0.37172084727457,-0.763687772415456,2.06989369778445,-1.02749527150355,-0.299123740068423,-0.167179715884162,0.299054552621167,1.66891715322782,0.593422636081942,2.06112749192654,0.334421573239062,1.62509910730071,1.87780943293363,-0.128798200239547,0.132530628432369,0.425899547230412,0.734370252221006,1.59041604479487,2.15674311442697,0.249300610303303,-1.09475488366431,1.56506835498454,-0.59226704538884,-0.943803070699,1.12469176774643,0.184801516251751,1.2006804296871,1.52841001411351,0.0391018575663517,0.207193826173105,0.365526534396812,1.9836223551134,0.684384464262169,1.41420375965255,1.36758401458361,-0.144597000759179,-0.60871077640989,2.28593129137702,2.70388248959034,0.824964417588299,-0.125181132744308,2.35915749244713,-0.100516680970082,0.765943917892836,1.33802672777279,0.836839547067693,-0.137879200646248,0.0953154349603797,0.36898683563454,-0.0928551365600626,0.384679976983054,0.814481977977772,-2.17750270299913],[0.215203545987606,0.86013310472481,0.640433596912771,0.0466743097640574,0.692635874729604,0.189461752539501,0.707380608189851,0.808363439748064,0.96908209240064,0.0344697302207351,0.185100639937446,0.738698343746364,0.487169192871079,0.278714512474835,0.745068979682401,0.144565919879824,0.695911953924224,0.960789867211133,0.721485981252044,0.0302709785755724,0.422452099388465,0.858408767264336,0.761429954320192,0.117385908728465,0.851609806064516,0.0288889412768185,0.409366324543953,0.0240433495491743,0.535822165431455,0.69007191574201,0.610924897016957,0.0530740325339139,0.344115901272744,0.731231979094446,0.0637646552640945,0.288944018539041,0.607803948456421,0.961106345523149,0.733989742584527,0.605109087191522,0.832557326182723,0.205121075967327,0.494676250731573,0.736886752070859,0.542464242316782,0.269883549073711,0.276371942833066,0.239477213937789,0.109868409810588,0.861251421505585,0.269737608497962,0.304181400686502,0.0452019001822919,0.697529457043856,0.578056716825813,0.34271673578769,0.909121796023101,0.114004804985598,0.603808150393888,0.325298374285921,0.439331482397392,0.953430675901473,0.861564391991124,0.205689944094047,0.440548332640901,0.5603269378189,0.180709792301059,0.169990929309279,0.168682320741937,0.00524418498389423,0.0773637618403882,0.804269164334983,0.292699329787865,0.604423467768356,0.536411951296031,0.881011920515448,0.0197999496012926,0.423694782191887,0.762549875071272,0.48385777999647,0.0323045139666647,0.501529813045636,0.71400030143559,0.407127346843481,0.958389332983643,0.565165409585461,0.794927281560376,0.263717256486416,0.953543018549681,0.0586745152249932,0.646613666322082,0.233135438989848,0.245574141154066,0.341333571122959,0.358133780071512,0.503090717596933,0.739137300057337,0.8245782002341,0.797432683873922,0.0268671070225537],[0.13666566205211,0.973095831694081,0.225033511174843,0.239080526633188,0.556644310243428,0.973286214983091,0.476037446642295,0.707746494095773,0.232896114233881,0.808651394210756,0.239735232898965,0.949471551459283,0.554094004444778,0.369462135946378,0.381329346448183,0.666364526143298,0.410315606975928,0.204580304212868,0.695637134136632,0.632625469239429,0.436883016955107,0.987050815252587,0.940088455332443,0.0551484911702573,0.891728643560782,0.0704325295519084,0.0228199572302401,0.0186493794899434,0.27539182594046,0.903130219550803,0.514659827807918,0.765810477081686,0.252873189048842,0.243605614872649,0.232465388486162,0.771213236963376,0.419313758146018,0.979808944975957,0.471334596397355,0.392795740393922,0.982068575918674,0.233055571094155,0.460812308592722,0.857690748525783,0.889663763344288,0.945899616694078,0.0182754613924772,0.26893481775187,0.638337371172383,0.401941722491756,0.892294692108408,0.45303343445994,0.295501084066927,0.951765235746279,0.327550534857437,0.418026328086853,0.181401028530672,0.285799631848931,0.168641688767821,0.170378869166598,0.741287056589499,0.867948686005548,0.808552038157359,0.245504181599244,0.219874415546656,0.0819695384707302,0.521650027716532,0.849540851311758,0.138887464767322,0.481767647201195,0.749757888494059,0.419005444739014,0.308593580732122,0.566707131452858,0.0205889802891761,0.829950966406614,0.363034585025162,0.636462366208434,0.214462480507791,0.438266813289374,0.000681330217048526,0.538599063409492,0.630081975832582,0.884153672959656,0.1047334051691,0.125502389390022,0.589179276488721,0.39326202054508,0.193649671040475,0.22599362814799,0.547798606567085,0.281534832902253,0.24182520667091,0.583862334024161,0.487658706260845,0.80703509086743,0.843075399287045,0.64373167976737,0.657979790819809,0.925058910856023]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>y<\/th>\n      <th>x<\/th>\n      <th>z<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":3,"columnDefs":[{"className":"dt-right","targets":[1,2,3]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false,"lengthMenu":[3,10,25,50,100]}},"evals":[],"jsHooks":[]}</script>
+</section></section>
+<section>
+<section id="推定結果の表示" class="title-slide slide level1">
+<h1>推定結果の表示</h1>
+<ul>
+<li>一般化線形モデル(GLM)で間に合う頻度主義者は楽ができる
+<ul>
+<li>stargazerパッケージのhtml出力が使える</li>
+<li>parameters → insightパッケージはhtml/markdownを出力できる</li>
+</ul></li>
+<li>表を描いてもそんなんでもない</li>
+</ul>
+</section>
+<section id="stargazerパッケージ" class="slide level2 smaller">
+<h2 class="smaller">stargazerパッケージ</h2>
+<ul>
+<li>code
+chunkのオプションに<code>results="asis", warning=FALSE, message=FALSE</code>を忘れると困った表示になる</li>
+</ul>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>r_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data=</span>df01)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stargazer, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stargazer</span>(r_lm, <span class="at">type=</span><span class="st">&quot;html&quot;</span>, <span class="at">out.header=</span><span class="cn">FALSE</span>, <span class="at">suppress.errors=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<ul>
+<li>情報量が多いので、CSSで表示サイズと配色を設定したほうが無難</li>
+</ul>
+</section>
+<section id="stargazerパッケージ用のcss" class="slide level2">
+<h2>stargazerパッケージ用のCSS</h2>
+<ul>
+<li>次のスライドのstargazerパッケージの出力の表示はR
+Markdownで以下のように属性をつけて</li>
+</ul>
+<pre><code>## stargazerの表示{.stargazer}</code></pre>
+<ul>
+<li>CSSでフォントサイズと配色を調整している</li>
+</ul>
+<pre><code>section.stargazer tr, section.stargazer td {
+    color: black;
+    background-color: white;
+    border: none;
+    font-size: 75%;
+}</code></pre>
+</section>
+<section id="stargazerの表示" class="slide level2 stargazer">
+<h2 class="stargazer">stargazerの表示</h2>
+<table style="text-align:center">
+<tr>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+<em>Dependent variable:</em>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td colspan="1" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+y
+</td>
+</tr>
+<tr>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+x
+</td>
+<td>
+2.176<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.178)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+z
+</td>
+<td>
+-3.129<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.180)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+1.056<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.118)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+100
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.792
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.788
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+0.508 (df = 97)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+184.730<sup>***</sup> (df = 2; 97)
+</td>
+</tr>
+<tr>
+<td colspan="2" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td style="text-align:right">
+<sup><em></sup>p&lt;0.1; <sup><strong></sup>p&lt;0.05;
+<sup></strong></em></sup>p&lt;0.01
+</td>
+</tr>
+</table>
+<div style="margin-top:12px;font-size: 50%;">
+<p>Hlavac, Marek (2022). stargazer: Well-Formatted Regression and
+Summary Statistics Tables. R package version 5.2.3. <a
+href="https://CRAN.R-project.org/package=stargazer"
+class="uri">https://CRAN.R-project.org/package=stargazer</a></p>
+</div>
+</section>
+<section id="stargazerパッケージの参照の表示"
+class="slide level2 smaller">
+<h2 class="smaller">stargazerパッケージの参照の表示</h2>
+<p>参照を書いてくれと要請されるので、以下のようにHTMLで書いている。</p>
+<pre><code>&lt;div style=&quot;margin-top:12px; font-size: 50%;&quot;&gt;
+Hlavac, Marek (2022). stargazer: Well-Formatted Regression and Summary Statistics Tables. 
+R package version 5.2.3. https://CRAN.R-project.org/package=stargazer
+&lt;/div&gt;</code></pre>
+<p>GLMで済む場合はstargazerで作業時間が一気に減るはずなので、有難くリファレンスかどこかに書いておこう。</p>
+</section>
+<section id="parametersパッケージ" class="slide level2 smaller">
+<h2 class="smaller">parametersパッケージ</h2>
+<p>プレゼンもしくは最近需要が高くなった信頼区間を考えるとこっちの方がよいかも</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>insight<span class="sc">::</span><span class="fu">export_table</span>(parameters<span class="sc">::</span><span class="fu">model_parameters</span>(r_lm), <span class="at">format=</span><span class="st">&quot;markdown&quot;</span>)</span></code></pre></div>
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 9%" />
+<col style="width: 10%" />
+<col style="width: 9%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Parameter</th>
+<th style="text-align: right;">Coefficient</th>
+<th style="text-align: left;">SE</th>
+<th style="text-align: left;">CI</th>
+<th style="text-align: right;">CI_low</th>
+<th style="text-align: right;">CI_high</th>
+<th style="text-align: right;">t</th>
+<th style="text-align: right;">df_error</th>
+<th style="text-align: left;">p</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: right;">1.06</td>
+<td style="text-align: left;">0.12</td>
+<td style="text-align: left;">0.95</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">1.29</td>
+<td style="text-align: right;">8.95</td>
+<td style="text-align: right;">97</td>
+<td style="text-align: left;">2.43e-14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">x</td>
+<td style="text-align: right;">2.18</td>
+<td style="text-align: left;">0.18</td>
+<td style="text-align: left;">0.95</td>
+<td style="text-align: right;">1.82</td>
+<td style="text-align: right;">2.53</td>
+<td style="text-align: right;">12.25</td>
+<td style="text-align: right;">97</td>
+<td style="text-align: left;">2.13e-21</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">z</td>
+<td style="text-align: right;">-3.13</td>
+<td style="text-align: left;">0.18</td>
+<td style="text-align: left;">0.95</td>
+<td style="text-align: right;">-3.49</td>
+<td style="text-align: right;">-2.77</td>
+<td style="text-align: right;">-17.35</td>
+<td style="text-align: right;">97</td>
+<td style="text-align: left;">1.68e-31</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="交差検証loocvの表示①" class="slide level2 smaller">
+<h2 class="smaller">交差検証（LOOCV）の表示①</h2>
+<p>自動で表が作られない場合、例えばLOOCVは表をつくる。</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>frml <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;y ~ x + z&quot;</span>, <span class="st">&quot;y ~ x&quot;</span>, <span class="st">&quot;y ~ z&quot;</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">length</span>(frml), <span class="dv">2</span>, <span class="at">dimnames=</span><span class="fu">list</span>(</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TeXの\\はRの文字列の中では\\\\と書かないとエスケープ文字</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_1 x + </span><span class="sc">\\</span><span class="st">beta_2 z + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>, <span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_1 x + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>, <span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_2 z + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>),</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;raw&quot;</span>, <span class="st">&quot;adjusted&quot;</span>)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(frml)){</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>    delta[i, ] <span class="ot">&lt;-</span> <span class="fu">cv.glm</span>(df01, <span class="fu">glm</span>(<span class="fu">formula</span>(frml[i]), <span class="at">data=</span>df01))<span class="sc">$</span>delta</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(delta)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">raw</th>
+<th style="text-align: right;">adjusted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
+\beta_1 x + \beta_2 z + \epsilon\)</span></td>
+<td style="text-align: right;">0.26564</td>
+<td style="text-align: right;">0.26556</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
+\beta_1 x + \epsilon\)</span></td>
+<td style="text-align: right;">1.07347</td>
+<td style="text-align: right;">1.07324</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
+\beta_2 z + \epsilon\)</span></td>
+<td style="text-align: right;">0.66511</td>
+<td style="text-align: right;">0.66497</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="交差検証loocvの表示②" class="slide level2 smaller">
+<h2 class="smaller">交差検証（LOOCV）の表示②</h2>
+<p>パイプ表の中にTeXの数式とインラインコードを入れて表にすることもできる。</p>
+<div class="psudopre">
+| モデル | `r colnames(delta)[1]` | `r colnames(delta)[2]` |<br /> |
+:--- | ---: | ---: |<br /> | $y = \beta_0 + \beta_1 x + \beta_2 z +
+\epsilon$ | `r delta[1,1]` | `r delta[1,2]` |<br /> | $y = \beta_0 +
+\beta_1 x + \epsilon$ | `r delta[2,1]` | `r delta[2,2]` |<br /> | $y =
+\beta_0 + \beta_2 z + \epsilon$ | `r delta[3,1]` | `r delta[3,2]` |
+</div>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">モデル</th>
+<th style="text-align: right;">raw</th>
+<th style="text-align: right;">adjusted</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
+\beta_1 x + \beta_2 z + \epsilon\)</span></td>
+<td style="text-align: right;">0.26564</td>
+<td style="text-align: right;">0.26556</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
+\beta_1 x + \epsilon\)</span></td>
+<td style="text-align: right;">1.07347</td>
+<td style="text-align: right;">1.07324</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
+\beta_2 z + \epsilon\)</span></td>
+<td style="text-align: right;">0.66511</td>
+<td style="text-align: right;">0.66497</td>
+</tr>
+</tbody>
+</table>
+</section></section>
+<section id="プロットの表示" class="title-slide slide level1 smaller">
+<h1 class="smaller">プロットの表示</h1>
+<ul>
+<li>code chunkの中にplot命令を入れる</li>
+<li>code chunkのオプションはfig.align=“center”, fig.width=9,
+fig.heigth=4のようにつける</li>
+<li>Rのコードでも<code>par(mar=c(4, 4, 0.1, 0.1))</code>などと表示調整</li>
+</ul>
+<p><img src="revealjs_files/figure-revealjs/unnamed-chunk-12-1.png" width="864" style="display: block; margin: auto;" /></p>
+</section>
+
+<section>
+<section id="図shapeの表示" class="title-slide slide level1">
+<h1>図（shape）の表示</h1>
+<ul>
+<li>図を取り込む</li>
+<li>図を描くコードを書く
+<ul>
+<li>Graphviz</li>
+<li>Mermaid.js</li>
+</ul></li>
+</ul>
+</section>
+<section id="図shapeを取り込む" class="slide level2">
+<h2>図（shape）を取り込む</h2>
+<ul>
+<li>作画ツールでつくったSVGファイルなどを<code>![It's a shape!](example.svg)</code>という風に貼れる</li>
+<li>サイズ指定したい場合、表示位置を調整したい場合などはhtmlタグを用いる</li>
+</ul>
+<pre><code>&lt;div style=&quot;text-align:center;&quot;&gt;
+&lt;img src=&quot;example.svg&quot; width=&quot;40%&quot;
+    style=&quot;border: none; box-shadow: none;&quot; alt=&quot;It&#39;s a shape!&quot;&gt;
+&lt;/div&gt;</code></pre>
+<div style="text-align:center;">
+<p><img src="example.svg" width="40%"
+    style="border: none; box-shadow: none;" alt="It's a shape!"></p>
+</div>
+</section>
+<section id="図shapeを描く" class="slide level2">
+<h2>図（shape）を描く</h2>
+<ul>
+<li>便利フレームワークを使わずJavaScriptなどで低水準関数で図を描くのは手間暇過ぎる
+<ul>
+<li>四角3・文字5・矢印4の図で（<a
+href="https://github.com/frogcat/canvas-arrow">借りてきたコード</a>を除いて）50行弱</li>
+</ul></li>
+<li><a
+href="https://rich-iannone.github.io/DiagrammeR/">DiagrammeRパッケージ</a>でGraphvizやMermaid.jsを使える</li>
+<li>ただしMermaid.js（verison
+0.3.0）は描画されたりされなかったり、描画されても全体のpreタグのスタイルが変化したり挙動不審</li>
+</ul>
+</section>
+<section id="graphvizを使う" class="slide level2">
+<h2>Graphvizを使う</h2>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(<span class="st">&quot;example.gv&quot;</span>, <span class="at">width=</span><span class="dv">1024</span>, <span class="at">height=</span><span class="dv">384</span>)</span></code></pre></div>
+<div id="htmlwidget-c2b4bf386be3d73b0e2a" style="width:1024px;height:384px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-c2b4bf386be3d73b0e2a">{"x":{"diagram":"digraph causal_diagram {\n    graph [rankdir = RL, bgcolor = transparent]\n\n    node [shape = oval,\n        penwidth = 0.5,\n        width = 0.2, height = 0.2,\n        fixedsize = true,\n        fontname = \"Times New Roman\",\n        fontsize = 10]\n    z [label = <<i>z<\/i><sub><font point-size=\"6.0\">i<\/font><\/sub>> ]\n\n    node [shape = plaintext,\n        width = 0.2, height = 0.2,\n        fixedsize = true,\n        fontname = \"Times New Roman\",\n        fontsize = 10]\n    x [label = <<i>x<\/i><sub><font point-size=\"6.0\">it<\/font><\/sub>> ]\n    y [label = <<i>y<\/i><sub><font point-size=\"6.0\">it<\/font><\/sub>> ]\n\n    y->x [arrowsize = 0.5, penwidth = 0.5, headport = s ]\n    x->y [arrowsize = 0.5, penwidth = 0.5, label = \"&#x03B2;&#x2081;\", fontname = \"Times New Roman\", fontsize = 8 ]\n    z->x [arrowsize = 0.5, penwidth = 0.5, label = \"&#x03B3;&#x2081;\", fontname = \"Times New Roman\", fontsize = 8 ]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</section>
+<section id="mermaid.jsを何とか使う" class="slide level2">
+<h2>Mermaid.jsを何とか使う</h2>
+<p>revealjsとMermaid.jsは相性が悪そうなので隔離する</p>
+<ol type="1">
+<li>DiagrammeR::mermaidで生成したhtmlwidgetオブジェクトの設定値を上書きして、htmlwidgets::saveWidgetで保存する</li>
+<li>保存したhtmlファイルにjavascriptを追加する</li>
+<li>YAMLフロントマターでself_contained: falseを指定する</li>
+<li>マークダウン部分にに保存ファイル名を指定したiframeタグを埋め込む</li>
+</ol>
+<p>詳細は<a
+href="https://uncorrelated.hatenablog.com/entry/2022/11/06/063144">DiagrammeR/Mermaid.jsで描いた図をreveal.jsに何とか埋め込む方法</a>を参照</p>
+</section></section>
+<section id="脚注" class="title-slide slide level1">
+<h1>脚注</h1>
+<p>脚注<del>番号</del>識別子として [^<span class="red">文字列</span>]
+を文に挟み、本文中のどこかに [^<span class="red">文字列</span>]: <span
+class="red">説明</span> を書くと、文章の末尾に脚注が付記される。</p>
+<p>例えば、</p>
+<pre><code>十分原理と弱い条件付け原理を受け入れる者は，尤度原理[^1]を受け入れることになる．
+
+[^1]: パラーメーターθの推論において，データxが観察されたあと･･･</code></pre>
+<p>と書けばよい。</p>
+</section>
+
+<section id="ハイパーリンクをつけたい" class="title-slide slide level1">
+<h1>ハイパーリンクをつけたい</h1>
+<p>Markdown記法なので</p>
+<pre><code>[The R Project for Statistical Computing](https://www.r-project.org/)</code></pre>
+<p><a href="https://www.r-project.org/">The R Project for Statistical
+Computing</a></p>
+</section>
+
+<section>
+<section id="文字入力で困ったときは" class="title-slide slide level1">
+<h1>文字入力で困ったときは</h1>
+<p>対処法3つ</p>
+<ul>
+<li>HTMLのタグを書く</li>
+<li>HTMLの文字コード入力（数値文字参照）を使う</li>
+<li>文字の前に\を書く</li>
+</ul>
+</section>
+<section id="htmlのタグとタグの間はhtmlとして解釈"
+class="slide level2 smaller">
+<h2 class="smaller">HTMLのタグとタグの間は、HTMLとして解釈</h2>
+<ul>
+<li>「<ruby>強敵<rp>（</rp><rt>トモ</rt><rp>）</rp></ruby>」と入力するには、「&lt;ruby&gt;強敵&lt;rp&gt;（&lt;/rp&gt;&lt;rt&gt;トモ&lt;/rt&gt;&lt;rp&gt;）&lt;/rp&gt;&lt;/ruby&gt;」</li>
+<li>「<code>&lt;u&gt;魚心&lt;/u&gt;あれば&lt;u&gt;水心&lt;/u&gt;</code>」と書けば「<u>魚心</u>あれば<u>水心</u>」とアンダーバーも出せる</li>
+</ul>
+</section>
+<section id="特殊文字の入力もhtmlと同様に行なえる" class="slide level2">
+<h2>特殊文字の入力もHTMLと同様に行なえる</h2>
+<ul>
+<li>「✓ ♨ ♡ ⚑ ① ② ③」と入力するには、「&amp;#10003; &amp;#x2668;
+&amp;#x2661; &amp;#9873; &amp;#x2460; &amp;#x2461; &amp;#x2462;」</li>
+<li>[ ]を&amp;#x5b; &amp;#x5c;と入力するなどエスケープにも使える</li>
+</ul>
+</section>
+<section id="エスケープはc言語の文字列などと同様" class="slide level2">
+<h2>エスケープはC言語の文字列などと同様</h2>
+<ul>
+<li>文字の前に\を書くとエスケープできて、特殊文字もそのまま表示できる。</li>
+<li>`が、\を書いてもエスケープできないケースがあったりするので、&amp;#x60;という風に書くことも覚えておくほうが無難。</li>
+</ul>
+</section></section>
+<section id="配布資料" class="title-slide slide level1">
+<h1>配布資料</h1>
+<ul>
+<li>【推奨】そのままアップロードして、ケータイなどで見ろと言い放つ</li>
+<li>YAMLフロントマターのrevealjs_presentation関連の記述を消し去り、html_documentの設定をしてhtmlを生成
+<ul>
+<li>アップロードして、ケータイなどで見ろと言い放つ</li>
+<li>【非推奨】印刷して配る</li>
+</ul></li>
+<li><a
+href="https://qiita.com/kentarosasaki/items/d7bcc9699466cb82f237">revealjsでGoogle
+Chromeを通してpdf出力</a>をする
+<ul>
+<li>YAMLフロントマターが<code>self_contained: false</code>になっていないと動かない</li>
+</ul></li>
+</ul>
+</section>
+
+<section id="おわりに" class="title-slide slide level1">
+<h1>おわりに</h1>
+<ul>
+<li>スケーラブルなので、モバイル対応</li>
+<li>ioslides_presentationより直観的</li>
+<li>見出しと図表があればプレゼンできる人向けで、官公庁パワポを作りたい人は避けるべし</li>
+<li>頻繁に定型レポートを書く人にはたぶん便利で、render関数で生成できるので自動化もできる</li>
+<li>CSS, htmlのdivやspanタグをいじらないといけない所が多い</li>
+</ul>
+</section>
+    </div>
+  </div>
+
+  <script src="revealjs_files/reveal.js-3.3.0.1/lib/js/head.min.js"></script>
+  <script src="revealjs_files/reveal.js-3.3.0.1/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+        // Display a presentation progress bar
+        progress: true,
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+        // Enable the slide overview mode
+        overview: true,
+        // Vertical centering of slides
+        center: true,
+        // Enables touch navigation on devices with touch input
+        touch: true,
+        // Turns fragments on and off globally
+        fragments: true,
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+        // Transition style
+        transition: 'default', // none/fade/slide/convex/concave/zoom
+        // Transition speed
+        transitionSpeed: 'default', // default/fast/slow
+        // Transition style for full page slide backgrounds
+        backgroundTransition: 'default', // none/fade/slide/convex/concave/zoom
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        menu: {
+   
+    
+    
+    
+    
+    
+    
+ 
+          custom: false,
+          themes: false,
+          transitions: false
+        },
+
+
+
+        chalkboard: {
+        },
+
+        keyboard: {
+          67: function() { RevealChalkboard.toggleNotesCanvas() },    // toggle notes canvas when 'c' is pressed
+          66: function() { RevealChalkboard.toggleChalkboard() }, // toggle chalkboard when 'b' is pressed
+          46: function() { RevealChalkboard.clear() },    // clear chalkboard when 'DEL' is pressed
+           8: function() { RevealChalkboard.reset() },    // reset chalkboard data on current slide when 'BACKSPACE' is pressed
+          68: function() { RevealChalkboard.download() }, // downlad recorded chalkboard drawing when 'd' is pressed
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'revealjs_files/reveal.js-3.3.0.1/plugin/chalkboard/chalkboard.js', async: true },
+          { src: 'revealjs_files/reveal.js-3.3.0.1/plugin/menu/menu.js', async: true },
+        ]
+      });
+    </script>
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+<script>
+  (function() {
+    if (window.jQuery) {
+      Reveal.addEventListener( 'slidechanged', function(event) {  
+        window.jQuery(event.previousSlide).trigger('hidden');
+        window.jQuery(event.currentSlide).trigger('shown');
+      });
+    }
+  })();
+</script>
+
+<div class="suffix_words"><div class="suffix_inner">R Markdown Format for reveal.js Presentationsのジャンキー解説</div></div>
+<div class="suffix_image"></div>
+
+  </body>
+</html>

@@ -1,0 +1,11 @@
+PackageURL = DojaDukeFalling.jar
+AppSize = 81658
+AppMainTitle = dcm_duke_icon160x160.jpg
+AppName = Duke Falling
+AppVer = 0.9.6
+DrawArea = 240x240
+AppClass = dfalling.DFalling
+SPsize = 60
+LastModified = Sat, 27 Mar 2010 12:27:40
+ConfigurationVer = CLDC-1.0
+AppIcon = dcm_duke_icon48x48.gif

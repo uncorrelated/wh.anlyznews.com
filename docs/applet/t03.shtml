@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<!--#include virtual="/parts/head.txt"-->
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<!--#include virtual="/parts/header.txt"-->
+<h2>キューブ型メニュー</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<p>マウス・ポインターを、立方体の上下左右においてください。速度と回転角度が変わります。クリックすると、手前に来た面に関連付けられたページに飛べます。</p>
+<p>使いにくいです。ええ。</p>
+
+<div>
+<applet code="CubeMenu" codebase="jar" archive="CubeMenu.jar" width="480" height="256">
+<param name="LinkImage" value="cubeimg/yahoo.jpg,cubeimg/@IT.jpg,cubeimg/CNN.jpg,cubeimg/uncorrelated.jpg,cubeimg/ITMEDIA.jpg,cubeimg/NIKKEI.jpg">
+<param name="BgColor" value="ffffff">
+</applet>
+</div>
+
+<h3>設置</h3>
+<p>このメニューを、貴方のページに設置したいというかたは、<A Href="jar/CubeMenu.jar">CubeMenu.jar</A> をダウンロードして、貴方のページにアップロードしてください。</p>
+<p>次に CubeMenu.jar があるディレクトリーに以下のようなタグが含まれる html を書きましょう。</p>
+<div class="code">
+&lt;applet code=&quot;CubeMenu&quot; width=&quot;<strong>512</strong>&quot; height=&quot;<strong>256</strong>&quot; archive=&quot;CubeMenu.jar&quot;&gt;<br/>
+&lt;param name=&quot;PanelColor&quot;<br/>
+value=&quot;<strong>FF0000,00FF00,0000FF,FFFF00,FF00FF,00FFFF</strong>&quot;&gt;<br/>
+&lt;param name=&quot;LinkName&quot; value=&quot;<strong>Yahoo! Japan,Google</strong>&quot;&gt;<br/>
+&lt;param name=&quot;LinkLocation&quot;<br/>
+ value=&quot;<strong>http://www.yahoo.co.jp/,http://www.google.co.jp/</strong>&quot;&gt;<br/>
+&lt;param name=&quot;LinkImage&quot; value=&quot;<strong>yahoo.jpg,google.jpg</strong>&quot;&gt;<br/>
+&lt;param name=&quot;FontSize&quot; value=&quot;<strong>12</strong>&quot;&gt;<br/>
+&lt;param name=&quot;BgColor&quot; value=&quot;<strong>F0F0F0</strong>&quot;&gt;<br/>
+&lt;param name=&quot;IsImageBorder&quot; value=&quot;<strong>false</strong>&quot;&gt;<br/>
+&lt;param name=&quot;Taret&quot; value=&quot;<strong>_blank</strong>&quot;&gt;<br/>
+&lt;/applet&gt;
+</div>
+
+<p>PanelColor は、立方体の各面の色をあらわします。各面の色を0 ～ F までの 16 進数６桁であらわし、カンマ（,）で区切って６色指定します。各面の色は上２桁が赤、中２桁が緑、下２桁が青の輝度をあらわします。省略した場合と、指定が間違っている場合はデフォルト値が使われます。</p>
+<p>LinkName は、リンク先を説明する文字列です。カンマ（,）で区切って６個まで記述できます。６個未満でも構いません。なお文字列中にカンマがあらわれる場合はダブル・コーテーション（&quot;）で囲ってください。ダブル・コーテーション中にダブル・コーテーションが現れる場合、ダブル・コーテーションを二個続けて書きます。</p>
+<p>LinkLocation は、リンク先ＵＲＬをあらわす文字列です。カンマ（,）で区切って６個まで記述できます。６個未満でも構いません。</p>
+<p>LinkImage は、リンク先を説明する画像です。カンマ（,）で区切って６個まで記述できます。６個未満でも構いません。なお、Java Applet のセキュリティー上の制限により CubeMenu.jar と同一のウェブサーバー上にある画像しか扱えません。また、画像は自動的には縮小しないので、あらかじめ適切なサイズの画像を用意してください。このパラメーターは省略することができます。</p>
+<p>FontSize は、リンク先を説明する文字列のフォント・サイズです。デフォルト値は 12 で、このパラメーターは省略することができます。</p>
+<p>BgColor は、背景色です。デフォルトは #F0F0F0 で、このパラメーターは省略することができます。</p>
+<p>IsImageBorder は、リンク先を説明する画像に対応するパネル色で縁取りをするかどうかを決めるフラグです。true を指定すると、縁取りを行います。デフォルト値は false で、このパラメーターは省略することができます。</p>
+<p>Target は、リンク先を開くブラウザーのウィンドウ名です。デフォルトは _blank で、このパラメーターは省略することができます。</p>
+
+<h3ソースコード等</h3>
+
+<p><A Href="jar/CubeMenu.jar">CubeMenu.jar</A> の中に、CubeMenu.java が入っています。読みたい方は、どうぞ。</p>
+
+</div>
+<div class="footer">
+<!--#include virtual="/parts/footer.txt"-->
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+AddType "text/html; charset=Shift_JIS" html shtml
+<Limit POST GET>
+order allow,deny
+allow from ALL 
+deny from 219.23.40. .data-hotel.net ldnatvip.livedoor.com
+</Limit>

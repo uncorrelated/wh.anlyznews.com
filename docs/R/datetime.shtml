@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rの日付関数群のざっとした説明</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rの日付関数群のざっとした説明</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>日時の入ったデータは多いわけで、日付処理に手馴れておくのに越したことはありません。勘所になる多数ある日時を格納するクラスの相互変換を確認しておきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#posixct-posixlt" id="toc-posixct-posixlt"><span
+class="toc-section-number">1</span> POSIXct → POSIXlt</a></li>
+<li><a href="#posixct-or-posixlt-numeric"
+id="toc-posixct-or-posixlt-numeric"><span
+class="toc-section-number">2</span> POSIXct or POSIXlt →
+numeric</a></li>
+<li><a href="#numeric-posixct-posixlt"
+id="toc-numeric-posixct-posixlt"><span
+class="toc-section-number">3</span> numeric → POSIXct, POSIXlt</a></li>
+<li><a href="#c言語のmktime風にposixctに変換"
+id="toc-c言語のmktime風にposixctに変換"><span
+class="toc-section-number">4</span>
+C言語のmktime風にPOSIXctに変換</a></li>
+<li><a href="#posixct-or-posixlt-date型"
+id="toc-posixct-or-posixlt-date型"><span
+class="toc-section-number">5</span> POSIXct or POSIXlt → Date型</a></li>
+<li><a href="#date型-posixct-or-posixlt"
+id="toc-date型-posixct-or-posixlt"><span
+class="toc-section-number">6</span> Date型 → POSIXct or POSIXlt</a></li>
+<li><a href="#posixct-or-posixlt-文字列"
+id="toc-posixct-or-posixlt-文字列"><span
+class="toc-section-number">7</span> POSIXct or POSIXlt → 文字列</a></li>
+<li><a href="#文字列-posixct" id="toc-文字列-posixct"><span
+class="toc-section-number">8</span> 文字列 → POSIXct</a></li>
+<li><a href="#日時の桁上がり桁下がり処理"
+id="toc-日時の桁上がり桁下がり処理"><span
+class="toc-section-number">9</span> 日時の桁上がり桁下がり処理</a></li>
+<li><a href="#roundで丸め処理ができる"
+id="toc-roundで丸め処理ができる"><span
+class="toc-section-number">10</span> roundで丸め処理ができる</a></li>
+<li><a href="#シーケンス生成もできる"
+id="toc-シーケンス生成もできる"><span
+class="toc-section-number">11</span> シーケンス生成もできる</a></li>
+<li><a href="#応用例①-来年まであと何日"
+id="toc-応用例①-来年まであと何日"><span
+class="toc-section-number">12</span> 応用例① 来年まであと何日？</a></li>
+<li><a href="#応用例②-年月の形式を月末日でposixltに変更"
+id="toc-応用例②-年月の形式を月末日でposixltに変更"><span
+class="toc-section-number">13</span> 応用例②
+{年/月}の形式を月末日でPOSIXltに変更</a></li>
+</ul>
+</div>
+
+<p>Rの日時処理は一見すると複雑怪奇に思えるかも知れません。Date型、POSIXct型、POSIXlt型と日時を格納するクラスが何種類もありますし、実際にデータを格納するときは文字列としてテキストファイルに書き込むからです。全てテキスト型か数値型として処理したくなりますが、日付の処理は変則的なことが多いので、バグの発生源になります<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。来年や来年度まであと何日か数えるのは意外に手間暇ですが、最近はlubridateパッケージを使うのが一般的のようですが、日時クラスを使うと簡単に処理できます。</p>
+<div id="posixct-posixlt" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> POSIXct → POSIXlt</h1>
+<p>まずは、タイムゾーンUTCでのUNIX秒を保持するクラスPOSIXctと、日付構造体になっているリストPOSIXlt型の変換です。変換に意外性はないですが、POSIXctとPOSIXltの存在を覚えておきましょう。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>now_ct <span class="ot">&lt;-</span> <span class="fu">Sys.time</span>() <span class="co"># 現在時間を取得すると、POSIXct型で戻る</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>now_lt <span class="ot">&lt;-</span> <span class="fu">as.POSIXlt</span>(now_ct)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>now_lt</span></code></pre></div>
+<pre><code>[1] &quot;2025-03-01 10:43:57 JST&quot;</code></pre>
+<p>なお、POSIXctとPOSIXltのスーパークラスがPOSIXltになります。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">class</span>(now_ct)</span></code></pre></div>
+<pre><code>[1] &quot;POSIXct&quot; &quot;POSIXt&quot; </code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">class</span>(now_lt)</span></code></pre></div>
+<pre><code>[1] &quot;POSIXlt&quot; &quot;POSIXt&quot; </code></pre>
+</div>
+<div id="posixct-or-posixlt-numeric" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> POSIXct or POSIXlt →
+numeric</h1>
+<p>POSIXctとPOSIXltは数値型に変換することができます。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>now_unix_time <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(now_ct)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>now_unix_time</span></code></pre></div>
+<pre><code>[1] 1740793437</code></pre>
+</div>
+<div id="numeric-posixct-posixlt" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> numeric → POSIXct,
+POSIXlt</h1>
+<p>数値型をPOSIXctもしくはPOSIXltに変換するのも簡単です。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>now_ct <span class="ot">&lt;-</span> <span class="fu">as.POSIXct</span>(now_unix_time, <span class="at">origin=</span><span class="st">&quot;1970-01-01&quot;</span>, <span class="at">tz=</span><span class="st">&quot;Japan&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>now_lt <span class="ot">&lt;-</span> <span class="fu">as.POSIXlt</span>(now_unix_time, <span class="at">origin=</span><span class="st">&quot;1970-01-01&quot;</span>, <span class="at">tz=</span><span class="st">&quot;Japan&quot;</span>)</span></code></pre></div>
+<p>tzの引数は<code>OlsonNames()</code>が返す値になります。tzを省略するとデフォルトのタイムゾーンになります。</p>
+</div>
+<div id="c言語のmktime風にposixctに変換" class="section level1"
+number="4">
+<h1><span class="header-section-number">4</span>
+C言語のmktime風にPOSIXctに変換</h1>
+<p>桁上がり、桁下がり処理をしてくれないので、<code>ISOdate(2022, 30, 1)</code>などと引数に入れるとエラーになります。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>now_ct <span class="ot">&lt;-</span> <span class="fu">ISOdate</span>(<span class="dv">1997</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="at">tz=</span><span class="st">&quot;Japan&quot;</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>now_ct <span class="ot">&lt;-</span> <span class="fu">ISOdatetime</span>(<span class="dv">1997</span>, <span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">13</span>, <span class="dv">34</span>, <span class="dv">45</span>, <span class="at">tz=</span><span class="st">&quot;Japan&quot;</span>)</span></code></pre></div>
+</div>
+<div id="posixct-or-posixlt-date型" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> POSIXct or POSIXlt →
+Date型</h1>
+<p>タイムゾーンの情報が落ちますが、Date型に変換もできます。POSIXltを変換します。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(now_lt); d</span></code></pre></div>
+</div>
+<div id="date型-posixct-or-posixlt" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Date型 → POSIXct or
+POSIXlt</h1>
+<p>Date型から戻すとJSTがUTCに。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">as.POSIXlt</span>(d_lt)</span></code></pre></div>
+</div>
+<div id="posixct-or-posixlt-文字列" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> POSIXct or POSIXlt →
+文字列</h1>
+<p>文字列に直すときにはフォーマット関数が使えます。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">format</span>(now_lt, <span class="st">&quot;%Y/%m/%d %H:%M:%S&quot;</span>) <span class="co"># helpはstrftimeを参照</span></span></code></pre></div>
+<pre><code>[1] &quot;2025/03/01 10:43:57&quot;</code></pre>
+</div>
+<div id="文字列-posixct" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> 文字列 → POSIXct</h1>
+<p>文字列を日時型に変換するのも簡単です。引数<code>format</code>を省略するとデフォルトの<code>tryFormats</code>(e.g. <code>%Y/%m/%d</code>)が試されます。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">as.POSIXct</span>(<span class="st">&quot;1997*4+3&quot;</span>, <span class="at">format=</span><span class="st">&quot;%Y*%m+%d&quot;</span>, <span class="at">tz=</span><span class="st">&quot;Japan&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;1997-04-03 Japan&quot;</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">as.POSIXlt</span>(<span class="st">&quot;1997*4+3&quot;</span>, <span class="at">format=</span><span class="st">&quot;%Y*%m+%d&quot;</span>, <span class="at">tz=</span><span class="st">&quot;Japan&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;1997-04-03 Japan&quot;</code></pre>
+<p>正体は<code>seq.Date</code>と<code>seq.POSIXt</code>なので、ヘルプはそちらを参照しましょう。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">methods</span>(seq)</span></code></pre></div>
+<pre><code>[1] seq.Date    seq.default seq.POSIXt 
+see &#39;?methods&#39; for accessing help and source code</code></pre>
+</div>
+<div id="日時の桁上がり桁下がり処理" class="section level1" number="9">
+<h1><span class="header-section-number">9</span>
+日時の桁上がり桁下がり処理</h1>
+<p>POSIXlt型にしておくと、30日後や100時間後のカレンダーの日付が簡単に得られます。ただし<code>$year</code>が年から1900を引いた値(e.g. 2022年だと122），<code>$mon</code>が月から1を引いた値(e.g. 12月だと11）なのには注意しましょう。</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">format</span>(now_lt, <span class="st">&quot;%Y/%m/%d %H:%M:%S&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;2025/03/01 10:43:57&quot;</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>now_lt<span class="sc">$</span>mday <span class="ot">&lt;-</span> now_lt<span class="sc">$</span>mday <span class="sc">+</span> <span class="dv">30</span> <span class="co"># 30日後にセット</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="fu">format</span>(now_lt, <span class="st">&quot;%Y/%m/%d %H:%M:%S&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;2025/03/31 10:43:57&quot;</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>now_lt<span class="sc">$</span>hours <span class="ot">&lt;-</span> now_lt<span class="sc">$</span>hours <span class="sc">+</span> <span class="dv">100</span> <span class="co"># さらに100時間後にセット</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="fu">format</span>(now_lt, <span class="st">&quot;%Y/%m/%d %H:%M:%S&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;2025/03/31 10:43:57&quot;</code></pre>
+</div>
+<div id="roundで丸め処理ができる" class="section level1" number="10">
+<h1><span class="header-section-number">10</span>
+roundで丸め処理ができる</h1>
+<p><code>methods(round)</code>をすると<code>round.POSIXt</code>が正体だと分かり、<code>?round.POSIXt</code>でヘルプに辿り着けますが、“secs”,
+“mins”, “hours”, “days”, “months”, “years”で丸め処理ができます。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">as.POSIXlt</span>(<span class="st">&quot;1997-4-3 12:34:56&quot;</span>), <span class="st">&quot;mins&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;1997-04-03 12:35:00 JST&quot;</code></pre>
+</div>
+<div id="シーケンス生成もできる" class="section level1" number="11">
+<h1><span class="header-section-number">11</span>
+シーケンス生成もできる</h1>
+<p>毎週の日付、計算するのは大変ですが、簡単に出ます。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&quot;2022/2/24&quot;</span>), <span class="fu">as.Date</span>(<span class="st">&quot;2022/10/13&quot;</span>), <span class="st">&quot;weeks&quot;</span>)</span></code></pre></div>
+<pre><code> [1] &quot;2022-02-24&quot; &quot;2022-03-03&quot; &quot;2022-03-10&quot; &quot;2022-03-17&quot; &quot;2022-03-24&quot;
+ [6] &quot;2022-03-31&quot; &quot;2022-04-07&quot; &quot;2022-04-14&quot; &quot;2022-04-21&quot; &quot;2022-04-28&quot;
+[11] &quot;2022-05-05&quot; &quot;2022-05-12&quot; &quot;2022-05-19&quot; &quot;2022-05-26&quot; &quot;2022-06-02&quot;
+[16] &quot;2022-06-09&quot; &quot;2022-06-16&quot; &quot;2022-06-23&quot; &quot;2022-06-30&quot; &quot;2022-07-07&quot;
+[21] &quot;2022-07-14&quot; &quot;2022-07-21&quot; &quot;2022-07-28&quot; &quot;2022-08-04&quot; &quot;2022-08-11&quot;
+[26] &quot;2022-08-18&quot; &quot;2022-08-25&quot; &quot;2022-09-01&quot; &quot;2022-09-08&quot; &quot;2022-09-15&quot;
+[31] &quot;2022-09-22&quot; &quot;2022-09-29&quot; &quot;2022-10-06&quot; &quot;2022-10-13&quot;</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">seq</span>(<span class="fu">as.POSIXlt</span>(<span class="st">&quot;1997-4-3 12:34:56&quot;</span>), <span class="fu">as.POSIXlt</span>(<span class="st">&quot;1997-4-5 12:34:56&quot;</span>), <span class="st">&quot;12 hours&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;1997-04-03 12:34:56 JST&quot; &quot;1997-04-04 00:34:56 JST&quot;
+[3] &quot;1997-04-04 12:34:56 JST&quot; &quot;1997-04-05 00:34:56 JST&quot;
+[5] &quot;1997-04-05 12:34:56 JST&quot;</code></pre>
+</div>
+<div id="応用例①-来年まであと何日" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> 応用例①
+来年まであと何日？</h1>
+<p>こんな感じで。月や日を増減する場合はPOSIXlt型を書き替えて、<code>format</code>で出さないと桁上がり桁下がり処理がされません。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>now_lt <span class="ot">&lt;-</span> <span class="fu">as.POSIXlt</span>(<span class="fu">Sys.time</span>())</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="co"># 今年(now_lt$year + 1900) + 1は来年</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>newyear_ct <span class="ot">&lt;-</span> <span class="fu">ISOdate</span>(now_lt<span class="sc">$</span>year <span class="sc">+</span> <span class="dv">1900</span> <span class="sc">+</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="at">tz=</span><span class="st">&quot;Japan&quot;</span>)</span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a><span class="co"># 差分をとる前にDate型にして端数を抑制</span></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">as.Date</span>(newyear_ct), <span class="fu">as.Date</span>(now_lt), <span class="at">units=</span><span class="st">&quot;days&quot;</span>)</span></code></pre></div>
+<pre><code>Time difference of 306 days</code></pre>
+</div>
+<div id="応用例②-年月の形式を月末日でposixltに変更"
+class="section level1" number="13">
+<h1><span class="header-section-number">13</span> 応用例②
+{年/月}の形式を月末日でPOSIXltに変更</h1>
+<p>月別の時系列データはそこそこあるのですが、当然、<code>1994/01</code>と言うように日は入っていません。日付型として扱うのを諦めてもよいのですが、月初や月末の日付にしておく方がプロットなどがしやすいときもあります。</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>ymString <span class="ot">&lt;-</span> <span class="st">&quot;1994/01&quot;</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>ymd_begin <span class="ot">&lt;-</span> <span class="fu">as.POSIXlt</span>(<span class="fu">sub</span>(<span class="st">&quot;([0-9]+)/([0-9]+)&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">1/</span><span class="sc">\\</span><span class="st">2/1&quot;</span>, ymString))</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>ymd_end <span class="ot">&lt;-</span> ymd_begin; ymd_end<span class="sc">$</span>mon <span class="ot">&lt;-</span> ymd_end<span class="sc">$</span>mon <span class="sc">+</span> <span class="dv">1</span>; ymd_end<span class="sc">$</span>mday <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;月初&quot;</span>, <span class="fu">format</span>(ymd_begin))</span></code></pre></div>
+<pre><code>[1] &quot;月初 1994-01-01&quot;</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">&quot;月末&quot;</span>, <span class="fu">format</span>(ymd_end))</span></code></pre></div>
+<pre><code>[1] &quot;月末 1994-01-31&quot;</code></pre>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>2000年問題がありました。<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

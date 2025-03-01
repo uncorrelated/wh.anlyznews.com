@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rの文法のざっとした説明</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rの文法のざっとした説明</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>プログラミング初心者や他のプログラミング言語利用者に説明するときのために、ざっとした説明を用意しておきました。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#算術演算子" id="toc-算術演算子"><span
+class="toc-section-number">1</span> 算術演算子</a></li>
+<li><a href="#コメント" id="toc-コメント"><span
+class="toc-section-number">2</span> コメント</a></li>
+<li><a href="#関数" id="toc-関数"><span
+class="toc-section-number">3</span> 関数</a></li>
+<li><a href="#変数" id="toc-変数"><span
+class="toc-section-number">4</span> 変数</a></li>
+<li><a href="#文" id="toc-文"><span class="toc-section-number">5</span>
+文</a></li>
+<li><a href="#コードブロック" id="toc-コードブロック"><span
+class="toc-section-number">6</span> コードブロック</a></li>
+<li><a href="#データ型" id="toc-データ型"><span
+class="toc-section-number">7</span> データ型</a></li>
+<li><a href="#データ構造" id="toc-データ構造"><span
+class="toc-section-number">8</span> データ構造</a></li>
+<li><a href="#条件分岐" id="toc-条件分岐"><span
+class="toc-section-number">9</span> 条件分岐</a></li>
+<li><a href="#繰り返し文ループ" id="toc-繰り返し文ループ"><span
+class="toc-section-number">10</span> 繰り返し文（ループ）</a></li>
+<li><a href="#エラーと例外処理" id="toc-エラーと例外処理"><span
+class="toc-section-number">11</span> エラーと例外処理</a>
+<ul>
+<li><a href="#例外をキャッチしない方法"
+id="toc-例外をキャッチしない方法"><span
+class="toc-section-number">11.1</span> 例外をキャッチしない方法</a></li>
+<li><a href="#警告" id="toc-警告"><span
+class="toc-section-number">11.2</span> 警告</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>オブジェクト指向言語のJavaや、それに加えてテンプレートお化けのC++と比較すると簡素な言語仕様であるRは、直観で使っている人々が多く、それで間に合ってしまうことが多いと思いますが、プログラミング初心者や他のプログラミング言語利用者に説明するときのために、ざっとした説明をまとめました。</p>
+<div id="算術演算子" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> 算術演算子</h1>
+<p>四則演算は普通にあります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span></span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="dv">2</span> <span class="sc">*</span> <span class="dv">3</span></span></code></pre></div>
+<pre><code>[1] 6</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="dv">3</span> <span class="sc">-</span> <span class="dv">4</span></span></code></pre></div>
+<pre><code>[1] -1</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="dv">4</span> <span class="sc">/</span> <span class="dv">5</span></span></code></pre></div>
+<pre><code>[1] 0.8</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="dv">6</span> <span class="sc">^</span> <span class="dv">7</span> <span class="co"># 6の7乗</span></span></code></pre></div>
+<pre><code>[1] 279936</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="dv">10</span> <span class="sc">%/%</span> <span class="dv">3</span> <span class="co"># 端数切捨ての除算</span></span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="dv">10</span> <span class="sc">%%</span> <span class="dv">3</span> <span class="co"># 剰余</span></span></code></pre></div>
+<pre><code>[1] 1</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="dv">3</span><span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>[1] 9</code></pre>
+<p>優先順位は、括弧、n乗、乗算・除算・剰余、加算・減算です。</p>
+</div>
+<div id="コメント" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> コメント</h1>
+<p>行の<code>#</code>から右側は無視されて実行しません。コードの先頭に<code>#</code>をつけて、消さずに実行させないことをコメント・アウトと言います。</p>
+</div>
+<div id="関数" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 関数</h1>
+<p>変数名と括弧で表記されるのは関数です。括弧内に値があれば、それを元に動作し、計算結果を戻します。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="co"># 4の階乗を計算</span></span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">factorial</span>(<span class="dv">4</span>)</span></code></pre></div>
+<pre><code>[1] 24</code></pre>
+<p>ユーザー定義の方法は、<a
+href="./function.shtml">Rの関数のざっとした説明</a>でもう少し詳しく説明しています。</p>
+</div>
+<div id="変数" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> 変数</h1>
+<p>アルファベットの並びに<code>&lt;-</code>と<code>-&gt;</code>で数字や文字列を代入できます。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">123</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="dv">10</span> <span class="ot">-&gt;</span> y</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>x <span class="sc">%%</span> y</span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>x <span class="sc">%/%</span> y</span></code></pre></div>
+<pre><code>[1] 12</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>(z <span class="ot">&lt;-</span> <span class="st">&quot;zetton&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;zetton&quot;</code></pre>
+<p>対話モードで代入演算全体を<code>(</code>と<code>)</code>でくくると、代入した内容が表示されます。</p>
+</div>
+<div id="文" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> 文</h1>
+<p>これまで書いてきた<code>1+2</code>のような命令をそれぞれ文（statement）と呼びます。一行一文とは限らず、以下の様に演算子の後の改行では文は終了しませんし、</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span></span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="dv">2</span></span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+<p><code>(</code>や<code>{</code>を書いた場合は、対応する<code>)</code>や<code>}</code>が書かれるまでは、文の途中と看做されます。</p>
+<p>逆に<code>;</code>で区切って一行に複数の文も書けます。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span>; <span class="dv">3</span> <span class="sc">+</span> <span class="dv">4</span></span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+<pre><code>[1] 7</code></pre>
+</div>
+<div id="コードブロック" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> コードブロック</h1>
+<p><code>{</code>と<code>}</code>の間をコードブロックと呼びます。関数の引数のような一文しか書けないようなところに入れることができます。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> {</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>    <span class="fu">print</span>(<span class="dv">1</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>    <span class="dv">2</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>[1] 1</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>a</span></code></pre></div>
+<pre><code>[1] 2</code></pre>
+<p>コードブロック内では文を何行でも書くことができ、最後の評価式がコードブロックの値となります。評価式が無い場合は<code>NULL</code>が戻ります。なお、<code>NULL</code>のときのためのPerl風の演算子<code>%||%</code>が用意されています。</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> {}</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="co"># if(is.null(a)) print(&quot;a is NULL&quot;)と同じ</span></span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>a <span class="sc">%||%</span> <span class="st">&quot;a is NULL&quot;</span></span></code></pre></div>
+<pre><code>[1] &quot;a is NULL&quot;</code></pre>
+</div>
+<div id="データ型" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> データ型</h1>
+<p>数値と文字は違う、数値も整数と小数点付きは違うぐらいの認識でもだいたい困らないと思いますが、Rでもデータには型があります。</p>
+<ul>
+<li>数値（<code>numeric</code>）
+<ul>
+<li>整数（<code>integer</code>）</li>
+<li>浮動小数点（<code>double</code>/<code>single</code>）</li>
+<li>複素数（<code>complex</code>）</li>
+</ul></li>
+<li>文字列（<code>character</code>）</li>
+<li>真理値（<code>logical</code>）</li>
+<li>バイナリ型（<code>raw</code>）</li>
+</ul>
+<p>が用意されています。型変換関数などで指定しなければ、変数の型は自動で判断されます。</p>
+<p>型は<code>typeof</code>で確認できます。</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="dv">1</span>); <span class="fu">typeof</span>(x)</span></code></pre></div>
+<pre><code>[1] &quot;integer&quot;</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="dv">1</span>); <span class="fu">typeof</span>(x)</span></code></pre></div>
+<pre><code>[1] &quot;double&quot;</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="st">&quot;1&quot;</span>; <span class="fu">typeof</span>(x)</span></code></pre></div>
+<pre><code>[1] &quot;character&quot;</code></pre>
+<p>演算時も可能ならば自動的に型変換が行われます。</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a><span class="fu">typeof</span>(<span class="fu">as.integer</span>(<span class="dv">1</span>) <span class="sc">+</span> <span class="fu">as.numeric</span>(<span class="dv">2</span>))</span></code></pre></div>
+<pre><code>[1] &quot;double&quot;</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="fu">typeof</span>(<span class="fu">as.numeric</span>(<span class="dv">3</span>) <span class="sc">+</span> <span class="fu">as.integer</span>(<span class="dv">4</span>))</span></code></pre></div>
+<pre><code>[1] &quot;double&quot;</code></pre>
+<p>文字列型を数字に変えたりはできずエラーになります。</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="fu">typeof</span>(<span class="fu">as.character</span>(<span class="dv">5</span>) <span class="sc">+</span> <span class="dv">6</span>)</span></code></pre></div>
+<pre><code>as.character(5) + 6 でエラー: 二項演算子の引数が数値ではありません</code></pre>
+<p>虚数は<span
+class="math inline">\(1i\)</span>と言うように、数字の後に<span
+class="math inline">\(i\)</span>をつけて表します。</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="co"># 指数表記を抑制</span></span>
+<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a><span class="fu">options</span>(<span class="at">scipen=</span><span class="cn">FALSE</span>)</span>
+<span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a><span class="co"># 1の三乗根を三乗</span></span>
+<span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a>(<span class="sc">-</span><span class="dv">1</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> <span class="dv">1</span><span class="dt">i</span><span class="sc">*</span><span class="fu">sqrt</span>(<span class="dv">3</span>)<span class="sc">/</span><span class="dv">2</span>)<span class="sc">^</span><span class="dv">3</span></span></code></pre></div>
+<pre><code>[1] 1+1.110223e-16i</code></pre>
+<p>真理値は<code>TRUE</code>（<code>T</code>と略記可）と<code>FALSE</code>（<code>F</code>と略記可）の二つです。</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="fu">typeof</span>(<span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>[1] &quot;logical&quot;</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a><span class="fu">typeof</span>(<span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>[1] &quot;logical&quot;</code></pre>
+<p>条件文やベクトルの要素を抜き出すときに使います。</p>
+<p>バイナリ型については、<a
+href="./binary_files.shtml">Rでのバイナリファイルの扱い方</a>を参照してください。</p>
+</div>
+<div id="データ構造" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> データ構造</h1>
+<p>同じデータ型のデータの集合体がベクトル（一次元配列）になり、実は<code>x &lt;- 1</code>とした場合も、要素数が一つ配列として扱われ、配列xの1番目の要素を意味する<code>x[1]</code>と言う表記でも値を参照できます。ベクトルがもっとも基本的なデータ構造です。詳しくは<a
+href="vector.shtml">Rのベクトルの扱い方のざっとした説明</a>を参照してください。</p>
+<p>異なる型のベクトルを束ねることができるデータ構造がリストです。名前とベクトルをセットにできる構造で、他のプログラミング言語だと連想配列/ハッシュ配列/MAP/辞書などと呼ばれるものにあたります。詳しくは<a
+href="list.shtml">Rのリストの扱い方のざっとした説明</a>を参照してください。</p>
+<p>Rのユーザープログラミングでは、計算や加工を行う対象になるデータを格納する構造としてベクトルとリストを用います。R内部で扱われるペアリスト、ペアリストの特殊版であるモデル式<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>などの言語オブジェクト<a href="#fn2"
+class="footnote-ref"
+id="fnref2"><sup>2</sup></a>、名前空間でもある環境もデータ構造ですが、Rの動作を定めるための特殊なデータのためのものです。</p>
+<p>ベクトルとリストには、属性（<code>attributes</code>）を設定することができます。行列や3次元以上の配列は、ベクトルに属性をつけたものです。因子型（<code>factor</code>）や順序型（<code>ordered</code>）もそうなります。データフレームは、リストに属性をつけたものになります。計量分析をする<code>lm</code>などの関数の戻り値も、同様です。</p>
+</div>
+<div id="条件分岐" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> 条件分岐</h1>
+<p><code>if</code>と<code>else</code>が用意されています。例えばこんな風に書きます。</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fl">1.23</span></span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">is.numeric</span>(x)){</span>
+<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a></span>
+<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.integer</span>(x)) <span class="fu">print</span>(<span class="st">&quot;x is integer!&quot;</span>)</span>
+<span id="cb54-5"><a href="#cb54-5" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span>(<span class="fu">is.double</span>(x)) <span class="fu">print</span>(<span class="st">&quot;x is double!&quot;</span>)</span>
+<span id="cb54-6"><a href="#cb54-6" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span>(<span class="fu">is.single</span>(x)) <span class="fu">print</span>(<span class="st">&quot;x is single!&quot;</span>)</span>
+<span id="cb54-7"><a href="#cb54-7" tabindex="-1"></a></span>
+<span id="cb54-8"><a href="#cb54-8" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">0</span> <span class="sc">&gt;</span> x[<span class="dv">1</span>]) <span class="fu">print</span>(<span class="st">&quot;x[1] is lower than zero!&quot;</span>)</span>
+<span id="cb54-9"><a href="#cb54-9" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span>(<span class="dv">0</span> <span class="sc">&lt;</span> x[<span class="dv">1</span>]) <span class="fu">print</span>(<span class="st">&quot;x[1] is greater than zero!&quot;</span>)</span>
+<span id="cb54-10"><a href="#cb54-10" tabindex="-1"></a>    <span class="cf">else</span> <span class="fu">print</span>(<span class="st">&quot;x[1] is zero!&quot;</span>)</span>
+<span id="cb54-11"><a href="#cb54-11" tabindex="-1"></a></span>
+<span id="cb54-12"><a href="#cb54-12" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span>(<span class="fu">is.character</span>(x)) <span class="fu">print</span>(<span class="st">&quot;x is a string!&quot;</span>) <span class="cf">else</span> {</span>
+<span id="cb54-13"><a href="#cb54-13" tabindex="-1"></a>    <span class="fu">print</span>(<span class="st">&quot;x is other type!&quot;</span>)</span>
+<span id="cb54-14"><a href="#cb54-14" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>[1] &quot;x is double!&quot;
+[1] &quot;x[1] is greater than zero!&quot;</code></pre>
+<p><code>if</code>の括弧の中は真偽値の評価式になっている必要があり、<code>&gt;</code>，<code>&lt;</code>，<code>&gt;=</code><a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>，<code>&lt;=</code><a href="#fn4"
+class="footnote-ref"
+id="fnref4"><sup>4</sup></a>，<code>==</code>，<code>!=</code><a
+href="#fn5" class="footnote-ref"
+id="fnref5"><sup>5</sup></a>，<code>%in%</code>[^CND4]といった比較演算子か、真偽値を戻す関数を使います。真偽値は<code>!</code>で反転させることができます。また、ベクトル全体を評価した場合は、ベクトルの要素それぞれに計算される真偽値を<code>any</code>（どれかが真）や<code>all</code>（すべてが真）などの関数でまとめる必要があります。</p>
+</div>
+<div id="繰り返し文ループ" class="section level1" number="10">
+<h1><span class="header-section-number">10</span>
+繰り返し文（ループ）</h1>
+<p><code>for</code>と<code>while</code>と<code>repeat</code>が用意されています。</p>
+<p><code>for</code>はベクトルの要素をひとつづつ取り出し、処理を繰り返す文です。</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="co"># 1,2,3からなるベクトルをつくって、順番にiに代入して処理</span></span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="fu">print</span>(i)</span></code></pre></div>
+<p><code>while</code>は条件式が真の間、処理を繰り返す文です。</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="co"># iが3以下の間、処理</span></span>
+<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb57-3"><a href="#cb57-3" tabindex="-1"></a><span class="cf">while</span>(i <span class="sc">&lt;=</span> <span class="dv">3</span>){</span>
+<span id="cb57-4"><a href="#cb57-4" tabindex="-1"></a>    <span class="fu">print</span>(i)</span>
+<span id="cb57-5"><a href="#cb57-5" tabindex="-1"></a>    i <span class="ot">&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb57-6"><a href="#cb57-6" tabindex="-1"></a>}</span></code></pre></div>
+<p><code>repeat</code>は無条件に、処理を繰り返します。</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="cf">repeat</span>{</span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a>    <span class="fu">print</span>(i)</span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a>    i <span class="ot">&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a>    <span class="co"># iが4以上のときループを抜ける</span></span>
+<span id="cb58-6"><a href="#cb58-6" tabindex="-1"></a>    <span class="cf">if</span>(i <span class="sc">&gt;=</span> <span class="dv">4</span>) <span class="cf">break</span>;</span>
+<span id="cb58-7"><a href="#cb58-7" tabindex="-1"></a>}</span></code></pre></div>
+<p>繰り返す文の中に<code>next</code>を入れると、繰り返す文の最初に戻ります。<code>for</code>であれば次の要素が取り出され、<code>while</code>であれば条件式が評価されます。</p>
+<p><code>break</code>を入れると、繰り返しを抜けます。</p>
+</div>
+<div id="エラーと例外処理" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> エラーと例外処理</h1>
+<p><code>stop</code>を使うと基本的に処理がそこで止まり、後の文は評価されません。同様にエラーが出して止まるRの関数もあります。しかし、例外処理を書いて処理を続行させることもできます。エラーが出た後にも終了処理などが必要な場合に便利です。</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a>(r <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;Error!&quot;</span>)</span>
+<span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a>    <span class="dv">0</span> <span class="co"># エラーが無ければ最後の式の値がtryCatch文の値</span></span>
+<span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e){</span>
+<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a>    <span class="co"># エラーが出れば実行</span></span>
+<span id="cb59-6"><a href="#cb59-6" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Exception occured!&quot;</span>)</span>
+<span id="cb59-7"><a href="#cb59-7" tabindex="-1"></a>    <span class="sc">-</span><span class="dv">1</span> <span class="co"># エラー時のtryCatch文の値</span></span>
+<span id="cb59-8"><a href="#cb59-8" tabindex="-1"></a>}, <span class="at">warning =</span> <span class="cf">function</span>(e){</span>
+<span id="cb59-9"><a href="#cb59-9" tabindex="-1"></a>    <span class="co"># 警告が出れば実行</span></span>
+<span id="cb59-10"><a href="#cb59-10" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Warning occured!&quot;</span>)</span>
+<span id="cb59-11"><a href="#cb59-11" tabindex="-1"></a>    <span class="sc">-</span><span class="dv">2</span> <span class="co"># 警告時のtryCatch文の値</span></span>
+<span id="cb59-12"><a href="#cb59-12" tabindex="-1"></a>}, <span class="at">finally =</span> {</span>
+<span id="cb59-13"><a href="#cb59-13" tabindex="-1"></a>    <span class="co"># エラーが出ても出なくてもfinallyの部分は実行</span></span>
+<span id="cb59-14"><a href="#cb59-14" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Exception occured or not&quot;</span>)</span>
+<span id="cb59-15"><a href="#cb59-15" tabindex="-1"></a>    <span class="cn">NULL</span> <span class="co"># 使われない（ので無い方がよい）</span></span>
+<span id="cb59-16"><a href="#cb59-16" tabindex="-1"></a>}))</span></code></pre></div>
+<p>第1引数と<code>finally</code>は文で、<code>error</code>と<code>warning</code>が関数であることには注意してください。</p>
+<p><code>error</code>と<code>warning</code>に指定する関数の引数には、<code>condition</code>クラスから派生した<code>error</code>もしくは<code>warning</code>S3オブジェクト<a
+href="#fn6" class="footnote-ref"
+id="fnref6"><sup>6</sup></a>が入ります。中身はメッセージと評価式です。評価式はエラーがおきた場所を示すことに使われたりしますが、<code>NULL</code>の場合もあります。</p>
+<div id="例外をキャッチしない方法" class="section level2" number="11.1">
+<h2><span class="header-section-number">11.1</span>
+例外をキャッチしない方法</h2>
+<p>オブジェクト指向的なtry-catchが好きではない人のために、<code>try</code>関数があります。</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="co"># エラーの発生とメッセージ表示を抑制</span></span>
+<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">try</span>(<span class="fu">stop</span>(<span class="st">&quot;Error!&quot;</span>), <span class="at">silent =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a><span class="co"># 戻り値がtry-errorクラスを継承していれば、エラー処理を行う</span></span>
+<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">inherits</span>(r, <span class="st">&quot;try-error&quot;</span>)){</span>
+<span id="cb60-5"><a href="#cb60-5" tabindex="-1"></a>    <span class="fu">message</span>(r)</span>
+<span id="cb60-6"><a href="#cb60-6" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="警告" class="section level2" number="11.2">
+<h2><span class="header-section-number">11.2</span> 警告</h2>
+<p>警告も同様に例外処理にかけられますが、単に画面にメッセージを出したくないときは<code>tryCatch</code>の代わりに<code>suppressWarnings</code>でラップすれば済みます。なお<code>warning</code>関数は警告が表示されますが処理は止まらないです。また<code>warnings</code>関数で直近のエラーメッセージは表示できます。</p>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p><code>y ~ x + z</code>のようなものです。<a
+href="./OLS.shtml">一般回帰分析</a>の説明で触れます。<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p>リストもしくはペアリストに属性データがついたものをオブジェクトと呼び、Rの文法解釈のためのオブジェクトを言語オブジェクトと呼んでいますが、そういうものがあるのだと言う認識だけで大概は困らないと思います。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>≥，つまり以上と同じ。<a href="#fnref3"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>≤，つまり以下と同じ。<a href="#fnref4"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn5"><p>左辺のベクトルが右辺のベクトルに含まれるの意味。<a
+href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn6"><p>リストに名前がついたものです。エラー処理のハンドリングをするだけならば必要な情報ではないですが、S3オブジェクト指向システムの詳細は<a
+href="./OOP.shtml">Rのオブジェクト指向システム（S3/S4/RC）</a>を参照してください。<a
+href="#fnref6" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

@@ -1,0 +1,27 @@
+digraph causal_diagram {
+    graph [rankdir = RL, bgcolor = transparent]
+
+    node [shape = oval,
+        penwidth = 0.5,
+        width = 0.2, height = 0.2,
+        fixedsize = true,
+        fontname = 'Times New Roman',
+        fontsize = 10]
+    z [label = <@@2-2> ]
+
+    node [shape = plaintext,
+        width = 0.2, height = 0.2,
+        fixedsize = true,
+        fontname = 'Times New Roman',
+        fontsize = 10]
+    x [label = <@@2-1> ]
+    y [label = <@@1> ]
+
+    y->x [arrowsize = 0.5, penwidth = 0.5, headport = s ]
+    x->y [arrowsize = 0.5, penwidth = 0.5, label = '@@3-1', fontname = 'Times New Roman', fontsize = 8 ]
+    z->x [arrowsize = 0.5, penwidth = 0.5, label = '@@3-2', fontname = 'Times New Roman', fontsize = 8 ]
+}
+
+[1]: '<i>y</i><sub><font point-size="6.0">it</font></sub>'
+[2]: c('<i>x</i><sub><font point-size="6.0">it</font></sub>', '<i>z</i><sub><font point-size="6.0">i</font></sub>')
+[3]: c('&#x03B2;&#x2081;', '&#x03B3;&#x2081;') 

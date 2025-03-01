@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<meta name="DESCRIPTION" content=".htaccess によるアクセス制限の仕方を解説。アドレス制限、ユーザー認証、Satisfy 条件、データベース認証、環境変数などを網羅"/>
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<h2>.htaccess によるアクセス制限</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<p>Apache のアクセス制限は、httpd.conf という大元の設定ファイルに設定を記述するのが基本です。しかし、ホストの管理者でないと httpd.conf は設定変更できないなど、運用上の問題は多いと言えます。そこで実用に即した .htaccess を利用したアクセス制限の方法を検討しましょう。</p>
+
+<h3>AuthConfig の有効化</h3>
+<p>まずは httpd.conf を .htaccess が利用可能なように設定変更を行います。任意のディレクトリーのディレクティブにある、AllowOverride に AuthConfig を追加するだけです。設定例としては以下のようになります。</p>
+
+<h4>httpd.conf の修正</h4>
+<div class="code">
+&lt;Directory &quot;/usr/local/apache/www/htdocs&quot;&gt;<br/>
+&nbsp;&nbsp;Options Indexes FollowSymLinks MultiViews Includes<br/>
+&nbsp;&nbsp;AllowOverride FileInfo AuthConfig Limit # ここを変更<br/>
+&nbsp;&nbsp;Order allow,deny<br/>
+&nbsp;&nbsp;Allow from all<br/>
+&lt;/Directory&gt;
+</div>
+
+<p>以上のようにディレクティブを修正したら、Apache を再起動してください。</p>
+
+<h3>IPアドレスによる制限</h3>
+
+<p>まずは IP アドレスを用いた認証を行いましょう。</p>
+<p>IP アドレス制限を行う場合は以下のような .htaccess ファイルを作ります。</p>
+
+<h4>IP アドレス制限を行う .htaccess</h4>
+<div class="code">
+&lt;limit GET POST&gt;<br/>
+order deny,allow<br/>
+allow from somewhere.jp 192.168.0.<br/>
+deny from all<br/>
+&lt;/limit&gt;<br/>
+</div>
+
+<p>上の設定を簡単に解説します。</p>
+<p>ここでの&lt;limit GET POST&gt;は、ウェブサーバーのGET機能とPOST機能を制限するという事です。通常の見るだけのアクセスはGET、フォームを通してデーターを送る場合はPOSTだと漠然と考える事ができます。</p>
+<p>order deny,allow は、「拒否チェック」で拒否されたアクセスを、「許可チェック」でチェックして、アクセスさせるかどうか決めるということです。allow が許可条件、deny が拒否条件を表し、省略した場合はチェック・スルーでアクセスさせます。</p>
+<p>allow from somewhere.jp 192.168.0. は、somewhere.jp というドメインに所属するコンピューターもしくは、192.168.0.xxx というIPアドレスを持つコンピューターからのアクセスを許可するという意味です。何百個と書いた場合はエラーになるようですが、この条件は続けて記述することができます。</p>
+<p>deny from all は、全てのアドレスからのIPを拒否するように条件設定しています。</p>
+<p>これらの設定がどういう動作になるのか考えましょう。192.168.0.1 のコンピューターがアクセスするとします。order deny,allow であるため、最初に deny のチェックを行い、全て拒否になっているので、192.168.0.1 からのアクセスはいったん拒否されます。しかし、その後に allow のチェックを行うので、そこで192.168.0.1 からのアクセスは許可されることになります。</p>
+<p>もし設定をかえて order allow,deny にした場合、192.168.0.1 で許可されるものの、deny from all で結局全て拒否にあうので、アクセスできなくなるので注意してください。</p>
+
+<h4>mutual-failure オプション</h4>
+
+　deny,allow と同じになりますが、非推奨だそうです。
+
+<h3>ユーザー認証による制限</h3>
+
+<p>次にユーザー認証によるアクセス制限を行います。</p>
+<p>基本的にはユーザー名とハッシュ化されたパスワードが載ったパスワード・ファイルを用意し、それに基づいてユーザー認証を行います。</p>
+<p>さっそく .htaccess ファイルを作成してみましょう。</p>
+
+<h4>ユーザー認証を行う .htaccess</h4>
+<div class="code">
+AuthUserFile /usr/local/apache/www/cgi-dat/.password<br/>
+AuthGroupFile /dev/null<br/>
+AuthName &quot;A sample directory&quot;<br/>
+AuthType Basic<br/>
+&lt;Limit POST GET&gt;<br/>
+require valid-user<br/>
+&lt;/Limit&gt;
+</div>
+
+<p>上の設定を簡単に解説します。</p>
+<p>上記の例では、AuthUserFile で指定した .password というユーザー情報の書かれたファイルに応じて認証を行うようにしています。この<strong>パスワード・ファイルの指定は絶対パス</strong>でないといけません。</p>
+<p>AuthName は認証時に出すメッセージです。mozilla 等で文字化けするかも知れませんが、日本語で「ユーザー認証領域」とでも書いたほうが親切かも知れません。</p>
+<p>AuthType は BASIC と Digest があります。Digest 認証を使うと、パスワードのやり取りが暗号化されるので安全性が高まります（本文は暗号化されません）。ここでは、一般的な BASIC 認証を選択しています。</p>
+<p>肝心の LIMIT の内側ですが、require valid-user（正規ユーザーを要求する）で終わりです。</p>
+
+<h4>パスワード・ファイルの中身</h4>
+<div class="code">
+uncorrelated:/yKH7J/VjAQ9M<br/>
+hiro_style2001:XYcpB10xl.Fdo
+</div>
+
+<p>パスワード・ファイルの中身はテキストファイルで、ユーザー名とパスワードが : で分離されて記録されています。一般的にはパスワードは DES でハッシュ化されています。平文パスワードも用いることもできますが、避けたほうが良いでしょう。</p>
+<p>パスワード・ファイルの作り方ですが、htpasswd のような Apache 付属のユーティリティーを使うのが一般的です。以下に例をあげますが、詳しくは htpasswd のヘルプ（引数無しで表示）を参照してください。</p>
+
+<h4>htpasswd によるパスワード・ファイルの生成例</h4>
+<div class="code">
+$ htpasswd -c .pwdfile uncorrelated<br/>
+New password:<br/>
+Re-type new password:<br/>
+Adding password for user uncorrelated<br/>
+$ htpasswd .pwdfile raiuaka<br/>
+New password:<br/>
+Re-type new password:<br/>
+Adding password for user raiuaka
+</div>
+
+<p>パスワード・ファイルは構造が単純なので、スクリプト言語などで簡単に生成することができます。以下にサンプルをあげておきます。</p>
+
+<h4>パスワード・ファイル生成 Perl スクリプト</h4>
+<div class="code">
+#<br/>
+# 入力は ユーザー名,パスワード の並んだテキストファイルを<br/>
+# リダイレクトで行う。<br/>
+#<br/>
+
+my $salt = &quot;apache&quot;; # 乱数的な文字列であれば何でも良い<br/>
+while(&lt;&gt;){<br/>
+&nbsp;s/[\n\r]+$//; # 改行文字の処理<br/>
+&nbsp;my($usr,$pwd) = split(',',$_);<br/>
+&nbsp;my $hash = crypt($pwd,$salt);<br/>
+&nbsp;print &quot;$usr:$hash\n&quot;;<br/>
+}
+</div>
+
+<p>ただし、crypt 関数が処理系によっては DES アルゴリズムではなくて MD5 アルゴリズムになったいたりするので、利用には注意が必要です。MD5 になっている場合は、DES を明示的に使うモジュールなどを利用してください。</p>
+
+<h3>グループ・ファイルによる制限</h3>
+
+<p>ユーザー認証に加えて、ユーザーの所属するグループによっても、制限を加える事ができます。</p>
+<p>まず、以下のようなグループ・ファイルを作成します。UNIX/Linux の /etc/group と同じような書式です。</p>
+
+<h4>グループ・ファイルの例</h4>
+<div class="code">
+grp1:uncorrelated,hiro_style2001<br/>
+grp2:raiuka
+</div>
+
+<p>このグループ・ファイル（.group）を使ったアクセス制限を行う .htaccess ファイルの中身は以下のようになります。</p>
+
+<h4>グループ・ファイルを用いた .htaccess</h4>
+<div class="code">
+AuthUserFile /usr/local/apache/www/cgi-dat/.password<br/>
+AuthGroupFile /usr/local/apache/www/cgi-dat/.group<br/>
+AuthName &quot;A sample directory&quot;<br/>
+AuthType Basic<br/>
+&lt;Limit POST GET&gt;<br/>
+# grp1 グループだけ認証を許可<br/>
+require group grp1<br/>
+require valid-user<br/>
+&lt;/Limit&gt;
+</div>
+
+<h3>IPアドレスとユーザー認証による制限</h3>
+
+<p>Apache 1.3.12 からは、IPアドレスとユーザー認証による制限を同時に用いる事もでき、「社内からパスワード無し、社外からはパスワードありでアクセスしたい」などというときに利用する事ができます。</p>
+<p>こういう状況における具体的な設定例を以下にあげます。</p>
+
+<h4>IP アドレスもしくはユーザー認証で許可を行う .htaccess</h4>
+<div class="code">
+AuthUserFile /usr/local/apache/www/cgi-dat/.password<br/>
+AuthGroupFile /dev/null<br/>
+AuthName &quot;A sample directory&quot;<br/>
+AuthType Basic<br/>
+&lt;Limit POST GET&gt;<br/>
+order deny,allow<br/>
+allow from somewhere.jp 192.168.0.<br/>
+deny from all<br/>
+require valid-user<br/>
+<strong>Satisfy ANY</strong><br/>
+&lt;/Limit&gt;
+</div>
+
+<p>Satisfy Any が追加されただけです。なお、特定のIPアドレスからのアクセスで、かつユーザー認証に成功したものだけをアクセス許可する場合は、Satisfy All を指定します。</p>
+
+<h3>データベースを用いたユーザー認証</h3>
+
+<p>応用として多少こった認証方法を紹介します。</p>
+<p>Apache のモジュールで mod_auth_pgsql という PostgreSQL というデータベースに接続するためのモジュールがあります。通常はパスワード・ファイルを参照しますが、このモジュールを使うとデータベースの中の会員情報などで認証を行え、管理や速度面で有利になります。詳細は、モジュール添付のファイルに英文の丁寧な解説があるので、そちらを読んでください。</p>
+<p>以下では、.htaccess 側の簡単な設定例あげます。</p>
+
+<h4>PostgreSQL によるユーザー認証用いた .htaccess</h4>
+<div class="code">
+Auth_PG_host localhost # PostgreSQLのホスト名、もしくはIPアドレス<br/>
+Auth_PG_port 5432 # PostgreSQLの接続ポート<br/>
+Auth_PG_database password_database # 認証に使うデータベース名<br/>
+Auth_PG_user www_user # データベースにアクセスするユーザー<br/>
+Auth_PG_pwd www_password # データベースにアクセスするユーザーのパスワード<br/>
+Auth_PG_pwd_table password_table # 認証に使う以下二つのフィールドの入ったテーブル名<br/>
+Auth_PG_uid_field email # ユーザー名として利用するフィールド名<br/>
+Auth_PG_pwd_field password # パスワードとして利用するフィールド名<br/>
+#Auth_PG_grp_table group_table # 認証に使うテーブル名。Auth_PG_uid_field で指定したフィールドと、以下の Auth_PG_gid_field で指定したフィールドが含まれている必要がある。<br/>
+#Auth_PG_gid_field role # グループとして利用するフィールド名
+Auth_PG_encrypted off # DES化したものでなく、平分パスワードを選択<br/>
+AuthName &quot;mod_auth_pgsql test&quot;<br/>
+Authtype BASIC<br/>
+&lt;Limit POST GET&gt;<br/>
+#require group grp1 # グループ名を指定するには必要<br/>
+require valid-user<br/>
+&lt;/Limit&gt;
+</div>
+
+<p>password_table は実体のあるテーブルではなく、VIEW 等でも問題ありません。</p>
+<p>なお mod_auth_oracle など他のデータベース用のモジュールや、mod_auth_ldap というLDAP を用いるものなどもあります。要件にあわせて、最適なものを選択してください。</p>
+
+<h3>環境変数を用いた制限 - 直リンクを妨害</h3>
+
+<p>IP アドレスやユーザー認証だけではなくて、環境変数を用いたアクセス制限も用いる事ができます。ただし環境変数で得られる情報のほとんどは偽装することが容易に可能なので、厳密なアクセス制限には向きません。</p>
+<p>ここではソフトなアクセス制限の応用例として、良く画像ファイルへの直リンクを防止したいという要望を受けるるので、一般的なブラウザーの一般的な設定で、直リンク画像を表示させないようにしてみましょう。</p>
+
+<h4>画像の直リンクを妨害する .htaccess</h4>
+<div class="code">
+SetEnvIf Referer &quot;^<strong>http://uncorrelated.no-ip.com/</strong>&quot; local_referral<br/>
+# favicon.ico は例外にしておく<br/>
+SetEnvIf Request_URI &quot;^.*/img/favicon.ico$&quot; local_referral<br/>
+
+&lt;Limit POST GET&gt;<br/>
+order deny,allow<br/>
+deny from ALL<br/>
+allow from env=local_referral<br/>
+&lt;/Limit&gt;
+</div>
+
+<p>SetEnvIf は第一引数が第二引数にパターン・マッチすれば第三引数を真にセットするので、allow from env=[第三引数] とすればアクセス制限ができます。</p>
+<p>以下に主な環境変数をリストしておきます。</p>
+
+<TABLE Class="list">
+<CAPTION Class="list">SetEnvIf で利用可能な環境変数</CAPTION>
+<TR>
+<TD Class="label">環境変数</TD>
+<TD Class="label">説明</TD>
+</TR>
+<TR>
+<TD Class="llist">Host</TD>
+<TD Class="llist">サーバー（リクエスト先）のホスト名</TD>
+
+</TR>
+<TR>
+<TD Class="llist">User-Agent</TD>
+<TD Class="llist">ユーザーエージェント（例えば、&quot;Mozilla/4.0 (compatible; MSIE; Win32)&quot;）</TD>
+</TR>
+<TR>
+<TD Class="llist">Referer</TD>
+<TD Class="llist">ページの参照元</TD>
+</TR>
+<TR>
+<TD Class="llist">Remote_Host</TD>
+
+<TD Class="llist">リクエストを行なっているクライアントのホスト名</TD>
+</TR>
+<TR>
+<TD Class="llist">Remote_Addr</TD>
+<TD Class="llist">リクエストを行なっているクライアントの IP アドレス</TD>
+</TR>
+<TR>
+<TD Class="llist">Request_Method</TD>
+<TD Class="llist">使用されているメソッド名 (GET, POST など)</TD>
+</TR>
+<TR>
+<TD Class="llist">Request_Protocol</TD>
+
+<TD Class="llist">リクエストが行なわれたプロトコルの名前とバージョン (例えば、&quot;HTTP/0.9&quot;,&quot;HTTP/1.1&quot; など。)</TD>
+</TR>
+<TR>
+<TD Class="llist">Request_URI</TD>
+<TD Class="llist">URL のスキームとホストの後の部分。要はリクエストされたパス</TD>
+</TR>
+</TABLE>
+
+<div class="footer"><!--#include virtual="/parts/footer.txt"--></div>
+</div>
+</div>
+</body>
+</html>

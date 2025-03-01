@@ -1,0 +1,68 @@
+<h1 class="menu">R</h1>
+<div style="text-align:center;magin: 4px 0 4px 0;">
+<a href="../">トップページ</a><br/>
+</div>
+<style>
+div.right h2.menu {
+    text-align: center;
+    margin: 10px 0 2px 0;
+    padding: 0;
+    font-size: 15px;
+    width: 150px;
+    height: 15px;
+}
+</style>
+<h2 class="menu">R設定</h2>
+<dl class="menu">
+    <dt><a href="settings.shtml">Rの起動設定と起動オプション</a></dt>
+    <dt><a href="options_digits.shtml">Rのコンソール出力の数字の表示桁数の設定</a></dt>
+    <dt><a href="OpenBLAS-win.shtml">Windows版RでOpenBLASをリンクする</a></dt>
+    <dt><a href="mgpkg.shtml">Rのパッケージの管理に関するあれこれ</a></dt>
+</dl>
+<h2 class="menu">Rプログラミング</h2>
+<dl class="menu">
+    <dt><a href="syntax.shtml">文法のざっとした説明</a></dt>
+    <dt><a href="vector.shtml">ベクトルの扱い方のざっとした説明</a></dt>
+    <dt><a href="matrix.shtml">行列と配列の扱い方のざっとした説明</a></dt>
+    <dt><a href="list.shtml">リストの扱い方のざっとした説明</a></dt>
+    <dt><a href="dataframe.shtml">データフレームの扱い方のざっとした説明</a></dt>
+    <dt><a href="function.shtml">関数のざっとした説明</a></dt>
+    <dt><a href="aggregate.shtml">ペンギンで覚える集計関数</a></dt>
+    <dt><a href="apply.shtml">apply関数群のざっとした説明</a></dt>
+    <dt><a href="rep.shtml">要素が同一パターンの繰り返しのベクトルの作り方</a></dt>
+    <dt><a href="all%20combinations.shtml">要素と要素の全パターンの組み合わせの作り方</a></dt>
+    <dt><a href="factor.shtml">因子型と順序型のざっとした説明</a></dt>
+    <dt><a href="datetime.shtml">日付関数群のざっとした説明</a></dt>
+    <dt><a href="debugging.shtml">デバッグ用関数群</a></dt>
+    <dt><a href="environment.shtml">名前空間とスコーピング</a></dt>
+    <dt><a href="langobj.shtml">言語オブジェクトの存在を知っておこう</a></dt>
+    <dt><a href="delayed%20execution.shtml">Rと言えば遅延実行</a></dt>
+    <dt><a href="OOP.shtml">オブジェクト指向システム（S3/S4/RC）</a></dt>
+    <dt><a href="attribute.shtml">属性の付与によるデータ構造の変換</a></dt>
+    <dt><a href="extract_from_model.shtml">モデル式からの情報取得</a></dt>
+    <dt><a href="variadic_arguments.shtml">可変引数（...）</a></dt>
+    <dt><a href="file_io_text.shtml">テキストファイルの扱い方</a></dt>
+    <dt><a href="file_io_binary.shtml">バイナリファイルの扱い方</a></dt>
+    <dt><a href="mgfiledir.shtml">ファイルとディレクトリの管理</a></dt>
+    <dt><a href="convinient functions.shtml">知らなくても何とかなるが、知っていると便利なRの関数</a></dt>
+</dl>
+
+<h2 class="menu">Rで統計解析</h2>
+<dl class="menu">
+    <dt><a href="OLS.shtml">Rで簡単にOLS</a></dt>
+    <dt><a href="MLE.shtml">Rでべたべたと最尤法</a></dt>
+    <dt><a href="cauchy_dist.shtml">コーシー分布とのつきあい方</a></dt>
+</dl>
+
+<h2 class="menu">Rグラフィックス</h2>
+<dl class="menu">
+    <dt><a href="low-level%20functions.shtml">Rのグラフィカル・オプションと低水準描画関数</a></dt>
+    <dt><a href="boxplot.shtml">Rで描く箱ひげ図（boxplot）</a></dt>
+    <dt><a href="dotchart.shtml">ドットプロットによる信頼区間と比較区間の描画</a></dt>
+</dl>
+<h2 class="menu">R拡張</h2>
+<dl class="menu" style="margin-bottom: 12px;">
+    <dt><a href="mkpkg.shtml">Rのパッケージ作成についてあれこれ</a></dt>
+    <dt><a href="C-call.shtml">RからC言語の関数を呼ぼう</a></dt>
+    <dt><a href="Fortran.shtml">Fortranのサブルーチンを呼ぼう</a></dt>
+</dl>

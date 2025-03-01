@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rの関数のざっとした説明</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rの関数のざっとした説明</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>一見、Cなどの手続き型プログラミング言語のものと同様なRの関数ですが、関数型言語だけに柔軟に扱えます。知っておくと楽ができることもあるので、特徴を把握しておきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#属性" id="toc-属性"><span
+class="toc-section-number">1</span> 属性</a></li>
+<li><a href="#定義" id="toc-定義"><span
+class="toc-section-number">2</span> 定義</a></li>
+<li><a href="#本体" id="toc-本体"><span
+class="toc-section-number">3</span> 本体</a></li>
+<li><a href="#戻り値" id="toc-戻り値"><span
+class="toc-section-number">4</span> 戻り値</a></li>
+<li><a href="#呼び出し元の環境の変数に代入"
+id="toc-呼び出し元の環境の変数に代入"><span
+class="toc-section-number">5</span>
+呼び出し元の環境の変数に代入</a></li>
+<li><a href="#置換関数" id="toc-置換関数"><span
+class="toc-section-number">6</span> 置換関数</a></li>
+<li><a href="#演算子" id="toc-演算子"><span
+class="toc-section-number">7</span> 演算子</a></li>
+</ul>
+</div>
+
+<p>Rの関数は、実行できるデータです。</p>
+<p>実際、プリミティブ関数<code>function</code>（バージョン4.1から<code>\</code>がシノニムとして用意されました）で作成した後、変数に代入して使います。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>fnc <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="dv">1</span> <span class="sc">+</span> x <span class="sc">+</span> x<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">fnc</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>[1] 7</code></pre>
+<p>定義と戻り値については、後で説明します。 コピーしても動きます。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>fnc2 <span class="ot">&lt;-</span> fnc</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">fnc2</span>(<span class="dv">3</span>)</span></code></pre></div>
+<pre><code>[1] 13</code></pre>
+<p>ファイルに保存も簡単にできます。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">saveRDS</span>(fnc, <span class="st">&quot;fnc.Rds&quot;</span>)</span></code></pre></div>
+<p>削除も簡単です。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">rm</span>(fnc)</span></code></pre></div>
+<p>読み込みも簡単です。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>fnc <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;fnc.Rds&quot;</span>)</span></code></pre></div>
+<div id="属性" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> 属性</h1>
+<p>クラスも定義され、関数か判別する関数も用意されています。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">class</span>(fnc)</span></code></pre></div>
+<pre><code>[1] &quot;function&quot;</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">is.function</span>(fnc)</span></code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<p>定義、コード、定義した環境（名前空間）を取得できます。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">args</span>(fnc) <span class="co"># 定義を表示</span></span></code></pre></div>
+<pre><code>function (x) 
+NULL</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">formals</span>(fnc) <span class="co"># 定義を整理して表示</span></span></code></pre></div>
+<pre><code>$x</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">body</span>(fnc) <span class="co"># コードを表示</span></span></code></pre></div>
+<pre><code>1 + x + x^2</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">environment</span>(fnc) <span class="co"># 定義された環境を表示</span></span></code></pre></div>
+<pre><code>&lt;environment: 0x5fa6b417ffd8&gt;</code></pre>
+<p>環境は変数が保存される領域のことですが、詳しくは<a
+href="./environment.shtml">Rの名前空間とスコーピング</a>を参照してください。</p>
+</div>
+<div id="定義" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 定義</h1>
+<p>Rの関数は<code>function(定義){ 本体 }</code>と言う構造の文で作成し、定義は<code>変数名</code>か<code>変数名=デフォルト値</code>か<code>...</code>をカンマで区切って並べます。デフォルト値には式やコードブロック<code>{ ... }</code>を入れることもできます。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>fnc <span class="ot">&lt;-</span> <span class="cf">function</span>(a, <span class="at">b =</span> a <span class="sc">+</span> <span class="dv">1</span>) a<span class="sc">*</span>b</span></code></pre></div>
+<p>と定義し、</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">fnc</span>(<span class="dv">1</span>)</span></code></pre></div>
+<pre><code>[1] 2</code></pre>
+<p>と実行することもできます。</p>
+<p>引数の型やサイズの指定はできないので、必要ならば<code>is.numeric</code>のような関数を使って、関数の本体で確認や分岐をすることになります。</p>
+<p>C言語の<code>printf</code>で御馴染みの可変長引数もとることができます。<a
+href="./variadic_arguments.shtml">Rの可変引数（…）</a>を参照してください。</p>
+</div>
+<div id="本体" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 本体</h1>
+<p>言わずもながですが、コードブロック（<code>{...}</code>）でくくっても大丈夫です。</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>fnc <span class="ot">&lt;-</span> <span class="cf">function</span>(a, <span class="at">b =</span> a <span class="sc">+</span> <span class="dv">1</span>){</span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>    a<span class="sc">*</span>b</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>}</span></code></pre></div>
+<p>なお、Rの引数は値渡しなので、引数を変更しても呼び出し元に問題はおきません。また、環境を指定した操作を行わない限り、親環境の変数に代入することもありません。親環境の変数の参照はできます。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>fnc <span class="ot">&lt;-</span> <span class="cf">function</span>(a){</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>    <span class="co"># 親環境のrを読んで、引数aに足しているが、親環境のaは不変</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>    a <span class="ot">&lt;-</span> a <span class="sc">+</span> b</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>    b <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="co"># bに3を代入するが、親環境のbは不変</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>    a<span class="sc">*</span>b</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>}</span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="fu">fnc</span>(<span class="dv">1</span>) <span class="co"># 15になる</span></span></code></pre></div>
+<pre><code>[1] 15</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>b <span class="co"># 4のまま</span></span></code></pre></div>
+<pre><code>[1] 4</code></pre>
+<p>親環境、つまり関数の外側の変数に代入したい場合は、<code>&lt;&lt;-</code>もしくは<code>-&gt;&gt;</code>を用います。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>fnc <span class="ot">&lt;-</span> <span class="cf">function</span>(a){</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>    b <span class="ot">&lt;&lt;-</span> a</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>    a <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>}</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a><span class="fu">fnc</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>b</span></code></pre></div>
+<pre><code>[1] 2</code></pre>
+</div>
+<div id="戻り値" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> 戻り値</h1>
+<p>最後に評価された式の値が、関数の戻り値になります。<code>1</code>と書いておくだけでも式なので、コードの最後に変数名を書いておくことが多いですが、コード中に<code>return</code>関数の引数で戻り値を明示して関数を抜けることもできます。</p>
+<p>戻り値のオブジェクトの種類は、行列でもリストでもデータフレームでも構いません。戻り値はひとつのオブジェクトなので、複数の種類のオブジェクトを戻したい場合は、リストをつくってそこに入れて戻すことになります。</p>
+<p>対話しながら操作していると、関数の戻り値が画面表示されるわけですが、<code>return</code>の代わりに<code>invisible</code>を使うと表示を抑制できます。戻り値が膨大な関数では、利用者にやさしい関数定義になります。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>fnc <span class="ot">&lt;-</span> <span class="cf">function</span>(a, <span class="at">b =</span> a <span class="sc">+</span> <span class="dv">1</span>) <span class="fu">invisible</span>(a<span class="sc">*</span>b)</span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">fnc</span>(<span class="dv">3</span>)</span></code></pre></div>
+</div>
+<div id="呼び出し元の環境の変数に代入" class="section level1"
+number="5">
+<h1><span class="header-section-number">5</span>
+呼び出し元の環境の変数に代入</h1>
+<p>super-assignmentと言って、<code>&lt;&lt;-</code>と<code>-&gt;&gt;</code>で、関数内から、環境を指定しなくても、関数の呼び出し元の環境の変数に代入することができます。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>(b <span class="ot">&lt;-</span> <span class="dv">0</span>)</span></code></pre></div>
+<pre><code>[1] 0</code></pre>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>fnc <span class="ot">&lt;-</span> <span class="cf">function</span>(a) b <span class="ot">&lt;&lt;-</span> a<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">fnc</span>(<span class="dv">2</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>b</span></code></pre></div>
+<pre><code>[1] 4</code></pre>
+</div>
+<div id="置換関数" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> 置換関数</h1>
+<p>属性の設定などで用いる置換関数（e.g. <code>names(x) &lt;- c("1st", "2nd", "3rd")</code>）の定義では、<code>assign</code>関数を使います。</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">assign</span>(<span class="st">&quot;d&lt;-&quot;</span>, <span class="cf">function</span>(x, value){</span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>    x <span class="sc">-</span> value</span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a>})</span>
+<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="dv">100</span>)</span></code></pre></div>
+<pre><code>[1] 100</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">d</span>(x) <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>[1] 99</code></pre>
+</div>
+<div id="演算子" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> 演算子</h1>
+<p>Rは関数型言語なので演算子も関数になり、これもユーザー定義をすることができます。</p>
+<p>先頭と末尾の文字が<code>%</code>の演算子の場合は、以下のように簡単に定義できます。</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="st">&quot;%t%&quot;</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(A, B) A <span class="sc">%*%</span> B <span class="sc">-</span> B <span class="sc">%*%</span> A</span>
+<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a>(m1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">4</span>, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">9.5</span>)), <span class="dv">2</span>))</span></code></pre></div>
+<pre><code>     [,1] [,2]
+[1,]    8    1
+[2,]    4    5</code></pre>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>(m2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">4</span>, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">9.5</span>)), <span class="dv">2</span>))</span></code></pre></div>
+<pre><code>     [,1] [,2]
+[1,]    4    6
+[2,]    5    6</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>m1 <span class="sc">%t%</span> m2</span></code></pre></div>
+<pre><code>     [,1] [,2]
+[1,]  -19   20
+[2,]  -23   19</code></pre>
+<p>実際の利用ではオブジェクトによって操作を変える必要があるため、S3もしくはS4オブジェクト指向システムに沿った記述にしましょう。詳細は<a
+href="./OOP.shtml">Rのオブジェクト指向システム（S3/S4/RC）</a>の説明を参照してください。</p>
+<p>なお、先頭と末尾の文字が<code>%</code>ではない<code>+</code>や<code>-</code>といった演算子は、S4クラスの関数として定義されています。</p>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

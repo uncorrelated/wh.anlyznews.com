@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<!--#include virtual="/parts/head.txt"-->
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<h2>文字打ちゲーム</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div style="width:auto; height:256px;">
+<div style="float:left; margin:4px 4px 8px 4px; padding:0px 0px 0px 0px; width:256px; height:256px;">
+<applet code="GameApplet" codebase="jar" width="256" height="256" archive="game.jar">
+<param name="message" value="隣の客は良く柿食う客だ 貴社の記者が汽車で帰社した 覆水盆に返らず">
+<param name="HiScoreURL" value="http://uncorrelated.servehttp.com/cgi-bin/game.cgi">
+Java Virtual Machine がインストールされていません。<A Href="http://java.com/ja/">http://java.com/ja/</A> から Java Plug-in をダウンロードして、インストールしてください。
+</applet>
+</div>
+<p>細々と Java で Macromedia Flash&trade; に対抗するために作ったゲームです。8ビット時代のゲームをイメージして作りましたが、作業結果、ゲーム・プログラマーとしての才能が無い事が分かりました。</p>
+<p>なお背景にうっすら見える鳥はワライカワセミ（英名 Kookaburra）と言います。ゲーム中の BGM は The Song of Kookaburra です。エンディングのハイスコアで流れる声は、ワライカワセミの鳴き声です。</p>
+</div>
+
+<h3>遊び方</h3>
+
+<ol>
+<li>画面をクリックしてスタートしてください。</li>
+<li>約10秒間放置すると、ハイスコア画面になるので、RETURN を押して戻ってください。ランキングは約60秒ごとに自動更新されます。</li>
+<li>画面中を飛び交っている文字を、順番通りにクリックしてください。順番は、単語になっています。また、<strong Class="frame">画面下部に次の文字がピンク色で表示</strong>されます。</li>
+<li>間違えると、減点されます。なるべく短い時間で、正確にクリックしてください。</li>
+<li>高得点者はランキングにエントリーできます。ゲーム後のランキング画面で、Please type your name と言われたら、キーボードで名前をタイプしてください。</li>
+</ol>
+
+<h3>設置方法</h3>
+
+<p>まず <A Href="jar/game.jar">game.jar</A> をダウンロードして、ページにアップロードしてください。次に game.jar があるディレクトリーに以下のようなタグが含まれる html を書きましょう。</p>
+
+<h4>通常の場合のタグ</h4>
+
+<div class="code">
+&lt;applet code=&quot;GameApplet&quot; width=&quot;<strong>256</strong>&quot; height=&quot;<strong>256</strong>&quot; archive=&quot;game.jar&quot;&gt;<br/>
+&lt;param name=&quot;message&quot; value=&quot;<strong>任意の文字列</strong>&quot;&gt;<br/>
+&lt;/applet&gt;
+</div>
+
+<p>なおゲーム中に使う文字列は、半角の空白文字で区切ることにより複数面にわけて表示することができます。また、256 × 256 以外の任意の縦横サイズを設定することもできます。</p>
+
+<h4>ランキングを用いた場合のタグ</h4>
+<div class="code">
+&lt;applet code=&quot;GameApplet&quot; width=&quot;<strong>256</strong>&quot; height=&quot;<strong>256</strong>&quot; archive=&quot;game.jar&quot;&gt;<br/>
+&lt;param name=&quot;HiScoreURL&quot;<br/>
+value=&quot;<strong>http://uncorrelated.no-ip.com/cgi-bin/game.cgi</strong>&quot;&gt;<br/>
+&lt;param name=&quot;HiScoreID&quot; value=&quot;<strong>1</strong>&quot;&gt;<br/>
+&lt;/applet&gt;
+</div>
+<br/>
+
+<h3>ソースコード等</h3>
+
+<p<A Href="jar/game.jar">game.jar</A> の中に GameApplet.java というソース・コードを添付しています。結構、ぐちゃぐちゃですが、読みたい人はどうぞ。</p>
+
+</div>
+<div class="footer">
+<!--#include virtual="/parts/footer.txt"-->
+</div>
+</div>
+</body>
+</html>

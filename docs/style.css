@@ -1,0 +1,209 @@
+﻿* {
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+}
+
+body {
+    text-align: center;
+    background-color: white;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+div.inbox {
+    margin: 0 auto 0 auto;
+    padding: 0;
+    width: 824px;
+    max-width: 824px;
+    height: auto;
+    background: #FFFFFF;
+    /* font-family: 'MS PGothic, 'Osaka'; */
+    font-size: 14px;
+    line-height: 20px;
+}
+
+div.header{
+    width: 100%;
+    margin: 0px 0px 8px 0px;
+    padding: 0;
+    text-align: left;
+}
+
+div.advertisement {
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    text-align: left;
+    vertical-align: middle;
+}
+
+div.advertisement amazon {
+    margin: 0;
+    padding: 0;
+}
+
+div.article {
+    margin: 0 0 0 150px;
+    padding: 0;
+    width: 512px;
+    font-size: 14px;
+    text-align: left;
+}
+
+div.menu {
+    float: right;
+    border: 0px dashed #000000;
+    margin: 0;
+    padding: 0;
+    width: 150px;
+    text-align: left;
+}
+
+div.right {
+    float: right;
+    border: 0px dashed #000000;
+    margin: 0;
+    padding: 0;
+    width: 150px;
+    text-align: left;
+}
+
+div.footer{
+    width: 100%;
+    margin: 12px 0 12px 0;
+    padding: 0;
+    text-align: center;
+}
+
+div.article h1 {
+    text-align: left;
+    margin: 16px 0 4px 0;
+    padding: 12px 0 0 36px;
+    font-size:18px;
+    font-weight: bold;
+    background:url('/img/h1java.gif');
+    background-repeat:no-repeat;
+    background-position: 0 0, bottom;
+    height: 24px;
+}
+
+div.article h2 {
+    text-align:left;
+    margin:24px 0 2px 0;
+    padding:6px 0 0 36px;
+    font-size:16px;
+    font-weight: bold;
+    background:url('/img/h2java.gif');
+    background-repeat:no-repeat;
+    background-size: contain;
+    background-position: 0 0, bottom;
+    height: 26px;
+}
+
+div.article h3 {
+  text-align:left;
+  margin:32px 0 16px 0;
+  padding:2px 0 0 24px;
+  font-size:14px;
+  background:url('/img/h3java.gif');
+  background-repeat:no-repeat;
+  height:24px;
+}
+
+div.article h4 {
+  text-align:left;
+  margin: 24px 0 16px 0;
+  padding: 1px 0 0 12px;
+  font-size:14px;
+  background:url('img/h4java.gif');
+  background-repeat:no-repeat;
+  height:24px;
+}
+
+div.article p {
+    margin: 0;
+    text-indent: 12px;
+    line-height: 150%;
+    font-size: 14px;
+}
+
+div.article ol {
+  margin: 0 0 0 32px;
+  padding: 8px 0 8px 0;
+  line-height: 24px;
+}
+
+div.code, div.console {
+  border: 1px solid #008800;
+  text-align:left;
+  margin:4px 0 4px 0;
+  padding:4px 4px 4px 4px;
+}
+
+div.console {
+  background-color: black;
+  color:white;
+}
+
+span.cinput {
+  color: pink;
+}
+
+span.coutput {
+  color: cyan;
+}
+
+h1.menu {
+    text-align:left;
+    margin:2px 0 2px 0;
+    padding:0;
+    font-size:15px;
+    background:url('img/h1menu.gif');
+    background-repeat:no-repeat;
+    text-align:center;
+    width:150px;
+    height:24px;
+}
+
+dl.menu {
+    margin: 0;
+    padding: 4px 0 0 4px;
+    line-height: 20px;
+}
+
+dl.menu dt, dl.menu dd {
+    margin: 4px 0 0 4px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+table.list { margin:0px;border:1px;padding:1px;border-spacing:1px;border-collapse:separate;width:500px;background:#BBBBBB; }
+caption.list { margin:8px 0px 0px 8px;text-align:center;text-valign:middle;line-height:15px;font-family:MS UI Gothic;font-size:14px;color:#404040; }
+td.label { font-size:14px;text-align:center;background:#F0F0F0; }
+td.rlist { font-size:14px;text-align:right;background:#FFFFFF; } 
+td.clist { font-size:14px;text-align:center;background:#FFFFFF; } 
+td.llist { font-size:14px;text-align:left;background:#FFFFFF; } 
+
+@media print {
+  div.advertisement, div.right {
+    display: none;
+  }
+  div.article {
+    width: 500pt;
+    margin: 0;
+    padding: 0;
+  }
+  div.article h1 {
+    margin: 0;
+    padding: 0;
+    text-align:center;
+  }
+  div.menu {
+  }
+}

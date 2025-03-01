@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rのパッケージ作成についてあれこれ</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rのパッケージ作成についてあれこれ</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>一般公開する場合はもちろん、少人数でコードをシェアするのにも有用なRのパッケージについてメモ書きを公開しておきます。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#パッケージ作成支援ツール"
+id="toc-パッケージ作成支援ツール"><span
+class="toc-section-number">1</span> パッケージ作成支援ツール</a></li>
+<li><a href="#パッケージを作ってみる"
+id="toc-パッケージを作ってみる"><span
+class="toc-section-number">2</span> パッケージを作ってみる</a>
+<ul>
+<li><a href="#雛形を支援ツールにつくってもらう"
+id="toc-雛形を支援ツールにつくってもらう"><span
+class="toc-section-number">2.1</span>
+雛形を支援ツールにつくってもらう</a>
+<ul>
+<li><a href="#パッケージ名の制約" id="toc-パッケージ名の制約"><span
+class="toc-section-number">2.1.1</span> パッケージ名の制約</a></li>
+</ul></li>
+<li><a href="#リポジトリにファイルを追加配置する"
+id="toc-リポジトリにファイルを追加配置する"><span
+class="toc-section-number">2.2</span>
+リポジトリにファイルを追加配置する</a></li>
+<li><a href="#自動生成されたファイルを書き換える"
+id="toc-自動生成されたファイルを書き換える"><span
+class="toc-section-number">2.3</span>
+自動生成されたファイルを書き換える</a>
+<ul>
+<li><a href="#descriptionを書き換える"
+id="toc-descriptionを書き換える"><span
+class="toc-section-number">2.3.1</span>
+<code>DESCRIPTION</code>を書き換える</a></li>
+<li><a href="#namespaceを書き換える"
+id="toc-namespaceを書き換える"><span
+class="toc-section-number">2.3.2</span>
+<code>NAMESPACE</code>を書き換える</a></li>
+<li><a href="#rdを書き換える" id="toc-rdを書き換える"><span
+class="toc-section-number">2.3.3</span>
+<code>*.Rd</code>を書き換える</a></li>
+</ul></li>
+<li><a href="#read-and-delete-me" id="toc-read-and-delete-me"><span
+class="toc-section-number">2.4</span>
+<code>Read-and-delete-me</code></a></li>
+<li><a href="#ビルドチェックインストール"
+id="toc-ビルドチェックインストール"><span
+class="toc-section-number">2.5</span>
+ビルド、チェック、インストール</a></li>
+</ul></li>
+<li><a href="#cソースコードの修正" id="toc-cソースコードの修正"><span
+class="toc-section-number">3</span> Cソースコードの修正</a>
+<ul>
+<li><a href="#usedynlib...-.registration-true"
+id="toc-usedynlib...-.registration-true"><span
+class="toc-section-number">3.1</span>
+<code>useDynLib(..., .registration = TRUE)</code></a></li>
+</ul></li>
+<li><a href="#パッケージのインストール"
+id="toc-パッケージのインストール"><span
+class="toc-section-number">4</span> パッケージのインストール</a>
+<ul>
+<li><a href="#パッケージのインストール先"
+id="toc-パッケージのインストール先"><span
+class="toc-section-number">4.1</span>
+パッケージのインストール先</a></li>
+<li><a href="#パッケージのアンインストール"
+id="toc-パッケージのアンインストール"><span
+class="toc-section-number">4.2</span>
+パッケージのアンインストール</a></li>
+</ul></li>
+<li><a href="#パッケージを膨らませていく"
+id="toc-パッケージを膨らませていく"><span
+class="toc-section-number">5</span> パッケージを膨らませていく</a>
+<ul>
+<li><a href="#dataの追加" id="toc-dataの追加"><span
+class="toc-section-number">5.1</span> <code>data</code>の追加</a></li>
+<li><a href="#vignettesの追加" id="toc-vignettesの追加"><span
+class="toc-section-number">5.2</span> <code>vignettes</code>の追加</a>
+<ul>
+<li><a href="#sweaveの利用" id="toc-sweaveの利用"><span
+class="toc-section-number">5.2.1</span>
+<code>Sweave</code>の利用</a></li>
+<li><a href="#instの中は再帰的に丸ごとコピー"
+id="toc-instの中は再帰的に丸ごとコピー"><span
+class="toc-section-number">5.2.2</span>
+<code>inst</code>の中は再帰的に丸ごとコピー</a></li>
+</ul></li>
+<li><a href="#testsの追加" id="toc-testsの追加"><span
+class="toc-section-number">5.3</span> <code>tests</code>の追加</a></li>
+</ul></li>
+<li><a href="#説明しなかったディレクトリ"
+id="toc-説明しなかったディレクトリ"><span
+class="toc-section-number">6</span> 説明しなかったディレクトリ</a></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">7</span> まとめ</a></li>
+</ul>
+</div>
+
+<p>Rでは規格化された形式でコード本体、テストコード、ドキュメント、データセットなどのその他のリソースをまとめ、メタ情報を付与したパッケージを、モジュール（もしくはadd-on）の配布単位としています。これによって、多種多様なパッケージを巨大アーカイブCRANにまとめあげ<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>、エンドユーザーが容易にモジュールを入手できるようになりました。皆さん<code>install.package</code>でCRANから様々なパッケージをダウンロードして利用されていると思います。</p>
+<p>このパッケージと言う仕組みはCRANにアップロードしなくても、モジュールの共有には有用な仕組みです。組織でのデータ分析では、コードをパッケージ化しているところもあります。決まったディレクトリに決まった種類のファイルを配置して、メタ情報を記したファイルを作ればパッケージになるので、パッケージ作成支援ツールもあることもあり、簡単に作ることができます。</p>
+<div id="パッケージ作成支援ツール" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+パッケージ作成支援ツール</h1>
+<p>最近はRStudioの機能を使って作ることが一般的になっているようです。毎日作るものでもないですから、GUIの対話型I/Fの方が適していますね。RStudioを使わない場合は、</p>
+<ul>
+<li><code>usethis::create_package</code></li>
+<li><code>utils::package.skeleton</code></li>
+<li><code>Rcpp::Rcpp.package.skeleton</code></li>
+</ul>
+<p>を使う方法が広く紹介されています。これらのツールは、ディレクトリを作って雛形となるファイルを配置してくれるので、メタファイル（i.e. <code>DESCRIPTION</code>,
+<code>NAMESPACE</code>）の雛形を書き換え、ファイルを追加し、ドキュメント（i.e. <code>man/*.Rd</code>,
+<code>vignettes</code>）を書き、コマンドラインで<code>R CMD built</code>をして完成になります。</p>
+<p>こう書くと大変そうですが、自動生成されたリポジトリに<strong>ファイルを追加配置して、<code>DESCRIPTION</code>,
+<code>NAMESPACE</code>,
+<code>man/*.Rd</code>の一部を書き替えたら未完成でも動きます</strong>。インハウスで使うのであれば、完璧にする必要はありません。なので、だらっと作っていきましょう。</p>
+</div>
+<div id="パッケージを作ってみる" class="section level1" number="2">
+<h1><span class="header-section-number">2</span>
+パッケージを作ってみる</h1>
+<p>試しに<code>.C</code>でC言語の関数を呼ぶ最小公約数を求める関数をパッケージ化してみましょう。<a
+href="./C-call.shtml#openmpによる並列化">RからC言語の関数を呼ぼう</a>のコードを流用します。</p>
+<div id="雛形を支援ツールにつくってもらう" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span>
+雛形を支援ツールにつくってもらう</h2>
+<p>現在ではほとんど推奨されていないようですが、<code>package.skeleton</code>を使ってパッケージの雛形をつくります。この関数は、指定したRのオブジェクトもしくはファイル内で定義されているオブジェクトをもとにパッケージの雛形をつくってくれるものです。</p>
+<p>まず、<code>example_openmp.c</code>をコンパイルし、<code>example_openmp.R</code>を実行しましょう。これでRの作業メモリーにオブジェクトがリストされるので、</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">package.skeleton</span>(<span class="st">&quot;gcd&quot;</span>, <span class="fu">c</span>(<span class="st">&quot;gcd_c&quot;</span>, <span class="st">&quot;gcd_r&quot;</span>))</span></code></pre></div>
+<p>とすると、<code>gcd</code>パッケージのリポジトリーの雛形がディレクトリ<code>./gcd</code>作成されます。</p>
+<p>Dynamic Link
+Library（以下、DLL）を呼ぶ部分が含まれませんが、DLLをロードする作業は後述する<code>NAMESPACE</code>ファイルに指定しておくと、パッケージをロードしたときに自動的にDLLもロードしてくれます。</p>
+<div id="パッケージ名の制約" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span>
+パッケージ名の制約</h3>
+<p>パッケージ名はASCII文字列に限られており、さらに空白や特殊文字の利用やUNIXの特殊ファイル名と被る名前は禁じられています。<code></code>,<code>"</code>,<code>*</code>,<code>:</code>,<code>/</code>,<code>&lt;</code>,<code>&gt;</code>,<code>?</code>,<code>\</code>,<code>|</code>は使用禁止で、<code>\</code>,
+<code>[</code>, <code>(</code> ,<code>)</code>, <code>{</code>,
+<code>}</code>, <code>[</code>, <code>]</code>, <code>$</code>,
+<code>~</code>, <code>\</code>,
+<code>]</code>は非推奨です。アルファベットと数字とアンダーバーとハイフンとドットぐらいしか使えないと理解しましょう。</p>
+</div>
+</div>
+<div id="リポジトリにファイルを追加配置する" class="section level2"
+number="2.2">
+<h2><span class="header-section-number">2.2</span>
+リポジトリにファイルを追加配置する</h2>
+<p><code>./gcd</code>の下に<code>src</code>ディレクトリを作り、ソースコード<code>example_openmp.c</code>と、コンパイラ設定ファイル<code>Makevars</code>を配置します。</p>
+<pre><code>.gcd/src/example_openmp.c
+.gcd/src/Makevars</code></pre>
+<p><code>Makevars</code>の中身は、<code>%R_USER%/.R/Makevars.win</code>（もしくは<code>~/.R/Makevars</code>）と同じにします。</p>
+<pre><code>CFLAGS = $(SHLIB_OPENMP_CFLAGS)
+FCFLAGS = $(SHLIB_OPENMP_FFLAGS)</code></pre>
+<p>C用とFortran用の記述しかありませんが、OSのコマンドプロンプトで<code>R CMD config</code>と実行するとヘルプが出てC++やそのバージョンごとのディレクティブも一覧されるので、環境にあわせて設定できます。</p>
+</div>
+<div id="自動生成されたファイルを書き換える" class="section level2"
+number="2.3">
+<h2><span class="header-section-number">2.3</span>
+自動生成されたファイルを書き換える</h2>
+<p>パッケージの内容にあわせて一行、一行、書き替えていくのが正道ですが、不完全でもインストール可能なパッケージをとりあえず作ることを目指します。</p>
+<div id="descriptionを書き換える" class="section level3" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span>
+<code>DESCRIPTION</code>を書き換える</h3>
+<p>主にパッケージの開発者に関する情報を書いておくファイルです。</p>
+<p>今回は以下の一行を書き替えたら終わりです。</p>
+<pre><code>Description: </code></pre>
+<p>「例なんで、どうも！」と書いておきます。</p>
+<pre><code>Description: This is an example. THX!</code></pre>
+<p><code>R CMD check</code>が他をチェックしないのが謎と言うか、将来のバージョンではもっと書き替えないといけなくなるかも知れません。</p>
+<div id="depends" class="section level4" number="2.3.1.1">
+<h4><span class="header-section-number">2.3.1.1</span>
+<code>Depends</code></h4>
+<p><code>package.skeleton</code>がつくる雛形には含まれておらず、必須でもないですが、<code>Depends</code>行は最初から有用です。
+例えば、</p>
+<pre><code>Depends: R (&gt;= 4.2.0), mice</code></pre>
+<p>と書いておくと、Rのバージョン4.2以上でないと<code>install.packages</code>関数でインストールできず、<code>mice</code>パッケージがインストールされていない場合は、自動でインストールしてくれます。</p>
+</div>
+</div>
+<div id="namespaceを書き換える" class="section level3" number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span>
+<code>NAMESPACE</code>を書き換える</h3>
+<p>パッケージをロードしたユーザーが使える関数、S3クラスのメソッド、S4クラスやそのメソッドを宣言するファイルです。利用するDLLもここで宣言します。</p>
+<p>今回は以下の一行を追加します。<code>example_openmp</code>でなくて<code>gcd</code>なのが奇妙に感じられるかも知れませんが、<code>R CMD built</code>すると<code>gcd.dll</code>が作られるのでこうなります。</p>
+<pre><code>useDynLib(gcd)</code></pre>
+<p>DLLのロードやアンロードの記述が不要になります。</p>
+<p>なお<code>package.skeleton</code>にデータフレームを指定すると、<code>NAMESPACE</code>の<code>export(...)</code>にデータフレームを保存したオブジェクト名を入れてくるのですが、放置しておくとエラーになるので<code>export(...)</code>から消します。</p>
+<div id="dllの関数サブルーチンを変数名で呼ぶ" class="section level4"
+number="2.3.2.1">
+<h4><span class="header-section-number">2.3.2.1</span>
+DLLの関数/サブルーチンを変数名で呼ぶ</h4>
+<p><code>useDynLib</code>の第2引数以降に関数名を指定することで、Cの関数やFortranのサブルーチンを変数名で呼ぶことができます。
+また、以下のように変数名を指定することもできます。</p>
+<pre><code>useDynLib(gcd, C_gcd=gcd)</code></pre>
+<p>名前解決が速くなることと、コード中のあちこちに文字列を書く必要がなくなることが御利益です。</p>
+</div>
+<div id="exportpattern..." class="section level4" number="2.3.2.2">
+<h4><span class="header-section-number">2.3.2.2</span>
+<code>exportPattern(...)</code></h4>
+<p><code>export</code>ディレクティブで指定された関数が、パッケージが<code>library</code>でロードしたユーザーに提供される関数ですが、<code>exportPattern(...)</code>を使うと正規表現で一括指定できます。</p>
+</div>
+<div id="importとimportfrom" class="section level4" number="2.3.2.3">
+<h4><span class="header-section-number">2.3.2.3</span>
+<code>import</code>と<code>importFrom</code></h4>
+<p>作成するパッケージが、Rに標準添付されているもの以外の他のパッケージに依存している場合、<code>import</code>ディレクティブで指定します。<code>importForm</code>を使えばパッケージ内の特定の関数だけを名前空間にattachできますし、<code>import</code>で<code>except</code>を指定すると特定の関数が名前空間にattachするのを避けることができます。</p>
+</div>
+<div id="s3メソッド" class="section level4" number="2.3.2.4">
+<h4><span class="header-section-number">2.3.2.4</span> S3メソッド</h4>
+<p><code>S3method(myfunc, myclass)</code>と書いておくと、作成するパッケージの関数<code>myfunc.myclass</code>をS3クラス<code>myclass</code>のメソッドとして提供することができます。
+<code>S3method(myfunc, myclass, methodentity)</code>と書いておくと、関数<code>methodentity</code>を<code>myclass</code>のメソッドとして提供でき、関数<code>myfunc.myclass</code>は無くても良いです。
+R
+3.6以降だと、<code>S3method(packagename::myfunc, myclass)</code>と書くことで、依存するパッケージ<code>packagename</code>がロードされた後にS3メソッドの登録ができます。</p>
+</div>
+</div>
+<div id="rdを書き換える" class="section level3" number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span>
+<code>*.Rd</code>を書き換える</h3>
+<p>言わずと知れたマニュアル・ページです。</p>
+<p>今回は、<code>./gcd/man</code>ディレクトリの中にある<code>gcd_c.Rd</code>,
+<code>gcd_r.Rd</code>,
+そして<code>gcd-package.Rd</code>を書き替えます。</p>
+<p><code>gcd_c.Rd</code>と<code>gcd_r.Rd</code>は<code>\title{ ... }</code>の中身がないので入れます。<code>gcd_c</code>と<code>gcd_r</code>と関数名を入れておけば動くので、そうしましょう。</p>
+<p><code>gcd-package.Rd</code>は<code>\title{ ... }</code>の中身はあるのですが、<code>\example{ ... }</code>にエラーが出る文字列が入っているので消します。なお、<code>gcd_c.Rd</code>と<code>gcd_r.Rd</code>の<code>\example{ ... }</code>の中身を消しても問題はありません。</p>
+<div id="example-...-内の自動実行" class="section level4"
+number="2.3.3.1">
+<h4><span class="header-section-number">2.3.3.1</span>
+<code>\example{ ... }</code>内の自動実行</h4>
+<p>Rdフォーマットはマニュアルに書く情報を列挙するためのものですが、<code>\example{ ... }</code>内はRのコードとして実際に実行されます。実行されたくない部分は<code>\dontrun{ ... }</code>で囲いましょう。また、実行はしたいが表示したくない場合は<code>\dontshow{ ... }</code>で囲いましょう。</p>
+</div>
+</div>
+</div>
+<div id="read-and-delete-me" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span>
+<code>Read-and-delete-me</code></h2>
+<p>消さなくても動きます。消すべきでしょうが。</p>
+</div>
+<div id="ビルドチェックインストール" class="section level2"
+number="2.5">
+<h2><span class="header-section-number">2.5</span>
+ビルド、チェック、インストール</h2>
+<p>まずビルドします。</p>
+<pre><code>R CMD build ./gcd</code></pre>
+<p>これで<code>gcd_1.0.tar.gz</code>と言うファイルができ配布できますが、配布する前にインストール可能かチェックして、開発環境でインストールしてみましょう。</p>
+<p>まずはチェックです。</p>
+<pre><code>R CMD check ./gcd</code></pre>
+<p>エラーが出れば、メッセージにしたがって修正します。</p>
+<p>エラーが無ければ、もしくは、エラーが無くなれば、インストールします。</p>
+<pre><code>R CMD INSTALL ./gcd</code></pre>
+<p>これでRで、</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(gcd)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">gcd_c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">2</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>))</span></code></pre></div>
+<p>などとできるようになりました。</p>
+</div>
+</div>
+<div id="cソースコードの修正" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+Cソースコードの修正</h1>
+<p>Cで書かれたDLLの方で関数の型チェックを行なっている場合、DLLのファイル名が変わることからCのソースコードを修正する必要があります。
+例で使った<code>example_openmp.c</code>の場合は、<code>void R_init_example_openmp(DllInfo *info)</code>を<code>void R_init_gcd(DllInfo *info)</code>にしました。Rのラッピング関数で型変換を行なうので、不正な型が入ることは無く、顕在化しない問題になりそうですが。</p>
+<div id="usedynlib...-.registration-true" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span>
+<code>useDynLib(..., .registration = TRUE)</code></h2>
+<p>DLLに登録情報がある場合、一括で、Rのコード中で<code>.C("gcd", ... )</code>と文字列で名前を指定して呼び出しているのを、<code>.C(C_gcd, ... )</code>と変数名で呼び出すようにできます。</p>
+<p>DLLの準備が出来ていれば、パッケージの<code>NAMESPACE</code>で、<code>useDynLib(gcd)</code>を以下のようにするだけです。</p>
+<pre><code>useDynLib(gcd, .registration = TRUE, .fixes = &quot;C_&quot;)</code></pre>
+<p><code>.fixes</code>はRで使う変数名につけるプリフィックスの指定で、混乱が無ければ無くても良いです。</p>
+<p>CRANに登録されているパッケージの多くはこの方法を用いています。</p>
+</div>
+</div>
+<div id="パッケージのインストール" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
+パッケージのインストール</h1>
+<p>R CMD INSTALL
+./gcdとする他にも、以下のように<code>install.packages</code>に<code>repos = NULL</code>を引数につけて、ファイルパスを指定する方法もあります。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;./gcd_1.0.tar.gz&quot;</span>, <span class="at">repos =</span> <span class="cn">NULL</span>)</span></code></pre></div>
+<p>なお、同様にURLも指定できます。</p>
+<div id="パッケージのインストール先" class="section level2"
+number="4.1">
+<h2><span class="header-section-number">4.1</span>
+パッケージのインストール先</h2>
+<p><code>system.files</code>関数で取れ、例えば<code>stats</code>パッケージの場所を特定する場合は、</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">system.file</span>(<span class="at">package =</span> <span class="st">&quot;stats&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;/usr/lib/R/library/stats&quot;</code></pre>
+<p>とします。</p>
+<p><code>stats</code>パッケージの中の<code>tests/glm.R</code>の場所を特定する場合は、</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">system.file</span>(<span class="st">&quot;tests&quot;</span>, <span class="st">&quot;glm.R&quot;</span>, <span class="at">package =</span> <span class="st">&quot;stats&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;&quot;</code></pre>
+<p>とします。</p>
+<p>パッケージ内のコードから<code>inst/</code>以下に含めたファイルを参照する場合、アンインストールする場合などに使えます。</p>
+</div>
+<div id="パッケージのアンインストール" class="section level2"
+number="4.2">
+<h2><span class="header-section-number">4.2</span>
+パッケージのアンインストール</h2>
+<p>インストールしたパッケージを削除するときは、インストール先ディレクトリを確認したあと、Rを終了してパッケージ名のディレクトリ（i.e. <code>gcd</code>）を消します。</p>
+</div>
+</div>
+<div id="パッケージを膨らませていく" class="section level1" number="5">
+<h1><span class="header-section-number">5</span>
+パッケージを膨らませていく</h1>
+<p><code>DESCRIPTION</code>と<code>NAMESPACE</code>と<code>man</code>に関しては雛形に書き込まれたものを含めて説明と例が色々あるので、<code>data</code>と<code>vignettes</code>と<code>tests</code>の追加について説明します。</p>
+<div id="dataの追加" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span>
+<code>data</code>の追加</h2>
+<p><code>data</code>は、<code>data</code>関数で作業メモリーにロードできるデータフレームなどです。リポジトリに<code>data/</code>ディレクトリを作成した後、Rの<code>save</code>関数で<code>data/</code>以下に<code>.rda</code>ファイルの形式でデータフレームを保存すれば終わりです。</p>
+<p>例えば、</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>dataset_of_gcd <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">a=</span><span class="fu">as.integer</span>(<span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">100</span>, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">100.5</span>))),</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>    <span class="at">b=</span><span class="fu">as.integer</span>(<span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">100</span>, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">100.5</span>))))</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">&quot;./gcd/data&quot;</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="fu">save</span>(dataset_of_gcd, <span class="at">file=</span><span class="st">&quot;./gcd/data/example.rda&quot;</span>)</span></code></pre></div>
+<p>こんな感じで<code>example.rda</code>を作ってから<code>R CMD INSTALL</code>をすると、</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">library</span>(gcd)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">data</span>(example)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="fu">ls</span>()</span></code></pre></div>
+<p>パッケージに添付したデータセットがロードされていることが分かります。</p>
+<pre><code>[1] &quot;dataset_of_gcd&quot;</code></pre>
+<p><code>man</code>の追加は必須ではないですが、<code>./gcd/man/example.Rd</code>は作成した方がよいと思います。</p>
+</div>
+<div id="vignettesの追加" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span>
+<code>vignettes</code>の追加</h2>
+<p>Rで<code>vignette("zoo")</code>のようにすると出てくるpdfやhtmlの説明ページのことです。<code>man</code>はリポジトリに含まれる個々の関数などのオブジェクトの説明、<code>vignette</code>はリポジトリ全体のオブジェクトをどう組み合わせて使っていくかの説明と言う風に使い分けが想定されていたのではないかと思います。</p>
+<p>実際には、広く使われているパッケージでも<code>vignette</code>は用意されていないことがあり、またパッケージの使い方と言うよりもより詳しい情報源の紹介や、パッケージで用いている計量理論の何十ページもある説明のように、記述される内容も様々です。</p>
+<p>R
+2.xまでは<code>vignette</code>はLaTeX用プリプロセッサ<code>Sweave</code>を使って作ったpdfのみが利用できました。<code>Sweave</code>にLaTeXの中にRのコードを埋め込んだ形式のファイル<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>を入力すると、Rの実行結果をLaTeXファイルに入れることができます。また自動でtexをpdfに変換してくれます。3.0からエンジンが柔軟になり、今ではR
+Markdownを使ってhtmlで書く方法が広く紹介されています。</p>
+<div id="sweaveの利用" class="section level3" number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span>
+<code>Sweave</code>の利用</h3>
+<p>R
+Markdownを使う方が楽なのですが、<code>Sweave</code>を使って<code>vignette</code>を書きます。</p>
+<p>まず、TeXがインストールされていてコマンドラインで実行できることを確認します。</p>
+<p>次に、<code>./gcd/vignettes</code>と<code>./gcd/inst/doc</code>の2つのディレクトリを作成します。次に、Rで<code>./gcd/vignettes/gcd.Rnw</code>をパッケージからコピーしてつくります。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="fu">system.file</span>(<span class="st">&quot;Sweave&quot;</span>, <span class="st">&quot;example-1.Rnw&quot;</span>, <span class="at">package =</span> <span class="st">&quot;utils&quot;</span>), </span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>    <span class="fu">file.path</span>(<span class="st">&quot;gcd&quot;</span>, <span class="st">&quot;vignettes&quot;</span>, <span class="st">&quot;gcd.Rnw&quot;</span>))</span></code></pre></div>
+<p>コピーしたファイルを、編集しなくてもそのまま使えますが、編集します。続いてRの作業ディレクトリを、<code>./gcd/vignettes</code>に移動して</p>
+<pre><code>R CMD Sweave --pdf gcd.Rnw</code></pre>
+<p>とすると、<code>gcd.pdf</code>ができます。これを<code>./gcd/inst/doc</code>にコピーします。</p>
+<p>パッケージ<code>build</code>時に自動でpdfをつくってコピーしてくれても良さそうなのですが、してくれません。また、<code>./gcd/vignettes</code>の<code>.Rnw</code>ファイルに対応するように、<code>./gcd/inst/doc</code>に<code>.pdf</code>ファイルがないと警告が出て、<code>vignette</code>として取り扱ってくれません。</p>
+<p><code>.Rnw</code>ファイルの書き方については、<code>vignette("Sweave")</code>で詳細な説明を読むことができます。</p>
+<p>なお、<code>DESCRIPTION</code>で<code>Sweave</code>の利用を明記するときは、<code>VignetteBuilder: utils</code>と書きます。</p>
+</div>
+<div id="instの中は再帰的に丸ごとコピー" class="section level3"
+number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span>
+<code>inst</code>の中は再帰的に丸ごとコピー</h3>
+<p><code>inst/doc</code>にpdf以外を置いておいても、丸ごとコピーします。ディレクトリ<code>inst</code>の中は再帰的に丸ごとコピーする仕様だからです。コピーしたくないファイルは、<code>.Rinstignore</code>（e.g. <code>./gcd/.Rinstignore</code>）にPerl互換正規表現で指定することができます。</p>
+</div>
+</div>
+<div id="testsの追加" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span>
+<code>tests</code>の追加</h2>
+<p>まず、ディレクトリ<code>./gcd/tests</code>を作成します。ここにユーザー入力無く終了する任意のRスクリプトをおきます。スクリプトが、エラーを出さなければ成功、エラーを出したら失敗です。今回は以下の内容のexample.Rを作成しておきましょう。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">library</span>(gcd)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co"># gcd_cとgcd_rの計算結果が異なればエラーになる</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>test.gcd <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n=</span><span class="fl">1e+5</span>){</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>    v <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span>n<span class="fl">-0.5</span>)))</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>    w <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">round</span>(<span class="fu">runif</span>(n, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span>n<span class="fl">-0.5</span>)))</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>    et_c <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>        r_c <span class="ot">&lt;-</span> <span class="fu">gcd_c</span>(v, w)</span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>    })</span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a>    et_r <span class="ot">&lt;-</span> <span class="fu">system.time</span>({</span>
+<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a>        r_r <span class="ot">&lt;-</span> <span class="fu">gcd_r</span>(v, w)</span>
+<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a>    })</span>
+<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a></span>
+<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a>    et <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(et_r, et_c), <span class="dv">2</span>, <span class="fu">length</span>(et_r),</span>
+<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a>        <span class="at">byrow=</span><span class="cn">TRUE</span>, </span>
+<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a>        <span class="at">dimnames=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;R&quot;</span>, <span class="st">&quot;C&quot;</span>), <span class="fu">names</span>(et_r)))</span>
+<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a></span>
+<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">flag=</span><span class="fu">all</span>(r_c<span class="sc">==</span>r_r), <span class="at">et=</span>et)</span>
+<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a>}</span>
+<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a></span>
+<span id="cb24-23"><a href="#cb24-23" tabindex="-1"></a><span class="fu">test.gcd</span>()</span></code></pre></div>
+<p>これで<code>R CMD check</code>中に以下のような表示が出ます。</p>
+<pre><code>* checking tests ...
+  Running &#39;example.R&#39;
+ OK</code></pre>
+</div>
+</div>
+<div id="説明しなかったディレクトリ" class="section level1" number="6">
+<h1><span class="header-section-number">6</span>
+説明しなかったディレクトリ</h1>
+<p>Writing R
+Extensionsにはしっかり言及があるのですが、Rのパッケージ作成紹介では触れられない残りのディレクトリを紹介しておきます。ただし、CRANに登録されているパッケージでも利用頻度は低いようです。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">ディレクトリ</th>
+<th align="left">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>demo</code></td>
+<td align="left"><code>demo</code>関数で動かせるデモRスクリプト用</td>
+</tr>
+<tr class="even">
+<td align="left"><code>exec</code></td>
+<td align="left">実行可能フラグのついたR以外のスクリプト用<a href="#fn3"
+class="footnote-ref" id="fnref3"><sup>3</sup></a></td>
+</tr>
+<tr class="odd">
+<td align="left"><code>po</code></td>
+<td align="left">国際化/i18n/gettext用のデータ用</td>
+</tr>
+<tr class="even">
+<td align="left"><code>tools</code></td>
+<td align="left">autoconfのM4のようなビルドに使う補助ファイル用</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="まとめ" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> まとめ</h1>
+<p>原始的な方法でパッケージの作成をしてみました。<code>DESCRIPTION</code>と<code>NAMESPACE</code>と<code>Sweave</code>と<code>.Rd</code>がそれぞれ別の見慣れない書式になっているので、細部は説明を見ながらと言うことになりますが、作業自体は大したことは無かったです。公式ドキュメントのWriting
+R
+Extensionsを含めて<code>Sweave</code>で<code>vignette</code>を作る方法が、ちょっと薄くて苦労しましたが。最近はRStudioで雛形を出してR
+Markdownで<code>vignette</code>を書くのが一般的で、知らなくてよい情報なのかも知れません。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>CRAN（1997年）に先行するPerlのCPAN（1995年）、CPANとCRANに続く、PythonのPyPI（2003年），Rubyのgem（2004年）などがあります。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p>後でつくる雛形を見たらすぐ分かりますが、<code>&lt;&lt;&gt;&gt;=</code>と<code>@</code>の行の間がRのコードとして解釈されるコードチャンクになります。<code>&lt;&lt;eval=FALSE&gt;&gt;</code>とオプションをつけたりでき、R
+Markdownの原型感があります。<a href="#fnref2"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>R以外のスクリプトを用意してもインストール先に実行環境があるとは限らないので、使わないようにしましょう。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

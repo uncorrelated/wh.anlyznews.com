@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<title>ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<link rel="stylesheet" type="text/css" href="../style.css"/>
+<!--#include virtual="/parts/head.txt"-->
+</head>
+<body>
+<div class="inbox">
+<div class="header">
+</div>
+<div class="advertisement">
+<!--#include virtual="/parts/ad.txt"-->
+</div>
+<div class="right">
+<!--#include virtual="menu.txt"-->
+<!--#include virtual="/parts/right.txt"-->
+</div>
+<div class="article" id="article">
+<!--#include virtual="/parts/header.txt"-->
+<h2>画像にポインターを表示</h2>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<p>地図を表示して、どこに何があるか示すときに地図上に目印をつけておくのは、基本的な表現方法です。しかし、これをサーバー・サイドの技術で実現しようとすると、複数の目印を切り替えて表わすたびにページのリロードが必要になります。そうするとサーバー負荷の高まりますし、何よりリロードが待たされるのが、ページ閲覧者にはちょっと苦痛でしょう。</p>
+<p>そこで地図にポインターをつける JavaApplet を作成しました。HTML 内の JavaScript から制御させることができます。</p>
+
+<!-- マウスをクリックしたときの為のコールバック関数を用意する -->
+<script type="text/javascript">
+<!--
+// コールバック関数は座標 x y を引数に取る
+function callback(x,y){
+  alert("(" + x + "," + y + ")");
+}
+//-->
+</script>
+<div style="border:1px solid #000000; width:300px; height:220px; margin:8px 8px 0px 4px; padding:0px 0px 0px 0px; background:#FFFFFF; text-align:left;">
+<div style="float:left; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; width: 150px; height:220px;">
+<!-- Appletタグを設置する。MAYSCRIPT を忘れずに。 -->
+<applet Name="ICApplet" codebase="jar" code="ImageCursor" archive="ImageCursor.jar" width="150" height="220">
+<!-- -->
+<param name="mayscript" value="true">
+<!-- 画像ファイル名を設定 -->
+<param name="Image" value="icimg/K050023m.jpg">
+<!-- マウスカーソルをトラッキングするか設定(true/false) -->
+<param name="Tracking" value="true">
+<!-- コールバック関数名を指定。省略時はコールバックされない -->
+<param name="Function" value="callback">
+Java Virtual Machine がインストールされていません。<a href="http://java.com/ja/">http://java.com/ja/</A> から Java Plug-in をダウンロードして、インストールしてください。
+</applet>
+</div>
+<div style="margin:0px 0px 0px 150px; padding:32px 0px 0px 0px;">
+<!-- document.[Appletタグ名].set(x,y);を呼ぶと(x,y)に座標が移る-->
+<ol>
+<li><a href="javascript:document.ICApplet.set(84,8);">キャップ</a></li>
+<li><a href="javascript:document.ICApplet.set(59,63);">エプロン</a></li>
+<li><a href="javascript:document.ICApplet.set(78,133);">スカート</a></li>
+</ol>
+<div Style="text-align:center;">
+<!-- document.[Appletタグ名].clear() を呼ぶと座標が表示されなくなる -->
+<a href="javascript:document.ICApplet.clear();">【クリア】</a></li>
+</div>
+</div>
+</div>
+
+<h3>設置</h3>
+<p>このメニューを、貴方のページに設置したいというかたは、<a href="./ImageCursor.jar">ImageCursor.jar</A> をダウンロードして、貴方のページにアップロードしてください。</p>
+<p>次に ImageCursor.jar があるディレクトリーに以下のようなタグが含まれる html を書きましょう。</p>
+<p>変数 Image で画像ファイル名を指定します。建物名から地図上の位置を示すときなどには、変数 Function を省略しましょう。マウス・クリックに反応しなくなります。マウス・ダウンで座標軸が移動すると困るときは、Tracking を false にするか省略すれば、座標軸は動きません。</p>
+
+<h4>設置例#1</h4>
+<div class="code">
+&lt;DIV Style=&quot;float:left; border:1px solid #000000; width:300px; height:220px; margin:0px 8px 0px 4px; padding:0px 0px 0px 0px; background:#FFFFFF; text-align:left;&quot;&gt;<br/>
+&lt;DIV Style=&quot;float:left; margin: 0px 0px 0px 0px; padding: 0px 0px 0px 0px; width: 150px; height:220px;&quot;&gt;<br/>
+&lt;!-- Appletタグを設置する。MAYSCRIPT を忘れずに。 --&gt;<br/>
+&lt;applet Name=&quot;ICApplet&quot; code=&quot;ImageCursor&quot; archive=&quot;ImageCursor.jar&quot; width=&quot;150&quot; height=&quot;220&quot; MAYSCRIPT&gt;<br/>
+&lt;!-- 画像ファイル名を設定 --&gt;<br/>
+&lt;param name=&quot;Image&quot; value=&quot;K050023m.jpg&quot;&gt;<br/>
+&lt;!-- マウスカーソルをトラッキングするか設定(true/false) --&gt;<br/>
+&lt;param name=&quot;Tracking&quot; value=&quot;true&quot;&gt;<br/>
+&lt;!-- コールバック関数名を指定。省略時はコールバックされない --&gt;<br/>
+&lt;param name=&quot;Function&quot; value=&quot;callback&quot;&gt;<br/>
+Java Virtual Machine がインストールされていません。&lt;A Href=&quot;http://java.com/ja/&quot;&gt;http://java.com/ja/&lt;/A&gt; から Java Plug-in をダウンロードして、インストールしてください。<br/>
+&lt;/applet&gt;<br/>
+&lt;/DIV&gt;<br/>
+&lt;DIV Style=&quot;margin:0px 0px 0px 150px; padding:0px 0px 0px 0px;&quot;&gt;<br/>
+&lt;!-- document.[Appletタグ名].set(x,y);を呼ぶと(x,y)に座標が移る--&gt;<br/>
+&lt;OL&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.ICApplet.set(84,8);&quot;&gt;キャップ&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.ICApplet.set(59,63);&quot;&gt;エプロン&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.ICApplet.set(78,133);&quot;&gt;スカート&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;/OL&gt;<br/>
+&lt;DIV Style=&quot;text-align:center;&quot;&gt;<br/>
+&lt;!-- document.[Appletタグ名].clear() を指定すると座標が表示されなくなる --&gt;<br/>
+&lt;A Href=&quot;javascript:document.ICApplet.clear();&quot;&gt;【クリア】&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;/DIV&gt;<br/>
+&lt;/DIV&gt;<br/>
+&lt;/DIV&gt;
+</div>
+
+<h3>設置例#2 - 画像ファイルが大きな場合</h3>
+
+<div style="float:left; border:1px solid #000000; width:300px; height:150px; margin:8px 8px 0px 4px; padding:0px 0px 0px 0px; background:#FFFFFF; text-align:left;">
+<div style="float:left; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; width: 180px; height:150px;">
+<!-- Appletタグを設置する。MAYSCRIPT を忘れずに。 -->
+<applet Name="Map" codebase="jar" code="ImageCursor" archive="ImageCursor.jar" width="150" height="150" MAYSCRIPT>
+<!-- 画像ファイル名を設定 -->
+<param name="Image" value="icimg/map03.gif">
+<!-- マウスカーソルをトラッキングするか設定(true/false) -->
+<param name="Tracking" value="false">
+Java Virtual Machine がインストールされていません。<a href="http://java.com/ja/">http://java.com/ja/</A> から Java Plug-in をダウンロードして、インストールしてください。
+</applet>
+</div>
+<ol style="margin:0px 0px 0px 0px; padding:16px 0px 0px 16px;">
+<li><a href="javascript:document.Map.set(234,178);">吉祥寺駅</a></li>
+<li><a href="javascript:document.Map.set(192,196);">天下寿司</a></li>
+<li><a href="javascript:document.Map.set(99,70);">牛鉄</a></li>
+<li><a href="javascript:document.Map.set(175,166);">大戸屋</a></li>
+<li><a href="javascript:document.Map.set(145,232);">伊勢屋</a></li>
+<li><a href="javascript:document.Map.set(214,255);">丸井</a></li>
+</ol>
+</div>
+
+<p>実際に地図を使っての設置例です。Applet サイズより、地図の画像ファイルのサイズが大きい場合は、一部分だけが表示されます。</p>
+<p>Applet の端（外延からアップレットサイズの1/8の領域）にマウスが入ると、上下左右にスクロールしていきます。また、JavaScript で座標が指定されると、なるべく座標軸を中心にするように、表示位置を修正します。</p>
+<p>なお、サンプルの地図は<a href="http://www.date-navi.com/gurume/tenka.html" Target="_blank">天下寿司</A>様からお借りしました。</p>
+
+<h4>設置例#2</h4>
+<div class="code">
+&lt;DIV Style=&quot;float:left; border:1px solid #000000; width:300px; height:150px; margin:8px 8px 0px 4px; padding:0px 0px 0px 0px; background:#FFFFFF; text-align:left;&quot;&gt;<br/>
+&lt;DIV Style=&quot;float:left; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; width: 180px; height:150px;&quot;&gt;<br/>
+&lt;!-- Appletタグを設置する。MAYSCRIPT を忘れずに。 --&gt;<br/>
+&lt;applet Name=&quot;Map&quot; code=&quot;ImageCursor&quot; archive=&quot;ImageCursor.jar&quot; width=&quot;150&quot; height=&quot;150&quot; MAYSCRIPT&gt;<br/>
+&lt;!-- 画像ファイル名を設定 --&gt;<br/>
+&lt;param name=&quot;Image&quot; value=&quot;map03.gif&quot;&gt;<br/>
+&lt;!-- マウスカーソルをトラッキングするか設定(true/false) --&gt;<br/>
+&lt;param name=&quot;Tracking&quot; value=&quot;false&quot;&gt;<br/>
+Java Virtual Machine がインストールされていません。&lt;A Href=&quot;http://java.com/ja/&quot;&gt;http://java.com/ja/&lt;/A&gt; から Java Plug-in をダウンロードして、インストールしてください。<br/>
+&lt;/applet&gt;<br/>
+&lt;/DIV&gt;<br/>
+&lt;OL Style=&quot;margin:0px 0px 0px 0px; padding:16px 0px 0px 16px;&quot;&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(234,178);&quot;&gt;吉祥寺駅&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(192,196);&quot;&gt;天下寿司&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(99,70);&quot;&gt;牛鉄&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(175,166);&quot;&gt;大戸屋&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(145,232);&quot;&gt;伊勢屋&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(214,255);&quot;&gt;丸井&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;/OL&gt;<br/>
+&lt;/DIV&gt;<br/>
+</div>
+
+<h3>設置例#3 - マーカー（目印）をセットする場合</h3>
+
+<div style="float:left; border:1px solid #000000; width:300px; height:150px; margin:8px 8px 0px 4px; padding:0px 0px 0px 0px; background:#FFFFFF; text-align:left;">
+<div style="float:left; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; width: 180px; height:150px;">
+<!-- マーカーをクリックしたときの為のコールバック関数を用意する -->
+<script type="text/javascript">
+<!--
+// コールバック関数は座標 x y を引数に取る
+function marker(n){
+  if(n==0)
+    alert("[1]東急がクリックされました。");
+  else if(n==1)
+    alert("[2]パルコがクリックされました。");
+}
+//-->
+</script>
+<!-- Appletタグを設置する。MAYSCRIPT を忘れずに。 -->
+<applet Name="Marker" codebase="jar" code="ImageCursor" archive="ImageCursor.jar" width="150" height="150" MAYSCRIPT>
+<!-- 画像ファイル名を設定 -->
+<param name="Image" value="icimg/map03.gif">
+<!-- マウスカーソルをトラッキングするか設定(true/false) -->
+<param name="Tracking" value="false">
+<!-- スクロール速度を調整 -->
+<param name="Speed" value="16">
+<!-- マーカー関連の設定 -->
+<!-- マーカーの画像ファイルを指定 -->
+<param name="MarkerImage" value="mkimg/009-001.gif,mkimg/009-002.gif">
+<!-- マーカーのX座標を指定 -->
+<param name="MarkerX" value="137,174">
+<!-- マーカーのY座標を指定 -->
+<param name="MarkerY" value="77,150">
+<!-- マーカー用のコールバック関数を指定 -->
+<param name="MarkerFunction" value="marker">
+
+Java Virtual Machine がインストールされていません。<a href="http://java.com/ja/">http://java.com/ja/</A> から Java Plug-in をダウンロードして、インストールしてください。
+</applet>
+</div>
+<ol style="margin:0px 0px 0px 0px; padding:16px 0px 0px 16px;">
+<li><a href="javascript:document.Marker.set(234,178);">吉祥寺駅</a></li>
+<li><a href="javascript:document.Marker.set(192,196);">天下寿司</a></li>
+<li><a href="javascript:document.Marker.set(99,70);">牛鉄</a></li>
+<li><a href="javascript:document.Marker.set(175,166);">大戸屋</a></li>
+<li><a href="javascript:document.Marker.set(145,232);">伊勢屋</a></li>
+<li><a href="javascript:document.Marker.set(214,255);">丸井</a></li>
+</ol>
+</div>
+
+<p>地図上のマーカー（<IMG Alt="マーカー" Src="jar/mkimg/009-001.gif" Width="15" Height="15">）をクリックして、JavaScript でイベントを起こしたいケースのために、マーカー機能があります。</p>
+<p>下記の設置例のように、MarkerImage、MarkerX、MarkerY、MarkerFunction の各パラメーターを設定すると、地図中にマーカーを設置できます。</p>
+<p>クリックすると MarkerFunction で指定した JavaScript 関数を呼び出すので、そこでイベントを記述してください。典型的には、その地点にある店舗などのページに飛ぶことが多いでしょう。</p>
+<p>なおマーカーに使った数字の画像は<a href="http://www.image-seed.com/archives/9859653.html" Target="_blank">アイコン無料！ WEB素材屋さん</A>からお借りしました。</p>
+
+<h4>設置例#3</h4>
+<div class="code">
+&lt;DIV Style=&quot;float:left; border:1px solid #000000; width:300px; height:150px; margin:8px 8px 0px 4px; padding:0px 0px 0px 0px; background:#FFFFFF; text-align:left;&quot;&gt;<br/>
+&lt;DIV Style=&quot;float:left; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; width: 180px; height:150px;&quot;&gt;<br/>
+&lt;!-- マーカーをクリックしたときの為のコールバック関数を用意する --&gt;<br/>
+&lt;SCRIPT Language=&quot;JavaScript&quot;&gt;<br/>
+&lt;!--<br/>
+// コールバック関数は座標 x y を引数に取る<br/>
+function marker(n){<br/>
+  if(n==0)<br/>
+    alert(&quot;[1]東急がクリックされました。&quot;);<br/>
+  else if(n==1)<br/>
+    alert(&quot;[2]パルコがクリックされました。&quot;);<br/>
+}<br/>
+//--&gt;<br/>
+&lt;/SCRIPT&gt;<br/>
+&lt;!-- Appletタグを設置する。MAYSCRIPT を忘れずに。 --&gt;<br/>
+&lt;applet Name=&quot;Map&quot; code=&quot;ImageCursor&quot; archive=&quot;ImageCursor.jar&quot; width=&quot;150&quot; height=&quot;150&quot; MAYSCRIPT&gt;<br/>
+&lt;!-- 画像ファイル名を設定 --&gt;<br/>
+&lt;param name=&quot;Image&quot; value=&quot;map03.gif&quot;&gt;<br/>
+&lt;!-- マウスカーソルをトラッキングするか設定(true/false) --&gt;<br/>
+&lt;param name=&quot;Tracking&quot; value=&quot;false&quot;&gt;<br/>
+&lt;!-- スクロール速度を調整 --&gt;<br/>
+&lt;param name=&quot;Speed&quot; value=&quot;16&quot;&gt;<br/>
+&lt;!-- マーカーの画像ファイルを指定 --&gt;<br/>
+&lt;param name=&quot;MarkerImage&quot; value=&quot;mkimg/009-001.gif,mkimg/009-002.gif&quot;&gt;<br/>
+&lt;!-- マーカーのX座標を指定 --&gt;<br/>
+&lt;param name=&quot;MarkerX&quot; value=&quot;137,174&quot;&gt;<br/>
+&lt;!-- マーカーのY座標を指定 --&gt;<br/>
+&lt;param name=&quot;MarkerY&quot; value=&quot;77,150&quot;&gt;<br/>
+&lt;!-- マーカー用のコールバック関数を指定 --&gt;<br/>
+&lt;param name=&quot;MarkerFunction&quot; value=&quot;marker&quot;&gt;<br/>
+<br/>
+Java Virtual Machine がインストールされていません。&lt;A Href=&quot;http://java.com/ja/&quot;&gt;http://java.com/ja/&lt;/A&gt; から Java Plug-in をダウンロードして、インストールしてください。<br/>
+&lt;/applet&gt;<br/>
+&lt;/DIV&gt;<br/>
+&lt;OL Style=&quot;margin:0px 0px 0px 0px; padding:16px 0px 0px 16px;&quot;&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(234,178);&quot;&gt;吉祥寺駅&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(192,196);&quot;&gt;天下寿司&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(99,70);&quot;&gt;牛鉄&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(175,166);&quot;&gt;大戸屋&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(145,232);&quot;&gt;伊勢屋&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Map.set(214,255);&quot;&gt;丸井&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;/OL&gt;<br/>
+&lt;/DIV&gt;
+</div>
+
+<h3>設置例#4 - 拡大・縮小、スケーラーの表示</h3>
+
+<script type="text/javascript">
+<!--
+// コールバック関数は座標 x y を引数に取る
+var URL = new Array('http://www.tokyu-dept.co.jp/kichijouji/','http://www.parco-kichijoji.com/');
+function wopen(n){
+  if(n<URL.length){
+    window.open(URL[n],'_blank');
+  }
+}
+//-->
+</script>
+<div style="float:left; border:1px solid #000000; width:360px; height:166px; margin:8px 8px 0px 4px; padding:8px 0px 0px 8px; background:#FFFFFF; text-align:left;">
+<div style="float:left; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; width: 180px; height:150px;">
+<!-- Appletタグを設置する。MAYSCRIPT を忘れずに。 -->
+<applet Name="Scaler" codebase="jar" code="ImageCursor" archive="ImageCursor.jar" width="150" height="150" MAYSCRIPT>
+<!-- 画像ファイル名を設定 -->
+<param name="Image" value="icimg/map03.gif">
+<!-- マウスカーソルをトラッキングするか設定(true/false) -->
+<param name="Tracking" value="false">
+<!-- スクロール速度を調整 -->
+<param name="Speed" value="16">
+<!-- 距離表示の画像ファイルを指定 -->
+<param name="Scaler" value="scaler.gif">
+<!-- マーカーの画像ファイルを指定 -->
+<param name="MarkerImage" value="mkimg/009-001.gif,mkimg/009-002.gif">
+<!-- マーカーのX座標を指定 -->
+<param name="MarkerX" value="137,174">
+<!-- マーカーのY座標を指定 -->
+<param name="MarkerY" value="77,150">
+<!-- マーカー用のコールバック関数を指定 -->
+<param name="MarkerFunction" value="wopen">
+Java Virtual Machine がインストールされていません。<a href="http://java.com/ja/">http://java.com/ja/</A> から Java Plug-in をダウンロードして、インストールしてください。
+</applet>
+</div>
+<ol style="margin:6px 0px 6px 0px; padding:0px 0px 0px 0px;">
+<li><a href="javascript:document.Scaler.set(234,178);">吉祥寺駅</a></li>
+<li><a href="javascript:document.Scaler.set(192,196);">天下寿司</a></li>
+<li><a href="javascript:document.Scaler.set(99,70);">牛鉄</a></li>
+<li><a href="javascript:document.Scaler.set(175,166);">大戸屋</a></li>
+<li><a href="javascript:document.Scaler.set(145,232);">伊勢屋</a></li>
+<li><a href="javascript:document.Scaler.set(214,255);">丸井</a></li>
+</ol>
+<!-- document.[Appletタグ名].scale([拡大率]); を呼ぶと拡大縮小する。拡大率 1 で標準、2 で半分に縮小、0.5 で２倍に拡大である。-->
+[<a href="javascript:document.Scaler.scale(2);">縮小</A>]
+[<a href="javascript:document.Scaler.scale(1);">標準</A>]
+[<a href="javascript:document.Scaler.scale(0.5);">拡大</A>]
+</div>
+
+<p>スケーラーと、拡大縮小の機能をつけてみましょう。</p>
+<p>引数 Scaler で画像ファイルを指定すると、それが縮尺表示に使われます。これは、スクロールをしても、拡大・縮小をしても表示位置は右下に固定です。</p>
+<p>JavaScript で document.Scaler.scale(2); を呼び出すと半分に、.scale(0.5); を呼び出すと２倍に拡大ができます。</p>
+
+<h4>設置例#4</h4>
+<div class="code">
+&lt;DIV Style=&quot;float:left; border:1px solid #000000; width:360px; height:166px; margin:8px 8px 0px 4px; padding:8px 0px 0px 8px; background:#FFFFFF; text-align:left;&quot;&gt;<br/>
+&lt;DIV Style=&quot;float:left; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; width: 180px; height:150px;&quot;&gt;<br/>
+&lt;SCRIPT Language=&quot;JavaScript&quot;&gt;<br/>
+&lt;!--<br/>
+// コールバック関数は座標 x y を引数に取る<br/>
+var URL = new Array('http://www.tokyu-dept.co.jp/kichijouji/' ,'http://www.parco-kichijoji.com/');<br/>
+function wopen(n){<br/>
+  if(n&lt;URL.length){<br/>
+    window.open(URL[n],'_blank');<br/>
+  }<br/>
+}<br/>
+//--&gt;<br/>
+&lt;/SCRIPT&gt;<br/>
+&lt;!-- Appletタグを設置する。MAYSCRIPT を忘れずに。 --&gt;<br/>
+&lt;applet Name=&quot;Scaler&quot; code=&quot;ImageCursor&quot; archive=&quot;ImageCursor.jar&quot; width=&quot;150&quot; height=&quot;150&quot; MAYSCRIPT&gt;<br/>
+&lt;!-- 画像ファイル名を設定 --&gt;<br/>
+&lt;param name=&quot;Image&quot; value=&quot;map03.gif&quot;&gt;<br/>
+&lt;!-- マウスカーソルをトラッキングするか設定(true/false) --&gt;<br/>
+&lt;param name=&quot;Tracking&quot; value=&quot;false&quot;&gt;<br/>
+&lt;!-- スクロール速度を調整 --&gt;<br/>
+&lt;param name=&quot;Speed&quot; value=&quot;16&quot;&gt;<br/>
+&lt;!-- 距離表示の画像ファイルを指定 --&gt;<br/>
+&lt;param name=&quot;Scaler&quot; value=&quot;scaler.gif&quot;&gt;<br/>
+&lt;!-- マーカーの画像ファイルを指定 --&gt;<br/>
+&lt;param name=&quot;MarkerImage&quot; value=&quot;mkimg/009-001.gif,mkimg/009-002.gif&quot;&gt;<br/>
+&lt;!-- マーカーのX座標を指定 --&gt;<br/>
+&lt;param name=&quot;MarkerX&quot; value=&quot;137,174&quot;&gt;<br/>
+&lt;!-- マーカーのY座標を指定 --&gt;<br/>
+&lt;param name=&quot;MarkerY&quot; value=&quot;77,150&quot;&gt;<br/>
+&lt;!-- マーカー用のコールバック関数を指定 --&gt;<br/>
+&lt;param name=&quot;MarkerFunction&quot; value=&quot;wopen&quot;&gt;<br/>
+Java Virtual Machine がインストールされていません。&lt;A Href=&quot;http://java.com/ja/&quot;&gt;http://java.com/ja/&lt;/A&gt; から Java Plug-in をダウンロードして、インストールしてください。<br/>
+&lt;/applet&gt;<br/>
+&lt;/DIV&gt;<br/>
+&lt;OL Style=&quot;margin:6px 0px 6px 0px; padding:0px 0px 0px 0px;&quot;&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Scaler.set(234,178);&quot;&gt;吉祥寺駅&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Scaler.set(192,196);&quot;&gt;天下寿司&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Scaler.set(99,70);&quot;&gt;牛鉄&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Scaler.set(175,166);&quot;&gt;大戸屋&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Scaler.set(145,232);&quot;&gt;伊勢屋&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;LI&gt;&lt;A Href=&quot;javascript:document.Scaler.set(214,255);&quot;&gt;丸井&lt;/A&gt;&lt;/LI&gt;<br/>
+&lt;/OL&gt;<br/>
+&lt;!-- document.[Appletタグ名].scale([拡大率]); を呼ぶと拡大縮小する。拡大率 1 で標準、2 で半分に縮小、0.5 で２倍に拡大である。--&gt;<br/>
+[&lt;A Href=&quot;javascript:document.Scaler.scale(2);&quot;&gt;縮小&lt;/A&gt;]<br/>
+[&lt;A Href=&quot;javascript:document.Scaler.scale(1);&quot;&gt;標準&lt;/A&gt;]<br/>
+[&lt;A Href=&quot;javascript:document.Scaler.scale(0.5);&quot;&gt;拡大&lt;/A&gt;]<br/>
+&lt;/DIV&gt;
+</div>
+
+<h3>問題点</h3>
+
+<p>印刷をすると、画像ファイルが表示されません。地図用途の場合は、印刷用のページが別途必要になります。JVM が起動していない場合、初回のロードにかなり時間がかかります。閲覧者のストレスを増すかも知れません。</p>
+
+<h3>ソースコード等</h3>
+
+<p><a href="./jar/ImageCursor.jar">ImageCursor.jar</A> の中に、ImageCursor.java が入っています。読みたい方は、どうぞ。</p>
+
+</div>
+<div class="footer">
+<!--#include virtual="/parts/footer.txt"-->
+</div>
+</div>
+</body>
+</html>

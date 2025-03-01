@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rのオブジェクト指向システム（S3/S4/RC）</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rのオブジェクト指向システム（S3/S4/RC）</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>総称関数を実現するための仕組みに過ぎない感があるRのオブジェクト指向プログラミングですが、S3/S4の総称関数はとても便利な仕組みですし、S4クラスのシステムはもう少し高度な機能を提供しています。また、RCは他のプログラミング言語に近い感覚で利用することができます。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#s3クラスによるオブジェクト指向"
+id="toc-s3クラスによるオブジェクト指向"><span
+class="toc-section-number">1</span> S3クラスによるオブジェクト指向</a>
+<ul>
+<li><a href="#s3クラスを作ってみる" id="toc-s3クラスを作ってみる"><span
+class="toc-section-number">1.1</span> S3クラスを作ってみる</a></li>
+<li><a href="#既存の総称関数のメソッドを作る"
+id="toc-既存の総称関数のメソッドを作る"><span
+class="toc-section-number">1.2</span>
+既存の総称関数のメソッドを作る</a></li>
+<li><a href="#新たな総称関数をつくる"
+id="toc-新たな総称関数をつくる"><span
+class="toc-section-number">1.3</span> 新たな総称関数をつくる</a></li>
+<li><a href="#s3クラスの継承と言うか親の設定"
+id="toc-s3クラスの継承と言うか親の設定"><span
+class="toc-section-number">1.4</span>
+S3クラスの継承と言うか親の設定</a></li>
+</ul></li>
+<li><a href="#s4クラスによるオブジェクト指向"
+id="toc-s4クラスによるオブジェクト指向"><span
+class="toc-section-number">2</span> S4クラスによるオブジェクト指向</a>
+<ul>
+<li><a href="#s4クラスの宣言" id="toc-s4クラスの宣言"><span
+class="toc-section-number">2.1</span> S4クラスの宣言</a></li>
+<li><a href="#s4クラスからのインスタンス生成"
+id="toc-s4クラスからのインスタンス生成"><span
+class="toc-section-number">2.2</span>
+S4クラスからのインスタンス生成</a></li>
+<li><a href="#s4クラスのメソッド" id="toc-s4クラスのメソッド"><span
+class="toc-section-number">2.3</span> S4クラスのメソッド</a></li>
+<li><a href="#既存の総称関数のメソッドを作る-1"
+id="toc-既存の総称関数のメソッドを作る-1"><span
+class="toc-section-number">2.4</span>
+既存の総称関数のメソッドを作る</a></li>
+<li><a href="#s3クラスメソッドのs4クラスメソッドの相互運用"
+id="toc-s3クラスメソッドのs4クラスメソッドの相互運用"><span
+class="toc-section-number">2.5</span>
+S3クラス/メソッドのS4クラス/メソッドの相互運用</a></li>
+<li><a href="#s4クラスの利点" id="toc-s4クラスの利点"><span
+class="toc-section-number">2.6</span> S4クラスの利点</a></li>
+</ul></li>
+<li><a href="#rcreference-classes" id="toc-rcreference-classes"><span
+class="toc-section-number">3</span> RC（Reference Classes）</a>
+<ul>
+<li><a href="#rcクラスの宣言メソッド定義"
+id="toc-rcクラスの宣言メソッド定義"><span
+class="toc-section-number">3.1</span>
+RCクラスの宣言/メソッド定義</a></li>
+<li><a href="#rcクラスのインスタンス生成"
+id="toc-rcクラスのインスタンス生成"><span
+class="toc-section-number">3.2</span>
+RCクラスのインスタンス生成</a></li>
+<li><a href="#rcクラスのメソッド呼び出し"
+id="toc-rcクラスのメソッド呼び出し"><span
+class="toc-section-number">3.3</span>
+RCクラスのメソッド呼び出し</a></li>
+</ul></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">4</span> まとめ</a></li>
+</ul>
+</div>
+
+<p>Rではありきたりの統計解析にRを用いている限りにおいて、オブジェクト指向プログラミングを意識することはないです<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。総称関数は便利に使われているのですが、JavaやC++と言った所謂クラス型オブジェクト指向言語でするようにGoFデザインパターンでガリガリ書くのには無理があるからでしょう<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>。しかし、上手く使うとコードの見通しをよくできるので、不完全<a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>でも有用な機能にはなっています。</p>
+<p>Rのオブジェクト指向システムは歴史的な理由でS3/S4/RC/R6と4種類もあるのですが、標準のS3とS4とRC（Reference
+Classes）を確認していきましょう。</p>
+<div id="s3クラスによるオブジェクト指向" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span>
+S3クラスによるオブジェクト指向</h1>
+<p>もっとも素朴なS3クラスは特に労力がかかりません。リストにクラス名の属性がついて、総称関数が使えるようになっただけです。インスタンスと言う概念すらありません。</p>
+<div id="s3クラスを作ってみる" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span>
+S3クラスを作ってみる</h2>
+<p>空の<code>list</code>にクラス名を指定してもS3クラスは完成するのですが、後のことを考えてもう少し手の込んだオブジェクトをつくります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">7</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>obj1 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a=</span><span class="dv">1</span><span class="sc">:</span>n, <span class="at">b=</span><span class="fu">rpois</span>(n, n<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>))</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">class</span>(obj1) <span class="ot">&lt;-</span> <span class="st">&quot;bigger one lover&quot;</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>obj1</span></code></pre></div>
+<pre><code>$a
+[1] 1 2 3 4 5 6 7
+
+$b
+[1] 5 3 4 4 3 9 2
+
+attr(,&quot;class&quot;)
+[1] &quot;bigger one lover&quot;</code></pre>
+</div>
+<div id="既存の総称関数のメソッドを作る" class="section level2"
+number="1.2">
+<h2><span class="header-section-number">1.2</span>
+既存の総称関数のメソッドを作る</h2>
+<p>このリスト構造には<code>max</code>関数が使えません。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">max</span>(obj1)</span></code></pre></div>
+<pre><code> max(obj1) でエラー:  引数 &#39;type&#39; (list) が不正です</code></pre>
+<p>“bigger one
+lover”クラスのために、総称関数<code>max</code>の実装を用意しましょう。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="st">&quot;max.bigger one lover&quot;</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj, na.rm){</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">max</span>(obj<span class="sc">$</span>a), <span class="fu">max</span>(obj<span class="sc">$</span>b))</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>}</span></code></pre></div>
+<p>総称関数にあわせて第2引数が必要になっていることと、<code>max(..., na.rm)</code>は既にgeneric関数になっているためUseMethod不要なことに注意してください。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">max</span>(obj1)</span></code></pre></div>
+<pre><code>[1] 7 9</code></pre>
+<p><code>max</code>が使えるようになりました。</p>
+</div>
+<div id="新たな総称関数をつくる" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span>
+新たな総称関数をつくる</h2>
+<p>新しい総称関数をつくるのも簡単です。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>choose <span class="ot">&lt;-</span> <span class="cf">function</span>(obj) <span class="fu">UseMethod</span>(<span class="st">&quot;choose&quot;</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="st">&quot;choose.bigger one lover&quot;</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj){</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>    <span class="fu">pmax</span>(obj1<span class="sc">$</span>a, obj1<span class="sc">$</span>b)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>}</span></code></pre></div>
+<p>これでリスト内のベクターaとbの順番が対応する要素を比較して大きい方を戻すメソッドとなります。定義した関数<code>choose</code>が振り分けを行なう<code>UseMethod</code>を呼び、<code>UseMethod</code>が<code>obj</code>のクラス名に応じて<a
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>メソッドを実装した関数を呼ぶ仕組みです。作った<code>choose</code>を消せば、総称関数では無くなります。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">choose</span>(obj1)</span></code></pre></div>
+<pre><code>[1] 5 3 4 4 5 9 7</code></pre>
+<p>演算子も定義できます。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="st">&quot;%+%&quot;</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(v, w) <span class="fu">UseMethod</span>(<span class="st">&quot;%+%&quot;</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="st">&quot;%+%.bigger one lover&quot;</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(v, w){</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    c <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a=</span>v<span class="sc">$</span>a <span class="sc">+</span> w<span class="sc">$</span>a, <span class="at">b=</span>v<span class="sc">$</span>b <span class="sc">+</span> w<span class="sc">$</span>b)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>    <span class="fu">class</span>(c) <span class="ot">&lt;-</span> <span class="fu">class</span>(v)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>    c</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>}</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>obj2 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a=</span>(<span class="sc">-</span><span class="dv">1</span>)<span class="sc">^</span>(<span class="dv">1</span><span class="sc">:</span>n), <span class="at">b=</span>(<span class="sc">-</span><span class="dv">1</span>)<span class="sc">^</span>(<span class="dv">2</span><span class="sc">:</span>(n<span class="sc">+</span><span class="dv">1</span>)))</span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a><span class="fu">class</span>(obj2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;bigger one lover&quot;</span>)</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>obj1 <span class="sc">%+%</span> obj2</span></code></pre></div>
+<pre><code>$a
+[1] 0 3 2 5 4 7 6
+
+$b
+[1] 6 2 5 3 4 8 3
+
+attr(,&quot;class&quot;)
+[1] &quot;bigger one lover&quot;</code></pre>
+<p>複数の引数を持つ場合は<code>UseMethod</code>を呼んでいる関数の引数が複数になることに注意してください。メソッドが多様で総称関数を明確に規定できない場合は、<code>...</code>を入れておきましょう。</p>
+</div>
+<div id="s3クラスの継承と言うか親の設定" class="section level2"
+number="1.4">
+<h2><span class="header-section-number">1.4</span>
+S3クラスの継承と言うか親の設定</h2>
+<p><code>obj1</code>を<code>obj3</code>にコピーして、<code>obj3</code>のクラス名<code>smaller one lover</code>を書き替えて、メソッドを定義します。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>obj3 <span class="ot">&lt;-</span> obj1</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">class</span>(obj3) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;smaller one lover&quot;</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="st">&quot;choose.smaller one lover&quot;</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(obj){</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>    <span class="fu">pmin</span>(obj1<span class="sc">$</span>a, obj1<span class="sc">$</span>b)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>}</span></code></pre></div>
+<p>すると、同じ総称関数でも結果が変わります。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># オブジェクト内のベクターaとbの順番が対応する要素の大きい方を戻す</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">choose</span>(obj1) </span></code></pre></div>
+<pre><code>[1] 5 3 4 4 5 9 7</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># 小さい方を戻す</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">choose</span>(obj3) </span></code></pre></div>
+<pre><code>[1] 1 2 3 4 3 6 2</code></pre>
+<p>また、<code>smaller one lover</code>クラスで実装されていない<code>max</code>は<code>obj3</code>には使えません</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">max</span>(obj3) </span></code></pre></div>
+<pre><code> max(obj3) でエラー:  引数 &#39;type&#39; (list) が不正です</code></pre>
+<p>親クラスを追加すると、実装されていないメソッドは、親のメソッドを呼ぶようになります。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">class</span>(obj3) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;smaller one lover&quot;</span>, <span class="fu">class</span>(obj1))</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">max</span>(obj3)</span></code></pre></div>
+<pre><code>[1] 7 9</code></pre>
+<p>Java™の派生クラスは実子、RのS3クラスの派生は養子感がありますね。</p>
+</div>
+</div>
+<div id="s4クラスによるオブジェクト指向" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+S4クラスによるオブジェクト指向</h1>
+<p>Rには、もう少しクラス定義を厳密にしたformalなクラスと呼ばれるS4クラスもあります。クラス定義とインスタンスの生成が明確にサポートされます<a
+href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>。</p>
+<div id="s4クラスの宣言" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> S4クラスの宣言</h2>
+<p>前節のS3クラスの作成をS4クラスに書きなおすと、</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">7</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>BOL <span class="ot">&lt;-</span> <span class="fu">setClass</span>(<span class="st">&quot;bigger one lover&quot;</span>, </span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>    <span class="fu">representation</span>(<span class="at">a =</span> <span class="st">&quot;numeric&quot;</span>, <span class="at">b =</span> <span class="st">&quot;numeric&quot;</span>), </span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>    <span class="fu">prototype</span>(<span class="at">a =</span> <span class="fu">rep</span>(<span class="dv">0</span>, n), <span class="at">b =</span> <span class="fu">rep</span>(<span class="dv">0</span>, n)),</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>    <span class="at">validity =</span> <span class="cf">function</span>(object){</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>        <span class="cf">if</span>(<span class="fu">length</span>(object<span class="sc">@</span>a)<span class="sc">==</span><span class="fu">length</span>(object<span class="sc">@</span>b)) <span class="fu">return</span>(<span class="cn">TRUE</span>);</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>        <span class="st">&quot;a and b are different lengths!&quot;</span>;</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>    })</span></code></pre></div>
+<p>と<code>representation</code>による型宣言、<code>prototype</code>による省略値、<code>validity</code>による整合性チェックが設定できます。</p>
+<p>継承も<code>containes</code>で出来ます。</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a>SOL <span class="ot">&lt;-</span> <span class="fu">setClass</span>(<span class="st">&quot;smaller one lover&quot;</span>, <span class="at">contains =</span> <span class="st">&quot;bigger one lover&quot;</span>)</span></code></pre></div>
+<p>オブジェクトのメンバーは<code>getSlots</code>で確認できます。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">getSlots</span>(<span class="st">&quot;bigger one lover&quot;</span>)</span></code></pre></div>
+<pre><code>        a         b 
+&quot;numeric&quot; &quot;numeric&quot; </code></pre>
+<p>なお定義に関する情報は環境内に特殊な変数名で保存されています<a
+href="#fn6" class="footnote-ref"
+id="fnref6"><sup>6</sup></a>。また<code>setClass</code>の戻り値はコンストラクタになる関数です。</p>
+<p>定義したクラスを削除する場合は、以下のようにしますがドキュメントには非推奨とされています<a
+href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">removeClass</span>(<span class="st">&quot;bigger one lover&quot;</span>)</span></code></pre></div>
+</div>
+<div id="s4クラスからのインスタンス生成" class="section level2"
+number="2.2">
+<h2><span class="header-section-number">2.2</span>
+S4クラスからのインスタンス生成</h2>
+<p>実際にインスタンスを生成してみましょう。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>obj1 <span class="ot">&lt;-</span> <span class="fu">new</span>(<span class="st">&quot;bigger one lover&quot;</span>, <span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span>n, <span class="at">b =</span> <span class="fu">rpois</span>(n, n<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>))</span></code></pre></div>
+<p>コンストラクタを使うこともできます。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>obj1 <span class="ot">&lt;-</span> <span class="fu">BOL</span>(<span class="at">a =</span> <span class="dv">1</span><span class="sc">:</span>n, <span class="at">b =</span> <span class="fu">rpois</span>(n, n<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>))</span></code></pre></div>
+<p>相変わらず実際はリストですが、（<code>slot</code>もしくは<code>attribute</code>と呼ばれる）メンバー変数になる要素を参照するときは、<code>$</code>ではなく<code>@</code>を用いることが推奨されています。</p>
+<p>一応、中身が見られることを確認します。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>obj1<span class="sc">@</span>a</span></code></pre></div>
+<pre><code>[1] 1 2 3 4 5 6 7</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>obj1<span class="sc">@</span>b</span></code></pre></div>
+<pre><code>[1] 6 1 4 5 5 6 4</code></pre>
+<p><code>obj1</code>とメンバー変数の値が同じの派生クラスもつくっておきます。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>obj3 <span class="ot">&lt;-</span> <span class="fu">new</span>(<span class="st">&quot;smaller one lover&quot;</span>, <span class="at">a =</span> obj1<span class="sc">@</span>a, <span class="at">b =</span> obj1<span class="sc">@</span>b)</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>obj3<span class="sc">@</span>a</span></code></pre></div>
+<pre><code>[1] 1 2 3 4 5 6 7</code></pre>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>obj3<span class="sc">@</span>b</span></code></pre></div>
+<pre><code>[1] 6 1 4 5 5 6 4</code></pre>
+</div>
+<div id="s4クラスのメソッド" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
+S4クラスのメソッド</h2>
+<p>S3クラスと同様に、総称関数を宣言しメソッドを実装します。</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">setGeneric</span>(<span class="st">&quot;choose&quot;</span>, <span class="cf">function</span>(object) {</span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>    <span class="fu">standardGeneric</span>(<span class="st">&quot;choose&quot;</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>新しい総称関数 &#39;choose&#39; を the global environment 中に生成します</code></pre>
+<pre><code>[1] &quot;choose&quot;</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">setMethod</span>(<span class="st">&quot;choose&quot;</span>, </span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a>    <span class="fu">signature</span>(<span class="at">object =</span> <span class="st">&quot;bigger one lover&quot;</span>), <span class="cf">function</span>(object) {</span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a>        <span class="fu">pmax</span>(object<span class="sc">@</span>a, object<span class="sc">@</span>b)</span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a>    }</span>
+<span id="cb40-5"><a href="#cb40-5" tabindex="-1"></a>)</span>
+<span id="cb40-6"><a href="#cb40-6" tabindex="-1"></a></span>
+<span id="cb40-7"><a href="#cb40-7" tabindex="-1"></a><span class="fu">setMethod</span>(<span class="st">&quot;choose&quot;</span>, </span>
+<span id="cb40-8"><a href="#cb40-8" tabindex="-1"></a>    <span class="fu">signature</span>(<span class="at">object =</span> <span class="st">&quot;smaller one lover&quot;</span>), <span class="cf">function</span>(object) {</span>
+<span id="cb40-9"><a href="#cb40-9" tabindex="-1"></a>        <span class="fu">pmin</span>(object<span class="sc">@</span>a, object<span class="sc">@</span>b)</span>
+<span id="cb40-10"><a href="#cb40-10" tabindex="-1"></a>    }</span>
+<span id="cb40-11"><a href="#cb40-11" tabindex="-1"></a>)</span></code></pre></div>
+<p>第1引数でメソッド名、第2引数でメソッドの引数の型、第3引数でメソッドの実態を定義します。第2引数は<code>"bigger one lover"</code>とクラス名だけ書いておいても問題ないです。</p>
+<p>メソッドの存在確認と、メソッド呼び出しもできます。</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="fu">existsMethod</span>(choose, <span class="st">&quot;bigger one lover&quot;</span>)</span></code></pre></div>
+<p>動かして確認すれば間に合いそうですが。</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a><span class="fu">choose</span>(obj1)</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a><span class="fu">choose</span>(obj3)</span></code></pre></div>
+<p>元クラスも派生クラスも動きますね。</p>
+<!-- selectMethod(larger, "bigger one lover") -->
+<p>定義したメソッドの削除もできます。</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">removeMethod</span>(choose, <span class="st">&quot;bigger one lover&quot;</span>)</span></code></pre></div>
+</div>
+<div id="既存の総称関数のメソッドを作る-1" class="section level2"
+number="2.4">
+<h2><span class="header-section-number">2.4</span>
+既存の総称関数のメソッドを作る</h2>
+<p><code>max</code>も同様に定義したいわけですが、既存の総称関数のメソッドを作るときには注意が必要です。<strong>登録されている総称関数の宣言に第2引数の変数名もあわせないと、エラーになる</strong>からです。最初に、総称関数<code>max</code>の宣言を確認しましょう。</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="fu">getGeneric</span>(<span class="st">&quot;max&quot;</span>)</span></code></pre></div>
+<pre><code>standardGeneric for &quot;max&quot; defined from package &quot;base&quot;
+  belonging to group(s): Summary 
+
+function (x, ..., na.rm = FALSE) 
+standardGeneric(&quot;max&quot;, .Primitive(&quot;max&quot;))
+&lt;bytecode: 0x5b48f7d00be8&gt;
+&lt;environment: 0x5b48f7d61b08&gt;
+Methods may be defined for arguments: x, na.rm
+Use  showMethods(max)  for currently available ones.</code></pre>
+<p><code>x</code>と<code>na.rm</code>を使っていますね。ここに注意して以下のように定義します。</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="fu">setMethod</span>(<span class="st">&quot;max&quot;</span>, </span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>    <span class="fu">signature</span>(<span class="at">x=</span><span class="st">&quot;bigger one lover&quot;</span>,</span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>         <span class="at">na.rm =</span> <span class="st">&quot;logical&quot;</span>), </span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>    <span class="cf">function</span>(x, na.rm) {</span>
+<span id="cb46-5"><a href="#cb46-5" tabindex="-1"></a>        <span class="fu">c</span>(<span class="fu">max</span>(x<span class="sc">@</span>a), <span class="fu">max</span>(x<span class="sc">@</span>b))</span>
+<span id="cb46-6"><a href="#cb46-6" tabindex="-1"></a>    }</span>
+<span id="cb46-7"><a href="#cb46-7" tabindex="-1"></a>)</span></code></pre></div>
+<p><code>...</code>は無視して無問題のようです。仕様上は<code>...</code>も使えるはずですが<a
+href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>。</p>
+<p>加算も<code>getGeneric("+")</code>で定義を確認して変数名<code>e1</code>と<code>e2</code>に注意して実装してみましょう。</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">setMethod</span>(<span class="st">&quot;+&quot;</span>, </span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a>    <span class="fu">c</span>(<span class="at">e1 =</span> <span class="st">&quot;bigger one lover&quot;</span>, <span class="at">e2 =</span> <span class="st">&quot;bigger one lover&quot;</span>),</span>
+<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a>    <span class="cf">function</span>(e1, e2) {</span>
+<span id="cb47-4"><a href="#cb47-4" tabindex="-1"></a>        <span class="fu">new</span>(<span class="fu">class</span>(e1)[<span class="dv">1</span>], <span class="at">a =</span> e1<span class="sc">@</span>a <span class="sc">+</span> e2<span class="sc">@</span>a, <span class="at">b =</span> e1<span class="sc">@</span>b <span class="sc">+</span> e2<span class="sc">@</span>b)</span>
+<span id="cb47-5"><a href="#cb47-5" tabindex="-1"></a>    }</span>
+<span id="cb47-6"><a href="#cb47-6" tabindex="-1"></a>)</span>
+<span id="cb47-7"><a href="#cb47-7" tabindex="-1"></a></span>
+<span id="cb47-8"><a href="#cb47-8" tabindex="-1"></a>obj1 <span class="sc">+</span> obj3 </span></code></pre></div>
+<pre><code>An object of class &quot;bigger one lover&quot;
+Slot &quot;a&quot;:
+[1]  2  4  6  8 10 12 14
+
+Slot &quot;b&quot;:
+[1] 12  2  8 10 10 12  8</code></pre>
+<p>なお、multi-dispatchなので、第2引数を<code>c(e1 = "bigger one lover", e2 = "numeric")</code>としたメソッド、<code>c(e1 = numeric, e2 = "bigger one lover")</code>としたメソッドを定義し、インスタンスと数値の加算も実現できます<a
+href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a>。</p>
+</div>
+<div id="s3クラスメソッドのs4クラスメソッドの相互運用"
+class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span>
+S3クラス/メソッドのS4クラス/メソッドの相互運用</h2>
+<p>クラス名が分かればよいので、<code>@</code>でなくて<code>$</code>でメンバー変数（S4用語ではslot）を参照することになりますが、S4クラスのインスタンスを処理するS3クラスのメソッドを作ることは簡単です。逆にS4クラスでS3クラスのオブジェクトを取り扱うこともできます。
+S3クラスを作成してみます。</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a>obj1 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a=</span><span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a>obj2 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a=</span><span class="sc">-</span><span class="dv">1</span><span class="sc">^</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>))</span>
+<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a><span class="fu">class</span>(obj1) <span class="ot">&lt;-</span> <span class="fu">class</span>(obj2) <span class="ot">&lt;-</span> <span class="st">&quot;example&quot;</span></span></code></pre></div>
+<p>このままでは扱えないのですが、<code>setOldClass</code>を使うとS4クラス用の書き方で処理できるようになります。</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="fu">setOldClass</span>(<span class="st">&quot;example&quot;</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" tabindex="-1"></a><span class="fu">setGeneric</span>(<span class="st">&quot;plus&quot;</span>, <span class="cf">function</span>(v, w) {</span>
+<span id="cb50-4"><a href="#cb50-4" tabindex="-1"></a>    <span class="fu">standardGeneric</span>(<span class="st">&quot;plus&quot;</span>)</span>
+<span id="cb50-5"><a href="#cb50-5" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>[1] &quot;plus&quot;</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a><span class="fu">setMethod</span>(<span class="st">&quot;plus&quot;</span>, <span class="fu">c</span>(<span class="st">&quot;example&quot;</span>, <span class="st">&quot;example&quot;</span>), <span class="cf">function</span>(v, w) {</span>
+<span id="cb52-2"><a href="#cb52-2" tabindex="-1"></a>    c <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">a=</span>v<span class="sc">$</span>a <span class="sc">+</span> w<span class="sc">$</span>a)</span>
+<span id="cb52-3"><a href="#cb52-3" tabindex="-1"></a>    <span class="fu">class</span>(c) <span class="ot">&lt;-</span> <span class="fu">class</span>(v)</span>
+<span id="cb52-4"><a href="#cb52-4" tabindex="-1"></a>    c</span>
+<span id="cb52-5"><a href="#cb52-5" tabindex="-1"></a>})</span>
+<span id="cb52-6"><a href="#cb52-6" tabindex="-1"></a></span>
+<span id="cb52-7"><a href="#cb52-7" tabindex="-1"></a><span class="fu">plus</span>(obj1, obj2)</span></code></pre></div>
+<pre><code>$a
+[1] 0 1 2 3 4
+
+attr(,&quot;class&quot;)
+[1] &quot;example&quot;</code></pre>
+<p>ただし（よく確認できていないのですが）<code>+</code>の実装が上手くいかなかったので、完璧な後方互換と言えるかは分かりません。</p>
+</div>
+<div id="s4クラスの利点" class="section level2" number="2.6">
+<h2><span class="header-section-number">2.6</span> S4クラスの利点</h2>
+<p>S4クラスの方が優れている点としては、</p>
+<ul>
+<li>S3クラスよりは厳密な定義が可能</li>
+<li>引数の型に応じてメソッドを変えられるmulti-dispatch</li>
+<li>メソッド名のsuffixにクラス名がつかない</li>
+<li><code>+</code>や<code>-</code>などの演算子も定義可能</li>
+</ul>
+<p>ところが挙げられます。煩雑なのでad-hocなコードで使うのは億劫ですが、パッケージ化などをする場合は有用だと思います。</p>
+</div>
+</div>
+<div id="rcreference-classes" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> RC（Reference
+Classes）</h1>
+<p>利用頻度は低いらしいですが、Java™使いなどには自然に思えるのがRCです。</p>
+<p>Rは関数の引数が原則として値渡しなので、メモリー利用効率と付随して処理速度が良くありません。S3とS4も同様の欠点があります。しかし環境（<code>environment</code>）が例外的に参照渡しであることを利用して、RCはこの欠点を緩和しています。記述も他のオブジェクト指向型言語に近いものですし、ユーザー定義クラスはすべて<code>envRefClass</code>の派生になっているなど、クラスのつくりも似ています。</p>
+<div id="rcクラスの宣言メソッド定義" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span>
+RCクラスの宣言/メソッド定義</h2>
+<p>オブジェクト指向らしくクラス宣言とメソッド定義が同時に済みます。</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a>BOL <span class="ot">&lt;-</span> <span class="fu">setRefClass</span>(<span class="st">&quot;bigger one lover RC&quot;</span>,</span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a>    <span class="at">fields =</span> <span class="fu">c</span>(<span class="at">a =</span> <span class="st">&quot;numeric&quot;</span>, <span class="at">b =</span> <span class="st">&quot;numeric&quot;</span>), </span>
+<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a>    <span class="at">methods =</span> <span class="fu">c</span>(</span>
+<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a>        <span class="at">initialize =</span> <span class="cf">function</span>(<span class="at">a =</span> <span class="fu">rep</span>(<span class="dv">0</span>, n), <span class="at">b =</span> <span class="fu">rep</span>(<span class="dv">0</span>, n)){</span>
+<span id="cb54-5"><a href="#cb54-5" tabindex="-1"></a>            <span class="cf">if</span>(<span class="fu">length</span>(a)<span class="sc">!=</span><span class="fu">length</span>(b)) <span class="fu">stop</span>(<span class="st">&quot;a and b are different lengths!&quot;</span>);</span>
+<span id="cb54-6"><a href="#cb54-6" tabindex="-1"></a>            .self<span class="sc">$</span>a <span class="ot">&lt;-</span> a</span>
+<span id="cb54-7"><a href="#cb54-7" tabindex="-1"></a>            .self<span class="sc">$</span>b <span class="ot">&lt;-</span> b</span>
+<span id="cb54-8"><a href="#cb54-8" tabindex="-1"></a>        },</span>
+<span id="cb54-9"><a href="#cb54-9" tabindex="-1"></a>        <span class="at">max =</span> <span class="cf">function</span>(.self){</span>
+<span id="cb54-10"><a href="#cb54-10" tabindex="-1"></a>            <span class="fu">c</span>(<span class="fu">max</span>(.self<span class="sc">$</span>a), <span class="fu">max</span>(.self<span class="sc">$</span>b))</span>
+<span id="cb54-11"><a href="#cb54-11" tabindex="-1"></a>        },</span>
+<span id="cb54-12"><a href="#cb54-12" tabindex="-1"></a>        <span class="at">choose =</span> <span class="cf">function</span>(.self){</span>
+<span id="cb54-13"><a href="#cb54-13" tabindex="-1"></a>            <span class="fu">c</span>(<span class="fu">pmax</span>(.self<span class="sc">$</span>a, .self<span class="sc">$</span>b))</span>
+<span id="cb54-14"><a href="#cb54-14" tabindex="-1"></a>        },</span>
+<span id="cb54-15"><a href="#cb54-15" tabindex="-1"></a>        <span class="at">add =</span> <span class="cf">function</span>(.self, obj2){</span>
+<span id="cb54-16"><a href="#cb54-16" tabindex="-1"></a>            .self<span class="sc">$</span>a <span class="ot">&lt;-</span> .self<span class="sc">$</span>a <span class="sc">+</span> obj2<span class="sc">$</span>a</span>
+<span id="cb54-17"><a href="#cb54-17" tabindex="-1"></a>            .self<span class="sc">$</span>b <span class="ot">&lt;-</span> .self<span class="sc">$</span>b <span class="sc">+</span> obj2<span class="sc">$</span>b</span>
+<span id="cb54-18"><a href="#cb54-18" tabindex="-1"></a>        }</span>
+<span id="cb54-19"><a href="#cb54-19" tabindex="-1"></a>    )</span>
+<span id="cb54-20"><a href="#cb54-20" tabindex="-1"></a>)</span></code></pre></div>
+<p>Java/C++/Python/PHPあたりに慣れている人だと説明不要な気がするのですが、<code>bigger one lover RC</code>がクラス名、<code>fields</code>がプロパティ、<code>methods</code>がメソッドの定義です。<code>initialize</code>が初期化メソッドで、各メソッドでは<code>.sef</code>で自分を参照できます。</p>
+<p><code>contains</code>で親クラスを指定し、プロパティやメソッドを上書きすることで継承もできます。初期化メソッド<code>initialize</code>も継承してくれます<a
+href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>。</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a>SOL <span class="ot">&lt;-</span> <span class="fu">setRefClass</span>(<span class="st">&quot;smaller one lover RC&quot;</span>,</span>
+<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>    <span class="at">contains =</span> <span class="st">&quot;bigger one lover RC&quot;</span>,</span>
+<span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a>    <span class="at">methods =</span> <span class="fu">c</span>(</span>
+<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a>        <span class="at">choose =</span> <span class="cf">function</span>(.self){</span>
+<span id="cb55-5"><a href="#cb55-5" tabindex="-1"></a>            <span class="fu">c</span>(<span class="fu">pmin</span>(.self<span class="sc">$</span>a, .self<span class="sc">$</span>b))</span>
+<span id="cb55-6"><a href="#cb55-6" tabindex="-1"></a>        }</span>
+<span id="cb55-7"><a href="#cb55-7" tabindex="-1"></a>    )</span>
+<span id="cb55-8"><a href="#cb55-8" tabindex="-1"></a>)</span></code></pre></div>
+<p>デフォルトで実装しているプロパティやメソッドは<code>?setRefClass</code>で見られるドキュメントに網羅されているので、文書が散らばっていて全体構造が見えづらいS3/S4クラスより話が分かりやすいです。なお、演算子のオーバーライドのサポートは無いようです。Rの文法上実装不能なのだと思いますが、アクセス修飾子もありません。</p>
+</div>
+<div id="rcクラスのインスタンス生成" class="section level2"
+number="3.2">
+<h2><span class="header-section-number">3.2</span>
+RCクラスのインスタンス生成</h2>
+<p>インスタンスを作ります。</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">7</span></span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a>obj1 <span class="ot">&lt;-</span> <span class="fu">BOL</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="fu">rpois</span>(n, n<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>))</span>
+<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>obj2 <span class="ot">&lt;-</span> <span class="fu">SOL</span>(<span class="dv">1</span><span class="sc">:</span>n, <span class="fu">rpois</span>(n, n<span class="sc">*</span><span class="dv">2</span><span class="sc">/</span><span class="dv">3</span>))</span>
+<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>obj3 <span class="ot">&lt;-</span> <span class="fu">BOL</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">^</span>(<span class="dv">1</span><span class="sc">:</span>n), <span class="sc">-</span><span class="dv">1</span><span class="sc">^</span>(<span class="dv">2</span><span class="sc">:</span>(n<span class="sc">+</span><span class="dv">1</span>)))</span></code></pre></div>
+<p>中身もしっかり詰まっています。</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a>obj1</span></code></pre></div>
+<pre><code>Reference class object of class &quot;bigger one lover RC&quot;
+Field &quot;a&quot;:
+[1] 1 2 3 4 5 6 7
+Field &quot;b&quot;:
+[1] 4 6 5 3 3 4 4</code></pre>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a>obj2</span></code></pre></div>
+<pre><code>Reference class object of class &quot;smaller one lover RC&quot;
+Field &quot;a&quot;:
+[1] 1 2 3 4 5 6 7
+Field &quot;b&quot;:
+[1]  3  4  3  4  2  7 10</code></pre>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a>obj3</span></code></pre></div>
+<pre><code>Reference class object of class &quot;bigger one lover RC&quot;
+Field &quot;a&quot;:
+[1] -1 -1 -1 -1 -1 -1 -1
+Field &quot;b&quot;:
+[1] -1 -1 -1 -1 -1 -1 -1</code></pre>
+</div>
+<div id="rcクラスのメソッド呼び出し" class="section level2"
+number="3.3">
+<h2><span class="header-section-number">3.3</span>
+RCクラスのメソッド呼び出し</h2>
+<p>もちろん同じ結果になります。</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>obj1<span class="sc">$</span><span class="fu">choose</span>()</span></code></pre></div>
+<pre><code>[1] 4 6 5 4 5 6 7</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>obj2<span class="sc">$</span><span class="fu">choose</span>()</span></code></pre></div>
+<pre><code>[1] 1 2 3 4 2 6 7</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" tabindex="-1"></a>obj1<span class="sc">$</span><span class="fu">max</span>()</span></code></pre></div>
+<pre><code>[1] 7 6</code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a>obj1<span class="sc">$</span><span class="fu">add</span>(obj3)</span>
+<span id="cb69-2"><a href="#cb69-2" tabindex="-1"></a>obj1</span></code></pre></div>
+<pre><code>Reference class object of class &quot;bigger one lover RC&quot;
+Field &quot;a&quot;:
+[1] 0 1 2 3 4 5 6
+Field &quot;b&quot;:
+[1] 3 5 4 2 2 3 3</code></pre>
+</div>
+</div>
+<div id="まとめ" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> まとめ</h1>
+<p>S3/S4/RCを俯瞰してきましたが、オブジェクト指向の部分だけとは言え3つのシステムが共存していて困惑する面があります。さらにRCより高速に動作するのが謳い文句のR6パッケージが存在します。どれを使えばいいのかと言う感じになりますが、仕様の自然さや簡素さと、オブジェクト指向の徹底度を天秤にかけて、個人利用ではS3、小規模チームではS4、大規模チームではR6と言うガイドラインを示している人がいます。Javaなどに慣れていれば、個人利用でもR6で問題ないとも思いますが。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p><code>lm</code>関数の戻り値を<code>summary</code>関数にいれたら詳細が出ると言うことは利用者のほぼ全員が知っているわけですが、<code>summary</code>関数が総称関数で実態が別にあることを知らないか忘れてしまっている利用者は過半では無いでしょうか。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p>標準APIを含めてライブラリがOOPで書かれていないと、それを利用するコードもOOPになりづらいです。RはAPIが非OOPでエンドユーザーのコードが非OOPなので、利用者がOOP好きでないとOOPを使う場面がやってきません。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>アクセス修飾子が無いのでカプセル化が十分ではないし、Java™で言うinterface/abstrat
+classなども定義できないです。<a href="#fnref3"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p>親環境を辿って勝手に引数の内容を確認するのが気持ち悪いですね。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn5"><p>S3でもオブジェクト生成関数をつくれば似たような構造にはなるわけですが、クラスの構造を調べたりするシステム的なサポートはないので。<a
+href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn6"><p><code>ls.str(all.names=TRUE)</code>でそれらしいprefixの変数を確認できます。<a
+href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn7"><p><code>setClass</code>でつくったクラスからインスタンスを生成後、クラスを<code>removeClass</code>で消して、同名のクラスを<code>setRefClass</code>でつくった後に、<code>setRefClass</code>でつくった方のクラスからのインスタンス生成にエラーが出たり、生成されたインスタンスが異常になるので、しっかり機能していないかも知れません。<a
+href="#fnref7" class="footnote-back">↩︎</a></p></li>
+<li id="fn8"><p><code>? dotsMethods</code>で利用例が確認できる。<a
+href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn9"><p>numericやlogicalやcharacterもクラスとして扱われていると言うことです。<a
+href="#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>Java™のコンストラクタは継承されません。<a
+href="#fnref10" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

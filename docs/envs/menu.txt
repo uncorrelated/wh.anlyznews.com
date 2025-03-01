@@ -1,0 +1,8 @@
+<h1 class="menu">サーバー関連メニュー</h1>
+<a href="../">トップページ</a><br/>
+<dl class="menu">
+<dt class="menu"><a href="t01.shtml">Java6 update 4, update 5でApplet起動不能？</a></dt>
+<dt class="menu"><a href="t02.shtml">JavaのCLASSPATHの設定方法</a></dt>
+<dt class="menu"><a href="t03.shtml">Windows 7の.jarファイルの関連付け</a></dt>
+</dl>
+<br/>

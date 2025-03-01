@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rで簡単にOLS</title>
+
+<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rで簡単にOLS</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>もっとも基本的な回帰分析であるOLSの理屈と推定方法、t検定、区間推定、モデル選択、推定結果のプロットの素朴な方法をまとめました。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#olsとは" id="toc-olsとは"><span
+class="toc-section-number">1</span> OLSとは</a>
+<ul>
+<li><a href="#ols推定量" id="toc-ols推定量"><span
+class="toc-section-number">1.1</span> OLS推定量</a></li>
+<li><a href="#ols推定量の分散" id="toc-ols推定量の分散"><span
+class="toc-section-number">1.2</span> OLS推定量の分散</a></li>
+<li><a href="#自由度と分散の不偏推定量"
+id="toc-自由度と分散の不偏推定量"><span
+class="toc-section-number">1.3</span> 自由度と分散の不偏推定量</a></li>
+</ul></li>
+<li><a href="#olsで推定してみる" id="toc-olsで推定してみる"><span
+class="toc-section-number">2</span> OLSで推定してみる</a>
+<ul>
+<li><a href="#データセットの読み込み"
+id="toc-データセットの読み込み"><span
+class="toc-section-number">2.1</span> データセットの読み込み</a></li>
+<li><a href="#lmで推定を行なう" id="toc-lmで推定を行なう"><span
+class="toc-section-number">2.2</span> <code>lm</code>で推定を行なう</a>
+<ul>
+<li><a href="#ダミー変数の作り方" id="toc-ダミー変数の作り方"><span
+class="toc-section-number">2.2.1</span> ダミー変数の作り方</a></li>
+<li><a href="#交差項を入れる" id="toc-交差項を入れる"><span
+class="toc-section-number">2.2.2</span> 交差項を入れる</a></li>
+<li><a href="#変則的な操作" id="toc-変則的な操作"><span
+class="toc-section-number">2.2.3</span> 変則的な操作</a></li>
+<li><a href="#切片項なしで推定する" id="toc-切片項なしで推定する"><span
+class="toc-section-number">2.2.4</span> 切片項なしで推定する</a></li>
+<li><a href="#モデル式内での数式" id="toc-モデル式内での数式"><span
+class="toc-section-number">2.2.5</span> モデル式内での数式</a></li>
+<li><a href="#モデル式の修正" id="toc-モデル式の修正"><span
+class="toc-section-number">2.2.6</span> モデル式の修正</a></li>
+</ul></li>
+<li><a href="#行列演算で推定" id="toc-行列演算で推定"><span
+class="toc-section-number">2.3</span> 行列演算で推定</a></li>
+</ul></li>
+<li><a href="#推定結果の確認と数値の取得"
+id="toc-推定結果の確認と数値の取得"><span
+class="toc-section-number">3</span> 推定結果の確認と数値の取得</a>
+<ul>
+<li><a href="#残差と残差平方和" id="toc-残差と残差平方和"><span
+class="toc-section-number">3.1</span> 残差と残差平方和</a></li>
+<li><a href="#分散共分散行列" id="toc-分散共分散行列"><span
+class="toc-section-number">3.2</span> 分散共分散行列</a></li>
+<li><a href="#自由度" id="toc-自由度"><span
+class="toc-section-number">3.3</span> 自由度</a></li>
+<li><a href="#決定係数と重相関係数" id="toc-決定係数と重相関係数"><span
+class="toc-section-number">3.4</span> 決定係数と重相関係数</a></li>
+<li><a href="#係数の推定量" id="toc-係数の推定量"><span
+class="toc-section-number">3.5</span> 係数の推定量</a></li>
+<li><a href="#係数の推定量の信頼区間"
+id="toc-係数の推定量の信頼区間"><span
+class="toc-section-number">3.6</span> 係数の推定量の信頼区間</a></li>
+<li><a href="#複数の係数を線形結合した場合のt検定と信頼区間"
+id="toc-複数の係数を線形結合した場合のt検定と信頼区間"><span
+class="toc-section-number">3.7</span>
+複数の係数を線形結合した場合のt検定と信頼区間</a></li>
+<li><a href="#偏相関係数" id="toc-偏相関係数"><span
+class="toc-section-number">3.8</span> 偏相関係数</a></li>
+</ul></li>
+<li><a href="#従属変数の予測" id="toc-従属変数の予測"><span
+class="toc-section-number">4</span> 従属変数の予測</a>
+<ul>
+<li><a href="#従属変数の予測区間" id="toc-従属変数の予測区間"><span
+class="toc-section-number">4.1</span> 従属変数の予測区間</a></li>
+<li><a href="#従属変数の信頼区間" id="toc-従属変数の信頼区間"><span
+class="toc-section-number">4.2</span> 従属変数の信頼区間</a></li>
+</ul></li>
+<li><a href="#モデル選択" id="toc-モデル選択"><span
+class="toc-section-number">5</span> モデル選択</a>
+<ul>
+<li><a href="#分散分析f検定" id="toc-分散分析f検定"><span
+class="toc-section-number">5.1</span> 分散分析/F検定</a></li>
+<li><a href="#loocv" id="toc-loocv"><span
+class="toc-section-number">5.2</span> LOOCV</a></li>
+<li><a href="#情報量規準" id="toc-情報量規準"><span
+class="toc-section-number">5.3</span> 情報量規準</a></li>
+</ul></li>
+<li><a href="#プロット" id="toc-プロット"><span
+class="toc-section-number">6</span> プロット</a>
+<ul>
+<li><a href="#予測値" id="toc-予測値"><span
+class="toc-section-number">6.1</span> 予測値</a></li>
+<li><a href="#信頼区間" id="toc-信頼区間"><span
+class="toc-section-number">6.2</span> 信頼区間</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>最も基本的な回帰分析になる一般線形回帰（<abbr title="ordinary least squares">OLS</abbr>）は、データフレームにデータセットがまとまっていれば、関数一つで計算できますが、出てきた推定結果を使いまわすにはもう少し命令を書かないといけません。必要な関数がひとつのヘルプにまとまっておらず、見落としがち、忘れがちなので、まとめておきます。</p>
+<div id="olsとは" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> OLSとは</h1>
+<p>コーディングの説明に入る前に、OLSの復習をしましょう。後で何をしているのか分からなくなるのを防止する効果があります。概要を触れるだけなので、詳しい説明は計量分析の教科書<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>を参照してください。</p>
+<p>以下のような線形モデルの最小二乗法による推定を、OLSと呼んでいます。</p>
+<p><span class="math display">\[
+y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k
+x_{ik} + \epsilon_i
+\]</span></p>
+<p><span class="math inline">\(y\)</span>は被説明変数のベクトル、<span
+class="math inline">\(\beta\)</span>は係数、<span
+class="math inline">\(x\)</span>は説明変数のベクトル、<span
+class="math inline">\(\epsilon\)</span>は誤差項のベクトル、<span
+class="math inline">\(i\)</span>はどの観測値かを示す添字、<span
+class="math inline">\(j\)</span>はどの説明変数かを示す添字になります。観測値の数は<span
+class="math inline">\(n\)</span>、係数は<span
+class="math inline">\(k+1\)</span>種類です。各観測値の誤差<span
+class="math inline">\(\epsilon_i\)</span>は同一で独立の分布に従います。<span
+class="math inline">\(\text{COV}(x_j,
+\epsilon)=0\)</span>が仮定されていることには注意してください。</p>
+<p>なお、小標本では誤差項は正規分布する方が望ましいですが、サンプルサイズがある程度あれば、ガウス＝マルコフ定理から平均と分散があれば正規分布でなくても大きな問題はありません。</p>
+<div id="ols推定量" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> OLS推定量</h2>
+<p>説明変数の種類が多いと記述と計算が大変なので、行列の形式で書き直します。</p>
+<p><span class="math display">\[
+y = X\beta + \epsilon
+\]</span></p>
+<p>ここで、</p>
+<p><span class="math display">\[
+y = \begin{bmatrix}
+y_1 \\
+y_2 \\
+\vdots \\
+y_n
+\end{bmatrix}, X = \begin{bmatrix}
+x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1k} \\
+x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2k} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+x_{n1} &amp; x_{n2} &amp; \cdots &amp; x_{nk}
+\end{bmatrix}, \beta = \begin{bmatrix}
+\beta_1 \\
+\beta_2 \\
+\vdots \\
+\beta_k
+\end{bmatrix}, \epsilon = \begin{bmatrix}
+\epsilon_1 \\
+\epsilon_2 \\
+\vdots \\
+\epsilon_n
+\end{bmatrix}
+\]</span></p>
+<p>です。</p>
+<p>最小二乗法なので、誤差項の二乗和が最小になるように推定量を定めます。誤差項の二乗和は、</p>
+<p><span class="math display">\[
+\epsilon_1 \epsilon_1 + \epsilon_2 \epsilon_2 + \cdots + \epsilon_n
+\epsilon_n = \begin{bmatrix}
+\epsilon_1 &amp; \epsilon_2 &amp; \cdots &amp; \epsilon_n
+\end{bmatrix} \begin{bmatrix}
+\epsilon_1 \\
+\epsilon_2 \\
+\vdots \\
+\epsilon_n
+\end{bmatrix} = ^t\!\epsilon \epsilon
+\]</span></p>
+<p><span class="math display">\[
+= ^t\!(y - X\beta)(y - X\beta)
+\]</span></p>
+<p>となります。</p>
+<p>ここで、係数のベクトル<span
+class="math inline">\(\beta\)</span>を、その推定量のベクトル<span
+class="math inline">\(b\)</span>に、誤差項のベクトル<span
+class="math inline">\(\epsilon\)</span>を、残差のベクトル<span
+class="math inline">\(e\)</span>に置き換えます。</p>
+<p><span class="math display">\[
+^t\!e e = ^t\!(y - Xb)(y - Xb)
+\]</span></p>
+<p>転置行列の性質に注意すると、</p>
+<p><span class="math display">\[
+^t\!e e = ^t\!y y - 2^t\!y X b + ^t\!b ^t\!X X b
+\]</span></p>
+<p>となります。<span class="math inline">\(^t\!X
+X\)</span>が対称行列であることに注意して、上式をベクトル<span
+class="math inline">\(b\)</span>の要素それぞれに関して微分してできたk本の式を合計し整理すると、誤差項の二乗和の最小化の一階条件は、</p>
+<p><span class="math display">\[
+-2^t\!y X + 2 ^t\!X X b = 0
+\]</span></p>
+<p>になり、OLS推定量</p>
+<p><span class="math display">\[
+b = (^t\!XX)^{-1}{^t\!Xy}
+\]</span></p>
+<p>が得られます。</p>
+</div>
+<div id="ols推定量の分散" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> OLS推定量の分散</h2>
+<p><span
+class="math inline">\(b\)</span>は推定量なので誤差があり、その分散は係数の推定量のt検定や信頼区間の計算に用いられます。多変量なので分散共分散行列を導出します。</p>
+<p><span class="math display">\[
+\text{VAR}[ b \mid X ] = E[^t\!(b - \beta)(b - \beta) \mid X]
+\]</span></p>
+<p><span class="math display">\[
+= E[(^t\!XX)^{-1}{^t\!X} \epsilon {^t\!\epsilon} X (^t\!XX)^{-1} \mid X]
+\]</span></p>
+<p><span class="math display">\[
+=(^t\!XX)^{-1}{^t\!X} E[\epsilon {^t\!\epsilon} \mid X] X (^t\!XX)^{-1}
+\]</span></p>
+<p><span class="math display">\[
+= (^t\!XX)^{-1}{^t\!X} \sigma^2 I X (^t\!XX)^{-1} =\sigma^2
+(^t\!XX)^{-1}
+\]</span></p>
+<p><span class="math inline">\(I\)</span>は<span class="math inline">\(k
+\times k\)</span>の恒等行列です。</p>
+</div>
+<div id="自由度と分散の不偏推定量" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span>
+自由度と分散の不偏推定量</h2>
+<p><span class="math inline">\(\text{VAR}[ b \mid X
+]\)</span>の計算に<span
+class="math inline">\(\sigma^2\)</span>が必要なので、<span
+class="math inline">\(\sigma^2\)</span>の不偏推定量を考えます。residual
+maker</p>
+<p><span class="math display">\[
+M=I-X(^t\!XX)^{-1}(^t\!X)
+\]</span></p>
+<p>を用いると、残差は</p>
+<p><span class="math display">\[
+e = My = M(X\beta + \epsilon) = M\epsilon
+\]</span></p>
+<p>と書けます。<span
+class="math inline">\(MX=0\)</span>になるからです。さらに<span
+class="math inline">\(^t\!MM=M\)</span>である事に注意すると、</p>
+<p><span class="math display">\[
+^t\!ee = ^t\!\epsilon M \epsilon
+\]</span></p>
+<p>となります。残差の二乗和の期待値は、</p>
+<p><span class="math display">\[
+E[^t\!ee \mid X] = E[ ^t\!\epsilon M \epsilon \mid X]
+\]</span></p>
+<p>となります。<span class="math inline">\(^t\!\epsilon M
+\epsilon\)</span>は<span class="math inline">\(1 \times
+1\)</span>行列になるのでトレースと等しくなり、<span
+class="math inline">\(^t\!\epsilon\)</span>と<span
+class="math inline">\(M\)</span>と<span
+class="math inline">\(\epsilon\)</span>は循環性を持つことが分かります。</p>
+<p><span class="math display">\[
+E[ ^t\!\epsilon M \epsilon \mid X] = E[ tr(^t\!\epsilon M \epsilon) \mid
+X] = E[ tr( M \epsilon ^t\!\epsilon )\mid X]
+\]</span></p>
+<p>さらに整理し、</p>
+<p><span class="math display">\[
+=tr( M E[ \epsilon ^t\!\epsilon \mid X]) = tr( M \sigma^2 I) = \sigma^2
+tr(M)
+\]</span></p>
+<p><span class="math inline">\(M\)</span>の定義から、</p>
+<p><span
+class="math display">\[tr(M)=tr(I-X(^t\!XX)^{-1}(^t\!X))\]</span></p>
+<p><span
+class="math display">\[=tr(I_n)-tr(X(^t\!XX)^{-1}(^t\!X))\]</span></p>
+<p><span class="math display">\[=tr(I_n)-tr(I_k)\]</span></p>
+<p><span class="math display">\[=n-k\]</span></p>
+<p>よって、</p>
+<p><span class="math display">\[^t\!ee = \sigma^2 (n-k)\]</span></p>
+<p><span class="math display">\[\sigma^2 = ^t\!ee/(n-k)\]</span></p>
+<p>となります。自由度は<span
+class="math inline">\(n-k\)</span>です。</p>
+</div>
+</div>
+<div id="olsで推定してみる" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> OLSで推定してみる</h1>
+<p>タブ区切りのテキストファイルにまとまっているデータセットをデータフレームに読み込んで、OLSで推定してみましょう。</p>
+<div id="データセットの読み込み" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span>
+データセットの読み込み</h2>
+<p>話の都合上、欠損値などがないデータセットを読み込みます。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;http://wh.anlyznews.com/R/dataset/for_ols.txt&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span></code></pre></div>
+<p>テキストファイルから<code>read.table</code>を使ってデータを読むのが典型的でしたが、最近は<code>readr</code>パッケージを使う紹介が増えています。</p>
+</div>
+<div id="lmで推定を行なう" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+<code>lm</code>で推定を行なう</h2>
+<p>テキストでは長々と推定量の導出を行なうわけですが、以下の一行で終わります。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>r_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data =</span> df01)</span></code></pre></div>
+<p><code>y ~ x + z</code>はモデル式と言われる<strong>データ</strong>で、変数に入れておいて使いまわす事ができます。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>frml <span class="ot">&lt;-</span> <span class="fu">formula</span>(y <span class="sc">~</span> x <span class="sc">+</span> z)</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>r_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(frml, <span class="at">data =</span> df01)</span></code></pre></div>
+<p>モデル式が入った変数は、異なるデータセットで推定を繰り返すときに便利に使えます。</p>
+<div id="ダミー変数の作り方" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span>
+ダミー変数の作り方</h3>
+<p>データに応じて<code>1</code>もしくは<code>0</code>の値をとる変数をダミー変数と呼びます。</p>
+<p>回答が<code>yes</code>の場合は<code>1</code>、<code>no</code>の場合は<code>0</code>と言うようなのは取り扱いが簡単ですが、年次ダミーの場合は年ごとにダミー変数を、個体ダミーの場合は個体ごとにダミー変数をつくる必要があります。例えば、2000年から2022年までの年次ダミーを入れると、（2000年の分は省略できるので）22のダミー変数がいります。都道府県ダミーをつくると、46のダミー変数がいります。</p>
+<p>データフレームの列の値に応じて<code>ifelse</code>関数などで<code>1</code>か<code>0</code>の出力してダミー変数をつくって、ダミー変数名をモデル式に長々と書いても問題ないのですが、手間暇がかかります。Rではもっと楽にダミー変数を入れる方法があって、例えばデータフレームの<code>ans</code>列の値に応じてダミー変数をつくる場合は、</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> <span class="fu">as.factor</span>(ans), <span class="at">data =</span> df01)</span></code></pre></div>
+<p>と書けばダミー変数を入れた推定モデルになります。<code>ans</code>は<code>yes</code>もしくは<code>no</code>の値をとりますが、<code>1</code>もしくは<code>0</code>として扱ってくれます。なお、<code>ans</code>が<code>factor</code>属性の場合は、<code>as.factor</code>も要りません。
+<code>ans</code>列からのダミー変数と<code>pos</code>列からのダミー変数のクロス項を入れる場合は、</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> <span class="fu">as.factor</span>(ans) <span class="sc">+</span> <span class="fu">as.factor</span>(pos) <span class="sc">+</span> <span class="fu">as.factor</span>(ans)<span class="sc">:</span><span class="fu">as.factor</span>(pos), <span class="at">data =</span> df01)</span></code></pre></div>
+<p>とすれば入ります。</p>
+</div>
+<div id="交差項を入れる" class="section level3" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> 交差項を入れる</h3>
+<p>以下のように変数名と変数名を<code>*</code>でつないでおくと、それぞれの変数と交差項に展開してくれます。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x<span class="sc">*</span>z, <span class="at">data =</span> df01)</span></code></pre></div>
+<p>は、</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> x<span class="sc">:</span>z, <span class="at">data =</span> df01)</span></code></pre></div>
+<p>と同じになります。</p>
+</div>
+<div id="変則的な操作" class="section level3" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> 変則的な操作</h3>
+<p><code>-</code>で変数を除去できます。<code>x + z - x</code>と書くと、<code>z</code>だけの推定と同じになります。</p>
+<p><code>x %in% z</code>は、<code>x:z</code>と同じ結果になります。<code>x %in% ans</code>は、ダミー変数は展開されるので、<code>x:ansno + x:ansyes</code>と同じになります。<code>x %in% (z + ans)</code>のように、右側は複数の変数を括弧でくくることができます。</p>
+<p><code>x/z</code>は、<code>x + x:z</code>に展開されます。<code>x*z - z</code>と書いても同じです。これも<code>x/(z + ans)</code>とも書けます。</p>
+<p><code>(x + z)^2</code>は、<code>x + z + x:z</code>に展開されます。変数の値が二乗されたり、足されたりはしないので、<code>x:x</code>は<code>x</code>と同じとして省略され、<code>z:x</code>は<code>x:z</code>と同じとして省略されます。<code>(x + z + ans)^2</code>や<code>(x + z + ans)^3</code>のような指定も可能です。<span
+class="math inline">\(\beta_0 + \beta_1 x^2 + \beta_2 x*z + \beta_3
+z^2\)</span>を推定したければ、<code>I(x^2) + x:z + I(z^2)</code>と書く必要があります。</p>
+</div>
+<div id="切片項なしで推定する" class="section level3" number="2.2.4">
+<h3><span class="header-section-number">2.2.4</span>
+切片項なしで推定する</h3>
+<p><code>+0</code>か<code>-1</code>をつけると、切片項なしで推定してくれます。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> <span class="dv">0</span>, <span class="at">data =</span> df01)</span></code></pre></div>
+</div>
+<div id="モデル式内での数式" class="section level3" number="2.2.5">
+<h3><span class="header-section-number">2.2.5</span>
+モデル式内での数式</h3>
+<p>モデル式には対数と四則演算を入れることができます。</p>
+<p>例えば<span class="math inline">\(y = C x^{\beta_1}
+z^{\beta_2}\)</span>を推定したい場合は、</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">lm</span>(<span class="fu">log</span>(y) <span class="sc">~</span> <span class="fu">log</span>(x) <span class="sc">+</span> <span class="fu">log</span>(z), <span class="at">data =</span> df01)</span></code></pre></div>
+<p>と書いておくと推定してくれます。</p>
+<p><code>x</code>ではなく、<code>x - 1</code>で説明したい場合は、以下のようにします。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">lm</span>(y <span class="sc">~</span> <span class="fu">I</span>(x <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">+</span> z, <span class="at">data =</span> df01)</span></code></pre></div>
+</div>
+<div id="モデル式の修正" class="section level3" number="2.2.6">
+<h3><span class="header-section-number">2.2.6</span> モデル式の修正</h3>
+<p>モデル式は変数だけに足したり引いたりできます。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>frml <span class="ot">&lt;-</span> y <span class="sc">~</span> x <span class="sc">+</span> z</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">update</span>(frml, . <span class="sc">~</span> . <span class="sc">+</span> <span class="fu">factor</span>(ans))</span></code></pre></div>
+<pre><code>y ~ x + z + factor(ans)
+&lt;environment: 0x5b48fbb1a8c8&gt;</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">update</span>(frml, . <span class="sc">~</span> . <span class="sc">-</span> z)</span></code></pre></div>
+<pre><code>y ~ x
+&lt;environment: 0x5b48fbb1a8c8&gt;</code></pre>
+</div>
+</div>
+<div id="行列演算で推定" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> 行列演算で推定</h2>
+<p>もっとも行列演算で行なっても、大したことにはなりません。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>r_mc <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, {</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>    <span class="co"># モデル式から切片項こみの説明変数の行列をつくる</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>    X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(y <span class="sc">~</span> x <span class="sc">+</span> z)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    b <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    df <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    sigma2 <span class="ot">&lt;-</span> <span class="fu">sum</span>((y <span class="sc">-</span> X <span class="sc">%*%</span> b)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df</span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>    vcov <span class="ot">&lt;-</span> sigma2<span class="sc">*</span><span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X)</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">coef =</span> b, <span class="at">vcov =</span> vcov, <span class="at">df =</span> df)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>})</span></code></pre></div>
+<p>大したことにならないとは言え、コーディングミスや見通しの問題から、<code>lm</code>を使う方が望ましいです。</p>
+</div>
+</div>
+<div id="推定結果の確認と数値の取得" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+推定結果の確認と数値の取得</h1>
+<p><code>lm</code>関数の戻り値から推定結果を確認するのには、<code>summary</code>を使います。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">summary</span>(r_lm)</span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = y ~ x + z, data = df01)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-1.31e+00 -5.75e-01  2.58e-02  5.38e-01  1.92e+00 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)    0.637      0.337    1.89    7e-02 .  
+x              2.256      0.276    8.18  8.8e-09 ***
+z             -2.553      0.271   -9.42  5.1e-10 ***
+---
+Signif. codes:  0 &#39;***&#39; 1e-03 &#39;**&#39; 1e-02 &#39;*&#39; 5e-02 &#39;.&#39; 1e-01 &#39; &#39; 1
+
+Residual standard error: 8e-01 on 27 degrees of freedom
+Multiple R-squared:  0.862, Adjusted R-squared:  0.851 
+F-statistic: 84.1 on 2 and 27 DF,  p-value: 2.54e-12</code></pre>
+<p>画面に表示するだけではなく、データとして利用もできます。<code>lm</code>や<code>summary</code>の戻り値はリスト構造なので、<code>names(lm(...))</code>や<code>names(summary(lm(...)))</code>でどのような値が使えるか確認できます。</p>
+<div id="残差と残差平方和" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> 残差と残差平方和</h2>
+<p>残差は<code>residuals(...)</code>で、残差平方和は<code>deviance(...)</code>で取得できます。</p>
+</div>
+<div id="分散共分散行列" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> 分散共分散行列</h2>
+<p><code>vcov(lm(...))</code>で分散共分散行列を取り出せます。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">vcov</span>(r_lm)</span></code></pre></div>
+<pre><code>            (Intercept)      x      z
+(Intercept)       1e-01 -8e-02 -1e-02
+x                -8e-02  8e-02  6e-03
+z                -1e-02  6e-03  7e-02</code></pre>
+</div>
+<div id="自由度" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> 自由度</h2>
+<p><code>summary(lm(...))$df[2]</code>で自由度<span
+class="math inline">\(n-k\)</span>が取り出せます。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">summary</span>(r_lm)<span class="sc">$</span>df[<span class="dv">2</span>]</span></code></pre></div>
+<pre><code>[1] 27</code></pre>
+</div>
+<div id="決定係数と重相関係数" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span>
+決定係数と重相関係数</h2>
+<p>過適合に上手くペナルティを与えられないため、モデル選択の指標としては、自由度調整をしたものを含めて、決定係数と重相関係数は参照されなくなって久しいですが、従属変数の分散のうち説明変数の分散で説明できる割合を示す分かりやすい指標なので、一応、参照したくなります。</p>
+<p>自由度調整済み決定係数をプロットか何かで再利用したい場合は、</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">summary</span>(r_lm)<span class="sc">$</span>adj.r.squared</span></code></pre></div>
+<pre><code>[1] 9e-01</code></pre>
+<p>のようにすれば取得できます。ただの重相関係数は<code>sqrt(summary(...)$r.squared)</code>で取れます。</p>
+</div>
+<div id="係数の推定量" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> 係数の推定量</h2>
+<p><code>coef(lm(...))</code>で係数の推定量を取り出せます。<code>coef(summary(lm(...)))</code>を用いれば、標準誤差や帰無仮説を<code>0</code>と置いたt値とP値も取り出せます。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">coef</span>(r_lm)</span></code></pre></div>
+<pre><code>(Intercept)           x           z 
+      6e-01       2e+00      -3e+00 </code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">summary</span>(r_lm))[, <span class="st">&quot;Std. Error&quot;</span>]</span></code></pre></div>
+<pre><code>(Intercept)           x           z 
+      3e-01       3e-01       3e-01 </code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">summary</span>(r_lm))[, <span class="st">&quot;t value&quot;</span>]</span></code></pre></div>
+<pre><code>(Intercept)           x           z 
+          2           8          -9 </code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">summary</span>(r_lm))[, <span class="st">&quot;Pr(&gt;|t|)&quot;</span>]</span></code></pre></div>
+<pre><code>(Intercept)           x           z 
+      7e-02       9e-09       5e-10 </code></pre>
+</div>
+<div id="係数の推定量の信頼区間" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span>
+係数の推定量の信頼区間</h2>
+<p><code>confint(lm(...))</code>で95%信頼区間の計算ができます。引数に<code>level = 0.9</code>を加えると90%信頼区間の計算になります。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="fu">confint</span>(r_lm)</span></code></pre></div>
+<pre><code>             2.5 % 97.5 %
+(Intercept) -5e-02      1
+x            2e+00      3
+z           -3e+00     -2</code></pre>
+</div>
+<div id="複数の係数を線形結合した場合のt検定と信頼区間"
+class="section level2" number="3.7">
+<h2><span class="header-section-number">3.7</span>
+複数の係数を線形結合した場合のt検定と信頼区間</h2>
+<p><span class="math inline">\(\beta_1 + \beta_2 =
+1\)</span>を帰無仮説とした検定を行なう場合などは、やや手の込んだコードを書く必要があります。</p>
+<p>やり方は色々だと思いますが、ここでは</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co"># 複数の係数の合算値のt検定を行ない信頼区間を出す関数</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>ttest <span class="ot">&lt;-</span> <span class="cf">function</span>(coef, vcov, df, mask, <span class="at">h0 =</span> <span class="dv">0</span>, <span class="at">both =</span> <span class="cn">TRUE</span>, <span class="at">a =</span> <span class="fl">0.05</span>){</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>    mask <span class="ot">&lt;-</span> <span class="fu">matrix</span>(mask, <span class="dv">1</span>, <span class="fu">length</span>(mask))</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>    v <span class="ot">&lt;-</span> mask <span class="sc">%*%</span> vcov <span class="sc">%*%</span> <span class="fu">t</span>(mask)</span>
+<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>    se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(v)</span>
+<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">sum</span>(mask <span class="sc">%*%</span> coef)</span>
+<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a>    tv <span class="ot">&lt;-</span> (m <span class="sc">-</span> h0) <span class="sc">/</span> <span class="fu">sqrt</span>(v)</span>
+<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a>    tp <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">*</span>(both<span class="sc">==</span><span class="cn">TRUE</span>))<span class="sc">*</span><span class="fu">pt</span>(tv, df, <span class="at">lower.tail =</span> <span class="dv">0</span><span class="sc">&gt;</span>tv)</span>
+<span id="cb34-9"><a href="#cb34-9" tabindex="-1"></a>    margin <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> a<span class="sc">/</span><span class="dv">2</span>, df) <span class="sc">*</span> se</span>
+<span id="cb34-10"><a href="#cb34-10" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">mean =</span> m, <span class="at">se =</span> se, <span class="at">t_value =</span> tv, <span class="at">p_value =</span> tp, <span class="at">ci =</span> m <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span>margin, margin))</span>
+<span id="cb34-11"><a href="#cb34-11" tabindex="-1"></a>}</span></code></pre></div>
+<p>を用意します。これで簡単に</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="co"># β2 + β3 = -1を検定する</span></span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">ttest</span>(<span class="fu">coef</span>(r_lm), <span class="fu">vcov</span>(r_lm), <span class="fu">summary</span>(r_lm)<span class="sc">$</span>df[<span class="dv">2</span>], <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="sc">-</span><span class="dv">1</span>)</span></code></pre></div>
+<pre><code>$mean
+[1] -3e-01
+
+$se
+      [,1]
+[1,] 4e-01
+
+$t_value
+     [,1]
+[1,]    2
+
+$p_value
+      [,1]
+[1,] 9e-02
+
+$ci
+[1] -1e+00  5e-01</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="co"># β2 - β3 = 5を検定する</span></span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a><span class="fu">ttest</span>(<span class="fu">coef</span>(r_lm), <span class="fu">vcov</span>(r_lm), <span class="fu">summary</span>(r_lm)<span class="sc">$</span>df[<span class="dv">2</span>], <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="dv">5</span>)</span></code></pre></div>
+<pre><code>$mean
+[1] 5
+
+$se
+      [,1]
+[1,] 4e-01
+
+$t_value
+       [,1]
+[1,] -5e-01
+
+$p_value
+      [,1]
+[1,] 6e-01
+
+$ci
+[1] 4 6</code></pre>
+<p>ことが可能になります。なお、引数<code>mask</code>は係数にかける値のベクトルで、<code>h0</code>が帰無仮説になります。</p>
+</div>
+<div id="偏相関係数" class="section level2" number="3.8">
+<h2><span class="header-section-number">3.8</span> 偏相関係数</h2>
+<p>計算してくれる関数は標準では入っていないのですが、以下のようにt値を使って簡単に計算できます<a
+href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a>(<span class="cf">function</span>(r_lm){</span>
+<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a>    s <span class="ot">&lt;-</span> <span class="fu">summary</span>(r_lm)</span>
+<span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a>    t <span class="ot">&lt;-</span> <span class="fu">coef</span>(s)[,<span class="dv">3</span>]</span>
+<span id="cb39-4"><a href="#cb39-4" tabindex="-1"></a>    (<span class="fu">sign</span>(<span class="fu">coef</span>(r_lm))<span class="sc">*</span><span class="fu">sqrt</span>(t<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(t<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> s<span class="sc">$</span>df[<span class="dv">2</span>])))[<span class="sc">-</span><span class="dv">1</span>]</span>
+<span id="cb39-5"><a href="#cb39-5" tabindex="-1"></a>})(r_lm)</span></code></pre></div>
+<pre><code>     x      z 
+ 8e-01 -9e-01 </code></pre>
+<p>手元の計算機では、観測値が10万ぐらいないと識別できませんが、定義通り計算するより5倍ぐらい速いです。</p>
+</div>
+</div>
+<div id="従属変数の予測" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> 従属変数の予測</h1>
+<p>推定された係数があれば、任意の説明変数の値に対応する従属変数の値を予測できます。<code>coef(lm(...))</code>に説明変数の値を乗じて足してもよいのですが、<code>predict</code>関数を使うのが簡便です。</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>df02 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> pi, <span class="at">z =</span> <span class="fu">sqrt</span>(<span class="dv">2</span>))</span>
+<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a><span class="fu">predict</span>(r_lm, df02)</span></code></pre></div>
+<pre><code>1 
+4 </code></pre>
+<p>第2引数はデータフレームなので、複数の予測値を同時に出せます。</p>
+<div id="従属変数の予測区間" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span>
+従属変数の予測区間</h2>
+<p>実際の作業としては<code>predict</code>関数に引数<code>interval = "prediction"</code>をつけるだけで計算できますが、予測区間は、観測値が予測値から外れる大きさが従う正規分布から求められ、以下のような演算が行なわれます。</p>
+<p>観測値<span class="math inline">\(\tilde{y}\)</span>と<span
+class="math inline">\(\tilde{x}\)</span>と予測値<span
+class="math inline">\(\hat{y}\)</span>の差、<span
+class="math inline">\(\{ \tilde{x}\beta + \epsilon \} - \{ \tilde{x} b
+\}\)</span>を考えます。差の期待値は<span
+class="math inline">\(0\)</span>です。<span
+class="math inline">\(\text{COV}(\tilde{y},\hat{y})=0\)</span>なので、差の分散は<span
+class="math inline">\(\tilde{y}\)</span>の分散と<span
+class="math inline">\(\hat{y}\)</span>の分散の和になります。<span
+class="math inline">\(\tilde{y}\)</span>の分散は<span
+class="math inline">\(\sigma^2\)</span>にサンプルサイズの大きさの恒等行列を乗じて<span
+class="math inline">\(\sigma^2I\)</span>になります。<span
+class="math inline">\(\hat{y}\)</span>の分散は、推定量のベクトル<span
+class="math inline">\(b\)</span>の分散と観測値の説明変数のベクトル<span
+class="math inline">\(\tilde{x}\)</span>から、<span
+class="math inline">\(\tilde{x} \sigma^2 (^t\!XX)^{-1}
+{^t}\!\tilde{x}\)</span>になります。期待値と分散が求まったので、t分布から区間推定を行ないます。</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">predict</span>(r_lm, df02, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span></code></pre></div>
+<pre><code>  fit lwr upr
+1   4   2   6</code></pre>
+<p>簡単ですね。<code>predict</code>関数を使わない場合は、以下のように計算できます。</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data =</span> df01)</span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data =</span> df02)</span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">summary</span>(r_lm)<span class="sc">$</span>sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (<span class="fu">diag</span>(<span class="fu">nrow</span>(x)) <span class="sc">+</span> (x <span class="sc">%*%</span> (<span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X)) <span class="sc">%*%</span> <span class="fu">t</span>(x)))))</span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>margin <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> a<span class="sc">/</span><span class="dv">2</span>, <span class="dv">27</span>) <span class="sc">*</span> se</span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">coef</span>(r_lm) <span class="sc">*</span> x) <span class="sc">+</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span>margin, margin, <span class="at">use.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>[1] 4 2 6</code></pre>
+</div>
+<div id="従属変数の信頼区間" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span>
+従属変数の信頼区間</h2>
+<p>予測値の区間推定も、<code>predict</code>関数に引数<code>interval = "confidence"</code>をつけるだけです。</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">predict</span>(r_lm, df02, <span class="at">interval =</span> <span class="st">&quot;confidence&quot;</span>)</span></code></pre></div>
+<pre><code>  fit lwr upr
+1   4   3   6</code></pre>
+<p>全係数を線形結合した場合の信頼区間なので、<code>predict</code>関数を使わない場合は、先に定義した<code>ttest</code>関数を使って</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="fu">ttest</span>(<span class="fu">coef</span>(r_lm), <span class="fu">vcov</span>(r_lm), <span class="fu">summary</span>(r_lm)<span class="sc">$</span>df[<span class="dv">2</span>], </span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a>    <span class="at">mask =</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data =</span> df02[<span class="dv">1</span>, ]))<span class="sc">$</span>ci</span></code></pre></div>
+<pre><code>[1] 3 6</code></pre>
+<p>と計算できます。</p>
+</div>
+</div>
+<div id="モデル選択" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> モデル選択</h1>
+<p>理屈だけではモデル選択が出来ない場合、当てはまりのよいモデルを選びます。モデル選択の方法は幾つかありますが、伝統的には分散分析、最近はクロスバリデーションの中でLOOCVが一般的のようです。</p>
+<div id="分散分析f検定" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> 分散分析/F検定</h2>
+<p>2つのモデルを比較しますが、有意に異なる場合は複雑なモデルを採用します。</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a>r_lm_r <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> df01)</span>
+<span id="cb51-2"><a href="#cb51-2" tabindex="-1"></a><span class="fu">anova</span>(r_lm, r_lm_r)</span></code></pre></div>
+<pre><code>Analysis of Variance Table
+
+Model 1: y ~ x + z
+Model 2: y ~ x
+  Res.Df  RSS Df Sum of Sq    F  Pr(&gt;F)    
+1     27 18.8                              
+2     28 80.3 -1     -61.6 88.7 5.1e-10 ***
+---
+Signif. codes:  0 &#39;***&#39; 1e-03 &#39;**&#39; 1e-02 &#39;*&#39; 5e-02 &#39;.&#39; 1e-01 &#39; &#39; 1</code></pre>
+<p>ここでは<code>y ~ x</code>よりも<code>y ~ x + z</code>、<code>y ~ z</code>よりも<code>y ~ x + z</code>が有意に予測力が高い事が示されています。</p>
+<p>もちろん教科書的に検定を行なった場合と、結果は一致します。</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a>F <span class="ot">&lt;-</span> ((<span class="fu">deviance</span>(r_lm_r) <span class="sc">-</span> <span class="fu">deviance</span>(r_lm)) <span class="sc">/</span> (r_lm<span class="sc">$</span>rank <span class="sc">-</span> r_lm_r<span class="sc">$</span>rank)) <span class="sc">/</span> (<span class="fu">deviance</span>(r_lm) <span class="sc">/</span> r_lm<span class="sc">$</span>df.residual)</span>
+<span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a><span class="fu">pf</span>(F, r_lm<span class="sc">$</span>rank <span class="sc">-</span> r_lm_r<span class="sc">$</span>rank, r_lm<span class="sc">$</span>df.residual, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>[1] 5e-10</code></pre>
+</div>
+<div id="loocv" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> LOOCV</h2>
+<p>一つ抜き交差検証の名前の通りに計算した各モデルの誤差の大きさを比較します。<code>boot</code>パッケージの<code>cv.glm</code>を使うと手軽に実行できますが、<code>cv.glm</code>は<code>lm</code>の結果オブジェクトでは正常に動かないため、<code>glm</code>関数でOLS推定しています。</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>frml <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;y ~ x&quot;</span>, <span class="st">&quot;y ~ z&quot;</span>, <span class="st">&quot;y ~ x + z&quot;</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">length</span>(frml), <span class="dv">2</span>)</span>
+<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a><span class="fu">rownames</span>(delta) <span class="ot">&lt;-</span> frml</span>
+<span id="cb55-5"><a href="#cb55-5" tabindex="-1"></a><span class="fu">colnames</span>(delta) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;raw&quot;</span>, <span class="st">&quot;adjusted&quot;</span>)</span>
+<span id="cb55-6"><a href="#cb55-6" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(frml)){</span>
+<span id="cb55-7"><a href="#cb55-7" tabindex="-1"></a>    delta[i, ] <span class="ot">&lt;-</span> <span class="fu">cv.glm</span>(df01, <span class="fu">glm</span>(<span class="fu">formula</span>(frml[i]), <span class="at">data=</span>df01))<span class="sc">$</span>delta</span>
+<span id="cb55-8"><a href="#cb55-8" tabindex="-1"></a>}</span>
+<span id="cb55-9"><a href="#cb55-9" tabindex="-1"></a><span class="fu">print</span>(delta)</span></code></pre></div>
+<pre><code>            raw adjusted
+y ~ x     3e+00    3e+00
+y ~ z     3e+00    3e+00
+y ~ x + z 8e-01    8e-01</code></pre>
+<p>ここでは<code>y ~ x + z</code>が最も誤差が小さいです。</p>
+</div>
+<div id="情報量規準" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> 情報量規準</h2>
+<p>赤池情報量規準とシュワルツ情報量規準もメソッドが用意されています。</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">AIC</span>(r_lm), <span class="fu">AIC</span>(r_lm_r), <span class="fu">BIC</span>(r_lm), <span class="fu">BIC</span>(r_lm_r)), </span>
+<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a>    <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, y <span class="sc">~</span> x), <span class="fu">c</span>(<span class="st">&quot;AIC&quot;</span>, <span class="st">&quot;BIC&quot;</span>)))</span></code></pre></div>
+<pre><code>            AIC   BIC
+y ~ x + z 8e+01 8e+01
+y ~ x     1e+02 1e+02</code></pre>
+</div>
+</div>
+<div id="プロット" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> プロット</h1>
+<p>推定量を示しても反応が薄い人々にインパクトを与えられたり、自分で自分の分析の誤りに気づく事もあるので、プロットは思ったよりも御利益があることが多いです。</p>
+<div id="予測値" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> 予測値</h2>
+<p>3変数以上ある場合はプロットに用いない変数の影響を除外するほうが、見栄えがよくなります。</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="co"># xの要素の昇順番を得る</span></span>
+<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="fu">order</span>(df01<span class="sc">$</span>x)</span>
+<span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a><span class="co"># zの効果を引き、zが平均値だった場合の効果を足したyをつくる</span></span>
+<span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, y <span class="sc">-</span> <span class="fu">coef</span>(r_lm)[<span class="dv">3</span>]<span class="sc">*</span>(z <span class="sc">-</span> <span class="fu">mean</span>(z)))</span>
+<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a><span class="co"># xとyを昇順に並び替える</span></span>
+<span id="cb59-6"><a href="#cb59-6" tabindex="-1"></a>x <span class="ot">&lt;-</span> df01<span class="sc">$</span>x[i]</span>
+<span id="cb59-7"><a href="#cb59-7" tabindex="-1"></a>y <span class="ot">&lt;-</span> y[i]</span>
+<span id="cb59-8"><a href="#cb59-8" tabindex="-1"></a><span class="co"># キャンバスの大きさを決める</span></span>
+<span id="cb59-9"><a href="#cb59-9" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">ceiling</span>(<span class="fu">max</span>(x)))</span>
+<span id="cb59-10"><a href="#cb59-10" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">ceiling</span>(<span class="fu">max</span>(y)))</span>
+<span id="cb59-11"><a href="#cb59-11" tabindex="-1"></a></span>
+<span id="cb59-12"><a href="#cb59-12" tabindex="-1"></a><span class="co"># 白紙のキャンバスをつくる</span></span>
+<span id="cb59-13"><a href="#cb59-13" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
+<span id="cb59-14"><a href="#cb59-14" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
+<span id="cb59-15"><a href="#cb59-15" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
+<span id="cb59-16"><a href="#cb59-16" tabindex="-1"></a></span>
+<span id="cb59-17"><a href="#cb59-17" tabindex="-1"></a><span class="co"># 95%予測区間をピンク斜線で描く</span></span>
+<span id="cb59-18"><a href="#cb59-18" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">length.out=</span><span class="dv">100</span>)</span>
+<span id="cb59-19"><a href="#cb59-19" tabindex="-1"></a>prdct <span class="ot">&lt;-</span> <span class="fu">predict</span>(r_lm, <span class="fu">data.frame</span>(<span class="at">x =</span> px, <span class="at">z =</span> <span class="fu">rep</span>(<span class="fu">mean</span>(df01<span class="sc">$</span>z), <span class="fu">length</span>(px))), <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span>
+<span id="cb59-20"><a href="#cb59-20" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">c</span>(px, <span class="fu">rev</span>(px))</span>
+<span id="cb59-21"><a href="#cb59-21" tabindex="-1"></a>py <span class="ot">&lt;-</span> <span class="fu">c</span>(prdct[,<span class="dv">2</span>], <span class="fu">rev</span>(prdct[,<span class="dv">3</span>]))</span>
+<span id="cb59-22"><a href="#cb59-22" tabindex="-1"></a><span class="fu">polygon</span>(px, py, <span class="at">density=</span><span class="dv">25</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>, <span class="at">border=</span><span class="cn">NA</span>)</span>
+<span id="cb59-23"><a href="#cb59-23" tabindex="-1"></a></span>
+<span id="cb59-24"><a href="#cb59-24" tabindex="-1"></a><span class="co"># 予測線を描く</span></span>
+<span id="cb59-25"><a href="#cb59-25" tabindex="-1"></a><span class="fu">lines</span>(xlim, <span class="fu">predict</span>(r_lm, <span class="fu">data.frame</span>(<span class="at">x =</span> xlim, <span class="at">z =</span> <span class="fu">rep</span>(<span class="fu">mean</span>(df01<span class="sc">$</span>z), <span class="dv">2</span>))), <span class="at">lty =</span> <span class="dv">3</span>)</span>
+<span id="cb59-26"><a href="#cb59-26" tabindex="-1"></a></span>
+<span id="cb59-27"><a href="#cb59-27" tabindex="-1"></a><span class="co"># 観測値をプロットする</span></span>
+<span id="cb59-28"><a href="#cb59-28" tabindex="-1"></a><span class="fu">points</span>(x, y, <span class="at">pch=</span><span class="dv">21</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>)</span>
+<span id="cb59-29"><a href="#cb59-29" tabindex="-1"></a></span>
+<span id="cb59-30"><a href="#cb59-30" tabindex="-1"></a><span class="co"># 縦横軸ラベルを書く</span></span>
+<span id="cb59-31"><a href="#cb59-31" tabindex="-1"></a><span class="fu">title</span>(</span>
+<span id="cb59-32"><a href="#cb59-32" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="fu">substitute</span>(y <span class="sc">-</span> b<span class="sc">*</span>z <span class="sc">+</span> c, <span class="fu">list</span>(<span class="at">b =</span> <span class="fu">coef</span>(r_lm)[<span class="dv">3</span>], <span class="at">c =</span> <span class="fu">mean</span>(df01<span class="sc">$</span>z))),</span>
+<span id="cb59-33"><a href="#cb59-33" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="fu">expression</span>(x)</span>
+<span id="cb59-34"><a href="#cb59-34" tabindex="-1"></a>)</span>
+<span id="cb59-35"><a href="#cb59-35" tabindex="-1"></a></span>
+<span id="cb59-36"><a href="#cb59-36" tabindex="-1"></a><span class="co"># 軸を描く</span></span>
+<span id="cb59-37"><a href="#cb59-37" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>)</span>
+<span id="cb59-38"><a href="#cb59-38" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/ols_plot-1.png" width="672" /></p>
+</div>
+<div id="信頼区間" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> 信頼区間</h2>
+<p><code>dotchart</code>は信頼区間を一覧するときに便利です。</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a>ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(r_lm)</span>
+<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
+<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a></span>
+<span id="cb60-5"><a href="#cb60-5" tabindex="-1"></a><span class="fu">dotchart</span>(<span class="fu">rev</span>(<span class="fu">coef</span>(r_lm)), <span class="at">xlim =</span> <span class="fl">1.2</span><span class="sc">*</span><span class="fu">range</span>(ci),</span>
+<span id="cb60-6"><a href="#cb60-6" tabindex="-1"></a>    <span class="at">cex =</span> <span class="fl">1.25</span>, <span class="at">labels =</span> <span class="fu">rev</span>(<span class="fu">rownames</span>(ci)),</span>
+<span id="cb60-7"><a href="#cb60-7" tabindex="-1"></a>    <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">pt.cex =</span> <span class="fl">1.5</span>, </span>
+<span id="cb60-8"><a href="#cb60-8" tabindex="-1"></a>    <span class="at">bg =</span> <span class="st">&quot;white&quot;</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lcolor =</span> <span class="st">&quot;darkgray&quot;</span>)</span>
+<span id="cb60-9"><a href="#cb60-9" tabindex="-1"></a></span>
+<span id="cb60-10"><a href="#cb60-10" tabindex="-1"></a><span class="fu">arrows</span>(ci[, <span class="dv">1</span>], <span class="fu">nrow</span>(ci)<span class="sc">:</span><span class="dv">1</span>, ci[, <span class="dv">2</span>], <span class="fu">nrow</span>(ci)<span class="sc">:</span><span class="dv">1</span>, </span>
+<span id="cb60-11"><a href="#cb60-11" tabindex="-1"></a>    <span class="at">length =</span> <span class="fl">0.1</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/ols_dotchart-1.png" width="672" /></p>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>このページは Greene (2003) “Econometric Analysis,” 5th
+Editionを参考にしています。<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>導出はテキストを参考にしてください。<a href="#fnref2"
+class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

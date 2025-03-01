@@ -1,0 +1,105 @@
+h1.title {
+    font-size: 150%;
+}
+
+h2.author {
+}
+
+h3.date {
+}
+
+section.smaller {
+    font-size: 90%;
+}
+
+tr.header {
+    color: white;
+    background-color: black;
+}
+
+tr {
+    color: black;
+    background-color: #F0F0F0;
+}
+
+div.datatables {
+    background-color: white;
+}
+
+section.slide {
+    text-align: left;
+}
+
+section.slide h1, section.slide h2 {
+    text-align: center;
+}
+
+section.slide blockquote, pre {
+    text-align: left;
+    overflow: auto;
+    width: 90%;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+div.sourceCode {
+    background-color: rgba(255, 255, 255, 0.4);
+    border: 10px sold black;
+}
+
+div.suffix_words {
+    position: fixed; top: 0; right: 7vmin;
+    height: 7vmin;
+}
+
+div.suffix_inner {
+    position: relative; top: 3vmin; right: 1vmin;
+    font-size: 2vmin;
+    text-shadow: 0px 0px 2px white;
+}
+
+div.suffix_image {
+    position: fixed; top: 0; right: 0;
+    width: 7vmin; height: 7vmin;
+    background-image: url(./Macintosh%20Classic%20II%202012.png);
+    background-size: 7vmin 7vmin;
+}
+
+span.red {
+    color: red;
+    font-weight: bold;
+}
+
+h1.cat_feeling_terrible, h2.cat_feeling_terrible, .cat_feeling_terrible {
+    color: white; text-shadow: 0 0 3px black;
+}
+
+section.cat_feeling_terrible pre {
+    background-color: white; color: black; text-shadow: none;
+}
+
+div.psudopre {
+    display: block;
+    position: relative;
+    width: 90%;
+    margin: 20px auto;
+    text-align: left;
+    font-size: 0.55em;
+    font-family: monospace;
+    line-height: 1.2em;
+    word-wrap: break-word;
+    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+    white-space: nowrap;
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+section.stargazer tr, section.stargazer td {
+    color: black;
+    background-color: white;
+    border: none;
+    font-size: 75%;
+}
+
+span.psudopre {
+    font-family: monospace;
+    white-space: pre;
+}
