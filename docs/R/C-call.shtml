@@ -13,7 +13,7 @@
 
 <title>RからC言語の関数を呼ぼう</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -502,10 +502,11 @@ Windowsでこのファイルが存在しない場合は、Rで</p>
 <span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">dir.exists</span>(directory)) <span class="fu">dir.create</span>(directory)</span>
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;CFLAGS = $(SHLIB_OPENMP_CFLAGS)</span><span class="sc">\n</span><span class="st">FCFLAGS = $(SHLIB_OPENMP_FFLAGS)&quot;</span>,</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="at">file=</span><span class="fu">paste</span>(directory, <span class="st">&quot;Makevars.win&quot;</span>, <span class="at">sep=</span><span class="st">&quot;/&quot;</span>))</span></code></pre></div>
-<p>とすれば作られます。場所は<code>print(directory)</code>をして確認してください。
-作った<code>Makevars.win</code>の中身の<code>CFLAGS</code>はCコンパイラに対するオプション、<code>FCFLAGS</code>はgFortran（のfree
+<p>とすれば作られます。場所は<code>print(directory)</code>をして確認してください。</p>
+<p>作った<code>Makevars.win</code>の中身の<code>CFLAGS</code>はCコンパイラに対するオプション、<code>FCFLAGS</code>はgFortran（のfree
 source
 formのコンパイル）に対するオプションになります。それぞれ<code>$(SHLIB_OPENMP_CFLAGS)</code>と<code>$(SHLIB_OPENMP_FFLAGS)</code>を指定しておくと、OpenMPが有効になります。Cコンパイラは不要に思えるかもですが、gFortranがつくったオブジェクト・ファイルをリンクするのに使います。</p>
+<p>なお、ユーザーディレクトリの下のMakevarsはソースコードからパッケージをインストールするときに邪魔になるときがあります。不要なときは消すか、ファイル名を変えておきましょう。</p>
 </div>
 <div id="cと.callと.externalの3種類のc呼び出し" class="section level1"
 number="2">
