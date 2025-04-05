@@ -64,5 +64,6 @@ div.right h2.menu {
 <dl class="menu" style="margin-bottom: 12px;">
     <dt><a href="mkpkg.shtml">Rのパッケージ作成についてあれこれ</a></dt>
     <dt><a href="C-call.shtml">RからC言語の関数を呼ぼう</a></dt>
+    <dt><a href="EmbeddedR.shtml">C言語のRを呼ぼう</a></dt>
     <dt><a href="Fortran.shtml">Fortranのサブルーチンを呼ぼう</a></dt>
 </dl>
