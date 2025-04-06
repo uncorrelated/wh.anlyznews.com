@@ -396,10 +396,8 @@ line)を使えば、3変数の関係を把握できる図を描くことがで�
 <p><img src="common_files/figure-html/contour01-1.png" width="672" /></p>
 <p>素朴なので、見栄えを改善していきましょう。<code>plot</code>と同様の引数<code>lty</code>,
 <code>lwd</code>, <code>col</code>, <code>axes</code>,
-<code>frame.plot</code><a href="#fn1" class="footnote-ref"
-id="fnref1"><sup>1</sup></a>などが取れる他<a href="#fn2"
-class="footnote-ref"
-id="fnref2"><sup>2</sup></a>、等値線図用のオプションがつけられます。</p>
+<code>frame.plot</code>などが取れる他<a href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>、等値線図用のオプションがつけられます。</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">contour</span>(x, y, z,</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>   <span class="at">levels =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>), </span>
 <span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>   <span class="at">nlevels =</span> <span class="dv">4</span>, <span class="co"># 不要</span></span>
@@ -410,7 +408,7 @@ id="fnref2"><sup>2</sup></a>、等値線図用のオプションがつけられ�
 <span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>   <span class="at">vfont =</span> <span class="fu">c</span>(<span class="st">&quot;serif symbol&quot;</span>, <span class="st">&quot;bold&quot;</span>))</span></code></pre></div>
 <p><img src="common_files/figure-html/contour02-1.png" width="672" /></p>
 <p><code>levels</code>は、等値線を引く<code>z</code>の値です<a
-href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
 <p><code>nlevels</code>は、等値線を引く<code>z</code>の値の数で、<code>levels</code>を指定しないときのみ意味があります。</p>
 <p><code>drawlabels</code>は、等値線にラベルをつけるかあらわす真偽値で、省略時は<code>TRUE</code>になります。</p>
 <p><code>labels</code>は、等値線につけるラベルの指定で、省略時は<code>levels</code>が入ります。</p>
@@ -459,14 +457,12 @@ familyは指定できないので、好みのフォントに変更はできま�
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
-<li id="fn1"><p>軸に重なっている枠の表示の有無で、論理値が入ります。<a
-href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p><a
+<li id="fn1"><p><a
 href="./low-level%20functions.shtml">Rのグラフィカル・オプションと低水準描画関数</a>を参照してください。<a
-href="#fnref2" class="footnote-back">↩︎</a></p></li>
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li
-id="fn3"><p>縦横に捜査して、境界値を超える2点を探し、2点のウェイト付き平均の点を境界線上の点としてリスト、各点から一つづつ、自分とはまだ線が引かれていない他の点の中で、もっとも近い点に線を引いていくことで、境界線を構成しているようです。<a
-href="#fnref3" class="footnote-back">↩︎</a></p></li>
+id="fn2"><p>縦横に捜査して、境界値を超える2点を探し、2点のウェイト付き平均の点を境界線上の点としてリスト、各点から一つづつ、自分とはまだ線が引かれていない他の点の中で、もっとも近い点に線を引いていくことで、境界線を構成しているようです。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
