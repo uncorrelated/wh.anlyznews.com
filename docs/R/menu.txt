@@ -58,6 +58,7 @@ div.right h2.menu {
 <dl class="menu">
     <dt><a href="low-level%20functions.shtml">Rのグラフィカル・オプションと低水準描画関数</a></dt>
     <dt><a href="boxplot.shtml">Rで描く箱ひげ図（boxplot）</a></dt>
+    <dt><a href="contour.shtml">Rで描く等値線図（Contour line）</a></dt>
     <dt><a href="dotchart.shtml">ドットプロットによる信頼区間と比較区間の描画</a></dt>
 </dl>
 <h2 class="menu">R拡張</h2>
