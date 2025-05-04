@@ -13,7 +13,7 @@
 
 <title>Rのベクトルの扱い方のざっとした説明</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -400,15 +400,19 @@ class="toc-section-number">7.1</span> 逆順</a></li>
 <li><a href="#ソート" id="toc-ソート"><span
 class="toc-section-number">7.2</span> ソート</a></li>
 </ul></li>
+<li><a href="#ベクトルを分割" id="toc-ベクトルを分割"><span
+class="toc-section-number">8</span> ベクトルを分割</a></li>
+<li><a href="#ランクを計算" id="toc-ランクを計算"><span
+class="toc-section-number">9</span> ランクを計算</a></li>
 <li><a href="#ベクトルの中から指定した要素の位置を特定する"
 id="toc-ベクトルの中から指定した要素の位置を特定する"><span
-class="toc-section-number">8</span>
+class="toc-section-number">10</span>
 ベクトルの中から指定した要素の位置を特定する</a></li>
 <li><a href="#ベクトルの要素の名前" id="toc-ベクトルの要素の名前"><span
-class="toc-section-number">9</span> ベクトルの要素の名前</a>
+class="toc-section-number">11</span> ベクトルの要素の名前</a>
 <ul>
 <li><a href="#名前の消し方" id="toc-名前の消し方"><span
-class="toc-section-number">9.1</span> 名前の消し方</a></li>
+class="toc-section-number">11.1</span> 名前の消し方</a></li>
 </ul></li>
 </ul>
 </div>
@@ -607,49 +611,89 @@ number="6.2">
 <pre><code> [1] 9.158 7.717 6.860 6.075 5.997 4.301 3.991 1.433 1.181 0.806</code></pre>
 </div>
 </div>
+<div id="ベクトルを分割" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> ベクトルを分割</h1>
+<p>男女など属性ごとにベクトルを分けたいときに便利です。</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>)</span></code></pre></div>
+<pre><code>[1] 1 2 3 4 5 6 7 8 9</code></pre>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" tabindex="-1"></a>(g <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="dv">3</span>)))</span></code></pre></div>
+<pre><code>[1] a b c a b c a b c
+Levels: a b c</code></pre>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" tabindex="-1"></a><span class="fu">split</span>(x, g)</span></code></pre></div>
+<pre><code>$a
+[1] 1 4 7
+
+$b
+[1] 2 5 8
+
+$c
+[1] 3 6 9</code></pre>
+</div>
+<div id="ランクを計算" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> ランクを計算</h1>
+<p>ベクトル内での昇順の順位を示します。同順の場合の処理は<code>ties.method</code>で指定です。</p>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">10</span>, <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="dv">10</span>)))</span></code></pre></div>
+<pre><code> [1] 1 5 9 3 8 6 1 5 4 5</code></pre>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" tabindex="-1"></a><span class="fu">rank</span>(x)</span></code></pre></div>
+<pre><code> [1]  1.5  6.0 10.0  3.0  9.0  8.0  1.5  6.0  4.0  6.0</code></pre>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a><span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">&quot;min&quot;</span>)</span></code></pre></div>
+<pre><code> [1]  1  5 10  3  9  8  1  5  4  5</code></pre>
+<p>ゴルフの順位のようにn位タイを計算するのはちょっと手間かもです。</p>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" tabindex="-1"></a>ties <span class="ot">&lt;-</span> <span class="fu">unique</span>(x[<span class="fu">duplicated</span>(x)])</span>
+<span id="cb110-2"><a href="#cb110-2" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%d位%s&quot;</span>, <span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">&quot;min&quot;</span>), <span class="fu">ifelse</span>(x <span class="sc">%in%</span> ties, <span class="st">&quot;タイ&quot;</span>, <span class="st">&quot;&quot;</span>))</span></code></pre></div>
+<pre><code> [1] &quot;1位タイ&quot; &quot;5位タイ&quot; &quot;10位&quot;    &quot;3位&quot;     &quot;9位&quot;     &quot;8位&quot;     &quot;1位タイ&quot;
+ [8] &quot;5位タイ&quot; &quot;4位&quot;     &quot;5位タイ&quot;</code></pre>
+</div>
 <div id="ベクトルの中から指定した要素の位置を特定する"
-class="section level1" number="8">
-<h1><span class="header-section-number">8</span>
+class="section level1" number="10">
+<h1><span class="header-section-number">10</span>
 ベクトルの中から指定した要素の位置を特定する</h1>
 <p><code>which</code>関数で簡単にできます。試しに1から10までの並びがランダムなベクトルを作って使ってみましょう。</p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" tabindex="-1"></a>(v <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)[<span class="fu">order</span>(<span class="fu">runif</span>(<span class="dv">10</span>))])</span></code></pre></div>
-<pre><code> [1]  8  6  2  7  1 10  5  3  4  9</code></pre>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" tabindex="-1"></a>(v <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)[<span class="fu">order</span>(<span class="fu">runif</span>(<span class="dv">10</span>))])</span></code></pre></div>
+<pre><code> [1]  8  2  7 10  9  1  6  4  5  3</code></pre>
 <p><code>6</code>の位置を探します。</p>
-<div class="sourceCode" id="cb100"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" tabindex="-1"></a>(i <span class="ot">&lt;-</span> <span class="fu">which</span>(v <span class="sc">==</span> <span class="dv">6</span>))</span></code></pre></div>
-<pre><code>[1] 2</code></pre>
-<div class="sourceCode" id="cb102"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" tabindex="-1"></a>v[i]</span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" tabindex="-1"></a>(i <span class="ot">&lt;-</span> <span class="fu">which</span>(v <span class="sc">==</span> <span class="dv">6</span>))</span></code></pre></div>
+<pre><code>[1] 7</code></pre>
+<div class="sourceCode" id="cb116"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" tabindex="-1"></a>v[i]</span></code></pre></div>
 <pre><code>[1] 6</code></pre>
 </div>
-<div id="ベクトルの要素の名前" class="section level1" number="9">
-<h1><span class="header-section-number">9</span>
+<div id="ベクトルの要素の名前" class="section level1" number="11">
+<h1><span class="header-section-number">11</span>
 ベクトルの要素の名前</h1>
 <p>ベクトルの要素には名前をつけて、ラベルとして扱うことができます。他のプログラミング言語では、見かけない仕様です。</p>
-<div class="sourceCode" id="cb104"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)</span>
-<span id="cb104-2"><a href="#cb104-2" tabindex="-1"></a>v1</span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)</span>
+<span id="cb118-2"><a href="#cb118-2" tabindex="-1"></a>v1</span></code></pre></div>
 <pre><code>a b c 
 4 2 1 </code></pre>
 <p>ちょっと気味の悪い代入演算に思えるかも知れませんが、<code>names&lt;-</code>と言う関数を呼び出しています。
 つけた名前を使ってアクセスできます。</p>
-<div class="sourceCode" id="cb106"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" tabindex="-1"></a>v1[<span class="st">&quot;a&quot;</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" tabindex="-1"></a>v1[<span class="st">&quot;a&quot;</span>]</span></code></pre></div>
 <pre><code>a 
 4 </code></pre>
 <p>計算結果のベクトルや行列に名前をつけておいたほうが分かりやすくなりますし、関数の戻り値のオブジェクトの一部がベクトルや行列になっているとき、数字で位置を指定するよりも、名前でアクセスした方がコードの見通しが良くなります。</p>
-<div id="名前の消し方" class="section level2" number="9.1">
-<h2><span class="header-section-number">9.1</span> 名前の消し方</h2>
+<div id="名前の消し方" class="section level2" number="11.1">
+<h2><span class="header-section-number">11.1</span> 名前の消し方</h2>
 <p>名前が邪魔な場合は剥がしましょう。</p>
-<div class="sourceCode" id="cb108"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a>v1[[<span class="st">&quot;a&quot;</span>]] <span class="co"># 参照時は[[で剥がせる</span></span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" tabindex="-1"></a>v1[[<span class="st">&quot;a&quot;</span>]] <span class="co"># 参照時は[[で剥がせる</span></span></code></pre></div>
 <pre><code>[1] 4</code></pre>
-<div class="sourceCode" id="cb110"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" tabindex="-1"></a><span class="fu">c</span>(v1, v2, <span class="at">use.names =</span> <span class="cn">FALSE</span>) <span class="co"># 結合時はuse.names=FALSEで剥がせる</span></span></code></pre></div>
+<div class="sourceCode" id="cb124"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" tabindex="-1"></a><span class="fu">c</span>(v1, v2, <span class="at">use.names =</span> <span class="cn">FALSE</span>) <span class="co"># 結合時はuse.names=FALSEで剥がせる</span></span></code></pre></div>
 <pre><code>[1] 4 2 1 1 2 3</code></pre>
-<div class="sourceCode" id="cb112"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">=</span> <span class="cn">NULL</span> <span class="co"># NULLを代入すれば消せる</span></span>
-<span id="cb112-2"><a href="#cb112-2" tabindex="-1"></a>v1</span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">=</span> <span class="cn">NULL</span> <span class="co"># NULLを代入すれば消せる</span></span>
+<span id="cb126-2"><a href="#cb126-2" tabindex="-1"></a>v1</span></code></pre></div>
 <pre><code>[1] 4 2 1</code></pre>
 </div>
 </div>
