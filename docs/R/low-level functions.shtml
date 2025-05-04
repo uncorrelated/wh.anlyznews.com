@@ -872,7 +872,7 @@ number="10.3">
 <span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">runif</span>(<span class="dv">15</span>), <span class="fu">runif</span>(<span class="dv">15</span>), <span class="at">xlab=</span><span class="st">&quot;x&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;y&quot;</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">par</span>()<span class="sc">$</span>mgp[<span class="dv">1</span>]</span>
 <span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;注意) xもyも一様分布から生成&quot;</span>, <span class="at">side=</span><span class="dv">1</span>, <span class="at">line=</span>baseline<span class="sc">+</span><span class="dv">1</span>, <span class="at">adj=</span><span class="dv">0</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;出展) 特になし&quot;</span>, <span class="at">side=</span><span class="dv">1</span>, <span class="at">line=</span>baseline<span class="sc">+</span><span class="dv">2</span>, <span class="at">adj=</span><span class="dv">0</span>)</span></code></pre></div>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;出典) 特になし&quot;</span>, <span class="at">side=</span><span class="dv">1</span>, <span class="at">line=</span>baseline<span class="sc">+</span><span class="dv">2</span>, <span class="at">adj=</span><span class="dv">0</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/mtext-1.png" width="672" /></p>
 <ul>
 <li>表現式をテキストにとれるので、数式の表示もできます。</li>
