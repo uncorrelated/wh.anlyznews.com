@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rで描く棒グラフ（barplot/spineplot）</title>
+
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rで描く棒グラフ（barplot/spineplot）</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>小学校で教わるベタな棒グラフを描画してみましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#二次元の棒グラフ" id="toc-二次元の棒グラフ"><span
+class="toc-section-number">1</span> 二次元の棒グラフ</a>
+<ul>
+<li><a href="#装飾" id="toc-装飾"><span
+class="toc-section-number">1.1</span> 装飾</a></li>
+<li><a href="#縦並び" id="toc-縦並び"><span
+class="toc-section-number">1.2</span> 縦並び</a></li>
+<li><a href="#モデル式" id="toc-モデル式"><span
+class="toc-section-number">1.3</span> モデル式</a></li>
+<li><a href="#集計してプロット" id="toc-集計してプロット"><span
+class="toc-section-number">1.4</span> 集計してプロット</a></li>
+</ul></li>
+<li><a href="#多次元の棒グラフ" id="toc-多次元の棒グラフ"><span
+class="toc-section-number">2</span> 多次元の棒グラフ</a>
+<ul>
+<li><a href="#積み重ね" id="toc-積み重ね"><span
+class="toc-section-number">2.1</span> 積み重ね</a>
+<ul>
+<li><a href="#比率にする" id="toc-比率にする"><span
+class="toc-section-number">2.1.1</span> 比率にする</a></li>
+<li><a href="#比率と数量の同時表示" id="toc-比率と数量の同時表示"><span
+class="toc-section-number">2.1.2</span> 比率と数量の同時表示</a></li>
+</ul></li>
+<li><a href="#横並び" id="toc-横並び"><span
+class="toc-section-number">2.2</span> 横並び</a></li>
+<li><a href="#モデル式-1" id="toc-モデル式-1"><span
+class="toc-section-number">2.3</span> モデル式</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="二次元の棒グラフ" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> 二次元の棒グラフ</h1>
+<p>ベクトルを棒グラフにしてみましょう。ラベルは<code>names.arg</code>でも指定できますが、name属性をつけておくと自動的に使います。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">40</span>, <span class="dv">80</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">names</span>(v) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>(<span class="fu">barplot</span>(v))</span></code></pre></div>
+<p><img src="common_files/figure-html/barplot01-1.png" width="672" /></p>
+<pre><code>     [,1]
+[1,]  0.7
+[2,]  1.9
+[3,]  3.1</code></pre>
+<p>戻り値は棒の中央の位置で、低水準描画関数で利用できます。</p>
+<div id="装飾" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> 装飾</h2>
+<p>引数<code>space</code>で棒と棒のスペースを指定できます。単位は棒の横幅サイズです。色やラベルは<code>plot</code>と同様です。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>crp <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;lightpink&quot;</span>, <span class="st">&quot;deeppink&quot;</span>)) <span class="co"># グラデーション生成関数を生成</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">barplot</span>(v, <span class="at">space =</span> <span class="fl">0.5</span>, <span class="at">border =</span> <span class="st">&quot;darkred&quot;</span>, <span class="at">col =</span> <span class="fu">crp</span>(<span class="fu">length</span>(v)), <span class="at">density =</span> <span class="dv">50</span>, <span class="at">angle =</span> <span class="dv">30</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/barplot02-1.png" width="672" /></p>
+<p><code>density</code>と<code>angle</code>を指定すると見栄えがよくなることが多いです。</p>
+</div>
+<div id="縦並び" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> 縦並び</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">barplot</span>(v, <span class="at">horiz =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/barplot03-1.png" width="672" /></p>
+</div>
+<div id="モデル式" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> モデル式</h2>
+<p>データフレームを引数にとる場合、モデル式を使うこともできます。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">barplot</span>(GNP <span class="sc">~</span> Year, <span class="at">data =</span> longley)</span></code></pre></div>
+</div>
+<div id="集計してプロット" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> 集計してプロット</h2>
+<p>データフレームの集計はしてくれないので<code>xtabs</code>や<code>table</code>で行列をつくる必要がります。</p>
+</div>
+</div>
+<div id="多次元の棒グラフ" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 多次元の棒グラフ</h1>
+<p>棒グラフの三次元プロットは視認性が悪いので、積み重ねるか、横並びにしましょう。複数のグラフを並べるのも手段です。</p>
+<div id="積み重ね" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> 積み重ね</h2>
+<p>標準では積み重ねになります。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="dv">50</span>), <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">dimnames</span>(m) <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">Fruit =</span> <span class="fu">c</span>(<span class="st">&quot;Apple&quot;</span>, <span class="st">&quot;Pineapple&quot;</span>), <span class="at">Box =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">barplot</span>(m, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="at">legend.text =</span> <span class="cn">TRUE</span>, <span class="at">args.legend =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="st">&quot;top&quot;</span>, <span class="at">horiz =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<p><img src="common_files/figure-html/barplot04-1.png" width="672" /></p>
+<p>多次元なので行列を使いますが、<code>dimnames</code>属性でカテゴリ名を指定しているのに注意してください。また、引数<code>col</code>，<code>density</code>，<code>angle</code>は縦軸の項目数までの色しか参照しません。</p>
+<p><code>legend.text = TRUE</code>で凡例を表示します。内部で<code>legend</code>関数を呼んでいるわけですが、<code>args.legend</code>でそのパラメーターを指定できます。</p>
+<div id="比率にする" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> 比率にする</h3>
+<p><code>proportions</code>関数を使えばデータを比率に変換できます。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">proportions</span>(m, <span class="dv">2</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">legend.text =</span> <span class="cn">TRUE</span>, <span class="at">args.legend =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">y =</span> <span class="fl">1.1</span>, <span class="at">xpd =</span> <span class="cn">TRUE</span>, <span class="at">horiz =</span> <span class="cn">TRUE</span>, <span class="at">xjust =</span> <span class="fl">0.5</span>))</span></code></pre></div>
+<p><img src="common_files/figure-html/barplot05-1.png" width="672" /></p>
+<p>凡例を描画領域の外に出しています。</p>
+</div>
+<div id="比率と数量の同時表示" class="section level3" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span>
+比率と数量の同時表示</h3>
+<p><code>mosaicplot</code>の特殊形の<code>spineplot</code>を使うと比率と数量の同時表示が可能です。縦軸の左のラベルが凡例になるので、凡例が手軽に入る利点もあります。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">spineplot</span>(<span class="fu">t</span>(m))</span></code></pre></div>
+<p><img src="common_files/figure-html/barplot06-1.png" width="672" /></p>
+<p>棒と棒の間は<code>space</code>ではなく<code>off</code>で、数量単位で指定します。戻り値は集計データになります。</p>
+<p><code>spineplot</code>は因子型で与えられる未集計のデータもプロットできます。<code>spineplot</code>で行列にまとめられた集計のデータを使う場合は、<code>table</code>関数などで<code>dimnames</code>属性が指定された行列を渡すことが推奨されます。</p>
+<p><code>spineplot</code>は、カテゴリカルデータと数量データの両方をプロットできます。カテゴリカルデータの場合はスパインプロット、数量データの場合はスパイログラムと呼び名が変わります。説明変数が数量データの場合は<code>breaks</code>で、<code>hist</code>と同様に集計方法を指定できます。</p>
+</div>
+</div>
+<div id="横並び" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> 横並び</h2>
+<p><code>beside</code>をつけると横並びにできます。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">barplot</span>(m, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">100</span>), <span class="at">legend.text =</span> <span class="cn">TRUE</span>, <span class="at">args.legend =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="st">&quot;top&quot;</span>, <span class="at">horiz =</span> <span class="cn">TRUE</span>), <span class="at">beside =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/barplot07-1.png" width="672" /></p>
+</div>
+<div id="モデル式-1" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> モデル式</h2>
+<p>モデル式を使う場合は、<code>cbind</code>で従属変数を多次元にします。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">cbind</span>(Employed, Unemployed) <span class="sc">~</span> Year, <span class="at">data =</span> longley)</span></code></pre></div>
+</div>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
