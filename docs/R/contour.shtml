@@ -441,16 +441,15 @@ familyは指定できないので、好みのフォントに変更はできま�
 <h1><span class="header-section-number">4</span>
 色分け図に等値線を描く</h1>
 <p>色分けしたいだけの場合<code>filled.contour</code>を使うほうが手っ取り早いです。等値線の上書きもできます。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">4.5</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>crp <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;pink&quot;</span>, <span class="st">&quot;white&quot;</span>))</span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">filled.contour</span>(x, y, z, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, levels, <span class="fu">max</span>(z)), <span class="at">col =</span> <span class="fu">crp</span>(<span class="fu">length</span>(levels) <span class="sc">+</span> <span class="dv">1</span>), </span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>   <span class="at">plot.axes =</span> {</span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>      <span class="fu">axis</span>(<span class="dv">1</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>      <span class="fu">axis</span>(<span class="dv">2</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>      <span class="fu">contour</span>(x, y, z, <span class="at">levels =</span> levels, <span class="at">labcex =</span> <span class="fl">1.0</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>   }</span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>levels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">1</span>, <span class="fl">1.5</span>, <span class="dv">2</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>crp <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;pink&quot;</span>, <span class="st">&quot;white&quot;</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">filled.contour</span>(x, y, z, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, levels, <span class="fu">max</span>(z)), <span class="at">col =</span> <span class="fu">crp</span>(<span class="fu">length</span>(levels) <span class="sc">+</span> <span class="dv">1</span>), </span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>   <span class="at">plot.axes =</span> {</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>      <span class="fu">axis</span>(<span class="dv">1</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>      <span class="fu">axis</span>(<span class="dv">2</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>      <span class="fu">contour</span>(x, y, z, <span class="at">levels =</span> levels, <span class="at">labcex =</span> <span class="fl">1.0</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a>   }</span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a>)</span></code></pre></div>
 <p><img src="common_files/figure-html/contour04-1.png" width="672" /></p>
 <p>色分けの凡例が消せず、領域を分割して表示する場合にうまく作図できないので、状況にあわせて使い分けましょう。</p>
 </div>
