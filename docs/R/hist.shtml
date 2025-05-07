@@ -529,7 +529,7 @@ number="1.5">
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">heatmap</span>(X, <span class="at">Rowv =</span> <span class="cn">NA</span>, <span class="at">Colv =</span> <span class="cn">NULL</span>, </span>
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">dist =</span> \(X){</span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    margin <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="co"># 1だと行ごと，2だと列ごと</span></span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="dv">2</span>, mean) <span class="co"># 列ごとの平均</span></span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, margin, mean) <span class="co"># 列ごとの平均</span></span>
 <span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    sX <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)[margin], \(x) (x <span class="sc">-</span> m)<span class="sc">/</span>m) <span class="co"># 標準化</span></span>
 <span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="fu">dist</span>(sX)</span>
 <span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  }, <span class="at">hclustfun =</span> \(d){</span>
