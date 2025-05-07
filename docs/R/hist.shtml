@@ -11,7 +11,7 @@
 
 
 
-<title>Rで頻度をプロット（hist/heatmap/mosaicplot）</title>
+<title>Rで頻度をプロット（hist/heatmap/mosaic/cd）</title>
 
 <script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -328,7 +328,7 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 
 
 
-<h1 class="title toc-ignore">Rで頻度をプロット（hist/heatmap/mosaicplot）</h1>
+<h1 class="title toc-ignore">Rで頻度をプロット（hist/heatmap/mosaic/cd）</h1>
 <!--#include virtual="/parts/under_h2.txt"-->
 
 <div>
@@ -394,6 +394,10 @@ class="toc-section-number">2.2</span>
 <li><a href="#分割の順番" id="toc-分割の順番"><span
 class="toc-section-number">2.2.1</span> 分割の順番</a></li>
 </ul></li>
+<li><a href="#連続変数の条件付きプロットcdplot"
+id="toc-連続変数の条件付きプロットcdplot"><span
+class="toc-section-number">2.3</span>
+連続変数の条件付きプロット（<code>cdplot</code>）</a></li>
 </ul></li>
 </ul>
 </div>
@@ -559,6 +563,23 @@ class="math inline">\(\chi^2\)</span>検定が用いられる残差が使われ�
 <p>と言う風にします。</p>
 </div>
 </div>
+<div id="連続変数の条件付きプロットcdplot" class="section level2"
+number="2.3">
+<h2><span class="header-section-number">2.3</span>
+連続変数の条件付きプロット（<code>cdplot</code>）</h2>
+<p>気温が低いとゴムが固くなって部品が破損するような、連続変数の条件付き二項分布に従うような場合は、<code>cdplot</code>を使います。ヘルプに載っている例そのものですが、</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># スペースシャトルの部品O-ringの破損と気温の関係</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>fail <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>   <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;no&quot;</span>, <span class="st">&quot;yes&quot;</span>))</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>temperature <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">53</span>, <span class="dv">57</span>, <span class="dv">58</span>, <span class="dv">63</span>, <span class="dv">66</span>, <span class="dv">67</span>, <span class="dv">67</span>, <span class="dv">67</span>, <span class="dv">68</span>, <span class="dv">69</span>, <span class="dv">70</span>, <span class="dv">70</span>, <span class="dv">70</span>, <span class="dv">70</span>, <span class="dv">72</span>, <span class="dv">73</span>, <span class="dv">75</span>, <span class="dv">75</span>, <span class="dv">76</span>, <span class="dv">76</span>, <span class="dv">78</span>, <span class="dv">79</span>, <span class="dv">81</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="fu">cdplot</span>(fail <span class="sc">~</span> temperature)</span></code></pre></div>
+<p><img src="common_files/figure-html/cdplot01-1.png" width="672" /></p>
+<p>プロットすれば一目瞭然ですね。ポアソン分布や順序ロジットに従うような分布にも向いています。</p>
+<p>従属変数が因子型<a href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>になることには注意してください。<code>labels</code>を設定しておくと、描画で使われます。</p>
+<p>滑らかになっているのは、内部的にカーネル密度推定を行っているからです。よりデータを忠実に描画したい場合は、<code>spineplot</code>でスパイログラムを描きます。横軸のスケールが非直観的なので、見せる相手は選びましょう。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">spineplot</span>(fail <span class="sc">~</span> temperature, <span class="at">breaks =</span> <span class="dv">5</span>)</span></code></pre></div>
+</div>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr />
@@ -566,6 +587,9 @@ class="math inline">\(\chi^2\)</span>検定が用いられる残差が使われ�
 <li id="fn1"><p><a
 href="./low-level%20functions.shtml">Rのグラフィカル・オプションと低水準描画関数</a>を参照してください。<a
 href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a
+href="https://wh.anlyznews.com/R/factor.shtml">因子型と順序型のざっとした説明</a>の知識で間に合います。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
