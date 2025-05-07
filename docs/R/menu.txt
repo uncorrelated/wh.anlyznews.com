@@ -60,6 +60,7 @@ div.right h2.menu {
     <dt><a href="boxplot.shtml">Rで描く箱ひげ図（boxplot）</a></dt>
     <dt><a href="contour.shtml">Rで描く等値線図（Contour line）</a></dt>
     <dt><a href="barplot.shtml">Rで描く棒グラフ（barplot/spineplot）</a></dt>
+    <dt><a href="hist.shtml">Rで頻度をプロット（hist/heatmap/mosaicplot）</a></dt>
     <dt><a href="dotchart.shtml">ドットプロットによる信頼区間と比較区間の描画</a></dt>
 </dl>
 <h2 class="menu">R拡張</h2>
