@@ -452,7 +452,7 @@ class="toc-section-number">2.3</span> モデル式</a></li>
 <p><img src="common_files/figure-html/barplot06-1.png" width="672" /></p>
 <p>棒と棒の間は<code>space</code>ではなく<code>off</code>で、数量単位で指定します。戻り値は集計データになります。</p>
 <p><code>spineplot</code>は因子型で与えられる未集計のデータもプロットできます。<code>spineplot</code>で行列にまとめられた集計のデータを使う場合は、<code>table</code>関数などで<code>dimnames</code>属性が指定された行列を渡すことが推奨されます。</p>
-<p><code>spineplot</code>は、カテゴリカルデータと数量データの両方をプロットできます。カテゴリカルデータの場合はスパインプロット、数量データの場合はスパイログラムと呼び名が変わります。説明変数が数量データの場合は<code>breaks</code>で、<code>hist</code>と同様に集計方法を指定できます。</p>
+<p><code>spineplot</code>は、カテゴリカルデータと数量データの両方を説明変数（横軸）に持てます。カテゴリカルデータの場合はスパインプロット、数量データの場合はスパイログラムと呼び名が変わります。説明変数が数量データの場合は<code>breaks</code>で、<code>hist</code>と同様に集計方法を指定できます。</p>
 </div>
 </div>
 <div id="横並び" class="section level2" number="2.2">
