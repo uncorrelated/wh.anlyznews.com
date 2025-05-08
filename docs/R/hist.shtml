@@ -530,16 +530,19 @@ number="1.5">
 <span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="at">dist =</span> \(X){</span>
 <span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>    margin <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="co"># 1だと行ごと，2だと列ごと</span></span>
 <span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, margin, mean) <span class="co"># 列ごとの平均</span></span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    sX <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)[margin], \(x) (x <span class="sc">-</span> m)<span class="sc">/</span>m) <span class="co"># 標準化</span></span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="fu">dist</span>(sX)</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  }, <span class="at">hclustfun =</span> \(d){</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="fu">hclust</span>(d, <span class="at">method =</span> <span class="st">&quot;average&quot;</span>)</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>  },</span>
-<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  <span class="at">scale =</span> <span class="st">&quot;col&quot;</span>, <span class="co"># 列で標準化してから色分け</span></span>
-<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">crp</span>(<span class="fu">max</span>(X) <span class="sc">+</span> <span class="dv">1</span>), </span>
-<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="at">cexRow =</span> <span class="fl">1.25</span>, <span class="at">cexCol =</span> <span class="fl">1.25</span>,</span>
-<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">6</span>),</span>
-<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">xlab =</span> labels[<span class="dv">2</span>], <span class="at">ylab =</span> labels[<span class="dv">1</span>])</span></code></pre></div>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    s <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, margin, sd) <span class="co"># 列ごとの標準偏差</span></span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    sX <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)[margin], \(x) (x<span class="sc">-</span>m)<span class="sc">/</span>s) <span class="co"># 標準化</span></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    sX[<span class="fu">is.na</span>(sX)] <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># 標準偏差0でNAのときは0に置換</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">2</span> <span class="sc">==</span> margin) sX <span class="ot">=</span> <span class="fu">t</span>(sX)</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>    <span class="fu">dist</span>(sX)</span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>  }, <span class="at">hclustfun =</span> \(d){</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>    <span class="fu">hclust</span>(d, <span class="at">method =</span> <span class="st">&quot;average&quot;</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  },</span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>  <span class="at">scale =</span> <span class="st">&quot;col&quot;</span>, <span class="co"># 列で標準化してから色分け</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">crp</span>(<span class="fu">max</span>(X) <span class="sc">+</span> <span class="dv">1</span>), </span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="at">cexRow =</span> <span class="fl">1.25</span>, <span class="at">cexCol =</span> <span class="fl">1.25</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>  <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">6</span>),</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>  <span class="at">xlab =</span> labels[<span class="dv">2</span>], <span class="at">ylab =</span> labels[<span class="dv">1</span>])</span></code></pre></div>
 <p><img src="common_files/figure-html/heatmap03-1.png" width="672" /></p>
 </div>
 </div>
