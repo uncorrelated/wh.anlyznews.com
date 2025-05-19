@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>尤度比検定の検定統計量がχ二乗分布に従うことの証明</title>
+
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">尤度比検定の検定統計量がχ二乗分布に従うことの証明</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>尤度比（LR）検定をかける準備をしましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#ブロック行列の逆行列" id="toc-ブロック行列の逆行列"><span
+class="toc-section-number">1</span> ブロック行列の逆行列</a></li>
+<li><a href="#二次形式txi---exi-sigma-1-xi---exiはchi2分布に従う"
+id="toc-二次形式txi---exi-sigma-1-xi---exiはchi2分布に従う"><span
+class="toc-section-number">2</span> 二次形式<span
+class="math inline">\({}^t\!(\xi - E[\xi]) \Sigma^{-1} (\xi -
+E[\xi])\)</span>は<span
+class="math inline">\(\chi^2\)</span>分布に従う</a></li>
+<li><a href="#フィッシャー情報量の変形"
+id="toc-フィッシャー情報量の変形"><span
+class="toc-section-number">3</span> フィッシャー情報量の変形</a></li>
+<li><a href="#wilks定理" id="toc-wilks定理"><span
+class="toc-section-number">4</span> Wilks定理</a></li>
+</ul>
+</div>
+
+<p>尤度比検定の検定統計量がχ二乗分布に従う理由を確認します。</p>
+<div id="ブロック行列の逆行列" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+ブロック行列の逆行列</h1>
+<p>尤度比検定の検定統計量を展開していくときに使うブロック行列の逆行列の求め方を確認しましょう。ほとんど四則演算です。</p>
+<p><span class="math inline">\(k\)</span>行<span
+class="math inline">\(k\)</span>列の正方行列を、<span
+class="math inline">\(r\)</span>行と<span
+class="math inline">\(k-r\)</span>行、<span
+class="math inline">\(r\)</span>列と<span
+class="math inline">\(k-r\)</span>列に分割します。ゼロ行列を<span
+class="math inline">\(O\)</span>，恒等行列を<span
+class="math inline">\(1_n\)</span>（<span class="math inline">\(n\in\{k,
+k-r\}\)</span>）とおき、正方行列<span
+class="math inline">\(H\)</span>を三角行列と対角行列に分解することを考えます。</p>
+<p><span class="math display">\[\begin{aligned}
+H &amp;= \begin{pmatrix}
+H_1 &amp; H_2 \\
+H_3 &amp; H_4
+\end{pmatrix} \\
+&amp;= \begin{pmatrix}
+1_k &amp; M_1 \\
+O &amp; 1_{k-r}
+\end{pmatrix} \begin{pmatrix}
+M_2 &amp; O \\
+O &amp; M_3
+\end{pmatrix} \begin{pmatrix}
+1_k &amp; O \\
+M_4 &amp; 1_{k-r}
+\end{pmatrix} \\
+&amp;= \begin{pmatrix}
+M_2 &amp; M_2 M_4 \\
+M_1 M_2 &amp; M_1 M_2 M_4 + M_3
+\end{pmatrix}
+\end{aligned}\]</span></p>
+<p>となり、<span class="math inline">\(M_1 = H_1^{-1}H_2\)</span>, <span
+class="math inline">\(M_2 = H_1\)</span>, <span
+class="math inline">\(M_3 = H_4 - H_3 H_1^{-1} H_2\)</span>, <span
+class="math inline">\(M_4 =
+H_1^{-1}H_2\)</span>と左右の行列の要素の対応が分かります。</p>
+<p>逆行列を考えます。</p>
+<p><span class="math display">\[\begin{aligned}
+H^{-1} &amp;= \begin{pmatrix}
+H_1 &amp; H_2 \\
+H_3 &amp; H_4
+\end{pmatrix}^{-1} \\
+&amp;= \bigg( \begin{pmatrix}
+1_k &amp; M_1 \\
+O &amp; 1_{k-r}
+\end{pmatrix} \begin{pmatrix}
+M_2 &amp; O \\
+O &amp; M_3
+\end{pmatrix} \begin{pmatrix}
+1_k &amp; O \\
+M_4 &amp; 1_{k-r}
+\end{pmatrix} \bigg)^{-1} \\
+&amp;= \begin{pmatrix}
+1_k &amp; O \\
+M_4 &amp; 1_{k-r}
+\end{pmatrix}^{-1} \begin{pmatrix}
+M_2 &amp; O \\
+O &amp; M_3
+\end{pmatrix}^{-1} \begin{pmatrix}
+1_k &amp; M_1 \\
+O &amp; 1_{k-r}
+\end{pmatrix}^{-1} \\
+&amp;= \begin{pmatrix}
+1_k &amp; O \\
+-M_4 &amp; 1_{k-r}
+\end{pmatrix} \begin{pmatrix}
+M_2^{-1} &amp; O \\
+O &amp; M_3^{-1}
+\end{pmatrix} \begin{pmatrix}
+1_k &amp; -M_1 \\
+O &amp; 1_{k-r}
+\end{pmatrix} \\
+&amp;= \begin{pmatrix}
+(H_1 - H_2 H_4^{-1} H_3)^{-1} &amp; \cdots \\
+\vdots &amp; \ddots
+\end{pmatrix}
+\end{aligned}\]</span></p>
+<p>左上のブロックだけ計算しました。他もがんばって展開して代入すれば出てくるわけですが、後の説明に使わないので省略します。</p>
+</div>
+<div id="二次形式txi---exi-sigma-1-xi---exiはchi2分布に従う"
+class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 二次形式<span
+class="math inline">\({}^t\!(\xi - E[\xi]) \Sigma^{-1} (\xi -
+E[\xi])\)</span>は<span
+class="math inline">\(\chi^2\)</span>分布に従う</h1>
+<p><span class="math inline">\(\xi\)</span>は正規分布に従う要素数<span
+class="math inline">\(r\)</span>のベクトル、<span
+class="math inline">\(\Sigma\)</span>を<span
+class="math inline">\(\xi\)</span>の分散共分散行列とします。</p>
+<p>ここで<span class="math inline">\(z=\xi - E[\xi]\)</span>として</p>
+<p><span class="math display">\[\begin{align}
+{}^t\!(\xi - E[\xi]) \Sigma^{-1} (\xi - E[\xi]) &amp;= {}^t\!z
+\Sigma^{-1} z \\
+&amp;= {}^t\!(\Sigma^{-\frac{1}{2}}z)(\Sigma^{-\frac{1}{2}}z)
+\end{align}\]</span></p>
+<p><span
+class="math inline">\(w=\Sigma^{-\frac{1}{2}}z\)</span>として</p>
+<p><span class="math display">\[\begin{align}
+{}^t\!(\xi - E[\xi]) \Sigma^{-1} (\xi - E[\xi]) &amp;= {}^t\!w w
+\end{align}\]</span></p>
+<p><span class="math inline">\(E[z]=0\)</span>なので<span
+class="math inline">\(E[w]=0\)</span>になります。<span
+class="math inline">\(z\)</span>の分散共分散行列も<span
+class="math inline">\(\Sigma\)</span>になることに注意して、</p>
+<p><span class="math display">\[\begin{align}
+\mbox{VAR}[w] &amp;= (\Sigma^{-\frac{1}{2}}z) \
+{}^t\!(\Sigma^{-\frac{1}{2}}z) \\
+&amp;= \Sigma^{-\frac{1}{2}} z \ {}^t\! z \ {}^t\Sigma^{-\frac{1}{2}} \\
+&amp;= \Sigma^{-\frac{1}{2}} \Sigma \ {}^t\Sigma^{-\frac{1}{2}} \\
+&amp;= 1_r
+\end{align}\]</span></p>
+<p>ベクトル<span class="math inline">\(w\)</span>は期待値<span
+class="math inline">\(0\)</span>で分散<span
+class="math inline">\(1\)</span>で共分散<span
+class="math inline">\(0\)</span>になります。<span
+class="math inline">\({}^t\!(\xi - E[\xi]) \Sigma^{-1} (\xi -
+E[\xi])\)</span>は<span class="math inline">\(w\)</span>の<span
+class="math inline">\(2\)</span>乗なので、自由度が<span
+class="math inline">\(r\)</span>になる<span
+class="math inline">\(\chi^2\)</span>分布に従います。</p>
+</div>
+<div id="フィッシャー情報量の変形" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+フィッシャー情報量の変形</h1>
+<p><span class="math inline">\(f(x,
+\theta)\)</span>を確率密度関数とします。<span
+class="math inline">\(x\)</span>は観測値、<span
+class="math inline">\(\theta\)</span>はパラメーターです。</p>
+<p><span class="math display">\[\begin{aligned}
+\frac{\partial}{\partial \theta} \int f(x, \theta) dx &amp;= \int
+\frac{\partial}{\partial \theta} f(x, \theta) dx \\
+&amp;= \int \bigg( \frac{\partial}{\partial \theta} \log f(x, \theta)
+\bigg) f(x, \theta) dx \\
+&amp;= E\bigg[ \frac{\partial}{\partial \theta} \log f(x, \theta) \bigg]
+\end{aligned}\]</span></p>
+<p>確率密度関数の定義から常に<span class="math inline">\(\int f(x,
+\theta) dx = 1\)</span>なので、<span
+class="math inline">\(\frac{\partial}{\partial \theta} \int f(x, \theta)
+dx\)</span>は常に<span
+class="math inline">\(0\)</span>になります。よって、</p>
+<p><span class="math display">\[
+E\bigg[ \frac{\partial}{\partial \theta} \log f(x, \theta) \bigg] = 0
+\]</span></p>
+<p>と常になります。上式の両辺をさらに<span
+class="math inline">\(\theta\)</span>で微分すると、</p>
+<p><span class="math display">\[\begin{aligned}
+\frac{\partial}{\partial \theta} \int \frac{\partial}{\partial \theta}
+\log f(x, \theta) dx &amp;= \int \frac{\partial^2}{\partial \theta^2}
+\log f(x, \theta) f(x) dx \\
+&amp;\ + \int \bigg( \frac{\partial}{\partial \theta} \log f(x, \theta)
+\bigg)^2 f(x) dx \\
+&amp;= E\bigg[ \frac{\partial^2}{\partial \theta^2} \log f(x, \theta)
+\bigg] + I(\theta) \\
+&amp;= 0 \\
+I(\theta) &amp;= - E\bigg[ \frac{\partial^2}{\partial \theta^2} \log
+f(x, \theta) \bigg]
+\end{aligned}\]</span></p>
+<p>となり、フィッシャー情報量を計量分析で扱いやすい形に変形できます。</p>
+</div>
+<div id="wilks定理" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Wilks定理</h1>
+<p><span
+class="math inline">\(k\)</span>個の要素のパラメーター・ベクトル<span
+class="math inline">\(\theta\)</span>を考えます。要素<span
+class="math inline">\(1\)</span>から<span
+class="math inline">\(r\)</span>番目は<span
+class="math inline">\(0\)</span>とした帰無仮説のパラメーター・ベクトルを<span
+class="math inline">\(\theta_0\)</span>とします。要素の順番は任意に置換できるので、制約付きモデルはこの形にすることができます。</p>
+<p><span class="math display">\[
+\theta_0 = \begin{pmatrix} 0 \\ \theta_{0*} \end{pmatrix}
+\]</span></p>
+<p>推定されるパラメーターを<span
+class="math inline">\(\hat{\theta}\)</span>と置きます。<span
+class="math inline">\(\hat{\theta}\)</span>のときの対数尤度関数<span
+class="math inline">\(L(X, \hat{\theta})\)</span>のグラディエントは<span
+class="math inline">\(0\)</span>です。</p>
+<p><span class="math display">\[
+\nabla \log L(X, \hat{\theta}) \equiv \begin{pmatrix} \nabla_A \\
+\nabla_C \end{pmatrix} \log L(X, \hat{\theta}) = \begin{pmatrix} 0 \\ 0
+\end{pmatrix}
+\]</span></p>
+<p><span class="math inline">\(X\)</span>は観測値<span
+class="math inline">\(x\)</span>の集合、データです。制約付きモデルで推定されるパラメーターを<span
+class="math inline">\(\hat{\theta}^r\)</span>と置きます。対数尤度関数<span
+class="math inline">\(L(x,
+\hat{\theta}^r)\)</span>のグラディエントは<span
+class="math inline">\(0\)</span>です。</p>
+<p><span class="math display">\[
+\nabla_C \log L(X, \hat{\theta}^r) = 0
+\]</span></p>
+<p>フィッシャー情報行列<span
+class="math inline">\(I(\theta_0)\)</span>は以下のように書けます。</p>
+<p><span class="math display">\[\begin{aligned}
+I(\theta_0) &amp;= -\frac{1}{n} E \big[ \nabla^{\otimes 2} \log L(X,
+\theta_0)\big] \\
+&amp;= \frac{1}{n} E \big[ \nabla \log L(X, \theta_0)^{\otimes 2}\big]
+\\
+&amp;= \begin{pmatrix} A &amp; B \\ ^t\!B &amp; C \end{pmatrix}
+\end{aligned}\]</span></p>
+<p><span
+class="math inline">\(n\)</span>で割っているのは、尤度関数は<span
+class="math inline">\(n\)</span>個の観測値による確率密度関数の積になるためです。</p>
+<p><span class="math inline">\(A\)</span>は<span class="math inline">\(r
+\times r\)</span>，<span class="math inline">\(B\)</span>は<span
+class="math inline">\(r \times (k-r)\)</span>、<span
+class="math inline">\(C\)</span>は<span class="math inline">\((k-r)
+\times (k-r)\)</span>行列です。</p>
+<p>スコア統計量<span
+class="math inline">\(S\)</span>は以下のように書けます。</p>
+<p><span class="math display">\[
+\frac{1}{\sqrt{n}} \equiv \frac{1}{\sqrt{n}} \nabla \log L(X, \theta_0)
+\equiv \begin{pmatrix}
+\xi \\
+\eta
+\end{pmatrix}
+\]</span></p>
+<p><span class="math inline">\(\nabla \log L(X,
+\hat{\theta})\)</span>を<span
+class="math inline">\(\theta_0\)</span>のまわりで一階のテーラー展開をすると、</p>
+<p><span class="math display">\[
+\nabla \log L(X, \hat{\theta}) = \nabla \log L(X, \theta_0) + \nabla^2
+\log L(X, \theta_0)(\hat{\theta} - \theta_0) + \cdots
+\]</span></p>
+<p><span class="math inline">\(\nabla \log L(X, \hat{\theta}) =
+0\)</span>なので、</p>
+<p><span class="math display">\[
+0 = \nabla \log L(X, \theta_0) + \nabla^2 \log L(X,
+\theta_0)(\hat{\theta} - \theta_0) + \cdots
+\]</span></p>
+<p>両辺を<span
+class="math inline">\(\sqrt{n}\)</span>で割り、フィッシャー情報行列を使って書き換えると、</p>
+<p><span class="math display">\[
+0 \approx \frac{1}{\sqrt{n}} \nabla \log L(X, \theta_0) - I(\theta_0)
+\sqrt{n} (\hat{\theta} - \theta_0)
+\]</span></p>
+<p>よって</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+\xi \\
+\eta
+\end{pmatrix} \approx I(\theta_0) \sqrt{n} (\hat{\theta} - \theta_0)
+\]</span></p>
+<p><span class="math display">\[
+\eta \approx C \sqrt{n} (\hat{\theta}_{*} - \theta_{0*})
+\]</span></p>
+<p>尤度比検定の統計量は以下のように定義されています。</p>
+<p><span class="math display">\[
+-2 \log \Lambda \equiv \log \frac{T_1}{T_2}, \quad T_1
+\equiv
+\frac{L(X, \hat{\theta})}{L(X, \theta_0)}, \quad T_2
+\equiv
+\frac{L(X, \hat{\theta}^r)}{L(X, \theta_0)}
+\]</span></p>
+<p><span class="math inline">\(\log T_1\)</span>をテイラー展開し、<span
+class="math inline">\(\nabla \log L(X, \hat{\theta}) =
+0\)</span>に注意して整理します。</p>
+<p><span class="math display">\[\begin{aligned}
+\log T_1 &amp;= \log L(X, \hat{\theta}) - \log L(X, \theta_0) \\
+&amp;= \log L(X, \theta_0) \\
+&amp;\ + \nabla \log L(X, \hat{\theta})(\hat{\theta} - \theta_0) \\
+&amp;\ + \frac{1}{2}\ \!^t\!(\hat{\theta} - \theta_0) \nabla^{\otimes 2}
+\log L(X, \theta_0) (\hat{\theta} - \theta_0) \\
+&amp;\ + \cdots - \log L(X, \theta_0) \\
+&amp;\approx \frac{1}{2}\ {}^t\!(\hat{\theta} - \theta_0)
+\nabla^{\otimes 2} \log L(X, \theta_0) (\hat{\theta} - \theta_0)
+\end{aligned}\]</span></p>
+<p><span
+class="math inline">\(\sqrt{n}\frac{1}{n}\sqrt{n}=1\)</span>に注意すると、<span
+class="math inline">\(2 \log T_1\)</span>は以下となります。</p>
+<p><span class="math display">\[\begin{aligned}
+2 \log T_1 &amp;\approx \sqrt{n}\ ^t\!(\hat{\theta} - \theta_0)
+\frac{1}{n} \nabla^{\otimes 2} \log L(X, \theta_0) (\hat{\theta} -
+\theta_0) \sqrt{n} \\
+&amp;= \begin{matrix} {} \\ {} \end{matrix}^t\!\!\!\begin{pmatrix} \xi
+\\ \eta \end{pmatrix} I^{-1}(\theta_0) \begin{pmatrix} \xi \\ \eta
+\end{pmatrix}
+\end{aligned}\]</span></p>
+<p>同様に、</p>
+<p><span class="math display">\[
+2 \log T_2 \approx {}^t\!\eta \ C^{-1} \eta
+\]</span></p>
+<p>尤度比検定の統計量は、以下のように近似できます。</p>
+<p><span class="math display">\[
+-2 \log \Lambda \approx \begin{matrix}
+{} \\
+{}
+\end{matrix}^t\!\!\! \begin{pmatrix}
+\xi \\
+\eta
+\end{pmatrix} I^{-1}(\theta_0) \begin{pmatrix}
+\xi \\
+\eta
+\end{pmatrix} - {}^t\eta C^{-1}\eta
+\]</span></p>
+<p>この式を展開するための補題を整理します。</p>
+<p><span class="math display">\[\begin{align}
+\frac{1}{\sqrt{n}} \nabla_A \log L(X, \hat{\theta}^r) &amp;\approx
+\nabla_A \frac{1}{\sqrt{n}} \log L(X, \theta_0) \\
+&amp;\ + \frac{1}{n} \nabla_A {}^t \nabla \log L(X, \theta_0)
+\begin{pmatrix} 0 \\ \sqrt{n} (\hat{\theta}_* - \theta_{0*})
+\end{pmatrix}
+\end{align}\]</span></p>
+<p><span class="math inline">\(\log L(X, \hat{\theta}^r)\)</span>に<span
+class="math inline">\(\theta_0\)</span>まわりでテイラー展開を用いました。</p>
+<p><span class="math display">\[
+\begin{pmatrix} \nabla_A \\ O \end{pmatrix} \begin{pmatrix} {}^t\nabla_A
+&amp; {}^t\nabla_C \end{pmatrix} = \begin{pmatrix} \nabla_A {}^t\nabla_A
+&amp; \nabla_A {}^t\nabla_C \\ O {}^t\nabla_A &amp; O {}^t\nabla_C
+\end{pmatrix}
+\]</span></p>
+<p>と、<span class="math inline">\(n^{-1}\nabla^{\otimes 2}\log L(X,
+\theta_0) \approx - I(\theta_0)\)</span>と、<span
+class="math inline">\(\eta \approx C \sqrt{n} (\hat{\theta}_{*} -
+\theta_{0*})\)</span>に注意して、</p>
+<p><span class="math display">\[
+\frac{1}{\sqrt{n}} \nabla_A \log L(X, \hat{\theta}^r) \approx \xi -
+B\sqrt{n}(\hat{\theta}_* - \theta_{0*}) = \xi - BC^{-1}\eta
+\]</span></p>
+<p><span class="math inline">\({}^t\!({}^t\!\xi\
+{}^t\!\eta)\)</span>を分割します。</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+\xi \\
+\eta
+\end{pmatrix} = v_A + v_C
+\]</span></p>
+<p><span class="math display">\[\begin{align}
+v_A &amp;\equiv \begin{pmatrix} \xi - BC^{-1}\eta \\ 0 \end{pmatrix} \\
+v_C &amp;\equiv \begin{pmatrix} BC^{-1}\eta \\ \eta \end{pmatrix}
+\end{align}\]</span></p>
+<p>以下に注意して、</p>
+<p><span class="math display">\[\begin{align}
+\big( {}^t\!B \quad C \big) I^{-1}(\theta_0) &amp;= \big( {}^t\!B \quad
+C \big) \begin{pmatrix} A &amp; B \\
+{}^t\!B &amp; C \end{pmatrix}^{-1} = ( 0 \quad 1_{k-r} )
+\end{align}\]</span></p>
+<p><span
+class="math inline">\(v_CI^{-1}(\theta)\)</span>は次のように書き換えられます。</p>
+<p><span class="math display">\[\begin{align}
+v_CI^{-1}(\theta) &amp;= \begin{matrix} {} \\ {}
+\end{matrix}^t\!\!\!\begin{pmatrix} BC^{-1}\eta \\ \eta \end{pmatrix}
+I^{-1}(\theta_0) \\
+&amp;= {}^t\big( C^{-1} \eta \big) \big( {}^t\!B \quad C \big)
+I^{-1}(\theta_0) \\
+&amp;= {}^t\big( C^{-1}\eta\big) ( 0 \quad 1_{k-r} )
+\end{align}\]</span></p>
+<p><span class="math inline">\(v_A\)</span>は<span
+class="math inline">\(r\)</span>番目より後は<span
+class="math inline">\(0\)</span>なので、ブロック行列にして左上のブロック以外は<span
+class="math inline">\(0\)</span>になることに注意して、ブロック行列の逆行列の公式をあてはめます。</p>
+<p><span class="math display">\[\begin{align}
+{}^t\!v_A I^{-1}(\theta_0) v_A  &amp;= {}^t (\xi - BC^{-1}\eta) (A -
+BC^{-1}{}^t\!B)^{-1} (\xi - BC^{-1}\eta)
+\end{align}\]</span></p>
+<p><span class="math display">\[\begin{align}
+{}^t\!v_C I^{-1}(\theta_0) v_A  &amp;= {}^t\big( C^{-1}\eta\big) ( 0
+\quad 1_{k-r} ) \begin{pmatrix} \xi - BC^{-1}\eta \\ 0 \end{pmatrix} \\
+&amp;= 0
+\end{align}\]</span></p>
+<p>対称行列の逆行列も対称行列なことに注意します。</p>
+<p><span class="math display">\[\begin{align}
+{}^t\!v_A I^{-1}(\theta_0) v_C &amp;= {}^t ({}^t\!v_C \
+{}^t\!I^{-1}(\theta_0) v_A) \\
+&amp;= {}^t ({}^t\!v_C I^{-1}(\theta_0) v_A) = 0 \\
+\end{align}\]</span></p>
+<p><span class="math display">\[\begin{align}
+\\
+{}^t\!v_C I^{-1}(\theta_0) v_C &amp;= {}^t\big( C^{-1}\eta\big) ( 0
+\quad 1_{k-r} ) \begin{pmatrix} BC^{-1}\eta \\ \eta \end{pmatrix} \\
+&amp;= {}^t ({}^t \eta C^{-1} \eta) \\
+&amp;= {}^t \eta C^{-1} \eta
+\end{align}\]</span></p>
+<p><span class="math display">\[
+\begin{matrix}
+{} \\
+{}
+\end{matrix}^t\!\!\! \begin{pmatrix}
+\xi \\
+\eta
+\end{pmatrix} I^{-1}(\theta_0) \begin{pmatrix}
+\xi \\
+\eta
+\end{pmatrix} = {}^t\!(v_A + v_C) I^{-1}(\theta_0) (v_A + v_C)
+\]</span></p>
+<p><span class="math display">\[
+= (\xi - BC^{-1}\eta) (A - BC^{-1}{}^t\!B)^{-1} (\xi - BC^{-1}\eta) \\ +
+{}^t \eta C^{-1} \eta
+\]</span></p>
+<p>よって、</p>
+<p><span class="math display">\[
+-2 \log \Lambda \approx {}^t\!(\xi - BC^{-1}\eta) (A -
+BC^{-1}{}^t\!B)^{-1} (\xi - BC^{-1}\eta)
+\]</span></p>
+<p>となることが分かります。</p>
+<p><span class="math inline">\({}^t\!({}^t\!\xi\
+{}^t\!\eta)\)</span>は<span class="math inline">\(\mathit{N}(0,
+I^{-1}(\theta_0))\)</span>に漸近するため、<span
+class="math inline">\(\xi -
+BC^{-1}\eta\)</span>も正規分布に漸近します。分散は</p>
+<p><span class="math display">\[
+E\big[ (\xi - BC^{-1}\eta) {}^t\!(\xi - BC^{-1}\eta) \big] \approx (A -
+BC^{-1}{}^t\!B)^{-1}
+\]</span></p>
+<p>となるので<a href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>、<span class="math inline">\(-2 \log
+\Lambda\)</span>が自由度<span class="math inline">\(r\)</span>の<span
+class="math inline">\(\chi^2\)</span>分布に従うと看做せることが分かります。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p><span
+class="math inline">\(\xi\)</span>がテーラー展開の1次の項、<span
+class="math inline">\(-BC^{-1}\eta\)</span>が2次の項になるため、<span
+class="math inline">\(-BC^{-1}\eta\)</span>の交差項は無視できます。<span
+class="math inline">\(\xi{}^t\!\xi\)</span>を考えればよくなりますが、これは<span
+class="math inline">\(I(\theta)\)</span>の左上のブロックになるため、その分散共分散行列は<span
+class="math inline">\(I^{-1}(\theta)\)</span>の左上のブロックになります。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
