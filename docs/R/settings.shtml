@@ -13,7 +13,7 @@
 
 <title>Rの起動設定と起動オプション</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -477,7 +477,7 @@ class="section level4" number="1.1.5.1">
 <span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>    <span class="fu">Sys.setenv</span>(<span class="at">R_LIBS_USER=</span>R_LIBS)</span>
 <span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>})</span>
 <span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repos=</span><span class="st">&quot;https://cran.ism.ac.jp/&quot;</span>)</span></code></pre></div>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">options</span>(<span class="at">repos=</span><span class="st">&quot;https://ftp.yz.yamagata-u.ac.jp/pub/cran/&quot;</span>)</span></code></pre></div>
 <p>パッケージをインストール先と検索パスを変更し、<code>install.packages</code>のデフォルトのリポジトリを指定しているだけです。</p>
 </div>
 <div id="ロケールの変更" class="section level4" number="1.1.5.2">
