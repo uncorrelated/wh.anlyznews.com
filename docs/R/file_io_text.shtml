@@ -13,7 +13,7 @@
 
 <title>Rでのテキストファイルの扱い方</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -365,13 +365,17 @@ class="toc-section-number">1</span> テキストファイルに書き出す</a><
 id="toc-テキストファイルの内容を確認する"><span
 class="toc-section-number">2</span>
 テキストファイルの内容を確認する</a></li>
+<li><a href="#テキストファイルをエディタで編集する"
+id="toc-テキストファイルをエディタで編集する"><span
+class="toc-section-number">3</span>
+テキストファイルをエディタで編集する</a></li>
 <li><a href="#応答による画面表示をファイルに書き出す"
 id="toc-応答による画面表示をファイルに書き出す"><span
-class="toc-section-number">3</span>
+class="toc-section-number">4</span>
 応答による画面表示をファイルに書き出す</a></li>
 <li><a href="#ファイルを読み込んで変更し上書きする"
 id="toc-ファイルを読み込んで変更し上書きする"><span
-class="toc-section-number">4</span>
+class="toc-section-number">5</span>
 ファイルを読み込んで変更し、上書きする</a></li>
 </ul>
 </div>
@@ -396,45 +400,52 @@ number="2">
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">file.show</span>(<span class="st">&quot;example.txt&quot;</span>)</span></code></pre></div>
 <p>これはファイルの文字コード指定<code>encoding</code>をとることができます。</p>
 </div>
-<div id="応答による画面表示をファイルに書き出す" class="section level1"
+<div id="テキストファイルをエディタで編集する" class="section level1"
 number="3">
 <h1><span class="header-section-number">3</span>
+テキストファイルをエディタで編集する</h1>
+<p>統合開発環境を使わないときに、ソースコードのファイルを編集するのに便利です。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">file.edit</span>(<span class="st">&quot;example.R&quot;</span>)</span></code></pre></div>
+</div>
+<div id="応答による画面表示をファイルに書き出す" class="section level1"
+number="4">
+<h1><span class="header-section-number">4</span>
 応答による画面表示をファイルに書き出す</h1>
 <p>bad-practice感あふれるのですが、<code>sink</code>関数で操作からの応答をファイルに書き出すことができます。</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># 記録開始</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">sink</span>(<span class="at">file =</span> <span class="st">&quot;example.txt&quot;</span>, <span class="at">append =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># summary(lm(y ~ x))</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="dv">11</span><span class="sc">:</span><span class="dv">20</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="dv">21</span><span class="sc">:</span><span class="dv">30</span></span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># 記録終了</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">sink</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># 記録開始</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">sink</span>(<span class="at">file =</span> <span class="st">&quot;example.txt&quot;</span>, <span class="at">append =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># summary(lm(y ~ x))</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="dv">11</span><span class="sc">:</span><span class="dv">20</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="dv">21</span><span class="sc">:</span><span class="dv">30</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co"># 記録終了</span></span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="fu">sink</span>()</span></code></pre></div>
 <p>なお、入力の方は<code>savehistory(file = "history.txt")</code>で保存できます。</p>
 </div>
 <div id="ファイルを読み込んで変更し上書きする" class="section level1"
-number="4">
-<h1><span class="header-section-number">4</span>
+number="5">
+<h1><span class="header-section-number">5</span>
 ファイルを読み込んで変更し、上書きする</h1>
 <p><code>file</code>でファイルを開いてファイルハンドルを取得し、読み書き操作の上で、<code>close</code>でファイルを閉じる操作もできます。PerlやPythonと言ったスクリプト言語が得意な処理をしてみましょう。ファイルを読み込んで変更し、上書きします。前世紀に流行ったCGI<a
 href="#fn2" class="footnote-ref"
 id="fnref2"><sup>2</sup></a>で一般的だった流れです<a href="#fn3"
 class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># 読み書きモードでファイルを開く</span></span>
-<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">file</span>(<span class="st">&quot;example.txt&quot;</span>, <span class="st">&quot;r+&quot;</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># 複数行まとめて読み出す</span></span>
-<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">readLines</span>(con)</span>
-<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a><span class="co"># blocking=FALSEのときは全部一度で読み取るとは限らないので以下が要る</span></span>
-<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># while(isIncomplete(con)){</span></span>
-<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a><span class="co">#   lines &lt;- c(lines, readLines(con))</span></span>
-<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a><span class="co"># ファイルの読み書き位置を0地点に移動</span></span>
-<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a><span class="fu">seek</span>(con, <span class="dv">0</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a><span class="co"># ファイルサイズをゼロにする</span></span>
-<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a><span class="fu">truncate</span>(con, <span class="dv">0</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a><span class="co"># 1を001に置換して書き出す</span></span>
-<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">gsub</span>(<span class="st">&quot;([^0-9])(1)([^0-9])&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">100</span><span class="sc">\\</span><span class="st">2</span><span class="sc">\\</span><span class="st">3&quot;</span>, lines), con)</span>
-<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="co"># ファイルを閉じる</span></span>
-<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="fu">close</span>(con)</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># 読み書きモードでファイルを開く</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">file</span>(<span class="st">&quot;example.txt&quot;</span>, <span class="st">&quot;r+&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># 複数行まとめて読み出す</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">readLines</span>(con)</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># blocking=FALSEのときは全部一度で読み取るとは限らないので以下が要る</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># while(isIncomplete(con)){</span></span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#   lines &lt;- c(lines, readLines(con))</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># ファイルの読み書き位置を0地点に移動</span></span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="fu">seek</span>(con, <span class="dv">0</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co"># ファイルサイズをゼロにする</span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="fu">truncate</span>(con, <span class="dv">0</span>)</span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co"># 1を001に置換して書き出す</span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">gsub</span>(<span class="st">&quot;([^0-9])(1)([^0-9])&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">100</span><span class="sc">\\</span><span class="st">2</span><span class="sc">\\</span><span class="st">3&quot;</span>, lines), con)</span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co"># ファイルを閉じる</span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="fu">close</span>(con)</span></code></pre></div>
 <p><code>?file</code>に詳しい説明がありますが、ファイルの第2引数のうち<code>r</code>（読み込み），<code>w</code>（書き込み），<code>a</code>（追記），<code>r+</code>（読み書き）を知っておけばだいたい間に合うと思います。なお、<code>file</code>はURLを指定してネットワーク通信も可能で、C言語の<code>fopen</code>と比較すると格段に高機能な関数です。</p>
 </div>
 <div class="footnotes footnotes-end-of-document">
