@@ -612,7 +612,7 @@ H(\theta_p) \big]^{-1} \sqrt{n} \bar{f}(\theta_p)
 \]</span></p>
 <p>と書けます。</p>
 <p><span
-class="math inline">\(\sqrt{n}\bar{f}(\theta_p)\)</span>は乱数の平均値になるので、Lindberg–Levy中心極限定理を用いることができ、</p>
+class="math inline">\(\sqrt{n}\bar{f}(\theta_p)\)</span>は乱数の平均値になるので、Lindberg–Lévy中心極限定理を用いることができ、</p>
 <p><span class="math display">\[
 \sqrt{n} \bar{f}(\theta_p) \xrightarrow{d} \mathcal{N} \bigg \{ 0, -E
 \big[ \frac{1}{n} H(\theta_p) \big] \bigg \}
