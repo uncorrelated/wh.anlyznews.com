@@ -13,7 +13,7 @@
 
 <title>Rで描く箱ひげ図（boxplot）</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -478,20 +478,20 @@ class="math inline">\(\text{Q3}-\text{Q1}\)</span>です。</p>
 <p>を要素として含むリストを戻します。</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">print</span>(r_boxplot)</span></code></pre></div>
 <pre><code>$stats
-       [,1]   [,2]   [,3]   [,4]
-[1,] -2e+00 -3e+00 -5e+00 -3e-01
-[2,] -3e-02 -9e-02 -5e-01  2e+00
-[3,]  2e+00  3e+00  1e+00  4e+00
-[4,]  4e+00  5e+00  4e+00  7e+00
-[5,]  7e+00  8e+00  7e+00  1e+01
+            [,1]       [,2]       [,3]       [,4]
+[1,] -1.67134921 -3.3336851 -5.0511667 -0.3469611
+[2,] -0.02562462 -0.0885454 -0.5182996  1.6359863
+[3,]  2.25986714  3.0815960  1.4288402  3.8609982
+[4,]  4.47099636  4.9971122  3.5222448  6.5509501
+[5,]  6.98958634  8.4444394  6.7823874 10.2391417
 
 $n
 [1] 15 65 40 40
 
 $conf
-      [,1] [,2]  [,3] [,4]
-[1,] 4e-01    2 4e-01    3
-[2,] 4e+00    4 2e+00    5
+          [,1]     [,2]      [,3]     [,4]
+[1,] 0.4254515 2.084935 0.4194317 2.633142
+[2,] 4.0942828 4.078257 2.4382487 5.088854
 
 $out
 numeric(0)
@@ -623,14 +623,15 @@ number="5.2">
 <span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">round_lim</span>(<span class="fu">range</span>(df01<span class="sc">$</span>y), y_interval)</span>
 <span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
 <span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
-<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="fu">ceiling</span>(xlim[<span class="dv">1</span>])<span class="sc">:</span><span class="fu">floor</span>(xlim[<span class="dv">2</span>]), </span>
-<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">levels</span>(df01<span class="sc">$</span>z), <span class="at">tick =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(ylim[<span class="dv">1</span>], ylim[<span class="dv">2</span>], y_interval), <span class="at">las=</span><span class="dv">1</span>, <span class="at">pos=</span>xlim[<span class="dv">1</span>])</span>
-<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co"># grid関数だと目盛りにグリッド線をあわせられない為ablineで描く</span></span>
-<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">seq</span>(ylim[<span class="dv">1</span>], ylim[<span class="dv">2</span>], y_interval), <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>)</span>
-<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="fu">title</span>(<span class="at">xlab =</span> <span class="fu">expression</span>(z), <span class="at">ylab =</span> <span class="fu">expression</span>(y))</span>
-<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a></span>
-<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a><span class="fu">boxplot</span>(y <span class="sc">~</span> z, <span class="at">data =</span> df01, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">axes=</span><span class="cn">FALSE</span>)</span></code></pre></div>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">levels</span>(df01<span class="sc">$</span>z)), </span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">levels</span>(df01<span class="sc">$</span>z), <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>)</span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(ylim[<span class="dv">1</span>], ylim[<span class="dv">2</span>], y_interval), <span class="at">las=</span><span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>)</span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="fu">box</span>()</span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co"># grid関数だと目盛りにグリッド線をあわせられない為ablineで描く</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="fu">seq</span>(ylim[<span class="dv">1</span>], ylim[<span class="dv">2</span>], y_interval), <span class="at">lty =</span> <span class="dv">3</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>)</span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a><span class="fu">title</span>(<span class="at">xlab =</span> <span class="fu">expression</span>(z), <span class="at">ylab =</span> <span class="fu">expression</span>(y))</span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a><span class="fu">boxplot</span>(y <span class="sc">~</span> z, <span class="at">data =</span> df01, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">axes=</span><span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/boxplot08-1.png" width="672" /></p>
 </div>
 </div>
