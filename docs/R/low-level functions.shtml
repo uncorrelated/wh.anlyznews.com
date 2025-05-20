@@ -422,7 +422,11 @@ class="toc-section-number">7</span> 調整に必要な情報の取得</a></li>
 <li><a href="#数式の書き込み" id="toc-数式の書き込み"><span
 class="toc-section-number">8</span> 数式の書き込み</a></li>
 <li><a href="#枠の消去" id="toc-枠の消去"><span
-class="toc-section-number">9</span> 枠の消去</a></li>
+class="toc-section-number">9</span> 枠の消去</a>
+<ul>
+<li><a href="#枠の追記" id="toc-枠の追記"><span
+class="toc-section-number">9.1</span> 枠の追記</a></li>
+</ul></li>
 <li><a href="#見栄えの良い軸のつけ方"
 id="toc-見栄えの良い軸のつけ方"><span
 class="toc-section-number">10</span> 見栄えの良い軸のつけ方</a>
@@ -729,6 +733,16 @@ number="6">
 <div id="枠の消去" class="section level1" number="9">
 <h1><span class="header-section-number">9</span> 枠の消去</h1>
 <p><code>plot</code>などは標準でプロット領域のまわりに四角い枠を描画しますが、引数に<code>frame.plot = FALSE</code>をつけることで消すことができます。また、<code>axes = FALSE</code>をつけた場合も消えます。</p>
+<div id="枠の追記" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> 枠の追記</h2>
+<p>高水準関数では軸や枠を描画せず、あとで低水準関数<code>axis</code>と<code>box</code>で軸と枠を描画することで、見栄えを改善できるときがあります。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">plot</span>(Petal.Length <span class="sc">~</span> Petal.Width, iris, <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="fu">box</span>()</span></code></pre></div>
+<p>上の例では枠を描くので軸を表示せず（<code>lwd = 0</code>）、軸の目盛りだけ描画（<code>lwd.ticks = 1</code>）します。</p>
+<p>Rの描画では何も変わらないように思えるかも知れませんが、エンチエイリアスが有効のときに線を重ねると色の濃さが変わるので、保存した画像ファイルでは結果が異なります。</p>
+</div>
 </div>
 <div id="見栄えの良い軸のつけ方" class="section level1" number="10">
 <h1><span class="header-section-number">10</span>
@@ -739,28 +753,28 @@ number="6">
 <h2><span class="header-section-number">10.1</span>
 軸の目盛りを設定する</h2>
 <p><code>axes=FALSE</code>オプションをつけて<code>plot</code>を行い、<code>axis</code>関数で軸を書きます。</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="fl">0.5</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at)</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span>labels)</span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="fl">0.1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="fl">0.5</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span>labels)</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="fl">0.1</span>))</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_axis2-1.png" width="672" /></p>
 </div>
 <div id="軸の目盛りを回転する" class="section level2" number="10.2">
 <h2><span class="header-section-number">10.2</span>
 軸の目盛りを回転する</h2>
 <p>縦軸の目盛りの数字が読みづらいので<code>las=1</code>を指定して回転させます。横軸のラベルが長くて、目盛りが表示できないときなどにも有効です。</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="fl">0.5</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at)</span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span>labels)</span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="fl">0.1</span>), <span class="at">las=</span><span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="fl">0.5</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span>labels)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="fl">0.1</span>), <span class="at">las=</span><span class="dv">1</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_axis3-1.png" width="672" /></p>
 <div id="目盛りの45回転" class="section level3" number="10.2.1">
 <h3><span class="header-section-number">10.2.1</span>
 目盛りの45°回転</h3>
 <p><code>axis</code>関数の<code>labels</code>引数を<code>FALSE</code>にして、<code>text</code>関数に引数<code>xpd=TRUE, srt=-45</code>をつけてラベルを書けば、位置あわせが煩雑ですが、実現できます。</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span><span class="cn">FALSE</span>)</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>at <span class="sc">+</span> <span class="fl">0.15</span>, <span class="fu">par</span>(<span class="st">&quot;usr&quot;</span>)[<span class="dv">3</span>] <span class="sc">-</span> <span class="fl">0.1</span>, <span class="at">labels=</span>labels, <span class="at">srt=</span><span class="sc">-</span><span class="dv">45</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(ylim[<span class="dv">1</span>], ylim[<span class="dv">2</span>], <span class="fl">0.1</span>), <span class="at">las=</span><span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span><span class="cn">FALSE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x=</span>at <span class="sc">+</span> <span class="fl">0.15</span>, <span class="fu">par</span>(<span class="st">&quot;usr&quot;</span>)[<span class="dv">3</span>] <span class="sc">-</span> <span class="fl">0.1</span>, <span class="at">labels=</span>labels, <span class="at">srt=</span><span class="sc">-</span><span class="dv">45</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(ylim[<span class="dv">1</span>], ylim[<span class="dv">2</span>], <span class="fl">0.1</span>), <span class="at">las=</span><span class="dv">1</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_axis4-1.png" width="672" /></p>
 </div>
 </div>
@@ -770,18 +784,18 @@ number="10.3">
 縦軸のラベル位置を、縦軸の上にする</h2>
 <p>スペースの都合などで縦軸のラベル位置を動かしたいときは、<code>plot</code>の引数に<code>ylab=""</code>をつけたあと、<code>text</code>関数に引数<code>xpd=TRUE</code>をつけてラベルを描きます。</p>
 <p>表示位置は<code>par()$usr</code>でとれるキャバスのサイズの左上のさらに1行上にしますが、<code>text</code>関数の引数に<code>xpd=TRUE</code>が無いと、表示可能エリア外になって表示されないので注意してください。</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">1</span>], <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>], <span class="st">&quot;density&quot;</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="fl">0.5</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">1</span>], <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>], <span class="st">&quot;density&quot;</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="fl">0.5</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_axis5-1.png" width="672" /></p>
 </div>
 <div id="縦軸と縦軸の位置を詰める" class="section level2" number="10.4">
 <h2><span class="header-section-number">10.4</span>
 縦軸と縦軸の位置を詰める</h2>
 <p>例にしているヒストグラムでは不要だと思いますが、<code>axis</code>関数の引数<code>pos</code>で表示位置を詰めることもできます。</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="fl">0.5</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at)</span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span>labels, <span class="at">pos=</span><span class="dv">0</span>)</span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="fl">0.1</span>), <span class="at">las=</span><span class="dv">1</span>, <span class="at">pos=</span>at[<span class="dv">1</span>])</span>
-<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="fu">text</span>(at[<span class="dv">1</span>], <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>], <span class="st">&quot;density&quot;</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="fl">0.5</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="fl">2.5</span>, <span class="fl">2.5</span>, <span class="fl">0.5</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at)</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span>labels, <span class="at">pos=</span><span class="dv">0</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span><span class="fu">seq</span>(<span class="dv">0</span>, <span class="fl">0.6</span>, <span class="fl">0.1</span>), <span class="at">las=</span><span class="dv">1</span>, <span class="at">pos=</span>at[<span class="dv">1</span>])</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="fu">text</span>(at[<span class="dv">1</span>], <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>], <span class="st">&quot;density&quot;</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="fl">0.5</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_axis6-1.png" width="672" /></p>
 </div>
 </div>
@@ -789,76 +803,76 @@ number="10.3">
 <h1><span class="header-section-number">11</span> 凡例を書く</h1>
 <p>プロット後、<code>legend("topright", "折れ線", lty=1)</code>と言う風に凡例を書くことができますが、必然的に<code>plines</code>や<code>points</code>につけたパラメーターを統合した上に、見栄えを工夫すると凡例ボックスの枠線の色や太さといったパラメーターも入ってくるので、長くなります。試行錯誤する場合は、リストにまとめて<code>do.call</code>するなりしましょう。</p>
 <p>よく指定しそうなパラメーターをつけた例が以下です。</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># 描画領域を作成する</span></span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">bg=</span><span class="st">&quot;white&quot;</span>)</span>
-<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
-<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
-<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a></span>
-<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>    <span class="co"># 凡例の位置を指定</span></span>
-<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>    <span class="st">&quot;topleft&quot;</span>, </span>
-<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>    <span class="co"># 凡例の描画域の隅からのマージン</span></span>
-<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a>    <span class="at">inset =</span> <span class="fl">0.0</span>,</span>
-<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a>    <span class="co"># 凡例のテキスト</span></span>
-<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a>    <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;point&quot;</span>, <span class="st">&quot;line&quot;</span>, <span class="st">&quot;type=</span><span class="sc">\&quot;</span><span class="st">b</span><span class="sc">\&quot;</span><span class="st">&quot;</span>, <span class="st">&quot;fill&quot;</span>), </span>
-<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>    <span class="co"># ポイントの形状，NAはポイントなし</span></span>
-<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>    <span class="at">pch =</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="cn">NA</span>, <span class="dv">22</span>, <span class="cn">NA</span>),</span>
-<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a>    <span class="co"># 線の形状，NAは線なし</span></span>
-<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a>    <span class="at">lty =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="cn">NA</span>),</span>
-<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a>    <span class="co"># 線の長さ</span></span>
-<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a>    <span class="at">seg.len =</span> <span class="dv">3</span>,</span>
-<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a>    <span class="co"># 線/ポイントの太さ</span></span>
-<span id="cb19-22"><a href="#cb19-22" tabindex="-1"></a>    <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="cn">NA</span>),</span>
-<span id="cb19-23"><a href="#cb19-23" tabindex="-1"></a>    <span class="co"># 線/ポイントの色</span></span>
-<span id="cb19-24"><a href="#cb19-24" tabindex="-1"></a>    <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>, <span class="cn">NA</span>),</span>
-<span id="cb19-25"><a href="#cb19-25" tabindex="-1"></a>    <span class="co"># ポイントがpch=21～25のときの内側の色</span></span>
-<span id="cb19-26"><a href="#cb19-26" tabindex="-1"></a>    <span class="co"># &quot;transparent&quot;を入れておくと、type=&quot;o&quot;に見える</span></span>
-<span id="cb19-27"><a href="#cb19-27" tabindex="-1"></a>    <span class="at">pt.bg =</span> <span class="fu">c</span>(<span class="st">&quot;gray&quot;</span>, <span class="cn">NA</span>, <span class="st">&quot;green&quot;</span>, <span class="cn">NA</span>),</span>
-<span id="cb19-28"><a href="#cb19-28" tabindex="-1"></a>    <span class="co"># 塗りつぶし色，NAは塗りつぶしなし</span></span>
-<span id="cb19-29"><a href="#cb19-29" tabindex="-1"></a>    <span class="at">fill =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">&quot;cyan3&quot;</span>),</span>
-<span id="cb19-30"><a href="#cb19-30" tabindex="-1"></a>    <span class="co"># 塗りつぶし領域の境界線の色</span></span>
-<span id="cb19-31"><a href="#cb19-31" tabindex="-1"></a>    <span class="at">border =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">&quot;blue&quot;</span>),</span>
-<span id="cb19-32"><a href="#cb19-32" tabindex="-1"></a>    <span class="co"># 塗りつぶし領域の斜線の密度（0～100），0は塗りつぶしなし</span></span>
-<span id="cb19-33"><a href="#cb19-33" tabindex="-1"></a>    <span class="at">density =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">20</span>),</span>
-<span id="cb19-34"><a href="#cb19-34" tabindex="-1"></a>    <span class="co"># 塗りつぶし領域の斜線の角度</span></span>
-<span id="cb19-35"><a href="#cb19-35" tabindex="-1"></a>    <span class="at">angle =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">60</span>),</span>
-<span id="cb19-36"><a href="#cb19-36" tabindex="-1"></a>    <span class="co"># ポイント，線，塗りつぶし領域の大きさ</span></span>
-<span id="cb19-37"><a href="#cb19-37" tabindex="-1"></a>    <span class="at">cex =</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">1.5</span>, <span class="fl">1.5</span>, <span class="fl">1.5</span>),</span>
-<span id="cb19-38"><a href="#cb19-38" tabindex="-1"></a>    <span class="co"># シンボル（i.e. 線/ポイント/塗りつぶし）とテキストの距離</span></span>
-<span id="cb19-39"><a href="#cb19-39" tabindex="-1"></a>    <span class="at">x.intersp =</span> <span class="dv">1</span>,</span>
-<span id="cb19-40"><a href="#cb19-40" tabindex="-1"></a>    <span class="co"># 凡例内の行間</span></span>
-<span id="cb19-41"><a href="#cb19-41" tabindex="-1"></a>    <span class="at">y.intersp =</span> <span class="fl">1.25</span>,</span>
-<span id="cb19-42"><a href="#cb19-42" tabindex="-1"></a>    <span class="co"># テキストの配置</span></span>
-<span id="cb19-43"><a href="#cb19-43" tabindex="-1"></a>    <span class="at">adj =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), </span>
-<span id="cb19-44"><a href="#cb19-44" tabindex="-1"></a>    <span class="co"># テキストの色</span></span>
-<span id="cb19-45"><a href="#cb19-45" tabindex="-1"></a>    <span class="at">text.col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>, <span class="st">&quot;blue&quot;</span>),</span>
-<span id="cb19-46"><a href="#cb19-46" tabindex="-1"></a>    <span class="co"># 凡例の表題</span></span>
-<span id="cb19-47"><a href="#cb19-47" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;凡例&quot;</span>,</span>
-<span id="cb19-48"><a href="#cb19-48" tabindex="-1"></a>    <span class="co"># 凡例のシンボルとテキストを横並びにするか</span></span>
-<span id="cb19-49"><a href="#cb19-49" tabindex="-1"></a>    <span class="at">horiz =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb19-50"><a href="#cb19-50" tabindex="-1"></a>    <span class="co"># 縦並びのときは{ncol}段組みにできる</span></span>
-<span id="cb19-51"><a href="#cb19-51" tabindex="-1"></a>    <span class="at">ncol =</span> <span class="dv">1</span>, </span>
-<span id="cb19-52"><a href="#cb19-52" tabindex="-1"></a>    <span class="co"># bty=&quot;n&quot;のときは、bg, box.*は無視される</span></span>
-<span id="cb19-53"><a href="#cb19-53" tabindex="-1"></a>    <span class="co"># fillを使うときのbgはtransparentを推奨</span></span>
-<span id="cb19-54"><a href="#cb19-54" tabindex="-1"></a>    <span class="at">bty=</span><span class="st">&quot;o&quot;</span>, <span class="at">bg =</span> <span class="st">&quot;transparent&quot;</span>, <span class="at">box.col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">box.lwd=</span><span class="dv">10</span>)</span>
-<span id="cb19-55"><a href="#cb19-55" tabindex="-1"></a></span>
-<span id="cb19-56"><a href="#cb19-56" tabindex="-1"></a><span class="fu">do.call</span>(<span class="st">&quot;legend&quot;</span>, params)</span>
-<span id="cb19-57"><a href="#cb19-57" tabindex="-1"></a></span>
-<span id="cb19-58"><a href="#cb19-58" tabindex="-1"></a>params[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="st">&quot;topright&quot;</span></span>
-<span id="cb19-59"><a href="#cb19-59" tabindex="-1"></a>params[[<span class="st">&quot;ncol&quot;</span>]] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
-<span id="cb19-60"><a href="#cb19-60" tabindex="-1"></a>params[[<span class="st">&quot;inset&quot;</span>]] <span class="ot">&lt;-</span> <span class="fl">0.04</span></span>
-<span id="cb19-61"><a href="#cb19-61" tabindex="-1"></a>params[[<span class="st">&quot;bty&quot;</span>]] <span class="ot">&lt;-</span> <span class="st">&quot;n&quot;</span></span>
-<span id="cb19-62"><a href="#cb19-62" tabindex="-1"></a><span class="fu">do.call</span>(<span class="st">&quot;legend&quot;</span>, params)</span>
-<span id="cb19-63"><a href="#cb19-63" tabindex="-1"></a></span>
-<span id="cb19-64"><a href="#cb19-64" tabindex="-1"></a>params[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="st">&quot;bottomright&quot;</span></span>
-<span id="cb19-65"><a href="#cb19-65" tabindex="-1"></a>params[[<span class="st">&quot;horiz&quot;</span>]] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
-<span id="cb19-66"><a href="#cb19-66" tabindex="-1"></a>params[[<span class="st">&quot;ncol&quot;</span>]] <span class="ot">=</span> <span class="cn">NULL</span> </span>
-<span id="cb19-67"><a href="#cb19-67" tabindex="-1"></a>params[[<span class="st">&quot;inset&quot;</span>]] <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
-<span id="cb19-68"><a href="#cb19-68" tabindex="-1"></a>params[[<span class="st">&quot;bty&quot;</span>]] <span class="ot">&lt;-</span> <span class="st">&quot;o&quot;</span></span>
-<span id="cb19-69"><a href="#cb19-69" tabindex="-1"></a>params[[<span class="st">&quot;cex&quot;</span>]] <span class="ot">&lt;-</span> <span class="fl">1.125</span> <span class="co"># 全部まとめて指定もできる</span></span>
-<span id="cb19-70"><a href="#cb19-70" tabindex="-1"></a><span class="fu">do.call</span>(<span class="st">&quot;legend&quot;</span>, params)</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># 描画領域を作成する</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">bg=</span><span class="st">&quot;white&quot;</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a></span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a>    <span class="co"># 凡例の位置を指定</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>    <span class="st">&quot;topleft&quot;</span>, </span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>    <span class="co"># 凡例の描画域の隅からのマージン</span></span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>    <span class="at">inset =</span> <span class="fl">0.0</span>,</span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a>    <span class="co"># 凡例のテキスト</span></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a>    <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">&quot;point&quot;</span>, <span class="st">&quot;line&quot;</span>, <span class="st">&quot;type=</span><span class="sc">\&quot;</span><span class="st">b</span><span class="sc">\&quot;</span><span class="st">&quot;</span>, <span class="st">&quot;fill&quot;</span>), </span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a>    <span class="co"># ポイントの形状，NAはポイントなし</span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a>    <span class="at">pch =</span> <span class="fu">c</span>(<span class="dv">21</span>, <span class="cn">NA</span>, <span class="dv">22</span>, <span class="cn">NA</span>),</span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a>    <span class="co"># 線の形状，NAは線なし</span></span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a>    <span class="at">lty =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="cn">NA</span>),</span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a>    <span class="co"># 線の長さ</span></span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a>    <span class="at">seg.len =</span> <span class="dv">3</span>,</span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a>    <span class="co"># 線/ポイントの太さ</span></span>
+<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a>    <span class="at">lwd =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="cn">NA</span>),</span>
+<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a>    <span class="co"># 線/ポイントの色</span></span>
+<span id="cb20-24"><a href="#cb20-24" tabindex="-1"></a>    <span class="at">col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb20-25"><a href="#cb20-25" tabindex="-1"></a>    <span class="co"># ポイントがpch=21～25のときの内側の色</span></span>
+<span id="cb20-26"><a href="#cb20-26" tabindex="-1"></a>    <span class="co"># &quot;transparent&quot;を入れておくと、type=&quot;o&quot;に見える</span></span>
+<span id="cb20-27"><a href="#cb20-27" tabindex="-1"></a>    <span class="at">pt.bg =</span> <span class="fu">c</span>(<span class="st">&quot;gray&quot;</span>, <span class="cn">NA</span>, <span class="st">&quot;green&quot;</span>, <span class="cn">NA</span>),</span>
+<span id="cb20-28"><a href="#cb20-28" tabindex="-1"></a>    <span class="co"># 塗りつぶし色，NAは塗りつぶしなし</span></span>
+<span id="cb20-29"><a href="#cb20-29" tabindex="-1"></a>    <span class="at">fill =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">&quot;cyan3&quot;</span>),</span>
+<span id="cb20-30"><a href="#cb20-30" tabindex="-1"></a>    <span class="co"># 塗りつぶし領域の境界線の色</span></span>
+<span id="cb20-31"><a href="#cb20-31" tabindex="-1"></a>    <span class="at">border =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="st">&quot;blue&quot;</span>),</span>
+<span id="cb20-32"><a href="#cb20-32" tabindex="-1"></a>    <span class="co"># 塗りつぶし領域の斜線の密度（0～100），0は塗りつぶしなし</span></span>
+<span id="cb20-33"><a href="#cb20-33" tabindex="-1"></a>    <span class="at">density =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">20</span>),</span>
+<span id="cb20-34"><a href="#cb20-34" tabindex="-1"></a>    <span class="co"># 塗りつぶし領域の斜線の角度</span></span>
+<span id="cb20-35"><a href="#cb20-35" tabindex="-1"></a>    <span class="at">angle =</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="dv">60</span>),</span>
+<span id="cb20-36"><a href="#cb20-36" tabindex="-1"></a>    <span class="co"># ポイント，線，塗りつぶし領域の大きさ</span></span>
+<span id="cb20-37"><a href="#cb20-37" tabindex="-1"></a>    <span class="at">cex =</span> <span class="fu">c</span>(<span class="fl">1.5</span>, <span class="fl">1.5</span>, <span class="fl">1.5</span>, <span class="fl">1.5</span>),</span>
+<span id="cb20-38"><a href="#cb20-38" tabindex="-1"></a>    <span class="co"># シンボル（i.e. 線/ポイント/塗りつぶし）とテキストの距離</span></span>
+<span id="cb20-39"><a href="#cb20-39" tabindex="-1"></a>    <span class="at">x.intersp =</span> <span class="dv">1</span>,</span>
+<span id="cb20-40"><a href="#cb20-40" tabindex="-1"></a>    <span class="co"># 凡例内の行間</span></span>
+<span id="cb20-41"><a href="#cb20-41" tabindex="-1"></a>    <span class="at">y.intersp =</span> <span class="fl">1.25</span>,</span>
+<span id="cb20-42"><a href="#cb20-42" tabindex="-1"></a>    <span class="co"># テキストの配置</span></span>
+<span id="cb20-43"><a href="#cb20-43" tabindex="-1"></a>    <span class="at">adj =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), </span>
+<span id="cb20-44"><a href="#cb20-44" tabindex="-1"></a>    <span class="co"># テキストの色</span></span>
+<span id="cb20-45"><a href="#cb20-45" tabindex="-1"></a>    <span class="at">text.col =</span> <span class="fu">c</span>(<span class="st">&quot;black&quot;</span>, <span class="st">&quot;red&quot;</span>, <span class="st">&quot;darkgreen&quot;</span>, <span class="st">&quot;blue&quot;</span>),</span>
+<span id="cb20-46"><a href="#cb20-46" tabindex="-1"></a>    <span class="co"># 凡例の表題</span></span>
+<span id="cb20-47"><a href="#cb20-47" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;凡例&quot;</span>,</span>
+<span id="cb20-48"><a href="#cb20-48" tabindex="-1"></a>    <span class="co"># 凡例のシンボルとテキストを横並びにするか</span></span>
+<span id="cb20-49"><a href="#cb20-49" tabindex="-1"></a>    <span class="at">horiz =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb20-50"><a href="#cb20-50" tabindex="-1"></a>    <span class="co"># 縦並びのときは{ncol}段組みにできる</span></span>
+<span id="cb20-51"><a href="#cb20-51" tabindex="-1"></a>    <span class="at">ncol =</span> <span class="dv">1</span>, </span>
+<span id="cb20-52"><a href="#cb20-52" tabindex="-1"></a>    <span class="co"># bty=&quot;n&quot;のときは、bg, box.*は無視される</span></span>
+<span id="cb20-53"><a href="#cb20-53" tabindex="-1"></a>    <span class="co"># fillを使うときのbgはtransparentを推奨</span></span>
+<span id="cb20-54"><a href="#cb20-54" tabindex="-1"></a>    <span class="at">bty=</span><span class="st">&quot;o&quot;</span>, <span class="at">bg =</span> <span class="st">&quot;transparent&quot;</span>, <span class="at">box.col =</span> <span class="st">&quot;black&quot;</span>, <span class="at">box.lwd=</span><span class="dv">10</span>)</span>
+<span id="cb20-55"><a href="#cb20-55" tabindex="-1"></a></span>
+<span id="cb20-56"><a href="#cb20-56" tabindex="-1"></a><span class="fu">do.call</span>(<span class="st">&quot;legend&quot;</span>, params)</span>
+<span id="cb20-57"><a href="#cb20-57" tabindex="-1"></a></span>
+<span id="cb20-58"><a href="#cb20-58" tabindex="-1"></a>params[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="st">&quot;topright&quot;</span></span>
+<span id="cb20-59"><a href="#cb20-59" tabindex="-1"></a>params[[<span class="st">&quot;ncol&quot;</span>]] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb20-60"><a href="#cb20-60" tabindex="-1"></a>params[[<span class="st">&quot;inset&quot;</span>]] <span class="ot">&lt;-</span> <span class="fl">0.04</span></span>
+<span id="cb20-61"><a href="#cb20-61" tabindex="-1"></a>params[[<span class="st">&quot;bty&quot;</span>]] <span class="ot">&lt;-</span> <span class="st">&quot;n&quot;</span></span>
+<span id="cb20-62"><a href="#cb20-62" tabindex="-1"></a><span class="fu">do.call</span>(<span class="st">&quot;legend&quot;</span>, params)</span>
+<span id="cb20-63"><a href="#cb20-63" tabindex="-1"></a></span>
+<span id="cb20-64"><a href="#cb20-64" tabindex="-1"></a>params[[<span class="dv">1</span>]] <span class="ot">&lt;-</span> <span class="st">&quot;bottomright&quot;</span></span>
+<span id="cb20-65"><a href="#cb20-65" tabindex="-1"></a>params[[<span class="st">&quot;horiz&quot;</span>]] <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb20-66"><a href="#cb20-66" tabindex="-1"></a>params[[<span class="st">&quot;ncol&quot;</span>]] <span class="ot">=</span> <span class="cn">NULL</span> </span>
+<span id="cb20-67"><a href="#cb20-67" tabindex="-1"></a>params[[<span class="st">&quot;inset&quot;</span>]] <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
+<span id="cb20-68"><a href="#cb20-68" tabindex="-1"></a>params[[<span class="st">&quot;bty&quot;</span>]] <span class="ot">&lt;-</span> <span class="st">&quot;o&quot;</span></span>
+<span id="cb20-69"><a href="#cb20-69" tabindex="-1"></a>params[[<span class="st">&quot;cex&quot;</span>]] <span class="ot">&lt;-</span> <span class="fl">1.125</span> <span class="co"># 全部まとめて指定もできる</span></span>
+<span id="cb20-70"><a href="#cb20-70" tabindex="-1"></a><span class="fu">do.call</span>(<span class="st">&quot;legend&quot;</span>, params)</span></code></pre></div>
 <p><img src="common_files/figure-html/legend-1.png" width="672" /></p>
 <p>凡例のグラフ内位置を<code>"bottom"</code>, <code>"bottomleft"</code>,
 <code>"left"</code>, <code>"top"</code>, <code>"right"</code>,
@@ -868,11 +882,11 @@ number="10.3">
 <div id="出典と注釈を書く" class="section level1" number="12">
 <h1><span class="header-section-number">12</span> 出典と注釈を書く</h1>
 <p><code>mtext</code>関数を使って、プロットエリア外に出典や注釈と言った情報を書くことができます。</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">runif</span>(<span class="dv">15</span>), <span class="fu">runif</span>(<span class="dv">15</span>), <span class="at">xlab=</span><span class="st">&quot;x&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;y&quot;</span>)</span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">par</span>()<span class="sc">$</span>mgp[<span class="dv">1</span>]</span>
-<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;注意) xもyも一様分布から生成&quot;</span>, <span class="at">side=</span><span class="dv">1</span>, <span class="at">line=</span>baseline<span class="sc">+</span><span class="dv">1</span>, <span class="at">adj=</span><span class="dv">0</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;出典) 特になし&quot;</span>, <span class="at">side=</span><span class="dv">1</span>, <span class="at">line=</span>baseline<span class="sc">+</span><span class="dv">2</span>, <span class="at">adj=</span><span class="dv">0</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">runif</span>(<span class="dv">15</span>), <span class="fu">runif</span>(<span class="dv">15</span>), <span class="at">xlab=</span><span class="st">&quot;x&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;y&quot;</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a>baseline <span class="ot">&lt;-</span> <span class="fu">par</span>()<span class="sc">$</span>mgp[<span class="dv">1</span>]</span>
+<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;注意) xもyも一様分布から生成&quot;</span>, <span class="at">side=</span><span class="dv">1</span>, <span class="at">line=</span>baseline<span class="sc">+</span><span class="dv">1</span>, <span class="at">adj=</span><span class="dv">0</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;出典) 特になし&quot;</span>, <span class="at">side=</span><span class="dv">1</span>, <span class="at">line=</span>baseline<span class="sc">+</span><span class="dv">2</span>, <span class="at">adj=</span><span class="dv">0</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/mtext-1.png" width="672" /></p>
 <ul>
 <li>表現式をテキストにとれるので、数式の表示もできます。</li>
@@ -888,50 +902,50 @@ number="10.3">
 <div id="参照線を描く" class="section level2" number="13.1">
 <h2><span class="header-section-number">13.1</span> 参照線を描く</h2>
 <p><code>abline</code>で垂直もしくは水平線を描くことができ、<code>grid</code>関数でまとめて描画できます。</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
-<span id="cb21-3"><a href="#cb21-3" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">0.5</span>, <span class="at">lty=</span><span class="dv">4</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>) <span class="co"># 垂直線</span></span>
-<span id="cb21-4"><a href="#cb21-4" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="fl">0.5</span>, <span class="at">lty=</span><span class="dv">5</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>) <span class="co"># 水平線</span></span>
-<span id="cb21-5"><a href="#cb21-5" tabindex="-1"></a><span class="fu">grid</span>() <span class="co"># デフォルトでは目盛の位置</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="fl">0.5</span>, <span class="at">lty=</span><span class="dv">4</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>) <span class="co"># 垂直線</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h=</span><span class="fl">0.5</span>, <span class="at">lty=</span><span class="dv">5</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>) <span class="co"># 水平線</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a><span class="fu">grid</span>() <span class="co"># デフォルトでは目盛の位置</span></span></code></pre></div>
 <p><img src="common_files/figure-html/grid1-1.png" width="672" /></p>
 <p><code>grid</code>は引数<code>nx</code>と<code>ny</code>で、横方向と縦方向の線の数を指定でき、<code>NULL</code>だと目盛りの位置、<code>NA</code>だと表示なしになります。また、対数スケールのときは<code>equilogs = FALSE</code>をつけておかないと、目盛の位置にあわせてくれません。</p>
 </div>
 <div id="領域に色を塗る" class="section level2" number="13.2">
 <h2><span class="header-section-number">13.2</span> 領域に色を塗る</h2>
 <p><code>polygon</code>関数で色を塗ります。閉路を指定しないといけないので、やや煩雑です。</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># 内側を塗った後に外側（plot）を描くので低水準描画関数のみを使う</span></span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>)</span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
-<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a></span>
-<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a><span class="co"># 閉路をつくる</span></span>
-<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">length.out=</span>n), xlim[<span class="dv">2</span>], xlim[<span class="dv">1</span>])</span>
-<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">dexp</span>(x[<span class="dv">1</span><span class="sc">:</span>n]), <span class="dv">0</span>, <span class="dv">0</span>)</span>
-<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a></span>
-<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a><span class="co"># 内側を塗る</span></span>
-<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a><span class="fu">polygon</span>(x, y, <span class="at">density=</span><span class="dv">50</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">border=</span><span class="cn">NA</span>)</span>
-<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a></span>
-<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a><span class="co"># 外側の線を描く</span></span>
-<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a><span class="fu">lines</span>(x[<span class="dv">1</span><span class="sc">:</span>n], y[<span class="dv">1</span><span class="sc">:</span>n], <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">&quot;black&quot;</span>)</span>
-<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a></span>
-<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a><span class="co"># 縦軸と横軸を描く</span></span>
-<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">length.out=</span><span class="dv">10</span>)</span>
-<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span><span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at))</span>
-<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(ylim[<span class="dv">1</span>], ylim[<span class="dv">2</span>], <span class="at">length.out=</span><span class="dv">11</span>)</span>
-<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>at, <span class="at">labels=</span><span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at), <span class="at">las=</span><span class="dv">1</span>)</span>
-<span id="cb22-24"><a href="#cb22-24" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">1</span>], <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>], <span class="st">&quot;f(x)&quot;</span>, </span>
-<span id="cb22-25"><a href="#cb22-25" tabindex="-1"></a>    <span class="at">adj=</span><span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">0</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">1.25</span>)</span>
-<span id="cb22-26"><a href="#cb22-26" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">2</span>], <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">3</span>], <span class="st">&quot;x&quot;</span>, </span>
-<span id="cb22-27"><a href="#cb22-27" tabindex="-1"></a>    <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">1.25</span>)</span>
-<span id="cb22-28"><a href="#cb22-28" tabindex="-1"></a></span>
-<span id="cb22-29"><a href="#cb22-29" tabindex="-1"></a><span class="co"># 確率密度関数を書く</span></span>
-<span id="cb22-30"><a href="#cb22-30" tabindex="-1"></a><span class="fu">text</span>((<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">2</span>])<span class="sc">/</span><span class="dv">2</span>, </span>
-<span id="cb22-31"><a href="#cb22-31" tabindex="-1"></a>    (<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">3</span>] <span class="sc">+</span> <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>])<span class="sc">/</span><span class="dv">2</span>, </span>
-<span id="cb22-32"><a href="#cb22-32" tabindex="-1"></a>    <span class="fu">expression</span>(<span class="fu">f</span>(x) <span class="sc">==</span> lambda<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>lambda<span class="sc">*</span>x)), </span>
-<span id="cb22-33"><a href="#cb22-33" tabindex="-1"></a>    <span class="at">cex=</span><span class="dv">2</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># 内側を塗った後に外側（plot）を描くので低水準描画関数のみを使う</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">2</span>))</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="co"># 閉路をつくる</span></span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">length.out=</span>n), xlim[<span class="dv">2</span>], xlim[<span class="dv">1</span>])</span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">dexp</span>(x[<span class="dv">1</span><span class="sc">:</span>n]), <span class="dv">0</span>, <span class="dv">0</span>)</span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a></span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a><span class="co"># 内側を塗る</span></span>
+<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a><span class="fu">polygon</span>(x, y, <span class="at">density=</span><span class="dv">50</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">border=</span><span class="cn">NA</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a></span>
+<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a><span class="co"># 外側の線を描く</span></span>
+<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a><span class="fu">lines</span>(x[<span class="dv">1</span><span class="sc">:</span>n], y[<span class="dv">1</span><span class="sc">:</span>n], <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">2</span>, <span class="at">col=</span><span class="st">&quot;black&quot;</span>)</span>
+<span id="cb23-18"><a href="#cb23-18" tabindex="-1"></a></span>
+<span id="cb23-19"><a href="#cb23-19" tabindex="-1"></a><span class="co"># 縦軸と横軸を描く</span></span>
+<span id="cb23-20"><a href="#cb23-20" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">length.out=</span><span class="dv">10</span>)</span>
+<span id="cb23-21"><a href="#cb23-21" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at=</span>at, <span class="at">labels=</span><span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at))</span>
+<span id="cb23-22"><a href="#cb23-22" tabindex="-1"></a>at <span class="ot">&lt;-</span> <span class="fu">seq</span>(ylim[<span class="dv">1</span>], ylim[<span class="dv">2</span>], <span class="at">length.out=</span><span class="dv">11</span>)</span>
+<span id="cb23-23"><a href="#cb23-23" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">at=</span>at, <span class="at">labels=</span><span class="fu">sprintf</span>(<span class="st">&quot;%.2f&quot;</span>, at), <span class="at">las=</span><span class="dv">1</span>)</span>
+<span id="cb23-24"><a href="#cb23-24" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">1</span>], <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>], <span class="st">&quot;f(x)&quot;</span>, </span>
+<span id="cb23-25"><a href="#cb23-25" tabindex="-1"></a>    <span class="at">adj=</span><span class="fu">c</span>(<span class="fl">0.5</span>, <span class="dv">0</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">1.25</span>)</span>
+<span id="cb23-26"><a href="#cb23-26" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">2</span>], <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">3</span>], <span class="st">&quot;x&quot;</span>, </span>
+<span id="cb23-27"><a href="#cb23-27" tabindex="-1"></a>    <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>), <span class="at">xpd=</span><span class="cn">TRUE</span>, <span class="at">cex=</span><span class="fl">1.25</span>)</span>
+<span id="cb23-28"><a href="#cb23-28" tabindex="-1"></a></span>
+<span id="cb23-29"><a href="#cb23-29" tabindex="-1"></a><span class="co"># 確率密度関数を書く</span></span>
+<span id="cb23-30"><a href="#cb23-30" tabindex="-1"></a><span class="fu">text</span>((<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">1</span>] <span class="sc">+</span> <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">2</span>])<span class="sc">/</span><span class="dv">2</span>, </span>
+<span id="cb23-31"><a href="#cb23-31" tabindex="-1"></a>    (<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">3</span>] <span class="sc">+</span> <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>])<span class="sc">/</span><span class="dv">2</span>, </span>
+<span id="cb23-32"><a href="#cb23-32" tabindex="-1"></a>    <span class="fu">expression</span>(<span class="fu">f</span>(x) <span class="sc">==</span> lambda<span class="sc">*</span><span class="fu">exp</span>(<span class="sc">-</span>lambda<span class="sc">*</span>x)), </span>
+<span id="cb23-33"><a href="#cb23-33" tabindex="-1"></a>    <span class="at">cex=</span><span class="dv">2</span>, <span class="at">adj=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.5</span>))</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_polygon-1.png" width="672" /></p>
 </div>
 <div id="参照線や塗りつぶしをプロットの背景に描く"
@@ -939,16 +953,16 @@ class="section level2" number="13.3">
 <h2><span class="header-section-number">13.3</span>
 参照線や塗りつぶしをプロットの背景に描く</h2>
 <p>参照線や塗りつぶしがプロットした線や点を見えづらくしてしまう場合は、<code>plot</code>の<code>panel.first</code>引数に表現式を与えることで、参照線や塗りつぶしを簡単に先に描画できます。</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
-<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a></span>
-<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a><span class="co"># プロットした線が太すぎる垂直線に隠れる</span></span>
-<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
-<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">100</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>)</span>
-<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a><span class="co"># 太すぎる垂直線の上に線がプロットされる</span></span>
-<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi, <span class="at">panel.first =</span> {</span>
-<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">100</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>)</span>
-<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co"># プロットした線が太すぎる垂直線に隠れる</span></span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">100</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co"># 太すぎる垂直線の上に線がプロットされる</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi, <span class="at">panel.first =</span> {</span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>    <span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, <span class="at">lty=</span><span class="dv">1</span>, <span class="at">lwd=</span><span class="dv">100</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>})</span></code></pre></div>
 <p><img src="common_files/figure-html/grid2-1.png" width="672" /></p>
 <p><code>plot</code>と<code>curve</code>以外の高水準関数では正常に機能しないことがあるので、注意しましょう。</p>
 </div>
@@ -956,37 +970,37 @@ class="section level2" number="13.3">
 <h2><span class="header-section-number">13.4</span>
 ビットマップを貼り付ける</h2>
 <p>プロットにビットマップを貼り付けることもできます。</p>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
-<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
-<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a></span>
-<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co"># 行列をラスターにして描画</span></span>
-<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a>invader.m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
-<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
-<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>,</span>
-<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>,</span>
-<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb24-13"><a href="#cb24-13" tabindex="-1"></a><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb24-14"><a href="#cb24-14" tabindex="-1"></a><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
-<span id="cb24-15"><a href="#cb24-15" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">11</span>, <span class="dv">9</span>)</span>
-<span id="cb24-16"><a href="#cb24-16" tabindex="-1"></a>invader.r <span class="ot">&lt;-</span> <span class="fu">as.raster</span>(<span class="fu">ifelse</span>(<span class="dv">1</span><span class="sc">==</span><span class="fu">t</span>(invader.m), <span class="st">&quot;red&quot;</span>, <span class="st">&quot;transparent&quot;</span>))</span>
-<span id="cb24-17"><a href="#cb24-17" tabindex="-1"></a><span class="co"># interpolate=TRUE（デフォルト）の場合はアンチエイリアスがかかる</span></span>
-<span id="cb24-18"><a href="#cb24-18" tabindex="-1"></a><span class="fu">rasterImage</span>(invader.r, <span class="fl">0.0</span>, <span class="fl">0.6</span>, <span class="fl">0.0</span> <span class="sc">+</span> <span class="fl">0.4</span>, <span class="fl">0.6</span> <span class="sc">+</span> <span class="fl">0.4</span>, <span class="at">interpolate=</span><span class="cn">FALSE</span>)</span>
-<span id="cb24-19"><a href="#cb24-19" tabindex="-1"></a></span>
-<span id="cb24-20"><a href="#cb24-20" tabindex="-1"></a><span class="co"># PNG画像を読み込むパッケージ</span></span>
-<span id="cb24-21"><a href="#cb24-21" tabindex="-1"></a><span class="fu">library</span>(png)</span>
-<span id="cb24-22"><a href="#cb24-22" tabindex="-1"></a></span>
-<span id="cb24-23"><a href="#cb24-23" tabindex="-1"></a><span class="co"># ローカルのPNG画像をラスターにして描画</span></span>
-<span id="cb24-24"><a href="#cb24-24" tabindex="-1"></a>img <span class="ot">&lt;-</span> <span class="fu">readPNG</span>(<span class="fu">system.file</span>(<span class="st">&quot;img&quot;</span>, <span class="st">&quot;Rlogo.png&quot;</span>, <span class="at">package=</span><span class="st">&quot;png&quot;</span>))</span>
-<span id="cb24-25"><a href="#cb24-25" tabindex="-1"></a><span class="fu">rasterImage</span>(<span class="fu">as.raster</span>(img), <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">1.0</span>, <span class="fl">0.7</span>)</span>
-<span id="cb24-26"><a href="#cb24-26" tabindex="-1"></a></span>
-<span id="cb24-27"><a href="#cb24-27" tabindex="-1"></a><span class="co"># ウェブのPNG画像をラスターにして描画（readPNGがhttp://を読まない）</span></span>
-<span id="cb24-28"><a href="#cb24-28" tabindex="-1"></a>is <span class="ot">&lt;-</span> <span class="fu">file</span>(<span class="st">&quot;http://wh.anlyznews.com/img/R.png&quot;</span>, <span class="st">&quot;rb&quot;</span>)</span>
-<span id="cb24-29"><a href="#cb24-29" tabindex="-1"></a>raw <span class="ot">&lt;-</span> <span class="fu">readBin</span>(is, <span class="st">&quot;raw&quot;</span>, <span class="dv">1024</span><span class="sc">*</span><span class="dv">128</span>)</span>
-<span id="cb24-30"><a href="#cb24-30" tabindex="-1"></a><span class="fu">close</span>(is)</span>
-<span id="cb24-31"><a href="#cb24-31" tabindex="-1"></a><span class="fu">rasterImage</span>(<span class="fu">as.raster</span>(<span class="fu">readPNG</span>(raw)), <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.4</span>, <span class="fl">0.4</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
+<span id="cb25-5"><a href="#cb25-5" tabindex="-1"></a></span>
+<span id="cb25-6"><a href="#cb25-6" tabindex="-1"></a><span class="co"># 行列をラスターにして描画</span></span>
+<span id="cb25-7"><a href="#cb25-7" tabindex="-1"></a>invader.m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>,</span>
+<span id="cb25-11"><a href="#cb25-11" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>,</span>
+<span id="cb25-12"><a href="#cb25-12" tabindex="-1"></a><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb25-13"><a href="#cb25-13" tabindex="-1"></a><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb25-14"><a href="#cb25-14" tabindex="-1"></a><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>,</span>
+<span id="cb25-15"><a href="#cb25-15" tabindex="-1"></a><span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="dv">11</span>, <span class="dv">9</span>)</span>
+<span id="cb25-16"><a href="#cb25-16" tabindex="-1"></a>invader.r <span class="ot">&lt;-</span> <span class="fu">as.raster</span>(<span class="fu">ifelse</span>(<span class="dv">1</span><span class="sc">==</span><span class="fu">t</span>(invader.m), <span class="st">&quot;red&quot;</span>, <span class="st">&quot;transparent&quot;</span>))</span>
+<span id="cb25-17"><a href="#cb25-17" tabindex="-1"></a><span class="co"># interpolate=TRUE（デフォルト）の場合はアンチエイリアスがかかる</span></span>
+<span id="cb25-18"><a href="#cb25-18" tabindex="-1"></a><span class="fu">rasterImage</span>(invader.r, <span class="fl">0.0</span>, <span class="fl">0.6</span>, <span class="fl">0.0</span> <span class="sc">+</span> <span class="fl">0.4</span>, <span class="fl">0.6</span> <span class="sc">+</span> <span class="fl">0.4</span>, <span class="at">interpolate=</span><span class="cn">FALSE</span>)</span>
+<span id="cb25-19"><a href="#cb25-19" tabindex="-1"></a></span>
+<span id="cb25-20"><a href="#cb25-20" tabindex="-1"></a><span class="co"># PNG画像を読み込むパッケージ</span></span>
+<span id="cb25-21"><a href="#cb25-21" tabindex="-1"></a><span class="fu">library</span>(png)</span>
+<span id="cb25-22"><a href="#cb25-22" tabindex="-1"></a></span>
+<span id="cb25-23"><a href="#cb25-23" tabindex="-1"></a><span class="co"># ローカルのPNG画像をラスターにして描画</span></span>
+<span id="cb25-24"><a href="#cb25-24" tabindex="-1"></a>img <span class="ot">&lt;-</span> <span class="fu">readPNG</span>(<span class="fu">system.file</span>(<span class="st">&quot;img&quot;</span>, <span class="st">&quot;Rlogo.png&quot;</span>, <span class="at">package=</span><span class="st">&quot;png&quot;</span>))</span>
+<span id="cb25-25"><a href="#cb25-25" tabindex="-1"></a><span class="fu">rasterImage</span>(<span class="fu">as.raster</span>(img), <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">1.0</span>, <span class="fl">0.7</span>)</span>
+<span id="cb25-26"><a href="#cb25-26" tabindex="-1"></a></span>
+<span id="cb25-27"><a href="#cb25-27" tabindex="-1"></a><span class="co"># ウェブのPNG画像をラスターにして描画（readPNGがhttp://を読まない）</span></span>
+<span id="cb25-28"><a href="#cb25-28" tabindex="-1"></a>is <span class="ot">&lt;-</span> <span class="fu">file</span>(<span class="st">&quot;http://wh.anlyznews.com/img/R.png&quot;</span>, <span class="st">&quot;rb&quot;</span>)</span>
+<span id="cb25-29"><a href="#cb25-29" tabindex="-1"></a>raw <span class="ot">&lt;-</span> <span class="fu">readBin</span>(is, <span class="st">&quot;raw&quot;</span>, <span class="dv">1024</span><span class="sc">*</span><span class="dv">128</span>)</span>
+<span id="cb25-30"><a href="#cb25-30" tabindex="-1"></a><span class="fu">close</span>(is)</span>
+<span id="cb25-31"><a href="#cb25-31" tabindex="-1"></a><span class="fu">rasterImage</span>(<span class="fu">as.raster</span>(<span class="fu">readPNG</span>(raw)), <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.4</span>, <span class="fl">0.4</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/rasterImage-1.png" width="672" /></p>
 <p><code>jpeg</code>パッケージの<code>readJPEG</code>関数を使えば、JPEG画像も扱えます。</p>
 </div>
@@ -1000,8 +1014,8 @@ number="14.1">
 ラスター（ビットマップ）/Windows Meta File</h2>
 <p>MS-Windowsでラスター（ビットマップ）かWindows Meta
 Fileを出力をする場合は、以下のようにフォントを登録して<code>par</code>時に<code>family</code>引数を指定すると、とりあえず文字化けすることは回避できます。</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">windowsFonts</span>(<span class="at">Meiryo =</span> <span class="fu">windowsFont</span>(<span class="st">&quot;Meiryo&quot;</span>))</span>
-<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">family=</span><span class="st">&quot;Meiryo&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">windowsFonts</span>(<span class="at">Meiryo =</span> <span class="fu">windowsFont</span>(<span class="st">&quot;Meiryo&quot;</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">par</span>(<span class="at">family=</span><span class="st">&quot;Meiryo&quot;</span>)</span></code></pre></div>
 <div id="linux" class="section level3" number="14.1.1">
 <h3><span class="header-section-number">14.1.1</span> Linux</h3>
 <p>コマンド<code>fc-list - family</code>でリストされるフォントファミリー名を（宣言なしに）画面表示とラスター画像保存に利用できます。<code>~/.fonts/</code>（もしくは<code>/usr/local/share/fonts/</code>などのroot管理領域）にフォントファイルを置いて、<code>fc-cache -fv</code>とすれば、リストに追加できます。</p>
@@ -1015,12 +1029,12 @@ PostScript</h2>
 <code>Japan1GothicBBB</code>,
 <code>Japan1Ryumin</code>が選択肢になります。</p>
 <p>例えば、プロットを画面に出力した後で、</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">dev.copy</span>(postscript, <span class="at">file =</span> <span class="st">&quot;plot.eps&quot;</span>, <span class="at">width=</span><span class="dv">8</span>, <span class="at">height=</span><span class="dv">4</span>, <span class="at">family=</span><span class="st">&quot;Japan1&quot;</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co"># フォントを埋め込む．標準ではフォントを埋め込まず，gsがインストールされていない環境では文字化けしうる．</span></span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="fu">embedFonts</span>(<span class="st">&quot;plot.eps&quot;</span>,</span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>    <span class="at">outfile=</span><span class="st">&quot;plot-fonts-embedded.eps&quot;</span>,</span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>    <span class="at">options=</span><span class="st">&quot;-c </span><span class="sc">\&quot;</span><span class="st">&lt;&lt;/NeverEmbed []&gt;&gt; setdistillerparams</span><span class="sc">\&quot;</span><span class="st"> -f &quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">dev.copy</span>(postscript, <span class="at">file =</span> <span class="st">&quot;plot.eps&quot;</span>, <span class="at">width=</span><span class="dv">8</span>, <span class="at">height=</span><span class="dv">4</span>, <span class="at">family=</span><span class="st">&quot;Japan1&quot;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="co"># フォントを埋め込む．標準ではフォントを埋め込まず，gsがインストールされていない環境では文字化けしうる．</span></span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a><span class="fu">embedFonts</span>(<span class="st">&quot;plot.eps&quot;</span>,</span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>    <span class="at">outfile=</span><span class="st">&quot;plot-fonts-embedded.eps&quot;</span>,</span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a>    <span class="at">options=</span><span class="st">&quot;-c </span><span class="sc">\&quot;</span><span class="st">&lt;&lt;/NeverEmbed []&gt;&gt; setdistillerparams</span><span class="sc">\&quot;</span><span class="st"> -f &quot;</span>)</span></code></pre></div>
 <p>と言う風に指定します。</p>
 </div>
 <div id="epsで扱えるフォントを増やす" class="section level2"
@@ -1035,10 +1049,10 @@ href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>に、</p>
 /Meiryo-BoldItalic &lt;&lt; /FileType /TrueType  /CSI [(Japan1) 6]  /Path (C:/Windows/Fonts/meiryob.ttc)   /SubfontID 1 &gt;&gt; ;</code></pre>
 <p>と追記して保存してから<a href="#fn2" class="footnote-ref"
 id="fnref2"><sup>2</sup></a>、</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">&quot;Meiryo&quot;</span> <span class="sc">%in%</span> <span class="fu">names</span>(<span class="fu">postscriptFonts</span>())){</span>
-<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>    <span class="co"># UCS-2BE: Universal Character Set coded in 2 octets, Big endian</span></span>
-<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>    <span class="fu">postscriptFonts</span>(<span class="at">Meiryo =</span> <span class="fu">CIDFont</span>(<span class="st">&quot;Meiryo&quot;</span>, <span class="st">&quot;UniJIS-UCS2-H&quot;</span>, <span class="st">&quot;UCS-2BE&quot;</span>))</span>
-<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">&quot;Meiryo&quot;</span> <span class="sc">%in%</span> <span class="fu">names</span>(<span class="fu">postscriptFonts</span>())){</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>    <span class="co"># UCS-2BE: Universal Character Set coded in 2 octets, Big endian</span></span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>    <span class="fu">postscriptFonts</span>(<span class="at">Meiryo =</span> <span class="fu">CIDFont</span>(<span class="st">&quot;Meiryo&quot;</span>, <span class="st">&quot;UniJIS-UCS2-H&quot;</span>, <span class="st">&quot;UCS-2BE&quot;</span>))</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>}</span></code></pre></div>
 <p>とすると、EPSファイルを作るときに<code>family="Meiryo"</code>と指定できるようになります。
 なお、標準的な設定でのインストールではなく、<code>*.ttc</code>ファイルの位置が異なる場合は、<code>cidfmap</code>に追記する文のファイルパス（<code>C:/Windows/Fonts/</code>）を変更してください。</p>
 </div>
@@ -1053,24 +1067,24 @@ id="fnref2"><sup>2</sup></a>、</p>
 <li>二つ目のプロットの縦軸は<code>axis</code>関数の第1引数を<code>4</code>にして行なう</li>
 </ul>
 <p>などの工夫をする必要があります。</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="dv">3000</span> <span class="co"># 乱数で生成する標本サイズは3000</span></span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(obs, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">1</span>) <span class="co"># 正規分布からベクトルsに乱数を生成</span></span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>) <span class="co"># 表示範囲</span></span>
-<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>by <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="co"># ヒストグラムの間隔</span></span>
-<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>s <span class="ot">&lt;-</span> s[xlim[<span class="dv">1</span>]<span class="sc">&lt;</span>s <span class="sc">&amp;</span> s<span class="sc">&lt;</span>xlim[<span class="dv">2</span>]] <span class="co"># 表示範囲外の値は除いておく</span></span>
-<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fl">1.05</span> <span class="co"># mは上限調整用の係数</span></span>
-<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a>dm <span class="ot">&lt;-</span> m<span class="sc">*</span><span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>) <span class="co"># 分布関数の高さの上限dmを設定</span></span>
-<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a>hm <span class="ot">&lt;-</span> obs<span class="sc">*</span>by<span class="sc">*</span>dm <span class="co"># ヒストグラムの面積は観測数*間隔で、分布関数の積分値は1になる。両者が同じになるように、高さの上限dmを設定</span></span>
-<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a><span class="fu">hist</span>(s, <span class="at">breaks=</span><span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], by), <span class="at">main=</span><span class="st">&quot;標準正規分布&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;obs.&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, hm), <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">border=</span><span class="st">&quot;black&quot;</span>, <span class="at">angle=</span><span class="st">&quot;45&quot;</span>)</span>
-<span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a></span>
-<span id="cb29-11"><a href="#cb29-11" tabindex="-1"></a><span class="fu">par</span>(<span class="at">new=</span>T) <span class="co"># 重ね書きを指定</span></span>
-<span id="cb29-12"><a href="#cb29-12" tabindex="-1"></a></span>
-<span id="cb29-13"><a href="#cb29-13" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dnorm</span>(x, <span class="dv">0</span>, <span class="dv">1</span>), xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">axes=</span><span class="cn">FALSE</span>, <span class="at">col=</span><span class="st">&quot;black&quot;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, dm), <span class="at">lwd=</span><span class="fl">1.5</span>) <span class="co"># 軸目盛や軸ラベルは表示しない</span></span>
-<span id="cb29-14"><a href="#cb29-14" tabindex="-1"></a><span class="fu">axis</span>(<span class="at">side=</span><span class="dv">4</span>) <span class="co"># 右側に分布関数の縦軸目盛を表示する</span></span>
-<span id="cb29-15"><a href="#cb29-15" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;density&quot;</span>, <span class="at">side=</span><span class="dv">4</span>, <span class="at">line=</span><span class="dv">3</span>) <span class="co"># 右縦軸にラベルをつける</span></span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="dv">3000</span> <span class="co"># 乱数で生成する標本サイズは3000</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(obs, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">1</span>) <span class="co"># 正規分布からベクトルsに乱数を生成</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>) <span class="co"># 表示範囲</span></span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>by <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="co"># ヒストグラムの間隔</span></span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>s <span class="ot">&lt;-</span> s[xlim[<span class="dv">1</span>]<span class="sc">&lt;</span>s <span class="sc">&amp;</span> s<span class="sc">&lt;</span>xlim[<span class="dv">2</span>]] <span class="co"># 表示範囲外の値は除いておく</span></span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fl">1.05</span> <span class="co"># mは上限調整用の係数</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>dm <span class="ot">&lt;-</span> m<span class="sc">*</span><span class="fu">dnorm</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>) <span class="co"># 分布関数の高さの上限dmを設定</span></span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>hm <span class="ot">&lt;-</span> obs<span class="sc">*</span>by<span class="sc">*</span>dm <span class="co"># ヒストグラムの面積は観測数*間隔で、分布関数の積分値は1になる。両者が同じになるように、高さの上限dmを設定</span></span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a><span class="fu">hist</span>(s, <span class="at">breaks=</span><span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], by), <span class="at">main=</span><span class="st">&quot;標準正規分布&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;obs.&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, hm), <span class="at">col=</span><span class="st">&quot;white&quot;</span>, <span class="at">border=</span><span class="st">&quot;black&quot;</span>, <span class="at">angle=</span><span class="st">&quot;45&quot;</span>)</span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a></span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a><span class="fu">par</span>(<span class="at">new=</span>T) <span class="co"># 重ね書きを指定</span></span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dnorm</span>(x, <span class="dv">0</span>, <span class="dv">1</span>), xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">axes=</span><span class="cn">FALSE</span>, <span class="at">col=</span><span class="st">&quot;black&quot;</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="dv">0</span>, dm), <span class="at">lwd=</span><span class="fl">1.5</span>) <span class="co"># 軸目盛や軸ラベルは表示しない</span></span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a><span class="fu">axis</span>(<span class="at">side=</span><span class="dv">4</span>) <span class="co"># 右側に分布関数の縦軸目盛を表示する</span></span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;density&quot;</span>, <span class="at">side=</span><span class="dv">4</span>, <span class="at">line=</span><span class="dv">3</span>) <span class="co"># 右縦軸にラベルをつける</span></span></code></pre></div>
 <p><img src="common_files/figure-html/overlap-1.png" width="672" /></p>
 <p>なお、<code>curve</code>関数は引数に<code>add = TRUE</code>をつけることにより、一つ目と座標をあわせた重ね書きができます。上の例だと<code>hist</code>の後に、</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="fu">curve</span>(obs<span class="sc">*</span>by<span class="sc">*</span><span class="fu">dnorm</span>(x, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="dv">10</span>, <span class="at">add =</span> T)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">curve</span>(obs<span class="sc">*</span>by<span class="sc">*</span><span class="fu">dnorm</span>(x, <span class="dv">0</span>, <span class="dv">1</span>), <span class="at">main=</span><span class="st">&quot;&quot;</span>, <span class="at">ylab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">col=</span><span class="st">&quot;gray&quot;</span>, <span class="at">lwd=</span><span class="dv">10</span>, <span class="at">add =</span> T)</span></code></pre></div>
 <p>と書くと、ヒストグラムのにスケールにあわせた（標準ではなくなった）正規分布を描くことができます。</p>
 </div>
 <div id="複数のグラフを並べる" class="section level1" number="16">
@@ -1081,34 +1095,34 @@ id="fnref2"><sup>2</sup></a>、</p>
 <h2><span class="header-section-number">16.1</span>
 変則的な分割を行なう</h2>
 <p>1行目は1つのプロットで2列を使い、2行目は2つのプロットを表示するような変則的な同時プロットも、<code>split.screen</code>関数で入れ籠構造をつくれば表示できます。</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co"># omaはページ全体の余白の指定</span></span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="co"># par(mar=c(4, 4, 0, 0), mgp=c(2.5, 1, 0), oma = c(0, 0, 0, 0))</span></span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">mgp=</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
-<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a><span class="co"># 2行1列の親領域をまずつくり、スクリーン番号の戻り値を得る</span></span>
-<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>ss_p <span class="ot">&lt;-</span> <span class="fu">split.screen</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)) </span>
-<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a><span class="co"># スクリーン番号を指定して、1行2列の子領域をつくる</span></span>
-<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>ss_c <span class="ot">&lt;-</span> <span class="fu">split.screen</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), ss_p[<span class="dv">2</span>])</span>
-<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a><span class="co"># 親領域のスクリーン番号を指定して描画</span></span>
-<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a><span class="fu">screen</span>(ss_p[<span class="dv">1</span>])</span>
-<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a><span class="fu">curve</span>(dlnorm, <span class="dv">0</span>, <span class="dv">5</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>)</span>
-<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a><span class="co"># 子領域のスクリーン番号を指定して描画</span></span>
-<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a><span class="fu">screen</span>(ss_c[<span class="dv">1</span>])</span>
-<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a><span class="fu">curve</span>(dnorm, <span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>)</span>
-<span id="cb31-14"><a href="#cb31-14" tabindex="-1"></a><span class="co"># 子領域のスクリーン番号を指定して描画</span></span>
-<span id="cb31-15"><a href="#cb31-15" tabindex="-1"></a><span class="fu">screen</span>(ss_c[<span class="dv">2</span>])</span>
-<span id="cb31-16"><a href="#cb31-16" tabindex="-1"></a><span class="fu">curve</span>(dexp, <span class="dv">0</span>, <span class="dv">3</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co"># omaはページ全体の余白の指定</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="co"># par(mar=c(4, 4, 0, 0), mgp=c(2.5, 1, 0), oma = c(0, 0, 0, 0))</span></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">mgp=</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co"># 2行1列の親領域をまずつくり、スクリーン番号の戻り値を得る</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>ss_p <span class="ot">&lt;-</span> <span class="fu">split.screen</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)) </span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="co"># スクリーン番号を指定して、1行2列の子領域をつくる</span></span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>ss_c <span class="ot">&lt;-</span> <span class="fu">split.screen</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), ss_p[<span class="dv">2</span>])</span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="co"># 親領域のスクリーン番号を指定して描画</span></span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="fu">screen</span>(ss_p[<span class="dv">1</span>])</span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a><span class="fu">curve</span>(dlnorm, <span class="dv">0</span>, <span class="dv">5</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a><span class="co"># 子領域のスクリーン番号を指定して描画</span></span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a><span class="fu">screen</span>(ss_c[<span class="dv">1</span>])</span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="fu">curve</span>(dnorm, <span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a><span class="co"># 子領域のスクリーン番号を指定して描画</span></span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a><span class="fu">screen</span>(ss_c[<span class="dv">2</span>])</span>
+<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a><span class="fu">curve</span>(dexp, <span class="dv">0</span>, <span class="dv">3</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_split_screen-1.png" width="672" /></p>
 <p>分割をやめるときは、以下のように終了します。</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="fu">close.screen</span>(<span class="at">all.screens =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">close.screen</span>(<span class="at">all.screens =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="グラフを保存する" class="section level1" number="17">
 <h1><span class="header-section-number">17</span> グラフを保存する</h1>
 <p><code>png</code>や<code>postscript</code>などでグラフィックスデバイスを開いた後、<code>plot</code>をして、<code>dev.off</code>でグラフィックスデバイスを閉じれば保存できます。</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">png</span>(<span class="at">filename =</span> <span class="st">&quot;sin.png&quot;</span>, </span>
-<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
-<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
-<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">png</span>(<span class="at">filename =</span> <span class="st">&quot;sin.png&quot;</span>, </span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
+<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 <p><code>bg</code>は背景色を示す引数で、<code>transparent</code>を指定すると透明です。DPIは72になります。</p>
 <div id="グラフィックスデバイスの開閉とプロットを分離"
 class="section level2" number="17.1">
@@ -1117,24 +1131,24 @@ class="section level2" number="17.1">
 <p>グラフィックスデバイスのオープンとプロットを分離したい場合は、遅延実行を応用します。
 プロット部分だけ関数化できるので、同じ描画のコードを、画面確認，Web用PNG，TeX用EPS，R
 Markdownなどに使いまわしたいときに便利です。</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>save_as_png <span class="ot">&lt;-</span> <span class="cf">function</span>(fname, plot_expression){</span>
-<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>    <span class="fu">png</span>(<span class="at">filename =</span> fname,</span>
-<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
-<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a>    plot_expression</span>
-<span id="cb34-5"><a href="#cb34-5" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
-<span id="cb34-6"><a href="#cb34-6" tabindex="-1"></a>}</span>
-<span id="cb34-7"><a href="#cb34-7" tabindex="-1"></a></span>
-<span id="cb34-8"><a href="#cb34-8" tabindex="-1"></a><span class="fu">save_as_png</span>(<span class="st">&quot;sin.png&quot;</span>, { <span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi) })</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>save_as_png <span class="ot">&lt;-</span> <span class="cf">function</span>(fname, plot_expression){</span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>    <span class="fu">png</span>(<span class="at">filename =</span> fname,</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a>    plot_expression</span>
+<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
+<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>}</span>
+<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a></span>
+<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a><span class="fu">save_as_png</span>(<span class="st">&quot;sin.png&quot;</span>, { <span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi) })</span></code></pre></div>
 </div>
 <div id="ディスプレイに表示した後に保存" class="section level2"
 number="17.2">
 <h2><span class="header-section-number">17.2</span>
 ディスプレイに表示した後に保存</h2>
 <p><code>plot</code>してディスプレイに表示した後に保存したくなった場合は、<code>dev.copy</code>や<code>dev.copy2eps</code>を使います。</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">dev.copy</span>(png,</span>
-<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>    <span class="at">file =</span> <span class="st">&quot;sin.png&quot;</span>, <span class="at">width=</span><span class="dv">600</span>, <span class="at">height=</span><span class="dv">400</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
-<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="fu">dev.copy</span>(png,</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>    <span class="at">file =</span> <span class="st">&quot;sin.png&quot;</span>, <span class="at">width=</span><span class="dv">600</span>, <span class="at">height=</span><span class="dv">400</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 <div id="背景色" class="section level3" number="17.2.1">
 <h3><span class="header-section-number">17.2.1</span> 背景色</h3>
 <p><code>dev.copy</code>は背景色の引数<code>bg</code>をとらないので、<code>par(bg = "white")</code>のように指定してください。</p>
@@ -1144,10 +1158,10 @@ number="17.2">
 <h2><span class="header-section-number">17.3</span>
 EPSファイルの用紙サイズ</h2>
 <p><code>postscript</code>でEPSファイルをつくるときは、<code>width</code>と<code>height</code>と<code>paper = "special"</code>をつけておいた方が、回転などで取り回しが楽だと思います。<code>paper = "special"</code>は、<code>width</code>と<code>height</code>にあわせて非定形用紙サイズが指定されるもので、<code>pdf</code>では標準です。</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">postscript</span>(<span class="at">file =</span> <span class="st">&quot;sin.eps&quot;</span>, </span>
-<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>, <span class="at">paper =</span> <span class="st">&quot;special&quot;</span>)</span>
-<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
-<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">postscript</span>(<span class="at">file =</span> <span class="st">&quot;sin.eps&quot;</span>, </span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>, <span class="at">paper =</span> <span class="st">&quot;special&quot;</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
+<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 <p>なお、<code>width</code>と<code>height</code>はinch（=2.54cm）指定です。TeXで利用する人が多いと思いますが、1
 inchが72
 bpになり、bp単位でBoundingBoxが保存されます。上の例だと、<code>%%BoundingBox: 0 0 504 504</code>が入ります。TeXの<code>graphicsx</code>パッケージの<code>bb</code>オプションはこのBoundingBoxを標準で入っています。</p>
