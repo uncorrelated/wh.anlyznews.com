@@ -688,10 +688,10 @@ z^{\beta_2}\)</span>を推定したい場合は、</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>frml <span class="ot">&lt;-</span> y <span class="sc">~</span> x <span class="sc">+</span> z</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">update</span>(frml, . <span class="sc">~</span> . <span class="sc">+</span> <span class="fu">factor</span>(ans))</span></code></pre></div>
 <pre><code>y ~ x + z + factor(ans)
-&lt;environment: 0x560236f82a80&gt;</code></pre>
+&lt;environment: 0x5bfbb4142e70&gt;</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">update</span>(frml, . <span class="sc">~</span> . <span class="sc">-</span> z)</span></code></pre></div>
 <pre><code>y ~ x
-&lt;environment: 0x560236f82a80&gt;</code></pre>
+&lt;environment: 0x5bfbb4142e70&gt;</code></pre>
 </div>
 </div>
 <div id="行列演算で推定" class="section level2" number="2.3">
@@ -975,10 +975,10 @@ y ~ x     120.68841 124.8920</code></pre>
 <h2><span class="header-section-number">6.1</span> 回帰診断</h2>
 <p>推定結果のオブジェクトを<code>plot</code>すると、</p>
 <ul>
-<li>残差</li>
-<li>標準化残差の絶対値の平方根</li>
+<li>予測値と残差</li>
+<li>予測値と標準化残差の絶対値の平方根</li>
 <li>正規Q–Q</li>
-<li>標準化残差と梃子比の散布図とクック距離</li>
+<li>梃子比（Leverage）と標準化残差の散布図とクック距離</li>
 </ul>
 <p>の4つのプロットが順番に表示されます。</p>
 <p>プロット領域を4分割し、<code>ask = FALSE</code>をつけて、一枚に納めて表示してみましょう。</p>
@@ -986,6 +986,25 @@ y ~ x     120.68841 124.8920</code></pre>
 <span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a><span class="fu">plot</span>(r_lm, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/ols_diagnosis-1.png" width="672" /></p>
 <p>数字が入っていますが、データフレーム内の観測値の行番号を表します。行名がついている場合は、行名の表示になります。</p>
+<p>予測値と残差や残差の散らばりに相関がある場合、極端なはずれ値がある場合は、推定モデルが不適切な可能性が高いです。</p>
+<p>予測値と標準化残差の絶対値の平方根に相関がある場合は、OLSの残差を使った加重最小二乗法（FGLS）で推定しなおし、不均一分散に対処すべしとなります。</p>
+<p>正規Q–Qプロットは、標準化残差を昇順に並べて分位数と標準化残差の対応をつくり、ある分位数における標準化残差を縦軸の座標、同じ分位数における標準化正規分布の確率変数（＝標準化残差）を横軸の座標としたプロットです。だいたい斜めの直線上に並べば、残差が正規分布であると看做せます。</p>
+<p>梃子比（Leverage）は観測値の回帰係数への影響が大きさをあらわす数値で、標準化残差と梃子比から計算したクック距離が多角なると、外れ値で回帰係数が偏っている可能性が高くなります。0.5や1.0が目安とされます。</p>
+<p>観測値<span class="math inline">\(i\)</span>の梃子比<span
+class="math inline">\(h_{ii}\)</span>は</p>
+<p><span class="math display">\[
+h_{ii} \equiv {}^t\!x_i({}^t\!XX)^{-1}x_i
+\]</span></p>
+<p>と定義され、<span class="math inline">\(0 \leq h_{ii} \leq
+1\)</span>，<span
+class="math inline">\(\sum^n_{i=1}h_{ii}=k+1\)</span>，<span
+class="math inline">\(\bar{h}_{ii}=(k+1)/n\)</span>となります。クック距離<span
+class="math inline">\(D_i\)</span>は</p>
+<p><span class="math display">\[
+D_i \equiv
+\frac{e_i^2}{\hat{\sigma}^2}\frac{1}{k}\frac{h_{ii}}{(1-h_{ii})^2}
+\]</span></p>
+<p>と定義されます。</p>
 <p>なお、不偏性のある一致推定量を得るという意味では、誤差項が正規分布する必要も、分散が均一である必要もなく、系列相関も原則として支障になりません<a
 href="#fn3" class="footnote-ref"
 id="fnref3"><sup>3</sup></a>。大標本のときは、梃子比を気にしましょう。</p>
