@@ -396,6 +396,8 @@ class="toc-section-number">9</span>
 id="toc-ワークスペースの保存と読み込み"><span
 class="toc-section-number">10</span>
 ワークスペースの保存と読み込み</a></li>
+<li><a href="#sweep" id="toc-sweep"><span
+class="toc-section-number">11</span> sweep</a></li>
 </ul>
 </div>
 
@@ -531,6 +533,10 @@ number="10">
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">&quot;example.RData&quot;</span>)</span></code></pre></div>
 <p><code>ls()</code>をすると、消したオブジェクト<code>n</code>,<code>x</code>,<code>z</code>,<code>y</code>が復活しているのが分かります。
 なお、<code>quit(save = "yes")</code>とすると、自動で<code>save.image</code>が呼び出されます。</p>
+</div>
+<div id="sweep" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> sweep</h1>
+<p>行列の要素を行や列ごとに足したり引いたりする関数です。<code>apply</code>で間に合うので使う機会は乏しいのですが、たまに使われているのを見かけます。</p>
 </div>
 
 </div>
