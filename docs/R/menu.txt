@@ -51,6 +51,7 @@ div.right h2.menu {
 <dl class="menu">
     <dt><a href="OLS.shtml">Rで簡単にOLS</a></dt>
     <dt><a href="MLE.shtml">Rでべたべたと最尤法</a></dt>
+    <dt><a href="logit.shtml">みんな大好きロジットモデル</a></dt>
     <dt><a href="cauchy_dist.shtml">コーシー分布とのつきあい方</a></dt>
 </dl>
 

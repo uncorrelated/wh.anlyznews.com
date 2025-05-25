@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>みんな大好きロジットモデル</title>
+
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">みんな大好きロジットモデル</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>アンケートなどで数量以外の被説明変数をとるときによく用いるロジットモデルのRでの推定方法を紹介します。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#ロジットモデルとは" id="toc-ロジットモデルとは"><span
+class="toc-section-number">1</span> ロジットモデルとは？</a>
+<ul>
+<li><a href="#効用関数からの導出" id="toc-効用関数からの導出"><span
+class="toc-section-number">1.1</span> 効用関数からの導出</a></li>
+</ul></li>
+<li><a href="#二項選択モデルbinominal"
+id="toc-二項選択モデルbinominal"><span
+class="toc-section-number">2</span> 二項選択モデル（binominal）</a>
+<ul>
+<li><a href="#glmによる推定" id="toc-glmによる推定"><span
+class="toc-section-number">2.1</span> GLMによる推定</a>
+<ul>
+<li><a href="#予測値" id="toc-予測値"><span
+class="toc-section-number">2.1.1</span> 予測値</a></li>
+<li><a href="#限界効果" id="toc-限界効果"><span
+class="toc-section-number">2.1.2</span> 限界効果</a></li>
+</ul></li>
+<li><a href="#最尤法による推定" id="toc-最尤法による推定"><span
+class="toc-section-number">2.2</span> 最尤法による推定</a></li>
+</ul></li>
+<li><a href="#多項選択モデルmultinominal-logit"
+id="toc-多項選択モデルmultinominal-logit"><span
+class="toc-section-number">3</span> 多項選択モデル（multinominal
+logit）</a>
+<ul>
+<li><a href="#条件付ロジットconditional-logit"
+id="toc-条件付ロジットconditional-logit"><span
+class="toc-section-number">3.1</span> 条件付ロジット（conditional
+logit）</a></li>
+<li><a href="#混合ロジットmixed-logit"
+id="toc-混合ロジットmixed-logit"><span
+class="toc-section-number">3.2</span> 混合ロジット（mixed
+logit）</a></li>
+<li><a href="#入れ籠ロジットnested-logit"
+id="toc-入れ籠ロジットnested-logit"><span
+class="toc-section-number">3.3</span> 入れ籠ロジット（nested
+logit）</a></li>
+</ul></li>
+<li><a href="#集計データのオッズに対する推定"
+id="toc-集計データのオッズに対する推定"><span
+class="toc-section-number">4</span> 集計データのオッズに対する推定</a>
+<ul>
+<li><a href="#予測確率" id="toc-予測確率"><span
+class="toc-section-number">4.1</span> 予測確率</a></li>
+<li><a href="#限界効果-1" id="toc-限界効果-1"><span
+class="toc-section-number">4.2</span> 限界効果</a></li>
+<li><a href="#信頼区間" id="toc-信頼区間"><span
+class="toc-section-number">4.3</span> 信頼区間</a></li>
+</ul></li>
+<li><a href="#順序ロジットモデルordered-logit"
+id="toc-順序ロジットモデルordered-logit"><span
+class="toc-section-number">5</span> 順序ロジットモデル（ordered
+logit）</a>
+<ul>
+<li><a href="#限界効果-2" id="toc-限界効果-2"><span
+class="toc-section-number">5.1</span> 限界効果</a></li>
+<li><a href="#最適化関数を使った推定"
+id="toc-最適化関数を使った推定"><span
+class="toc-section-number">5.2</span> 最適化関数を使った推定</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="ロジットモデルとは" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+ロジットモデルとは？</h1>
+<p>二項分布もしくは多項分布の確率質量関数の中の確率をロジスティック関数で表したモデルを、ロジットモデルと呼びます。例えば試行回数<span
+class="math inline">\(m\)</span>、生起回数<span
+class="math inline">\(n\)</span>の二項分布の確率質量関数は</p>
+<p><span class="math display">\[
+f_X(n) = {}_m\!C_n p^{n}(1-p)^{m-n}
+\]</span></p>
+<p>と生起確率<span
+class="math inline">\(p\)</span>を使って表されますが、ここで</p>
+<p><span class="math display">\[
+p = \frac{e^y}{1 + e^y}
+\]</span></p>
+<p>と、<span
+class="math inline">\(p\)</span>をロジスティック関数で表します。<span
+class="math inline">\(y\)</span>を<span
+class="math inline">\(p\)</span>に写すことを、ロジット変換と言います。<span
+class="math inline">\(y\)</span>は実数で、値域が<span
+class="math inline">\((-\infty,
++\infty)\)</span>の線形関数で説明されることが一般的です。</p>
+<p>値粋が<span class="math inline">\((0,
+1)\)</span>の単調増加関数であればロジスティック関数である必要はなく、例えば正規分布の累積分布関数を用いるプロビット分析もありますが、ロジスティック関数は数理的に取り扱いやすいため、ロジットモデルが標準的な分析ツールになっています<a
+href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>。</p>
+<div id="効用関数からの導出" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span>
+効用関数からの導出</h2>
+<p>ロジットモデルは、経済学の意思決定の文脈で基礎付けることもできます。教科書<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>の内容を確認していきましょう。</p>
+<p>選択肢<span
+class="math inline">\(j\)</span>を選んだときの効用関数<span
+class="math inline">\(U\)</span>を以下のように定義しましょう。</p>
+<p><span class="math display">\[
+U_{j} = V_{j} + \epsilon_{j}
+\]</span></p>
+<p><span
+class="math inline">\(V_{j}\)</span>は観測可能な説明変数に応じた効用で、<span
+class="math inline">\(\epsilon_{j}\)</span>は観測不能なガンベル分布（Gumbel
+distribution）に従う誤差項です。ガンベル分布は、ある標本サイズの確率変数の最大値を正規化した分布が、標本サイズを増やしたときに漸近する分布です<a
+href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+<p>選択肢<span class="math inline">\(i\)</span>を選択肢<span
+class="math inline">\(j\)</span>より選好する確率を考えます。</p>
+<p><span class="math display">\[
+\begin{align}
+P(U_{i} &gt; U_{j}) &amp;= P(V_{i} + \epsilon_{i} &gt; V_{j} +
+\epsilon_{j}) \\
+&amp;= P(\epsilon_{j} &lt; \epsilon_{i} + V_{i} - V_{j})
+\end{align}
+\]</span></p>
+<p><span
+class="math inline">\(\epsilon_{i}\)</span>が所与の定数とすると、ガンベル分布の累積分布関数なので</p>
+<p><span class="math display">\[
+P(U_{i} &gt; U_{j}) = \exp(-\exp(-(\epsilon_{i} + V_{i} - V_{j})))
+\]</span></p>
+<p>と表すことができます。</p>
+<p>選択肢<span
+class="math inline">\(i\)</span>が選ばれる確率を考えます。他の選択肢すべてと効用を比較して、選択肢<span
+class="math inline">\(i\)</span>からの効用が大きいことになるので、すべての選択肢と比較した同時確率密度になります。</p>
+<p><span class="math display">\[
+P(U_{i}) = \prod_{i \ne j} P(U_{i} &gt; U_{j})
+\]</span></p>
+<p><span
+class="math inline">\(\epsilon_{i}\)</span>は実際には確率変数なので、ガンベル分布の累積分布関数と確率密度関数を用いて積分します。</p>
+<p><span class="math display">\[\begin{align}
+P(U_{i}) &amp;= \int_{-\infty}^\infty \bigg( \prod_{i \ne j}
+\exp(-\exp(-(\epsilon_{i} + V_{i} - V_{j}))) \bigg ) \\
+&amp;\quad \exp(-\epsilon_{i}) \exp(-\exp(-\epsilon_{i})) d \epsilon_{i}
+\end{align}\]</span></p>
+<p><span class="math inline">\(i=j\)</span>のとき<span
+class="math inline">\(\epsilon_{i} + V_{i} - V_{j} =
+\epsilon_{i}\)</span>なので、確率密度関数の部分を級数部分に融合できます。</p>
+<p><span class="math display">\[
+P(U_{i}) = \int_{-\infty}^\infty \bigg( \prod \exp(-\exp(-(\epsilon_{i}
++ V_{i} - V_{j}))) \bigg ) \exp(-\epsilon_{i}) d \epsilon_{i}
+\]</span></p>
+<p>指数の外側の積を、指数の中の和に書き換えます。</p>
+<p><span class="math display">\[
+P(U_{i}) = \int_{-\infty}^\infty \exp(\sum -\exp(-(\epsilon_{i} + V_{i}
+- V_{j})))) \exp(-\epsilon_{i}) d \epsilon_{i}
+\]</span></p>
+<p>後の計算のために式を整理します。</p>
+<p><span class="math display">\[
+P(U_{i}) = \int_{-\infty}^\infty \exp(\sum - \exp(\epsilon_{i})
+\exp(-(V_{i} - V_{j})))) \exp(-\epsilon_{i}) d \epsilon_{i}
+\]</span></p>
+<p>ここで積分の基底を取り替えます。つまり、<span
+class="math inline">\(\exp(-\epsilon_{i})\)</span>を<span
+class="math inline">\(t\)</span>に置換します。<span
+class="math inline">\(d\epsilon_{i} = dt/t\)</span>になり、<span
+class="math inline">\((-\infty, \infty)\)</span>の区間が<span
+class="math inline">\((0, \infty)\)</span>になるので、</p>
+<p><span class="math display">\[
+P(U_{i}) = \int^0_\infty t \exp(-t \sum  - \exp(\epsilon_{i}))
+-\frac{dt}{t}
+\]</span></p>
+<p><span
+class="math inline">\(t\)</span>について整理し、積分区間を逆にしてマイナスを消します。</p>
+<p><span class="math display">\[
+P(U_{i}) = \int^\infty_0 \exp(-t \sum  - \exp(\epsilon_{i})) dt
+\]</span></p>
+<p>あとは複合関数の積分の問題で、</p>
+<p><span class="math display">\[
+P(U_{i}) = \frac{1}{\sum \exp(-(V_i - V_j))} = \frac{\exp(V_i)}{\sum
+\exp(V_j)}
+\]</span></p>
+<p>が導出できます。さらに、<span class="math inline">\(V_i =
+V_j\)</span>のとき<span class="math inline">\(\exp(-(V_i - V_i)) =
+1\)</span>になることに注意すると、中央から</p>
+<p><span class="math display">\[
+P(U_{i}) = \frac{1}{1 + \sum_{i \ne j} \exp(-(V_i - V_j))}
+\]</span></p>
+<p>よく見かける形状のロジスティック関数が導出できます。<span
+class="math inline">\(V_i\)</span>や<span
+class="math inline">\(V_j\)</span>は一意に定まりませんが、<span
+class="math inline">\(V_i-V_j\)</span>は一意になるので推定が容易になります。</p>
+<p>ガンベル分布を用いる明確な理由は不明です。数理的に扱いやすい<a
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>からだと思いますが。</p>
+</div>
+</div>
+<div id="二項選択モデルbinominal" class="section level1" number="2">
+<h1><span class="header-section-number">2</span>
+二項選択モデル（binominal）</h1>
+<p>冒頭で紹介したものです。非線形モデルになるので教科書的には最尤法で推定しますが、Rでは一般化線形モデル（<abbr title="Generalized Linear Model">GLM</abbr>）<a
+href="#fn5" class="footnote-ref"
+id="fnref5"><sup>5</sup></a>を推定する<code>glm</code>関数で推定するのが一般的です。</p>
+<div id="glmによる推定" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> GLMによる推定</h2>
+<p>実際に推定してみましょう。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># データセットをダウンロードして、二項選択モデルをGLMで推定</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">summary</span>(r_glm <span class="ot">&lt;-</span> <span class="fu">glm</span>(r <span class="sc">~</span> x1 <span class="sc">+</span> x2, (df01 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;https://wh.anlyznews.com/R/dataset/for_logit.txt&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)), <span class="at">family =</span> <span class="fu">binomial</span>()))</span></code></pre></div>
+<pre><code>
+Call:
+glm(formula = r ~ x1 + x2, family = binomial(), data = (df01 &lt;- read.table(&quot;https://wh.anlyznews.com/R/dataset/for_logit.txt&quot;, 
+    sep = &quot;\t&quot;, header = TRUE)))
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)   0.3125     0.3759   0.831    0.406    
+x1            0.7171     0.1667   4.301 1.70e-05 ***
+x2            0.7610     0.1578   4.823 1.41e-06 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 137.989  on 99  degrees of freedom
+Residual deviance:  52.623  on 97  degrees of freedom
+AIC: 58.623
+
+Number of Fisher Scoring iterations: 6</code></pre>
+<p>モデル式とデータフレームの指摘は<code>lm</code>と同様で、<code>family = binomial()</code>のところが異なり、ここでロジット関数による二項選択モデルのリンク関数を指定しています。</p>
+<p>戻り値のオブジェクトは。<code>lm</code>のそれと同様に扱えます。信頼区間は<code>confint(r_glm)</code>で出ます。係数と標準誤差を抜き出したい場合は<code>coef(summary(r_glm))</code>です。</p>
+<p>ロジットモデルをプロットすることは稀です。線形部分の観測値（の逆ロジット変換）は<span
+class="math inline">\(\infty\)</span>もしくは<span
+class="math inline">\(-\infty\)</span>になるため、プロットできません。線形部分の予測値をロジット変換したものと観測値はプロットすることができるので見てみましょう。</p>
+<p><img src="common_files/figure-html/binominal_logit02-1.png" width="672" /></p>
+<div id="予測値" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> 予測値</h3>
+<p>ロジットモデルの予測値は、線形部分の予測値と生起確率の予測値の2種類があります。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>newdata <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x1 =</span> <span class="dv">1</span>, <span class="at">x2 =</span> <span class="dv">2</span>) <span class="co"># 予測する説明変数の値</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">predict</span>(r_glm, newdata) <span class="co"># 線形部分の予測値; type = &quot;link&quot;</span></span></code></pre></div>
+<pre><code>       1 
+2.551694 </code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">predict</span>(r_glm, newdata, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>) <span class="co"># 生起確率の予測値</span></span></code></pre></div>
+<pre><code>        1 
+0.9276872 </code></pre>
+<p><code>type = "terms"</code>で予測値の各項（<span
+class="math inline">\(\beta_i
+x_i\)</span>）が出てきたりもしますが、上の2つを覚えておけば十分でしょう。</p>
+</div>
+<div id="限界効果" class="section level3" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> 限界効果</h3>
+<p>ロジットモデルは非線形なので、説明変数を増やしたときに予測値がどの程度増えるのかという限界効果が説明変数の値によって変わり、係数から把握するのが困難です。限界効果を計算します。</p>
+<p>限界効果は微分量なので、解析的に一階微分を導出して変数に値を代入してもよいですし、微細な値<span
+class="math inline">\(h\)</span>で説明変数を<span
+class="math inline">\(\pm h\)</span>して予測値<span
+class="math inline">\(\hat{p}_{+h}\)</span>と<span
+class="math inline">\(\hat{p}_{-h}\)</span>を出して、<span
+class="math inline">\((\hat{p}_{+h}-\hat{p}_{-h})/h/2\)</span>をする数値解析の手法でも計算できます。どちらも難しくはないです。しかし、説明変数が多いと手間隙がかかるのでパッケージを用いましょう。</p>
+<p>図示する場合は<code>effects</code>パッケージが使いやすいです。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>r_pe <span class="ot">&lt;-</span> <span class="fu">predictorEffects</span>(r_glm, <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">confidence.level =</span> <span class="fl">0.99</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">plot</span>(r_pe, <span class="at">axes =</span> <span class="fu">list</span>(<span class="at">grid =</span> <span class="cn">TRUE</span>), <span class="at">ticks =</span> <span class="fu">list</span>(<span class="at">at =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.9</span>, <span class="fl">0.99</span>)))</span></code></pre></div>
+<p><img src="common_files/figure-html/effects01-1.png" width="672" /></p>
+<p>プロットの横軸ではない他の変数は、平均値が仮定されています。</p>
+<p>この例のように図を見ても傾向が分かりづらいときは、全体の傾向をあらわす数字で限界効果を確認します。この用途では<code>marginaleffects</code>が有用です。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="co"># 引用してくださいメッセージを消す（謝辞などで言及してあげましょう）</span></span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="fu">options</span>(<span class="at">marginaleffects_startup_message =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># 平均値をまとめてデータフレームにする</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>(dfm <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">apply</span>(df01, <span class="dv">2</span>, mean, <span class="at">simplify =</span> <span class="cn">FALSE</span>)))</span></code></pre></div>
+<pre><code>     r         x1         x2
+1 0.46 -0.2495172 -0.3276298</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># 平均値での限界効果を計算</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">slopes</span>(r_glm, dfm)</span></code></pre></div>
+<pre><code>
+ Term Estimate Std. Error    z Pr(&gt;|z|)    S  2.5 % 97.5 %
+   x1    0.179     0.0418 4.28   &lt;0.001 15.7 0.0968  0.261
+   x2    0.190     0.0400 4.75   &lt;0.001 18.9 0.1113  0.268
+
+Type: response
+Comparison: dY/dX</code></pre>
+<p>観測値すべての限界効果の平均である平均限界効果を見ることが多いですが、それも簡単に計算できます。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">avg_slopes</span>(r_glm)</span></code></pre></div>
+<pre><code>
+ Term Estimate Std. Error     z Pr(&gt;|z|)     S  2.5 % 97.5 %
+   x1   0.0581    0.00659  8.82   &lt;0.001  59.6 0.0452 0.0710
+   x2   0.0617    0.00295 20.86   &lt;0.001 318.7 0.0559 0.0674
+
+Type: response
+Comparison: dY/dX</code></pre>
+</div>
+</div>
+<div id="最尤法による推定" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> 最尤法による推定</h2>
+<p>（対数）尤度関数を書けば、<code>optim</code>などの最適化アルゴリズムを用いて推定することもできます。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(r <span class="sc">~</span> x1 <span class="sc">+</span> x2, df01) <span class="co"># モデル式とデータフレームをまとめる</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf) <span class="co"># 説明変数を行列にまとめる</span></span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf) <span class="co"># 被説明変数を取り出す</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>objf <span class="ot">&lt;-</span> <span class="cf">function</span>(theta){ <span class="co"># 目的関数</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>   y <span class="ot">&lt;-</span> X <span class="sc">%*%</span> theta </span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>   p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>y))</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>   <span class="co"># 各行のCombination項は1!/(1!0!)=1になる</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>   <span class="fu">sum</span>(r<span class="sc">*</span><span class="fu">log</span>(p) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> r)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p))</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>}</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co"># optimは目的関数を最小化しようとするので、controlで目的関数の符号の反転を指示</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>(r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), objf, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>)))</span></code></pre></div>
+<pre><code>$par
+[1] 0.3125301 0.7171431 0.7610165
+
+$value
+[1] -26.31164
+
+$counts
+function gradient 
+      17       17 
+
+$convergence
+[1] 0
+
+$message
+[1] &quot;CONVERGENCE: REL_REDUCTION_OF_F &lt;= FACTR*EPSMCH&quot;</code></pre>
+<p>ほぼ同じ推定結果が得られます。</p>
+<p>ただし、指数を使うので桁あふれしやすいため上述の素朴なコードだと推定できない場合が多く、素朴な場合でも<code>glm</code>を使う場合よりもだいぶ手間隙がかかっています。区間推定や予測値や限界効果の計算などを考えると、手間隙の差はもっと大きくなります。<code>glm</code>を使っておきましょう。</p>
+</div>
+</div>
+<div id="多項選択モデルmultinominal-logit" class="section level1"
+number="3">
+<h1><span class="header-section-number">3</span>
+多項選択モデル（multinominal logit）</h1>
+<p>効用関数から多項ロジットモデルを導出しました。線形部分で加算でつながれている項の構造に種類があります。</p>
+<p>基本的な多項ロジットモデルでは、選択時の状況（choice
+situation）を示す変数と、選択（alternative）によって変わる係数で線形部分が構成されます。個体の性別など、説明変数の値が選択肢から独立したものである一方、選択肢にあたえる影響が異なる場合に用いられます。</p>
+<p>選択肢が<span
+class="math inline">\(J\)</span>種類あるとすると、それから<span
+class="math inline">\(1\)</span>を引いた<span
+class="math inline">\(J-1\)</span>本の方程式を推定します。確率の和が<span
+class="math inline">\(1\)</span>になるため、<span
+class="math inline">\(J\)</span>本だと冗長だからです。よって、説明変数がひとつ増えると、推定する係数は<span
+class="math inline">\(J-1\)</span>増えることになります。</p>
+<div id="条件付ロジットconditional-logit" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span>
+条件付ロジット（conditional logit）</h2>
+<p>財やサービスの価格や品質のような、選択肢の特徴の影響に関心がある場合もあります。その場合は、選択肢によって値が変わる説明変数と共通の係数の項を線形部分に加えます。社会科学の方言ではこれをconditional
+logitと呼びます<a href="#fn6" class="footnote-ref"
+id="fnref6"><sup>6</sup></a>。</p>
+<p>説明変数は選択時の状況と独立とは限りません。利用する交通機関を考えた場合、利用者によって移動元も移動先も異なりますから、目的地までの所用時間は選択肢（alternative）だけではなく、選択時の状況（choice
+situation）でも変化します。</p>
+<p>選択肢が<span
+class="math inline">\(J\)</span>種類あるとすると、それから<span
+class="math inline">\(1\)</span>を引いた<span
+class="math inline">\(J-1\)</span>本の方程式を推定しますが、係数は共通になるので説明変数が1つ増えたときに推定する係数は同じく1つ増えることになります。</p>
+</div>
+<div id="混合ロジットmixed-logit" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> 混合ロジット（mixed
+logit）</h2>
+<p>線形部分が、選択時の状況（choice
+situation）を示す説明変数と選択（alternative）によって変わる係数の項と、選択（alternative）によって変わる説明変数と共通の係数の項で構成されるモデルを、混合ロジットと混乱を招く呼び名<a
+href="#fn7" class="footnote-ref"
+id="fnref7"><sup>7</sup></a>で呼ぶときがあります。</p>
+<p><span class="math inline">\(y\)</span>が線形予測値、<span
+class="math inline">\(p\)</span>が生起確率の予測値、<span
+class="math inline">\(i\)</span>が個体、<span
+class="math inline">\(J\)</span>が選択肢の数、<span
+class="math inline">\(c\)</span>が選択されたとする選択肢、<span
+class="math inline">\(K_c\)</span>が条件付変数の数、<span
+class="math inline">\(K_n\)</span>が条件なし変数の数、<span
+class="math inline">\(z\)</span>が条件付変数、<span
+class="math inline">\(x\)</span>が条件なし変数、<span
+class="math inline">\(\beta\)</span>が推定される係数で、<span
+class="math inline">\(I_{c=j}\)</span>は<span
+class="math inline">\(c\)</span>と<span
+class="math inline">\(j\)</span>が一致するとき<span
+class="math inline">\(1\)</span>になる単純関数です。</p>
+<p><span class="math display">\[\begin{align}
+p_{i,c} &amp;= \frac{ \exp(y_{i,c} - y_{i,J}) }{1 + \sum_{j=1}^{J-1}
+\exp(y_{i,j-1} - y_{i,J})} \\
+y_{i,c} &amp;= \sum_{k=1}^{K_c} \sum_{j=1}^{J} I_{c=j} \alpha_k
+z_{i,J(k-1)+j}
++ \sum_{j=1}^{J} I_{c=j} \sum_{k=1}^{K_n} \beta_{K_n(j - 1) + k} x_{i,k}
+\end{align}\]</span></p>
+<p>一見、複雑そうですが、（対数）尤度関数を書けば<code>optim</code>などを使い最適化アルゴリズムで（桁があふれやすいのですが）推定できます。なお尤度関数は、各行の観測数は<span
+class="math inline">\(1\)</span>なので、個体<span
+class="math inline">\(i\)</span>が実際に選択した選択肢を<span
+class="math inline">\(c_i\)</span>と置いて、<span
+class="math inline">\(\prod^n_{i=1} p_{i,c_i}\)</span>となります。</p>
+<p>以上に加えて、選択（alternative）によって変わる説明変数と選択（alternative）によって変わる係数の項が加えられることがあります。車と電車で目的地までの所要時間が変わる影響があるが、同じ時間でも電車の方がよりストレスになる場合などに使います<a
+href="#fn8" class="footnote-ref"
+id="fnref8"><sup>8</sup></a>。このタイプの項の変数を<span
+class="math inline">\(w\)</span>、係数を<span
+class="math inline">\(\gamma\)</span>、項の数を<span
+class="math inline">\(K_w\)</span>とすると以下のように書けます。</p>
+<p><span class="math display">\[\begin{align}
+y_{i,c} &amp;= \sum_{k=1}^{K_c} \sum_{j=1}^{J} I_{c=j} \alpha_k
+z_{i,J(k-1)+j}
++ \sum_{j=1}^{J} I_{c=j} \sum_{k=1}^{K_n} \beta_{K_n(j - 1) + k} x_{i,k}
++ \sum_{j=1}^{J} I_{c=j} \sum_{k=1}^{K_w} \gamma_{K_w(j - 1) + k}
+w_{i,k} \\
+\end{align}\]</span></p>
+<p>実用では<code>mlogit</code>パッケージを用いるのが一般的です。<code>mlogit</code>は<ruby>vigniette<rp>（</rp><rt>ヴィネット</rt><rp>）</rp></ruby>にコード例が充実している<a
+href="#fn9" class="footnote-ref"
+id="fnref9"><sup>9</sup></a>のですが、そこにある利用例をひとつ紹介します。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;zoo&quot;</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;Fishing&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mlogit&quot;</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co"># データを整形してmlogitが処理できる形式にする</span></span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>Fish <span class="ot">&lt;-</span> <span class="fu">mlogit.data</span>(Fishing, <span class="at">varying =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">9</span>), <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>, <span class="at">choice =</span> <span class="st">&quot;mode&quot;</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co"># mlogitで推定を行う．モデル式は</span></span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co"># 1. choice situation and alternative specificな説明変数とalternative specificな係数（省略するには0を入れる）</span></span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co"># 2. choice situation specificな説明変数とalternative specificな係数（省略するには0を入れる; (3)が無ければ省略可）</span></span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co"># 3. choice situation and alternative specificな説明変数とchoice situation and alternative specificな係数（省略可）</span></span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co"># を | でつなぐ。</span></span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>(m <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(mode <span class="sc">~</span> price <span class="sc">|</span> income <span class="sc">|</span> catch, <span class="at">data =</span> Fish))</span></code></pre></div>
+<pre><code>
+Call:
+mlogit(formula = mode ~ price | income | catch, data = Fish,     method = &quot;nr&quot;)
+
+Coefficients:
+   (Intercept):boat  (Intercept):charter     (Intercept):pier  
+         8.4184e-01           2.1549e+00           1.0430e+00  
+              price          income:boat       income:charter  
+        -2.5281e-02           5.5428e-05          -7.2337e-05  
+        income:pier          catch:beach           catch:boat  
+        -1.3550e-04           3.1177e+00           2.5425e+00  
+      catch:charter           catch:pier  
+         7.5949e-01           2.8512e+00  </code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># 説明変数の平均値を求める</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">with</span>(Fish, <span class="fu">data.frame</span>(<span class="at">price =</span> <span class="fu">tapply</span>(price, <span class="fu">idx</span>(m, <span class="dv">2</span>), mean), <span class="at">catch =</span> <span class="fu">tapply</span>(catch, <span class="fu">idx</span>(m, <span class="dv">2</span>), mean), <span class="at">income =</span> <span class="fu">mean</span>(income)))</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co"># 平均値における限界効果を計算</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co"># typeはaもしくはrの2文字を指定（デフォルトはaa）</span></span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co"># aは絶対値，rは相対値．1番目の文字は確率，2番目は変数での指定になる</span></span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="fu">effects</span>(m, <span class="at">covariate =</span> <span class="st">&quot;income&quot;</span>, <span class="at">type =</span> <span class="st">&quot;aa&quot;</span>, <span class="at">data =</span> z)</span></code></pre></div>
+<pre><code>        beach          boat       charter          pier 
+ 1.132964e-06  3.113069e-05 -2.408677e-05 -8.176876e-06 </code></pre>
+<p>モデル選択のための統計的仮説検定は、<code>waldtest</code>，<code>lmtest</code>，<code>scoretest</code>で、ワルド検定、尤度比検定、ラグランジェ乗数検定を行えます。</p>
+<p>なお、<code>mlogit</code>でも限界代替効果と消費者余剰は係数と説明変数の値から計算しないといけないようです。</p>
+</div>
+<div id="入れ籠ロジットnested-logit" class="section level2"
+number="3.3">
+<h2><span class="header-section-number">3.3</span>
+入れ籠ロジット（nested logit）</h2>
+<p>ロジットモデルには<abbr title="independence of irrelevant alternatives">IIA</abbr>と呼ばれる数理的な性質があります。<span
+class="math inline">\(a\)</span>を選択する確率と<span
+class="math inline">\(b\)</span>を選択する確率のオッズ比を計算してみましょう。</p>
+<p><span class="math display">\[
+\frac{p_a}{p_b} = \frac{\exp(y_a - y_J)/\sum_{i=1}^{J-1} \exp(y_i -
+y_J)}{\exp(y_b - y_J)/\sum_{i=1}^{J-1} \exp(y_i - y_J)} = \exp(y_a -
+y_b)
+\]</span></p>
+<p>他にどのような選択肢があるかは関係がないことが分かります。</p>
+<p>バニラ味のアイスクリームと塩バター風味のポップコーンの二択に、チョコ味のアイスクリームが加わることを考えます。IIAなので、バニラ味のアイスクリームと塩バター風味のポップコーンが選ばれる確率の比は、チョコ味のアイスクリームが選択肢にあるかないかで代わりません。バニラ味のアイスクリームと塩バター風味のポップコーンの需要が同じ割合で減ることになります。また、バニラ味のアイスクリームの味が落ちたとき、塩バター風味のポップコーンとチョコ味のアイスクリームの需要が同じように増えます（交差弾性値が一定）。</p>
+<p>このIIAという性質は、非直感的で、非現実的です。アイスクリームの種類が増えたとき、需要が大きく減るのは他のアイスクリームであって、ポップコーンでは無さそうですよね。種類が増えると選ぶ楽しみが増えて、ポップコーンの方が大きく影響を受けるのかも知れませんが、少なくとも需要の減少が一定と言うことは無さそうです。将来予測や反実仮想を考えるときに問題になりえます。</p>
+<p><ruby>入れ籠<rp>（</rp><rt>いれこ</rt><rp>）</rp></ruby>ロジットモデルは、このIIAの性質を緩和することができます。アイスクリームとポップコーンの選択のロジットモデルと、アイスクリームの中でバニラ味とチョコ味の選択のロジットモデルの二つを同時に推定することで、選択肢の増減の影響を変化させます。多項プロビットモデルを使っても解決するのですが、IIAが問題になるときは入れ籠ロジットがよく使われています。</p>
+<p>これも<code>mlogit</code>パッケージで推定できます。</p>
+</div>
+</div>
+<div id="集計データのオッズに対する推定" class="section level1"
+number="4">
+<h1><span class="header-section-number">4</span>
+集計データのオッズに対する推定</h1>
+<p>集計データから比率しか分からないときがありますが、オッズの対数をとると線形モデルになるので、比率しか分からなくても観測値に0%がなければ推定できます。</p>
+<p><span class="math display">\[\begin{align}
+log(\frac{p_c}{p_J}) &amp;= y_c - y_J
+\end{align}\]</span></p>
+<p>二項ロジットの場合は<abbr title="Ordinary least squares">OLS</abbr>で、</p>
+<p><span class="math display">\[
+log(\frac{p_1}{p_0}) = \begin{pmatrix}
+Z_1 - Z_0 &amp; X
+\end{pmatrix}\begin{pmatrix}
+\alpha \\
+\beta_{1} - \beta_{0}
+\end{pmatrix} + \eta
+\]</span></p>
+<p>を、多項ロジットのときは<abbr title="Seemingly Unrelated Regression">SUR</abbr><a
+href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>で</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+log(\frac{p_1}{p_J}) \\
+log(\frac{p_2}{p_J}) \\
+\vdots \\
+log(\frac{p_{J-1}}{p_J})
+\end{pmatrix} = \begin{pmatrix}
+Z_1 - Z_J &amp; X_1 &amp; O &amp; \cdots &amp; O \\
+Z_2 - Z_J &amp; O &amp; X_2 &amp; \cdots &amp; O \\
+\vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+Z_{J-1} - Z_J &amp; O &amp; \cdots &amp; \cdots &amp; X_{J-1}
+\end{pmatrix}\begin{pmatrix}
+\alpha \\
+\beta_{1} - \beta_{J} \\
+\beta_{2} - \beta_{J} \\
+\vdots \\
+\beta_{J-1} - \beta_{J}
+\end{pmatrix} + \begin{pmatrix}
+\eta_1 \\
+\eta_2 \\
+\vdots \\
+\eta_{J-1} \end{pmatrix}
+\]</span></p>
+<p>と<span class="math inline">\(J-1\)</span>本同時に回帰します。<span
+class="math inline">\(O\)</span>は<span
+class="math inline">\(X\)</span>と同じ大きさのゼロ行列です。<span
+class="math inline">\(\frac{p_j}{p_J}\)</span>，<span
+class="math inline">\(\alpha\)</span>，<span
+class="math inline">\(\beta_j\)</span>，<span
+class="math inline">\(\eta_j\)</span>（<span class="math inline">\(1
+\leq j \leq
+J-1\)</span>）はn次元ベクトルです。<ruby>所謂<rp>（</rp><rt>いわゆる</rt><rp>）</rp></ruby>conditionalな説明変数<span
+class="math inline">\(Z\)</span>は、選択された選択肢のときの値をJ番目の選択肢のときの値で引いています。非conditionalな説明変数の係数は差分になります。</p>
+<p>なお、オッズの信頼区間の計算で用いたりしますが、誤差項<span
+class="math inline">\(\eta\)</span>の分布は漸近的に正規分布に従うことが知られています。OLSを使うことができますし、信頼区間を求めることも可能です。</p>
+<div id="予測確率" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> 予測確率</h2>
+<p>予測値がオッズではなくて確率で欲しいときは、<span
+class="math inline">\(i\)</span>が<span
+class="math inline">\(1\)</span>から<span
+class="math inline">\(J-1\)</span>までの<span
+class="math inline">\(\log(p_i/p_J)\)</span>の予測値<span
+class="math inline">\(\log(\widehat{p_i/p_J})\)</span>を出した後、</p>
+<p><span class="math display">\[
+p_c = \frac{\exp(\log(\widehat{p_c/p_J}))}{1 + \sum_{j=1}^{J-1}
+\exp(\log(\widehat{p_j/p_J}))}
+\]</span></p>
+<p>の右辺に値を代入して計算すれば、<span
+class="math inline">\(c\)</span>を選択したときの確率<span
+class="math inline">\(p_c\)</span>が出ます。</p>
+</div>
+<div id="限界効果-1" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> 限界効果</h2>
+<p><span class="math inline">\(\log(\widehat{p_c/p_J}) = (Z_c-Z_J)\alpha
++ X(\beta_c - \beta_J)\)</span>であることに注意して、<span
+class="math inline">\(p_c\)</span>を<span
+class="math inline">\(Z\)</span>や<span
+class="math inline">\(X\)</span>の要素で微分して値を代入して計算するか、説明変数を微小な値<span
+class="math inline">\(h\)</span>で<span class="math inline">\(\pm
+h\)</span>して予測値<span
+class="math inline">\(\hat{c,p}_{+h}\)</span>と<span
+class="math inline">\(\hat{p}_{c,-h}\)</span>を出し、<span
+class="math inline">\((\hat{p}_{c,+h} -
+\hat{p}_{c,-h})/h/2\)</span>をすれば出ます。</p>
+</div>
+<div id="信頼区間" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> 信頼区間</h2>
+<p>推定した係数の平均と分散共分散行列を使って、<code>mvtnorm::rmvnorm</code>で大量の係数のサンプルをつくり、そこから予測確率や限界効果を計算したサンプルをつくり、<code>quantile</code>の引数に<code>prob = c(0.025, 0.975)</code>などをつけて計算結果のサンプルを処理すると大雑把な信頼区間が出ます。</p>
+</div>
+</div>
+<div id="順序ロジットモデルordered-logit" class="section level1"
+number="5">
+<h1><span class="header-section-number">5</span>
+順序ロジットモデル（ordered logit）</h1>
+<p>順序ロジットは、①大好き、②好き、③どちらでもない、④嫌い…と言うような、順序は分かるが数量ではないデータを、従属変数として扱う回帰分析です。それぞれ選択肢と言うかカテゴリーがとる確率は非負で、また合計は1になり、さらに選択肢と選択肢の差は一定とは限らないため、普通の線形回帰は用いることができないため、アンケートデータの分析の定番手法となっています。</p>
+<p>典型的な順序データの分析で簡素なものは、個人<span
+class="math inline">\(i\)</span>が、<span
+class="math inline">\(J\)</span>種類の選択肢の中から<span
+class="math inline">\(j\)</span>を選ぶ確率<span
+class="math inline">\(\pi_{ij}\)</span>を、<span
+class="math inline">\(\pi_{ij} = P(\gamma_{j}-x_i\beta) -
+P(\gamma_{j-1}-x_i\beta)\)</span>と考えます。<span
+class="math inline">\(1 \leq j &lt; J\)</span>では<span
+class="math inline">\(P\)</span>は値枠が0から1までの単調増加関数で、要するに何か累積分布関数です。手計算で用意に微分ができるロジスティック分布の確率密度関数<span
+class="math inline">\(P(y) = 1/(1 +
+\exp(y)^{-1}\)</span>)がよく用いられています。ただし、<span
+class="math inline">\(j=0\)</span>のとき0、<span
+class="math inline">\(j=J\)</span>のときは1とします。</p>
+<p>係数ベクトル<span class="math inline">\(\beta\)</span>と<span
+class="math inline">\(\gamma\)</span>の推定は最尤法を用います。尤度関数は、サンプルサイズを<span
+class="math inline">\(n\)</span>、<span
+class="math inline">\(I(j=k)\)</span>を<span
+class="math inline">\(j=k\)</span>のとき1、<span class="math inline">\(j
+\ne k\)</span>のとき0とする単関数として、<span
+class="math inline">\(\Pi_{i=1}^n
+\pi_{i1}^{I(j=1)}\pi_{i2}^{I(j=2)}\cdots\pi_{iJ}^{I(j=J)}\)</span>です。間違いがないように<code>ordinal::clm</code>や<code>MASS::polr</code>などによる推定を推奨しますが、Rのnlm関数やoptim関数あたりに対数尤度関数を与えて推定することも、そんなに難しくは無いです。</p>
+<p><code>MASS::polr</code>を使って推定してみます。なお、GLMではなくて、最尤法による推定です。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;https://wh.anlyznews.com/R/dataset/for_ologit.txt&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>df01<span class="sc">$</span>g <span class="ot">&lt;-</span> <span class="fu">ordered</span>(df01<span class="sc">$</span>g, <span class="fu">c</span>(<span class="st">&quot;d&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>)) <span class="co"># 順序データにする; 序列はアルファベット順と逆</span></span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code></pre></div>
+<pre><code>
+次のパッケージを付け加えます: &#39;MASS&#39;</code></pre>
+<pre><code>以下のオブジェクトは &#39;package:dfidx&#39; からマスクされています:
+
+    select</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">summary</span>(r_polr <span class="ot">&lt;-</span> <span class="fu">polr</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, df01, <span class="at">Hess =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<pre><code>Call:
+polr(formula = g ~ x1 + x2 + d, data = df01, Hess = TRUE)
+
+Coefficients:
+           Value Std. Error t value
+x1       -3.9392     0.8575 -4.5937
+x2        4.6511     0.8431  5.5165
+dphoenix  0.2306     0.5333  0.4324
+dtiger   -1.2238     0.5121 -2.3898
+
+Intercepts:
+    Value   Std. Error t value
+d|c -1.7854  0.6811    -2.6213
+c|b -0.4622  0.6340    -0.7290
+b|a  1.5432  0.6675     2.3117
+
+Residual Deviance: 197.8555 
+AIC: 211.8555 </code></pre>
+<p>信頼区間は二項ロジットと同様に<code>confint(r_polr)</code>で出ます。</p>
+<div id="限界効果-2" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> 限界効果</h2>
+<p>限界効果も二項ロジットと同様に計算できます。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>r_pe <span class="ot">&lt;-</span> <span class="fu">predictorEffects</span>(r_polr, <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">confidence.level =</span> <span class="fl">0.99</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="fu">plot</span>(r_pe, <span class="at">axes =</span> <span class="fu">list</span>(<span class="at">grid =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<p><img src="common_files/figure-html/ologit01-1.png" width="672" /></p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">options</span>(<span class="at">marginaleffects_startup_message =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="fu">avg_slopes</span>(r_polr)</span></code></pre></div>
+<pre><code>
+ Term Group         Contrast Estimate Std. Error      z Pr(&gt;|z|)    S    2.5 %
+   d      d phoenix - dragon  -0.0129     0.0301 -0.429   0.6678  0.6 -0.07180
+   d      d tiger - dragon     0.1052     0.0448  2.345   0.0190  5.7  0.01728
+   d      c phoenix - dragon  -0.0128     0.0296 -0.430   0.6670  0.6 -0.07084
+   d      c tiger - dragon     0.0631     0.0306  2.061   0.0393  4.7  0.00310
+   d      b phoenix - dragon  -0.0130     0.0302 -0.430   0.6670  0.6 -0.07229
+   d      b tiger - dragon     0.0353     0.0209  1.686   0.0918  3.4 -0.00572
+   d      a phoenix - dragon   0.0387     0.0894  0.432   0.6655  0.6 -0.13661
+   d      a tiger - dragon    -0.2035     0.0806 -2.525   0.0116  6.4 -0.36150
+   x1     d dY/dX              0.3006     0.0842  3.572   &lt;0.001 11.5  0.13565
+   x1     c dY/dX              0.2273     0.0632  3.595   &lt;0.001 11.6  0.10338
+   x1     b dY/dX              0.1135     0.0539  2.104   0.0353  4.8  0.00779
+   x1     a dY/dX             -0.6414     0.1104 -5.811   &lt;0.001 27.3 -0.85779
+   x2     d dY/dX             -0.3549     0.0926 -3.831   &lt;0.001 12.9 -0.53651
+   x2     c dY/dX             -0.2684     0.0667 -4.026   &lt;0.001 14.1 -0.39904
+   x2     b dY/dX             -0.1340     0.0553 -2.422   0.0154  6.0 -0.24245
+   x2     a dY/dX              0.7573     0.0736 10.287   &lt;0.001 80.0  0.61305
+  97.5 %
+  0.0460
+  0.1930
+  0.0453
+  0.1231
+  0.0463
+  0.0762
+  0.2139
+ -0.0456
+  0.4656
+  0.3513
+  0.2192
+ -0.4251
+ -0.1734
+ -0.1377
+ -0.0256
+  0.9016
+
+Type: probs</code></pre>
+</div>
+<div id="最適化関数を使った推定" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span>
+最適化関数を使った推定</h2>
+<p>Rの行列のデータ構造を活かして行列で処理するところをベクトルで処理してループを削減したため見通しが悪いですが、意外に簡単に推定できます。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>llf <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>    ng <span class="ot">&lt;-</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>    g <span class="ot">&lt;-</span> p[<span class="dv">1</span><span class="sc">:</span>ng]</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">2</span> <span class="sc">&lt;=</span> ng) <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>ng) <span class="cf">if</span>(g[i] <span class="sc">&lt;=</span> g[i<span class="dv">-1</span>]) <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>    b <span class="ot">&lt;-</span> p[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>ng)]</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>    y <span class="ot">&lt;-</span> X <span class="sc">%*%</span> b</span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>    a <span class="ot">&lt;-</span> <span class="fu">matrix</span>(g, n, <span class="fu">length</span>(g), <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">replicate</span>(<span class="fu">length</span>(g), <span class="fu">c</span>(y))</span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">exp</span>(a))</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>    dp <span class="ot">&lt;-</span> <span class="fu">cbind</span>(p, <span class="dv">1</span>) <span class="sc">-</span> <span class="fu">cbind</span>(<span class="dv">0</span>, p)</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">log</span>(dp[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dp) <span class="sc">+</span> <span class="fu">nrow</span>(dp)<span class="sc">*</span>(s_id <span class="sc">-</span> <span class="dv">1</span>)]))</span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>}</span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, df01)</span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>s_id <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">model.response</span>(mf))</span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf)</span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a>init.p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">ncol</span>(X)))</span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a>r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(init.p, llf, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a><span class="co"># 閾値-切片項と変数の係数</span></span>
+<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a><span class="fu">with</span>(r_optim, <span class="fu">c</span>(par[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="sc">-</span> par[<span class="dv">4</span>], par[<span class="dv">5</span><span class="sc">:</span><span class="dv">8</span>]))</span></code></pre></div>
+<pre><code>[1] -1.7853543 -0.4621157  1.5432442 -3.9394564  4.6513028  0.2306246 -1.2237194</code></pre>
+<p><code>MASS::polr</code>とほぼ同じ推定結果になっていますね。<code>ordinal::clm</code>か<code>MASS::polr</code>を使いましょう。</p>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p><a
+href="https://doi.org/10.48550/arXiv.1205.0310">Polson, Scott and Windle
+(2013)</a>がロジスティック関数をPolya-Gamma分布で表現する手法を提案するまで、ロジスティック関数をMCMCのギブズサンプラーでうまくサンプリングすることができなかったため、ベイズ統計学ではプロビットの方が人気だと言う話もあります。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Train (1993) “<a
+href="https://eml.berkeley.edu/books/choice.html">Qualitative Choice
+Analysis: Theory, Econometrics, and an Application to Automobile
+Demand</a>,” <i>Cambridge: The MIT Press</i>の第2章<a href="#fnref2"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>例えばサンプルサイズ<span
+class="math inline">\(n\)</span>の指数分布の最大値から<span
+class="math inline">\(\log n\)</span>を減じた値は、<span
+class="math inline">\(n\rightarrow\infty\)</span>のとき、標準ガンベル分布に従います。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p>マルコフ連鎖モンテカルロのギブスサンプラーを使おうとするとデータ拡大法でプロビットモデルの方が扱いやすくなるので、必ずそうとも言えなかったりします。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn5"><p>GLMは指数分布族の確率分布のモデルに対して使うことができ、フィッシャー情報行列でヘッセ行列を置き換えることで、二階微分が不要になっているスコア推定のことです。ウェイト付線形回帰の形式に持っていけることから、一般線形モデル（OLS）の拡張となります。詳細はドブソン『<a
+href="https://www.amazon.co.jp/gp/product/4320014626/ref=as_li_qf_asin_il_tl?ie=UTF8&amp;tag=uncorrelated-22&amp;creative=1211&amp;linkCode=as2&amp;creativeASIN=4320014626&amp;linkId=42a8deef762279872e8f57655c8fc9a9">統計モデル入門</a>』の第3章と第4章と関連した付録AとBを参照してください。<a
+href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>疫学ではconditional
+logitを縦断データのための拡張を指すそうです。疫学のための<code>survival</code>パッケージの中の<code>clogit</code>関数が社会科学の方言での意味でのconditional
+logit modelでの推定に使えたりしますが。<a href="#fnref6"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn7"><p>統計学者の書き物でもこの意味でmixied
+logitと呼んでいるときがあるのですが、統計学の論文では係数が定数ではなく分布で与えられる場合をmixed
+logitと呼んでいます。なお、<code>mlogit</code>パッケージは係数が確率分布に従うとするrandom
+parameters logit modelもサポートしています。<a href="#fnref7"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn8"><p>車での所要時間と電車での所要時間の二つの変数を入れれば済みそうですが、<code>mlogit</code>パッケージは指定できるようになっています。<a
+href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn9"><p>計量経済学におけるロジスティックモデルの応用のチートペーパーになっているので、経済学徒は目を通しておくとよいかも知れません。<a
+href="#fnref9" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn10"><p>方程式ごとに誤差項の分散が異なる一方、完全には独立ではないことを仮定し、<abbr title="Feasible Generalized Least Squares">FGLS</abbr>で推定する方法です。<code>systemfit</code>パッケージで簡単に推定することができます。<a
+href="#fnref10" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
