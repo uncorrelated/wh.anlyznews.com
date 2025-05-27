@@ -439,7 +439,7 @@ p = \frac{e^y}{1 + e^y}
 <p>と、<span
 class="math inline">\(p\)</span>をロジスティック関数で表します。<span
 class="math inline">\(y\)</span>を<span
-class="math inline">\(p\)</span>に写すことを、ロジット変換と言います。<span
+class="math inline">\(p\)</span>に写すことを、逆ロジット変換と言います。<span
 class="math inline">\(y\)</span>は実数で、値域が<span
 class="math inline">\((-\infty,
 +\infty)\)</span>の線形関数で説明されることが一般的です。</p>
@@ -576,9 +576,9 @@ AIC: 58.623
 Number of Fisher Scoring iterations: 6</code></pre>
 <p>モデル式とデータフレームの指摘は<code>lm</code>と同様で、<code>family = binomial()</code>のところが異なり、ここでロジット関数による二項選択モデルのリンク関数を指定しています。</p>
 <p>戻り値のオブジェクトは。<code>lm</code>のそれと同様に扱えます。信頼区間は<code>confint(r_glm)</code>で出ます。係数と標準誤差を抜き出したい場合は<code>coef(summary(r_glm))</code>です。</p>
-<p>ロジットモデルをプロットすることは稀です。線形部分の観測値（の逆ロジット変換）は<span
+<p>ロジットモデルをプロットすることは稀です。線形部分の観測値（のロジット変換）は<span
 class="math inline">\(\infty\)</span>もしくは<span
-class="math inline">\(-\infty\)</span>になるため、プロットできません。線形部分の予測値をロジット変換したものと観測値はプロットすることができるので見てみましょう。</p>
+class="math inline">\(-\infty\)</span>になるため、プロットできません。線形部分の予測値を逆ロジット変換したものと観測値はプロットすることができるので見てみましょう。</p>
 <p><img src="common_files/figure-html/binominal_logit02-1.png" width="672" /></p>
 <div id="予測値" class="section level3" number="2.1.1">
 <h3><span class="header-section-number">2.1.1</span> 予測値</h3>
@@ -827,10 +827,10 @@ log(\frac{p_2}{p_J}) \\
 \vdots \\
 log(\frac{p_{J-1}}{p_J})
 \end{pmatrix} = \begin{pmatrix}
-Z_1 - Z_J &amp; X_1 &amp; O &amp; \cdots &amp; O \\
-Z_2 - Z_J &amp; O &amp; X_2 &amp; \cdots &amp; O \\
+Z_1 - Z_J &amp; X &amp; O &amp; \cdots &amp; O \\
+Z_2 - Z_J &amp; O &amp; X &amp; \cdots &amp; O \\
 \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-Z_{J-1} - Z_J &amp; O &amp; \cdots &amp; \cdots &amp; X_{J-1}
+Z_{J-1} - Z_J &amp; O &amp; \cdots &amp; \cdots &amp; X
 \end{pmatrix}\begin{pmatrix}
 \alpha \\
 \beta_{1} - \beta_{J} \\
@@ -880,7 +880,7 @@ class="math inline">\(Z\)</span>や<span
 class="math inline">\(X\)</span>の要素で微分して値を代入して計算するか、説明変数を微小な値<span
 class="math inline">\(h\)</span>で<span class="math inline">\(\pm
 h\)</span>して予測値<span
-class="math inline">\(\hat{c,p}_{+h}\)</span>と<span
+class="math inline">\(\hat{p}_{c,+h}\)</span>と<span
 class="math inline">\(\hat{p}_{c,-h}\)</span>を出し、<span
 class="math inline">\((\hat{p}_{c,+h} -
 \hat{p}_{c,-h})/h/2\)</span>をすれば出ます。</p>

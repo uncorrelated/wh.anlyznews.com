@@ -13,7 +13,7 @@
 
 <title>Rの文法のざっとした説明</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -387,6 +387,16 @@ class="toc-section-number">11.1</span> 例外をキャッチしない方法</a><
 <li><a href="#警告" id="toc-警告"><span
 class="toc-section-number">11.2</span> 警告</a></li>
 </ul></li>
+<li><a href="#制御構文的な関数" id="toc-制御構文的な関数"><span
+class="toc-section-number">12</span> 制御構文的な関数</a>
+<ul>
+<li><a href="#三項演算ifelse" id="toc-三項演算ifelse"><span
+class="toc-section-number">12.1</span>
+三項演算（<code>ifelse</code>）</a></li>
+<li><a href="#分岐switch" id="toc-分岐switch"><span
+class="toc-section-number">12.2</span>
+分岐（<code>switch</code>）</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -515,6 +525,7 @@ href="./binary_files.shtml">Rでのバイナリファイルの扱い方</a>を�
 </div>
 <div id="データ構造" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> データ構造</h1>
+<p>最初から全容を把握する必要はなく、使いながら覚えるものですが、ベクトル、行列、リスト、データフレームといったデータ構造があることは意識しておきましょう。</p>
 <p>同じデータ型のデータの集合体がベクトル（一次元配列）になり、実は<code>x &lt;- 1</code>とした場合も、要素数が一つ配列として扱われ、配列xの1番目の要素を意味する<code>x[1]</code>と言う表記でも値を参照できます。ベクトルがもっとも基本的なデータ構造です。詳しくは<a
 href="vector.shtml">Rのベクトルの扱い方のざっとした説明</a>を参照してください。</p>
 <p>異なる型のベクトルを束ねることができるデータ構造がリストです。名前とベクトルをセットにできる構造で、他のプログラミング言語だと連想配列/ハッシュ配列/MAP/辞書などと呼ばれるものにあたります。詳しくは<a
@@ -551,7 +562,9 @@ id="fnref3"><sup>3</sup></a>，<code>&lt;=</code><a href="#fn4"
 class="footnote-ref"
 id="fnref4"><sup>4</sup></a>，<code>==</code>，<code>!=</code><a
 href="#fn5" class="footnote-ref"
-id="fnref5"><sup>5</sup></a>，<code>%in%</code>[^CND4]といった比較演算子か、真偽値を戻す関数を使います。真偽値は<code>!</code>で反転させることができます。また、ベクトル全体を評価した場合は、ベクトルの要素それぞれに計算される真偽値を<code>any</code>（どれかが真）や<code>all</code>（すべてが真）などの関数でまとめる必要があります。</p>
+id="fnref5"><sup>5</sup></a>，<code>%in%</code><a href="#fn6"
+class="footnote-ref"
+id="fnref6"><sup>6</sup></a>といった比較演算子か、真偽値を戻す関数を使います。真偽値は<code>!</code>で反転させることができます。また、ベクトル全体を評価した場合は、ベクトルの要素それぞれに計算される真偽値を<code>any</code>（どれかが真）や<code>all</code>（すべてが真）などの関数でまとめる必要があります。</p>
 </div>
 <div id="繰り返し文ループ" class="section level1" number="10">
 <h1><span class="header-section-number">10</span>
@@ -599,8 +612,8 @@ id="fnref5"><sup>5</sup></a>，<code>%in%</code>[^CND4]といった比較演算�
 <span id="cb59-16"><a href="#cb59-16" tabindex="-1"></a>}))</span></code></pre></div>
 <p>第1引数と<code>finally</code>は文で、<code>error</code>と<code>warning</code>が関数であることには注意してください。</p>
 <p><code>error</code>と<code>warning</code>に指定する関数の引数には、<code>condition</code>クラスから派生した<code>error</code>もしくは<code>warning</code>S3オブジェクト<a
-href="#fn6" class="footnote-ref"
-id="fnref6"><sup>6</sup></a>が入ります。中身はメッセージと評価式です。評価式はエラーがおきた場所を示すことに使われたりしますが、<code>NULL</code>の場合もあります。</p>
+href="#fn7" class="footnote-ref"
+id="fnref7"><sup>7</sup></a>が入ります。中身はメッセージと評価式です。評価式はエラーがおきた場所を示すことに使われたりしますが、<code>NULL</code>の場合もあります。</p>
 <div id="例外をキャッチしない方法" class="section level2" number="11.1">
 <h2><span class="header-section-number">11.1</span>
 例外をキャッチしない方法</h2>
@@ -617,6 +630,38 @@ id="fnref6"><sup>6</sup></a>が入ります。中身はメッセージと評価�
 <p>警告も同様に例外処理にかけられますが、単に画面にメッセージを出したくないときは<code>tryCatch</code>の代わりに<code>suppressWarnings</code>でラップすれば済みます。なお<code>warning</code>関数は警告が表示されますが処理は止まらないです。また<code>warnings</code>関数で直近のエラーメッセージは表示できます。</p>
 </div>
 </div>
+<div id="制御構文的な関数" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> 制御構文的な関数</h1>
+<p>制御構文ではないのですが、他のプログラミング言語ではそうなっていることが多い関数があります。</p>
+<div id="三項演算ifelse" class="section level2" number="12.1">
+<h2><span class="header-section-number">12.1</span>
+三項演算（<code>ifelse</code>）</h2>
+<p>C言語の三項演算子に該当する関数です。</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="fu">ifelse</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>) <span class="sc">&gt;</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="st">&quot;left-side is bigger.&quot;</span>, <span class="st">&quot;left-side is not bigger.&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;left-side is bigger.&quot;     &quot;left-side is not bigger.&quot;</code></pre>
+<p>なお、<code>TRUE</code>が<code>1</code>，<code>FALSE</code>が<code>0</code>として計算されるため、算術演算での分布であれば、</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb63-2"><a href="#cb63-2" tabindex="-1"></a>(a <span class="sc">==</span> <span class="dv">1</span>)<span class="sc">*</span><span class="dv">123</span> <span class="sc">+</span> (a <span class="sc">!=</span> <span class="dv">1</span>)<span class="sc">*</span><span class="dv">456</span></span></code></pre></div>
+<pre><code>[1] 123</code></pre>
+<p>と言う風にも書け、こちらの方が速かったりします。</p>
+</div>
+<div id="分岐switch" class="section level2" number="12.2">
+<h2><span class="header-section-number">12.2</span>
+分岐（<code>switch</code>）</h2>
+<p>Rにも<code>switch</code>文がありました。</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;a&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<pre><code>[1] 123</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;b&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<pre><code>[1] 456</code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;c&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<pre><code>[1] 789</code></pre>
+<p>ベクトル処理ができないので、まとめて処理するときにはunlistとsapplyを組み合わせるしか無いようです。</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" tabindex="-1"></a><span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), </span>
+<span id="cb71-2"><a href="#cb71-2" tabindex="-1"></a>    <span class="cf">switch</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>))</span></code></pre></div>
+<pre><code>  a   b   c 
+123 456 789 </code></pre>
+</div>
+</div>
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
@@ -630,12 +675,14 @@ href="#fnref2" class="footnote-back">↩︎</a></p></li>
 class="footnote-back">↩︎</a></p></li>
 <li id="fn4"><p>≤，つまり以下と同じ。<a href="#fnref4"
 class="footnote-back">↩︎</a></p></li>
-<li id="fn5"><p>左辺のベクトルが右辺のベクトルに含まれるの意味。<a
-href="#fnref5" class="footnote-back">↩︎</a></p></li>
-<li
-id="fn6"><p>リストに名前がついたものです。エラー処理のハンドリングをするだけならば必要な情報ではないですが、S3オブジェクト指向システムの詳細は<a
-href="./OOP.shtml">Rのオブジェクト指向システム（S3/S4/RC）</a>を参照してください。<a
+<li id="fn5"><p>≠，同じではないの意味。<a href="#fnref5"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn6"><p>左辺のベクトルが右辺のベクトルに含まれるの意味。<a
 href="#fnref6" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn7"><p>リストに名前がついたものです。エラー処理のハンドリングをするだけならば必要な情報ではないですが、S3オブジェクト指向システムの詳細は<a
+href="./OOP.shtml">Rのオブジェクト指向システム（S3/S4/RC）</a>を参照してください。<a
+href="#fnref7" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

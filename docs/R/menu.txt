@@ -22,6 +22,7 @@ div.right h2.menu {
 <h2 class="menu">Rプログラミング</h2>
 <dl class="menu">
     <dt><a href="syntax.shtml">文法のざっとした説明</a></dt>
+    <dt><a href="interactive mode.shtml">対話モードで便利なRのコマンド</a></dt>
     <dt><a href="vector.shtml">ベクトルの扱い方のざっとした説明</a></dt>
     <dt><a href="matrix.shtml">行列と配列の扱い方のざっとした説明</a></dt>
     <dt><a href="list.shtml">リストの扱い方のざっとした説明</a></dt>
