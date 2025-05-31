@@ -358,9 +358,12 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 
 <div id="TOC">
 <ul>
-<li><a href="#履歴history" id="toc-履歴history"><span
-class="toc-section-number">1</span>
-履歴（<code>history</code>）</a></li>
+<li><a href="#履歴" id="toc-履歴"><span
+class="toc-section-number">1</span> 履歴</a>
+<ul>
+<li><a href="#履歴の保存" id="toc-履歴の保存"><span
+class="toc-section-number">1.1</span> 履歴の保存</a></li>
+</ul></li>
 <li><a href="#ソースコードの読み込み"
 id="toc-ソースコードの読み込み"><span
 class="toc-section-number">2</span> ソースコードの読み込み</a></li>
@@ -387,14 +390,18 @@ class="toc-section-number">6</span> Rの終了</a></li>
 </div>
 
 <p>RStudioなどの統合開発環境（IDE）を使うことが多い昨今ですが、IDEでも対話モードのウィンドウが開いていたりするので、知っておくほうが便利でしょう。</p>
-<div id="履歴history" class="section level1" number="1">
-<h1><span class="header-section-number">1</span>
-履歴（<code>history</code>）</h1>
+<div id="履歴" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> 履歴</h1>
 <p>打ち込んだコマンドの履歴を見ることができます。</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">history</span>() <span class="co"># 履歴を表示</span></span></code></pre></div>
 <p>OSの環境変数<code>R_HISTSIZE</code>で記憶する行数を設定できます。また、</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">history</span>(<span class="at">pattern =</span> <span class="st">&quot;^a&quot;</span>) <span class="co"># 正規表現で絞込み</span></span></code></pre></div>
 <p>と言うように正規表現で絞り込みができます。</p>
+<div id="履歴の保存" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> 履歴の保存</h2>
+<p>デフォルトでは、終了時に履歴を自動保存し、起動時に読み込みます。Rの起動オプションに<code>--no-save</code>をつけておくと、終了時に履歴は保存されません。また<code>--no-restore</code>をつけておくと、起動時に読み込みなせん。</p>
+<p>起動オプションに関わらず、<code>savehistory("filename.txt")</code>で履歴を保存し、<code>loadhistory("filename.txt")</code>読み込むことができます。<code>savehistory</code>はテキストファイルで保存されるので、無計画に打ち込んだコマンドを保存して整理するのにも使えます。</p>
+</div>
 </div>
 <div id="ソースコードの読み込み" class="section level1" number="2">
 <h1><span class="header-section-number">2</span>
