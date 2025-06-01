@@ -364,28 +364,40 @@ class="toc-section-number">1</span> 履歴</a>
 <li><a href="#履歴の保存" id="toc-履歴の保存"><span
 class="toc-section-number">1.1</span> 履歴の保存</a></li>
 </ul></li>
+<li><a href="#ヘルプ" id="toc-ヘルプ"><span
+class="toc-section-number">2</span> ヘルプ</a>
+<ul>
+<li><a href="#ヴィネット" id="toc-ヴィネット"><span
+class="toc-section-number">2.1</span> ヴィネット</a></li>
+<li><a href="#デモ" id="toc-デモ"><span
+class="toc-section-number">2.2</span> デモ</a></li>
+</ul></li>
 <li><a href="#ソースコードの読み込み"
 id="toc-ソースコードの読み込み"><span
-class="toc-section-number">2</span> ソースコードの読み込み</a></li>
+class="toc-section-number">3</span> ソースコードの読み込み</a></li>
 <li><a href="#テキストエディタの呼び出し"
 id="toc-テキストエディタの呼び出し"><span
-class="toc-section-number">3</span> テキストエディタの呼び出し</a>
+class="toc-section-number">4</span> テキストエディタの呼び出し</a>
 <ul>
 <li><a href="#ソースファイルを編集" id="toc-ソースファイルを編集"><span
-class="toc-section-number">3.1</span> ソースファイルを編集</a></li>
+class="toc-section-number">4.1</span> ソースファイルを編集</a></li>
 <li><a href="#関数を編集" id="toc-関数を編集"><span
-class="toc-section-number">3.2</span> 関数を編集</a></li>
+class="toc-section-number">4.2</span> 関数を編集</a></li>
 </ul></li>
+<li><a href="#応答による画面表示のファイル書き出し"
+id="toc-応答による画面表示のファイル書き出し"><span
+class="toc-section-number">5</span>
+応答による画面表示のファイル書き出し</a></li>
 <li><a href="#オブジェクトの保存と読み込み"
 id="toc-オブジェクトの保存と読み込み"><span
-class="toc-section-number">4</span>
+class="toc-section-number">6</span>
 オブジェクトの保存と読み込み</a></li>
 <li><a href="#ワークスペースの保存と読み込み"
 id="toc-ワークスペースの保存と読み込み"><span
-class="toc-section-number">5</span>
+class="toc-section-number">7</span>
 ワークスペースの保存と読み込み</a></li>
 <li><a href="#rの終了" id="toc-rの終了"><span
-class="toc-section-number">6</span> Rの終了</a></li>
+class="toc-section-number">8</span> Rの終了</a></li>
 </ul>
 </div>
 
@@ -403,67 +415,109 @@ class="toc-section-number">6</span> Rの終了</a></li>
 <p>起動オプションに関わらず、<code>savehistory("filename.txt")</code>で履歴を保存し、<code>loadhistory("filename.txt")</code>読み込むことができます。<code>savehistory</code>はテキストファイルで保存されるので、無計画に打ち込んだコマンドを保存して整理するのにも使えます。</p>
 </div>
 </div>
-<div id="ソースコードの読み込み" class="section level1" number="2">
-<h1><span class="header-section-number">2</span>
+<div id="ヘルプ" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> ヘルプ</h1>
+<p>関数や制御構文にはだいたい対応するヘルプがあります。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>?lm</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>?<span class="st">&quot;if&quot;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">help</span>(<span class="st">&quot;else&quot;</span>)</span></code></pre></div>
+<p>関数の引数や利用例などをすぐ確認できるので便利です。</p>
+<div id="ヴィネット" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> ヴィネット</h2>
+<p>パッケージ添付のリファレンスは<ruby>vignette<rp>（</rp><rt>ヴィネット</rt><rp>）</rp></ruby>と呼ばれます。vignetteはPDFやHTMLによる長めの説明で、分析の統計学的な背景などから説明されていたりもしますが、必須ではないので無いことが多いです。</p>
+<p>よく使われている<code>ggplot2</code>パッケージには複数のvignetteの添付があります。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">vignette</span>(<span class="at">package =</span> <span class="st">&quot;ggplot2&quot;</span>)</span></code></pre></div>
+<p>で添付のvignette一覧を確認し、</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">&quot;ggplot2-specs&quot;</span>, <span class="at">package =</span> <span class="st">&quot;ggplot2&quot;</span>)</span></code></pre></div>
+<p>と言う風に、そのうちの一つを参照できます。</p>
+<p>ブラウザーで一覧を見てから選択する場合は</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">browseVignettes</span>(<span class="st">&quot;ggplot2&quot;</span>)</span></code></pre></div>
+<p>とします。</p>
+</div>
+<div id="デモ" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> デモ</h2>
+<p>パッケージにはデモンストレーションを添付することができ、稀に利用されています。</p>
+<p>標準の<code>graphics</code>パッケージには一応ありますが、</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">demo</span>(<span class="st">&quot;graphics&quot;</span>)</span></code></pre></div>
+<p>機能を網羅しておらず、残念なことに。</p>
+</div>
+</div>
+<div id="ソースコードの読み込み" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
 ソースコードの読み込み</h1>
 <p>テキストファイルに書いたソースコードを読み込んで実行できます。</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;source.R&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">source</span>(<span class="st">&quot;source.R&quot;</span>)</span></code></pre></div>
 <p>UTF-8に統一されつつある昨今ですが、引数<code>fileEncoding</code>で文字コードを指定して読み込むこともできます。</p>
 <p><code>echo=TRUE</code>をつけると、実行前にコードを表示し、画面出力の抑制をしません。</p>
 <p>引数<code>chdir</code>で実行するディレクトリを指定できます。また、<code>local=TRUE</code>をつけると、環境を分離してワークスペースにオブジェクトを追加しないようにできます。</p>
 </div>
-<div id="テキストエディタの呼び出し" class="section level1" number="3">
-<h1><span class="header-section-number">3</span>
+<div id="テキストエディタの呼び出し" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
 テキストエディタの呼び出し</h1>
 <p>対話モードでテキストエディタを呼び出すことができます。環境変数<code>EDITOR</code>や引数で指定しない場合、エディタはOSの標準エディタが呼ばれます。</p>
-<div id="ソースファイルを編集" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span>
+<div id="ソースファイルを編集" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span>
 ソースファイルを編集</h2>
 <p>ファイルに書いておいて、<code>source</code>で読み出して実行ができます。</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">file.edit</span>(<span class="st">&quot;source.R&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">file.edit</span>(<span class="st">&quot;source.R&quot;</span>)</span></code></pre></div>
 </div>
-<div id="関数を編集" class="section level2" number="3.2">
-<h2><span class="header-section-number">3.2</span> 関数を編集</h2>
+<div id="関数を編集" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> 関数を編集</h2>
 <p>関数を指定すると、ファイルを作らないでも編集できます。なお、ワークスペースに存在しない関数を指定すると、新規編集になります。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">fix</span>(func)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">fix</span>(func)</span></code></pre></div>
 </div>
+</div>
+<div id="応答による画面表示のファイル書き出し" class="section level1"
+number="5">
+<h1><span class="header-section-number">5</span>
+応答による画面表示のファイル書き出し</h1>
+<p><code>sink</code>関数で操作からの応答をファイルに書き出すことができます。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># 記録開始</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">sink</span>(<span class="at">file =</span> <span class="st">&quot;example.txt&quot;</span>, <span class="at">append =</span> <span class="cn">FALSE</span>) <span class="co"># append = TRUEにすると追記</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co"># 回帰分析と推定結果の表示</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>y <span class="ot">&lt;-</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">10</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(y <span class="sc">~</span> x))</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a><span class="co"># 記録終了</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a><span class="fu">sink</span>()</span></code></pre></div>
+<p>これで<code>summary</code>の表示が<code>example.txt</code>に保存されます。</p>
 </div>
 <div id="オブジェクトの保存と読み込み" class="section level1"
-number="4">
-<h1><span class="header-section-number">4</span>
+number="6">
+<h1><span class="header-section-number">6</span>
 オブジェクトの保存と読み込み</h1>
 <p>Rのあらゆる変数は同様に保存と読み込みができます。つまり、ベクトル、行列、配列、リスト、データフレーム、環境、関数、モデル式といったオブジェクトは、<code>saveRDS</code>で保存して、<code>readRDS</code>で読み込むことができます。</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>fnc1 <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) (a <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span>(b <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 関数を定義</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">saveRDS</span>(fnc1, <span class="st">&quot;fnc.RDS&quot;</span>) <span class="co"># 関数を保存</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">rm</span>(fnc1) <span class="co"># 関数を消す</span></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>fnc2 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;fnc.RDS&quot;</span>) <span class="co"># 関数を読み込む</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="fu">fnc2</span>(<span class="dv">2</span>, <span class="dv">3</span>) <span class="co"># 関数を使う</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>fnc1 <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) (a <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">*</span>(b <span class="sc">-</span> <span class="dv">1</span>) <span class="co"># 関数を定義</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">saveRDS</span>(fnc1, <span class="st">&quot;fnc.RDS&quot;</span>) <span class="co"># 関数を保存</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="fu">rm</span>(fnc1) <span class="co"># 関数を消す</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>fnc2 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">&quot;fnc.RDS&quot;</span>) <span class="co"># 関数を読み込む</span></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="fu">fnc2</span>(<span class="dv">2</span>, <span class="dv">3</span>) <span class="co"># 関数を使う</span></span></code></pre></div>
 <pre><code>[1] 6</code></pre>
 <p>他のプログラミング言語でも似たようなことはできるのですが、パッケージなしで同じぐらい広範なオブジェクトを同じぐらい容易にできるものはちょっと思い当たりません。</p>
 </div>
 <div id="ワークスペースの保存と読み込み" class="section level1"
-number="5">
-<h1><span class="header-section-number">5</span>
+number="7">
+<h1><span class="header-section-number">7</span>
 ワークスペースの保存と読み込み</h1>
 <p>現在のワークスペースのすべてのオブジェクトを保存したい場合は<code>save.image</code>を用いることができます。読み込むときは<code>load</code>を使います。</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="dv">100</span>)</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> x <span class="sc">-</span> z <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">10</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a><span class="fu">save.image</span>(<span class="at">file =</span> <span class="st">&quot;example.RData&quot;</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="fu">ls</span>() <span class="co"># 作成したオブジェクトを確認</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="dv">100</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> x <span class="sc">-</span> z <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> <span class="dv">10</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="fu">save.image</span>(<span class="at">file =</span> <span class="st">&quot;example.RData&quot;</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="fu">ls</span>() <span class="co"># 作成したオブジェクトを確認</span></span></code></pre></div>
 <pre><code>[1] &quot;n&quot; &quot;x&quot; &quot;y&quot; &quot;z&quot;</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>()) <span class="co"># 前オブジェクト消去</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">ls</span>() <span class="co"># 空になったのを確認</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>()) <span class="co"># 前オブジェクト消去</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">ls</span>() <span class="co"># 空になったのを確認</span></span></code></pre></div>
 <pre><code>character(0)</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">&quot;example.RData&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">&quot;example.RData&quot;</span>)</span></code></pre></div>
 <p><code>ls()</code>をすると、消したオブジェクト<code>n</code>,<code>x</code>,<code>z</code>,<code>y</code>が復活しているのが分かります。
 なお、<code>quit(save = "yes")</code>とすると、自動で<code>save.image</code>が呼び出されます。</p>
 </div>
-<div id="rの終了" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Rの終了</h1>
+<div id="rの終了" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Rの終了</h1>
 <p><code>quit</code>は省略形の<code>q</code>があります。</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">q</span>(<span class="st">&quot;no&quot;</span>) <span class="co"># ワークスペースを保存する場合は&quot;yes&quot;，デフォルトは保存するか聞く</span></span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">q</span>(<span class="st">&quot;no&quot;</span>) <span class="co"># ワークスペースを保存する場合は&quot;yes&quot;，デフォルトは保存するか聞く</span></span></code></pre></div>
 </div>
 
 </div>
