@@ -385,6 +385,8 @@ class="toc-section-number">2.1</span>
 class="toc-section-number">2.1.1</span> 見た目の変更</a></li>
 <li><a href="#クラスター分析" id="toc-クラスター分析"><span
 class="toc-section-number">2.1.2</span> クラスター分析</a></li>
+<li><a href="#独立性検定" id="toc-独立性検定"><span
+class="toc-section-number">2.1.3</span> 独立性検定</a></li>
 </ul></li>
 <li><a href="#モザイクプロットmosaicplot"
 id="toc-モザイクプロットmosaicplot"><span
@@ -546,6 +548,11 @@ number="1.5">
 <span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>  <span class="at">margins =</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">6</span>),</span>
 <span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>  <span class="at">xlab =</span> labels[<span class="dv">2</span>], <span class="at">ylab =</span> labels[<span class="dv">1</span>])</span></code></pre></div>
 <p><img src="common_files/figure-html/heatmap03-1.png" width="672" /></p>
+</div>
+<div id="独立性検定" class="section level3" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span> 独立性検定</h3>
+<p>独立性検定をかける場合は、<a
+href="./cross%20tabulation.shtml">Rでチマチマとクロス集計と独立性検定</a>を参照してください。</p>
 </div>
 </div>
 <div id="モザイクプロットmosaicplot" class="section level2"
