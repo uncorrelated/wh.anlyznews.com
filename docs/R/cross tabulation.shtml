@@ -371,8 +371,8 @@ id="toc-保存データが既にクロス表の場合"><span
 class="toc-section-number">1.3</span>
 保存データが既にクロス表の場合</a></li>
 </ul></li>
-<li><a href="#統計的仮説検定" id="toc-統計的仮説検定"><span
-class="toc-section-number">2</span> 統計的仮説検定</a></li>
+<li><a href="#独立性の検定" id="toc-独立性の検定"><span
+class="toc-section-number">2</span> 独立性の検定</a></li>
 <li><a href="#検定統計量のプロット" id="toc-検定統計量のプロット"><span
 class="toc-section-number">3</span> 検定統計量のプロット</a></li>
 <li><a href="#クロス表のプロット" id="toc-クロス表のプロット"><span
@@ -440,11 +440,18 @@ number="1.3">
 <p>1行目の要素数が、2行目以降の要素数よりひとつ少ない形式であれば、<code>row.names = 1</code>は無くても読み込めます。</p>
 </div>
 </div>
-<div id="統計的仮説検定" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> 統計的仮説検定</h1>
+<div id="独立性の検定" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 独立性の検定</h1>
 <p>十分な統制ではなく他に計量分析をかけることになるので計算しないことも多いと思いますが、表全体とセルごとの統計的仮説検定をかけるのが教科書的な方法です。</p>
-<p>χ二乗検定をかけてみましょう<a href="#fn1" class="footnote-ref"
-id="fnref1"><sup>1</sup></a>。</p>
+<p>どの行かで表される因子とどの列かで表される因子が独立だとします。<span
+class="math inline">\(i\)</span>行かつ<span
+class="math inline">\(j\)</span>列である期待確率は、<span
+class="math inline">\(i\)</span>行になる確率と<span
+class="math inline">\(i\)</span>列になる確率を乗じたものになります。つまり、<span
+class="math inline">\(i\)</span>行の頻度の合計と<span
+class="math inline">\(j\)</span>列の頻度の合計を乗じたものを、全体の頻度の合計で二回割ったものが期待確率です。期待頻度は、それにさらに全体の頻度をかけたものになります。</p>
+<p>観測値と期待頻度の差は二項分布に、近似的に正規分布に従います。よって差の二乗は、χ二乗分布に従うと看做すことができます。よってχ二乗検定を用いて、独立性の検定を行うことができます<a
+href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>。</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>(xst <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(xt, <span class="at">correct =</span> <span class="cn">FALSE</span>)) <span class="co"># 2×2表でもイェーツの連続性補正は行わない</span></span></code></pre></div>
 <pre><code>Warning in chisq.test(xt, correct = FALSE): カイ自乗近似は不正確かもしれません</code></pre>
 <pre><code>
@@ -505,9 +512,11 @@ class="math inline">\(\sum_{ij} (f_{ij} - e_{ij}) /
 <span id="cb18-23"><a href="#cb18-23" tabindex="-1"></a>   }</span>
 <span id="cb18-24"><a href="#cb18-24" tabindex="-1"></a>}</span>
 <span id="cb18-25"><a href="#cb18-25" tabindex="-1"></a></span>
-<span id="cb18-26"><a href="#cb18-26" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb18-26"><a href="#cb18-26" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
 <span id="cb18-27"><a href="#cb18-27" tabindex="-1"></a><span class="fu">plotXTT</span>(xt, xt_adj_p_value)</span>
-<span id="cb18-28"><a href="#cb18-28" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Note) ***,  ** and * are statistically significant at the 1%, 5% and 10% level, respectively.&quot;</span>, <span class="at">side =</span> <span class="dv">1</span>, <span class="at">line =</span> <span class="fu">par</span>()<span class="sc">$</span>mgp[<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">1</span>, <span class="at">adj =</span> <span class="dv">1</span>, <span class="at">xpd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<span id="cb18-28"><a href="#cb18-28" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;Note) ***,  ** and * are statistically significant at the 1%, 5% and 10% level, respectively.&quot;</span>, <span class="at">side =</span> <span class="dv">1</span>, <span class="at">line =</span> <span class="fu">par</span>()<span class="sc">$</span>mgp[<span class="dv">1</span>] <span class="sc">+</span> <span class="dv">1</span>, <span class="at">adj =</span> <span class="dv">1</span>, <span class="at">xpd =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-29"><a href="#cb18-29" tabindex="-1"></a>expr <span class="ot">&lt;-</span> <span class="fu">substitute</span>(<span class="fu">paste</span>(chi<span class="sc">^</span><span class="dv">2</span>, <span class="st">&quot; statistic: &quot;</span>, s, <span class="st">&quot;, DF: &quot;</span>, df, <span class="st">&quot;, p-value: &quot;</span>, p), <span class="fu">with</span>(xst, <span class="fu">list</span>(<span class="at">s =</span> statistic, <span class="at">df =</span> parameter[[<span class="st">&quot;df&quot;</span>]], <span class="at">p =</span> p.value)))</span>
+<span id="cb18-30"><a href="#cb18-30" tabindex="-1"></a><span class="fu">mtext</span>(expr, <span class="at">side =</span> <span class="dv">1</span>, <span class="at">line =</span> <span class="fu">par</span>()<span class="sc">$</span>mgp[<span class="dv">1</span>] <span class="sc">+</span> <span class="fl">2.5</span>, <span class="at">adj =</span> <span class="dv">1</span>, <span class="at">xpd =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/xtt01-1.png" width="672" /></p>
 <p><code>ComplexHeatmap::Heatmap</code>で同様のことができるようです。</p>
 </div>
@@ -515,7 +524,7 @@ class="math inline">\(\sum_{ij} (f_{ij} - e_{ij}) /
 <hr />
 <ol>
 <li
-id="fn1"><p>Fisherの正確検定をかける場合は、<code>fisher.test(xt)</code>です。<a
+id="fn1"><p>正規分布を仮定しないFisherの正確検定をかける場合は、<code>fisher.test(xt)</code>です。<a
 href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
