@@ -54,6 +54,7 @@ div.right h2.menu {
     <dt><a href="OLS.shtml">Rで簡単にOLS</a></dt>
     <dt><a href="MLE.shtml">Rでべたべたと最尤法</a></dt>
     <dt><a href="logit.shtml">みんな大好きロジットモデル</a></dt>
+    <dt><a href="countdata.shtml">カチカチ数えるカウントデータの推定</a></dt>
     <dt><a href="cauchy_dist.shtml">コーシー分布とのつきあい方</a></dt>
     <dt><a href="cross%20tabulation.shtml">Rでチマチマとクロス集計と独立性検定</a></dt>
 </dl>

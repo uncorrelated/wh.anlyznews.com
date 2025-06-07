@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>カチカチ数えるカウントデータの推定</title>
+
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">カチカチ数えるカウントデータの推定</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>ポアソン回帰モデルと過分散のときの対処方法を確認しておきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#ポアソン回帰モデル" id="toc-ポアソン回帰モデル"><span
+class="toc-section-number">1</span> ポアソン回帰モデル</a>
+<ul>
+<li><a href="#分布の導出" id="toc-分布の導出"><span
+class="toc-section-number">1.1</span> 分布の導出</a>
+<ul>
+<li><a href="#二項分布" id="toc-二項分布"><span
+class="toc-section-number">1.1.1</span> 二項分布</a></li>
+<li><a href="#ポアソン分布" id="toc-ポアソン分布"><span
+class="toc-section-number">1.1.2</span> ポアソン分布</a></li>
+</ul></li>
+<li><a href="#ポアソン分布の期待値と分散"
+id="toc-ポアソン分布の期待値と分散"><span
+class="toc-section-number">1.2</span>
+ポアソン分布の期待値と分散</a></li>
+<li><a href="#推定" id="toc-推定"><span
+class="toc-section-number">1.3</span> 推定</a>
+<ul>
+<li><a href="#計量モデル" id="toc-計量モデル"><span
+class="toc-section-number">1.3.1</span> 計量モデル</a></li>
+<li><a href="#オフセット項" id="toc-オフセット項"><span
+class="toc-section-number">1.3.2</span> オフセット項</a></li>
+<li><a href="#glmによる推定" id="toc-glmによる推定"><span
+class="toc-section-number">1.3.3</span> GLMによる推定</a></li>
+<li><a href="#over-dispersion-test" id="toc-over-dispersion-test"><span
+class="toc-section-number">1.3.4</span> over-dispersion test</a></li>
+<li><a href="#最尤法による推定" id="toc-最尤法による推定"><span
+class="toc-section-number">1.3.5</span> 最尤法による推定</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#擬似ポアソン回帰モデル"
+id="toc-擬似ポアソン回帰モデル"><span
+class="toc-section-number">2</span> 擬似ポアソン回帰モデル</a></li>
+<li><a href="#負の二項回帰モデル" id="toc-負の二項回帰モデル"><span
+class="toc-section-number">3</span> 負の二項回帰モデル</a>
+<ul>
+<li><a href="#分布の導出-1" id="toc-分布の導出-1"><span
+class="toc-section-number">3.1</span> 分布の導出</a>
+<ul>
+<li><a href="#指数分布" id="toc-指数分布"><span
+class="toc-section-number">3.1.1</span> 指数分布</a></li>
+<li><a href="#ガンマ分布" id="toc-ガンマ分布"><span
+class="toc-section-number">3.1.2</span> ガンマ分布</a></li>
+<li><a href="#負の二項分布" id="toc-負の二項分布"><span
+class="toc-section-number">3.1.3</span> 負の二項分布</a></li>
+</ul></li>
+<li><a href="#計量モデル-1" id="toc-計量モデル-1"><span
+class="toc-section-number">3.2</span> 計量モデル</a></li>
+<li><a href="#変則glmによる推定" id="toc-変則glmによる推定"><span
+class="toc-section-number">3.3</span> 変則GLMによる推定</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>観測値の従属変数が非負の整数のデータはよくあります。何かの発生件数などのカウントデータでは、観測値に<span
+class="math inline">\(0\)</span>や<span
+class="math inline">\(1\)</span>が多数ある場合も多いです。しかし、予測値が<span
+class="math inline">\((-\infty,
+\infty)\)</span>のOLSでは、上手く当てはまりません。</p>
+<div id="ポアソン回帰モデル" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> ポアソン回帰モデル</h1>
+<p>もっともよく知られたカウントデータの推定方法は、観測値が非負の整数となるポアソン分布のパラメーターを推定するポアソン回帰モデルです。統計学の教科書では馬に蹴られて死んだ兵士の数が例に挙げられていたりしますが、サッカーのゴール数なども従い、この世に広く見られる分布です。</p>
+<div id="分布の導出" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> 分布の導出</h2>
+<p>推定を行う前に、二項分布からポアソン分布を導出し、その性質を確認していきましょう。</p>
+<div id="二項分布" class="section level3" number="1.1.1">
+<h3><span class="header-section-number">1.1.1</span> 二項分布</h3>
+<p>確率<span
+class="math inline">\(p\)</span>で生起する場合の二項分布で、n回試行してm回生起する場合の確率質量関数は以下になります。</p>
+<p><span class="math display">\[
+f^B_X(m) = \begin{pmatrix} n \\
+m \end{pmatrix} p^m (1-p)^{n-m}
+\]</span></p>
+<p>生起確率<span class="math inline">\(p\)</span>を<span
+class="math inline">\(m\)</span>回、不生起確率<span
+class="math inline">\(1-p\)</span>を<span
+class="math inline">\(n-m\)</span>回乗じるわけですが、生起と不生起の回数だけで確率が定まり、順不同なので、組み合わせの数<span
+class="math inline">\({}_nC_m\)</span>も乗じられます。</p>
+</div>
+<div id="ポアソン分布" class="section level3" number="1.1.2">
+<h3><span class="header-section-number">1.1.2</span> ポアソン分布</h3>
+<p><span class="math inline">\(n\)</span>がとても大きくなると<span
+class="math inline">\({}_n\!C_m\)</span>の計算が困難になり、二項分布は実用的でなくなります。しかし<span
+class="math inline">\(n\)</span>を無限大と看做したときの確率質量関数を考えると、<span
+class="math inline">\({}_nC_m\)</span>が出て来ません。これがポアソン分布です。</p>
+<p>導出は、二項分布の平均値<span
+class="math inline">\(\lambda\)</span>を考えます。</p>
+<p><span class="math display">\[\begin{align}
+\lambda &amp;= np \\
+p &amp;= \frac{\lambda}{n}
+\end{align}\]</span></p>
+<p><span
+class="math inline">\(\lambda\)</span>と階乗を使って、二項分布の確率質量関数を書き換えます。</p>
+<p><span class="math display">\[\begin{align}
+&amp;f^B_X(m) = \frac{n!}{m!(n-m)!} \bigg( \frac{\lambda}{n} \bigg)^m
+\bigg(1 - \frac{\lambda}{n} \bigg)^{n-m} \\
+&amp;= \frac{n(n-1)\cdots(n-m+1)}{m!} \bigg( \frac{\lambda}{n} \bigg)^m
+\bigg(1 - \frac{\lambda}{n} \bigg)^{n-m} \\
+&amp;= (1)(1 - \frac{1}{n}) \cdots (1 - \frac{m - 1}{n}) \frac{1}{m!}
+n^m \bigg( \frac{\lambda}{n} \bigg)^m \bigg(1 - \frac{\lambda}{n}
+\bigg)^n \bigg(1 - \frac{\lambda}{n} \bigg)^{-m}
+\end{align}\]</span></p>
+<p>ここで、</p>
+<p><span class="math display">\[\begin{align}
+\lim_{n\rightarrow\infty} (1 - \frac{1}{n}) \cdots (1 - \frac{m - 1}{n})
+&amp;= 1 \\
+\lim_{n\rightarrow\infty} \bigg(1 - \frac{\lambda}{n} \bigg)^n &amp;=
+\exp(-\lambda) \\
+\lim_{n\rightarrow\infty} \bigg(1 - \frac{\lambda}{n} \bigg)^{-m} &amp;=
+1
+\end{align}\]</span></p>
+<p>に注意すると、</p>
+<p><span class="math display">\[
+\lim_{n\rightarrow\infty} f^B_X(m) = \frac{1}{m!} \lambda^m
+\exp(-\lambda)
+\]</span></p>
+<p>となります。ポアソン分布の確率質量関数が導出できました。</p>
+<p>二項分布とポアソン分布の確率質量関数を並べて、ポアソン分布が二項分布のそれらしい近似になっていることを確認しましょう。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">10</span>; n <span class="ot">&lt;-</span> <span class="dv">10</span>; p <span class="ot">&lt;-</span> <span class="fl">0.2</span>;</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> n<span class="sc">*</span>p;</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">dbinom</span>(m, n, p), <span class="fu">dpois</span>(m, lambda)), <span class="fu">length</span>(m), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="at">m =</span> m, <span class="at">dist =</span> <span class="fu">c</span>(<span class="fu">sprintf</span>(<span class="st">&quot;B(%d, %.2f)&quot;</span>, n, p), <span class="fu">sprintf</span>(<span class="st">&quot;Pois(%.2f)&quot;</span>, lambda))))</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">barplot</span>(<span class="fu">t</span>(M), <span class="at">beside =</span> <span class="cn">TRUE</span>, <span class="at">legend.text =</span> <span class="cn">TRUE</span>, <span class="at">args.legend =</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="st">&quot;topright&quot;</span>), <span class="at">xlab =</span> <span class="st">&quot;m&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;probability&quot;</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/pois-1.png" width="672" /></p>
+<div id="lim_nrightarrowinfty-big1---fraclambdan-bign-exp-lambdaの導出"
+class="section level4" number="1.1.2.1">
+<h4><span class="header-section-number">1.1.2.1</span> <span
+class="math inline">\(\lim_{n\rightarrow\infty} \big(1 -
+\frac{\lambda}{n} \big)^n = \exp(-\lambda)\)</span>の導出</h4>
+<p>中高で教わる範囲内ですが、指数まわりが変則的なので補足を書いておきます。</p>
+<p>ネイピア数を、微分で不変になる指数関数の底と定義します。</p>
+<p><span class="math display">\[
+\lim_{h \rightarrow 0} \frac{\exp(x + h) - \exp(x)}{h} = \exp(x)
+\]</span></p>
+<p>となるので、両辺を<span
+class="math inline">\(\exp(x)\)</span>と割ると</p>
+<p><span class="math display">\[\begin{align}
+\lim_{h \rightarrow 0} \frac{\exp(h) - 1}{h} = 1
+\end{align}\]</span></p>
+<p>となります。<span class="math inline">\(y\)</span>を<span
+class="math inline">\(\exp(h) - 1\)</span>と定義すると、</p>
+<p><span class="math display">\[\begin{align}
+\exp(h) &amp;= y + 1 \\
+h &amp;= \log(1 + y)
+\end{align}\]</span></p>
+<p>となります。</p>
+<p><span class="math display">\[
+\lim_{h \rightarrow 0} \exp(h) = y + 1 = 1
+\]</span></p>
+<p>となるので、<span class="math inline">\(h \rightarrow 0
+\Leftrightarrow y \rightarrow 0\)</span>です。</p>
+<p><span class="math inline">\(\lim_{h \rightarrow 0} (\exp(h) - 1)/h =
+1\)</span>を書き直して整理します。</p>
+<p><span class="math display">\[\begin{align}
+\lim_{y \rightarrow 0} \frac{y}{\log(1+y)} &amp;= 1 \\
+\lim_{y \rightarrow 0} \frac{\log(1+y)}{y} &amp;= 1 \\
+\lim_{y \rightarrow 0} (1 + y)^\frac{1}{y} &amp;= e
+\end{align}\]</span></p>
+<p><span
+class="math inline">\(z=1/y\)</span>と置いて、さらに整理します。</p>
+<p><span class="math display">\[
+\lim_{z \rightarrow \infty} (1 + \frac{1}{z})^{z} = e
+\]</span></p>
+<p><span class="math inline">\(z \rightarrow
+-\infty\)</span>の場合も整理しておきましょう。</p>
+<p><span class="math display">\[\begin{align}
+\lim_{z \rightarrow -\infty} (1 + \frac{1}{z})^{z} &amp;= \lim_{z
+\rightarrow \infty} (1 - \frac{1}{z})^{-z} \\
+&amp;= \lim_{z \rightarrow \infty} \bigg( \frac{z}{z-1} \bigg)^{z} \ \
+\mbox{(分子と分母を入れ替え、指数のマイナス符号をとる)} \\
+&amp;= \lim_{z \rightarrow \infty} \bigg( 1 + \frac{1}{z - 1} \bigg)^{z
+- 1} \bigg( 1 + \frac{1}{z - 1} \bigg) \\
+&amp;= e
+\end{align}\]</span></p>
+<p>上の一部を切り出し、<span
+class="math inline">\(z=n/\lambda\)</span>と置くと、<span
+class="math inline">\(\lambda\)</span>が定数なので<span
+class="math inline">\(n \rightarrow \infty \Rightarrow z \rightarrow
+\infty\)</span>になるので、ポアソン分布の導出に使った式になります。</p>
+<p><span class="math display">\[\begin{align}
+\lim_{n \rightarrow \infty} (1 - \frac{1}{n/\lambda})^{-n/\lambda}
+&amp;= e \\
+\bigg( \lim_{z \rightarrow \infty} (1 -
+\frac{1}{n/\lambda})^{-n/\lambda} \bigg)^\lambda &amp;= e^\lambda
+\end{align}\]</span></p>
+</div>
+</div>
+</div>
+<div id="ポアソン分布の期待値と分散" class="section level2"
+number="1.2">
+<h2><span class="header-section-number">1.2</span>
+ポアソン分布の期待値と分散</h2>
+<p>ポアソン分布には、実データの分析で問題になる性質があるので確認しておきます。</p>
+<p>ポアソン分布のモーメント母関数を考えます。</p>
+<p><span class="math display">\[\begin{align}
+M_X(t) &amp;= E\big[ \exp(tm) \big] \\
+&amp;= \sum^{\infty}_{m=0} \exp(tm) \frac{1}{m!} \lambda^m
+\exp(-\lambda) \\
+&amp;= \exp(-\lambda) \sum^{\infty}_{m=0} \exp(tm) \frac{1}{m!}
+\lambda^m
+\end{align}\]</span></p>
+<p>指数関数のマクローリン展開から、</p>
+<p><span class="math display">\[
+\exp(\lambda \exp(t)) = \sum^{\infty}_{m=0} \frac{\lambda^m
+\exp(tm)}{m!}
+\]</span></p>
+<p>になることに注意すると、</p>
+<p><span class="math display">\[\begin{align}
+M_X(t) &amp;= \exp(-\lambda) \exp(\lambda \exp(t)) \\
+&amp;= \exp(\lambda(\exp(t) - 1))
+\end{align}\]</span></p>
+<p>となります。</p>
+<p>モーメント母関数を<span
+class="math inline">\(t\)</span>で一階微分して<span
+class="math inline">\(t=0\)</span>とすれば期待値、二階微分して<span
+class="math inline">\(t=0\)</span>とし、期待値の二乗を引けば分散が計算できます。</p>
+<p><span class="math display">\[\begin{align}
+\left. \frac{dM_X(t)}{dt} \right|_{t=0} &amp;= \lambda \exp(t + \lambda
+(\exp(t) - 1)) \mid_{t=0} \\
+&amp;= \lambda
+\end{align}\]</span></p>
+<p><span class="math display">\[\begin{align}
+\left. \frac{d^2M_X(t)}{dt^2} \right|_{t=0} &amp;= \lambda (1 + \lambda
+\exp(t))\exp(t + \lambda(\exp(t) - 1)) \mid_{t=0} \\
+&amp;= \lambda^2 + \lambda
+\end{align}\]</span></p>
+<p>期待値も分散も<span
+class="math inline">\(\lambda\)</span>になることが分かりました。パラメーターがひとつであることから自明ではあるのですが、柔軟性に欠けることが分かります。</p>
+</div>
+<div id="推定" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> 推定</h2>
+<p>従属変数がポアソン分布に従うとして、ポアソン分布のパラメーター<span
+class="math inline">\(\lambda\)</span>を推定すれば、ポアソン回帰になります。<span
+class="math inline">\(\lambda\)</span>を説明するモデルを仮定し、最尤法か一般化線形モデル（<abbr title="generalized linear model">GLM</abbr>）<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>で推定します。</p>
+<div id="計量モデル" class="section level3" number="1.3.1">
+<h3><span class="header-section-number">1.3.1</span> 計量モデル</h3>
+<p>よく使われるモデルが対数線形モデルです。<span
+class="math inline">\(i\)</span>を個体、<span
+class="math inline">\(X\)</span>が説明変数の行列、<span
+class="math inline">\(\beta\)</span>をその係数ベクトルとして、</p>
+<p><span class="math display">\[
+\log \lambda_i = X_i\beta
+\]</span></p>
+<p>と定義されます。<span
+class="math inline">\(\lambda_i\)</span>の予測値は<span
+class="math inline">\(\exp(X_i\beta)\)</span>と、必ず非負になります。ポアソン分布の期待値は非負ですから都合がよくなります。</p>
+<p>平方根モデルも、予測値は非負になります。線形予測を二乗するからです。</p>
+<p><span class="math display">\[
+\sqrt{\lambda_i} = X_i\beta
+\]</span></p>
+<p>線形モデル<span class="math inline">\(\lambda =
+X\beta\)</span>は直感的ですが、場合によっては負の値が出てきて推定がおかしくなります。</p>
+</div>
+<div id="オフセット項" class="section level3" number="1.3.2">
+<h3><span class="header-section-number">1.3.2</span> オフセット項</h3>
+<p>市町村ごとの事故や事件や病気の件数は、市町村の人口に大きく左右されますが、ポアソン分布の期待値を何かで割ったものを予測したほうがよいかも知れません。その場合は、オフセット項付きポアソン回帰を用います。</p>
+<p><span class="math display">\[
+\log \lambda_i = X_i\beta + \log \mbox{offset}_i
+\]</span></p>
+<p>何を意味するのか分かりづらいかも知れませんが、</p>
+<p><span class="math display">\[\begin{align}
+\log \lambda_i - \log \mbox{offset}_i &amp;= X_i\beta \\
+\log \frac{\lambda_i}{\mbox{offset}_i} &amp;= X_i\beta \\
+\frac{\lambda_i}{\mbox{offset}_i} &amp;= \exp(X_i\beta)
+\end{align}\]</span></p>
+<p>オフセット項に対する平均値を指数関数で表したものになります。</p>
+</div>
+<div id="glmによる推定" class="section level3" number="1.3.3">
+<h3><span class="header-section-number">1.3.3</span> GLMによる推定</h3>
+<p><code>glm</code>コマンドを使うと、簡単にGLMで推定できます。リンク関数の導出などは不要です。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># データをロード</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;https://wh.anlyznews.com/R/dataset/for_poisson.txt&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co"># 対数線形モデルになるリンク関数を指定</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="fu">summary</span>(r_poi <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> df01))</span></code></pre></div>
+<pre><code>
+Call:
+glm(formula = y ~ x + z, family = poisson(link = &quot;log&quot;), data = df01)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  4.75081    0.01448  328.08   &lt;2e-16 ***
+x            1.62705    0.02717   59.88   &lt;2e-16 ***
+z           -0.76750    0.02273  -33.77   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 12377.4  on 49  degrees of freedom
+Residual deviance:  8028.4  on 47  degrees of freedom
+AIC: 8313.4
+
+Number of Fisher Scoring iterations: 6</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># 列oの対数をオフセット項にする</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">summary</span>(r_poi_o <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(o)), <span class="fu">poisson</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> df01))</span></code></pre></div>
+<pre><code>
+Call:
+glm(formula = y ~ x + z + offset(log(o)), family = poisson(link = &quot;log&quot;), 
+    data = df01)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  0.004313   0.015027   0.287    0.774    
+x            2.250706   0.030490  73.817   &lt;2e-16 ***
+z           -0.920329   0.026781 -34.365   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for poisson family taken to be 1)
+
+    Null deviance: 8637.0  on 49  degrees of freedom
+Residual deviance: 1691.5  on 47  degrees of freedom
+AIC: 1976.5
+
+Number of Fisher Scoring iterations: 5</code></pre>
+<p><code>link = "log"</code>を<code>link = "sqrt"</code>にすると平方根モデル、<code>link = "identity"</code>にすると線形モデルになります。GLMも反復して解に接近する手法で、ごく稀に初期値によって収束しないときがあります。その場合は<code>start</code>引数で初期値を指定できます。</p>
+<p>オフセット項は<code>offset = log(o)</code>というように、引数でも指定できます。</p>
+</div>
+<div id="over-dispersion-test" class="section level3" number="1.3.4">
+<h3><span class="header-section-number">1.3.4</span> over-dispersion
+test</h3>
+<p>ポアソン分布はパラメーターひとつで期待値と分散をあらわす分布なので、データがそれにあてはまると看做せないときもあります。つまり、過分散の問題が出ることがあります。</p>
+<p>予測値の大きさと残差の絶対値に相関がある場合、ポアソン分布の仮定を満たしていないことが分かります。以下の線形回帰で<span
+class="math inline">\(z\)</span>の係数が0を棄却されたら、つまり有意に0以外ならば分散が過小もしくは過大で、ポアソン分布でないと看做すことになります。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>lambda <span class="ot">&lt;-</span> <span class="fu">fitted.values</span>(r_poi_o)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, ((y <span class="sc">-</span> lambda)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> y)<span class="sc">/</span>(lambda <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">2</span>)))</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">lm</span>(z <span class="sc">~</span> <span class="dv">1</span>))</span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = z ~ 1)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-25.27 -24.68 -21.78 -14.24 513.63 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)    24.56      11.41   2.154   0.0362 *
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 80.65 on 49 degrees of freedom</code></pre>
+<p>上のコードの他にも幾つか手法があります。AER::dispersiontestやoverdisp::overdispなどパッケージで関数が提供もされています。</p>
+<p>過分散が生じているということは、標準誤差が過小に推定されていることになります。統計的仮説検定が偽陽性になり、信頼区間が狭くなりがちです。</p>
+</div>
+<div id="最尤法による推定" class="section level3" number="1.3.5">
+<h3><span class="header-section-number">1.3.5</span>
+最尤法による推定</h3>
+<p>（対数）尤度関数を書けば、<code>optim</code>などの最適化アルゴリズムを用いて推定することもできます。GLMの説明を避けたい場合は、有用かも知れません。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># offset項ありモデル</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(o)), <span class="at">data =</span> df01)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>log_o <span class="ot">&lt;-</span> <span class="fu">model.offset</span>(mf)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>llf <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>    lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(X <span class="sc">%*%</span> p <span class="sc">+</span> log_o)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>    <span class="co"># sum(dpois(y, lambda, log = TRUE))</span></span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>    <span class="fu">sum</span>(y<span class="sc">*</span><span class="fu">log</span>(lambda) <span class="sc">-</span> lambda <span class="sc">-</span> <span class="fu">lgamma</span>(y <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>}</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a><span class="co"># グラディエント関数を定義すると速度が向上し、収束しない可能性が減る（が通常は不要）</span></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>llfg <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>    lambda <span class="ot">&lt;-</span> <span class="fu">exp</span>(X <span class="sc">%*%</span> p <span class="sc">+</span> log_o)</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>    dlambda <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="dv">2</span>, \(x) x<span class="sc">*</span>lambda)</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>    <span class="fu">apply</span>(y<span class="sc">*</span>X <span class="sc">-</span> dlambda, <span class="dv">2</span>, sum)</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>}</span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a></span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>init.p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>(r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(init.p, llf, llfg, <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">reltol =</span> <span class="fl">1e-8</span>)))</span></code></pre></div>
+<pre><code>$par
+[1]  0.004313073  2.250705879 -0.920328573
+
+$value
+[1] -985.2519
+
+$counts
+function gradient 
+      59       12 
+
+$convergence
+[1] 0
+
+$message
+NULL</code></pre>
+</div>
+</div>
+</div>
+<div id="擬似ポアソン回帰モデル" class="section level1" number="2">
+<h1><span class="header-section-number">2</span>
+擬似ポアソン回帰モデル</h1>
+<p>過分散の対策としては、擬似ポアソン回帰モデルがあります。係数の推定はポアソン回帰と同様ですが、分散の推定量をdispersion
+parameterと呼ばれる<span
+class="math inline">\(\hat{\phi}\)</span>でスケールします。</p>
+<p><span class="math display">\[
+\hat{\phi} = \frac{\sum^n_i (y_i - \hat{\lambda}_i)^2 /
+\hat{\lambda}_i}{\mbox{df}}
+\]</span></p>
+<p>分子はピアソンのχ二乗統計量です。<span
+class="math inline">\(\mbox{df}\)</span>は（残差の）自由度で、標本サイズからパラメーターの数を引いた数になります。</p>
+<p>よって、Rでは以下のように計算できます。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>phi <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(r_poi_o, <span class="at">type =</span> <span class="st">&quot;pearson&quot;</span>)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> r_poi_o<span class="sc">$</span>df.res</span></code></pre></div>
+<p>どう使えばいいのか感がありますが、推定結果の要約を出すときに推定したdispersion
+parameterを指定できるので、難しくはありません。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">summary</span>(r_poi_o, <span class="at">dispersion =</span> phi)</span></code></pre></div>
+<pre><code>
+Call:
+glm(formula = y ~ x + z + offset(log(o)), family = poisson(link = &quot;log&quot;), 
+    data = df01)
+
+Coefficients:
+             Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  0.004313   0.092683   0.047    0.963    
+x            2.250706   0.188063  11.968  &lt; 2e-16 ***
+z           -0.920329   0.165185  -5.571 2.53e-08 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for poisson family taken to be 38.04379)
+
+    Null deviance: 8637.0  on 49  degrees of freedom
+Residual deviance: 1691.5  on 47  degrees of freedom
+AIC: 1976.5
+
+Number of Fisher Scoring iterations: 5</code></pre>
+<p>分散を<span class="math inline">\(\lambda\)</span>の<span
+class="math inline">\(\phi\)</span>倍しているだけです。</p>
+<p>リンク関数を<code>poisson</code>から<code>quasipoisson</code>に置き換えると、一行で同じ結果が得られます。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">summary</span>(r_qpoi_o <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(o)), <span class="fu">quasipoisson</span>(<span class="at">link =</span> <span class="st">&quot;log&quot;</span>), <span class="at">data =</span> df01))</span></code></pre></div>
+<pre><code>
+Call:
+glm(formula = y ~ x + z + offset(log(o)), family = quasipoisson(link = &quot;log&quot;), 
+    data = df01)
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.004313   0.092683   0.047    0.963    
+x            2.250706   0.188063  11.968 7.14e-16 ***
+z           -0.920329   0.165185  -5.571 1.19e-06 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for quasipoisson family taken to be 38.04379)
+
+    Null deviance: 8637.0  on 49  degrees of freedom
+Residual deviance: 1691.5  on 47  degrees of freedom
+AIC: NA
+
+Number of Fisher Scoring iterations: 5</code></pre>
+<p>この方法は、係数の推定量と標準誤差を得るためには有用なのですが、厳密には最尤法でもGLMでもなく、AICなどの情報量規準を使ってモデル選択ができないなどの欠点があります。</p>
+</div>
+<div id="負の二項回帰モデル" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 負の二項回帰モデル</h1>
+<p>過分散の対策としては、ポアソン分布のパラメーター<span
+class="math inline">\(\lambda\)</span>が何かの分布に従う確率変数と考え、推定モデルを階層化する方が望ましいです。典型的には、<span
+class="math inline">\(\lambda\)</span>がガンマ分布に従うと仮定し、負の二項分布を導出してポアソン分布の代わりに使います。</p>
+<div id="分布の導出-1" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> 分布の導出</h2>
+<p>一定確率の試行が一定回数成功するまでの、試行回数の分布として知られる負の二項回帰が、ポアソン分布の拡張になるのは直感的とは言い難いですが、そうなることを計算して確認しましょう。以下では、指数分布を導出したあと、指数分布の和としてガンマ分布を導出し、ポアソン分布とガンマ分布から負の二項分布を導出します。</p>
+<div id="指数分布" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> 指数分布</h3>
+<p>指数分布は、確率変数が大きくなるにつれて、確率密度が定率で減っていく場合に用いられます。典型的には、時間あたりに一定の確率で起きる事象が1回以上生起した割合を、その累積分布関数で示したいときに用います。</p>
+<p>累積分布関数を<span
+class="math inline">\(F(\lambda)\)</span>と置きます。<span
+class="math inline">\(\lambda\)</span>は時間で、台が<span
+class="math inline">\([0, \infty)\)</span>になります。時点<span
+class="math inline">\(\lambda\)</span>まで事象が生じなかった確率は、<span
+class="math inline">\(1 - F(\lambda)\)</span>です。</p>
+<p>時点<span class="math inline">\(\lambda\)</span>から<span
+class="math inline">\(\lambda+d\lambda\)</span>までの間に事象が生じる確率は、<span
+class="math inline">\(F(\lambda+d\lambda) -
+F(\lambda)\)</span>もしくは、<span class="math inline">\((1 -
+F(\lambda))(F(d\lambda) -
+F(0))\)</span>となります。時間あたりの発生率は一定なので、未生起の中で<span
+class="math inline">\(d\lambda\)</span>の間に生起する割合は、常に<span
+class="math inline">\(F(d\lambda)\)</span>だからです。</p>
+<p><span class="math display">\[\begin{align}
+F(\lambda+d\lambda) - F(\lambda) &amp;= (1 - F(\lambda))(F(d\lambda) -
+F(0)) \\
+\lim_{d\lambda \rightarrow 0} \frac{F(\lambda+d\lambda) -
+F(\lambda)}{d\lambda} &amp;= (1 - F(\lambda)) \lim_{d\lambda \rightarrow
+0} \frac{F(d\lambda) - F(0)}{d\lambda} \\
+F&#39;(\lambda) &amp;= (1 - F(\lambda))F&#39;(0)
+\end{align}\]</span></p>
+<p>となるので、定数になる<span
+class="math inline">\(F&#39;(0)\)</span>を<span
+class="math inline">\(\beta\)</span>と置いて、この微分方程式を解きます。</p>
+<p><span class="math display">\[\begin{align}
+\frac{F&#39;(\lambda)}{1 - F(\lambda)} &amp;= \beta \\
+\int \frac{F&#39;(\lambda)}{1 - F(\lambda)} &amp;= \int \beta d\lambda
+\\
+- \log (1 - F(\lambda)) &amp;= \beta \lambda \\
+(1 - F(\lambda)) &amp;= \exp(- \beta \lambda) \\
+F(\lambda) &amp;= 1 - \exp(- \beta \lambda) \\
+F&#39;(\lambda) &amp;= \beta \exp(- \beta \lambda)
+\end{align}\]</span></p>
+<p>確率密度関数<span class="math inline">\(\beta \exp(- \beta
+\lambda)\)</span>と、累積分布関数<span class="math inline">\(1 - \exp(-
+\beta \lambda)\)</span>が導出できました。</p>
+</div>
+<div id="ガンマ分布" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> ガンマ分布</h3>
+<p>指数分布に従う2つの確率変数の合計<span
+class="math inline">\(y\)</span>が従う分布を考えます。片方の変数を<span
+class="math inline">\(x_1\)</span>と置いて、畳み込み計算をすると、</p>
+<p><span class="math display">\[\begin{align}
+\int_0^y \beta \exp(-\beta(y - x_1))\beta\exp(-\beta x_1) dx_1 = \beta^2
+y \exp(-\beta y)
+\end{align}\]</span></p>
+<p>と導出できます。この確率密度に従う確率変数<span
+class="math inline">\(y\)</span>と指数分布に従う<span
+class="math inline">\(x_2\)</span>の合計<span
+class="math inline">\(z\)</span>の確率密度関数は、同様に、</p>
+<p><span class="math display">\[\begin{align}
+&amp;\int_0^z \beta^2 (z - x_2) \exp(-\beta(z - x_2))\beta\exp(-\beta
+x_2) dx_2 \\
+&amp;=\beta^3 \frac{z^2}{2} \exp(-\beta z)
+\end{align}\]</span></p>
+<p><span
+class="math inline">\(\alpha\)</span>個の指数分布の和の確率密度関数が<span
+class="math inline">\(\beta^\alpha
+\frac{\lambda^{\alpha-1}}{(\alpha-1)!} \exp(-\beta
+\lambda)\)</span>と書けるとき、<span
+class="math inline">\(\alpha+1\)</span>個の指数分布の和の確率密度関数は、</p>
+<p><span class="math display">\[\begin{align}
+&amp;\int_0^\lambda \beta^\alpha \frac{(\lambda -
+x_3)^{\alpha-1}}{(\alpha-1)!} \exp(-\beta \lambda - x_3) \beta \exp(-
+\beta x_3) \\
+&amp;= \beta^{\alpha+1} \frac{\lambda^{\alpha}}{\alpha!} \exp(-\beta
+\lambda) \\
+&amp;= \beta^{\alpha+1} \frac{\lambda^{\alpha}}{\Gamma(\alpha + 1)}
+\exp(-\beta \lambda)
+\end{align}\]</span></p>
+<p>よって数学的帰納法で、<span
+class="math inline">\(\alpha\)</span>個のパラメーター<span
+class="math inline">\(\beta\)</span>の指数分布に従う確率変数の合計<span
+class="math inline">\(\lambda\)</span>の確率密度は、</p>
+<p><span class="math display">\[\begin{align}
+f_X^{G}(\lambda) = \beta^{\alpha} \frac{\lambda^{\alpha -
+1}}{\Gamma(\alpha)} \exp(-\beta \lambda)
+\end{align}\]</span></p>
+<p>とガンマ関数の確率密度になることが分かります。</p>
+<p>なお、ガンマ関数のパラメーターは実数であるので、ここではガンマ分布の特殊形になっていることには注意してください。負の二項回帰分布の導出に使うガンマ関数は、この特殊形で間に合いますが、厳密には指数分布をガンマ分布のひとつと捉え、ガンマ分布の再生性<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>から指数分布に従う確率変数の合計値はガンマ分布に従うと考える必要があります。</p>
+</div>
+<div id="負の二項分布" class="section level3" number="3.1.3">
+<h3><span class="header-section-number">3.1.3</span> 負の二項分布</h3>
+<p>ポアソン分布の確率密度関数を再掲します。</p>
+<p><span class="math display">\[
+f_X^P(m) = \frac{1}{m!} \lambda^m \exp(-\lambda)
+\]</span></p>
+<p>ポアソン分布のパラメーター<span
+class="math inline">\(\lambda\)</span>がガンマ分布に従うときの確率質量関数は、</p>
+<p><span class="math display">\[
+f^{NB}_X(m) = \int_0^\infty f_X^P(m) f_X^{G}(\lambda) d\lambda
+\]</span></p>
+<p>となります。<span
+class="math inline">\(\lambda\)</span>で積分をして、<span
+class="math inline">\(\lambda\)</span>を消します。</p>
+<p><span class="math display">\[\begin{align}
+&amp;= \int_0^\infty \frac{1}{m!} \lambda^m \exp(-\lambda)
+\frac{\beta^\alpha}{\Gamma(\alpha)}\lambda^{\alpha-1}\exp(-\beta\lambda)
+d\lambda \\
+&amp;= \frac{\beta^\alpha}{x! \Gamma(\alpha)} \int_0^\infty \lambda^{m +
+\alpha - 1} \exp(-(\beta + 1)\lambda) d\lambda \\
+&amp;= \frac{\beta^\alpha}{x! \Gamma(\alpha)} \frac{\Gamma(m +
+\alpha)}{(\beta + 1)^{m + \alpha}} \int_0^\infty \frac{ (\beta + 1)^{m +
+\alpha} \lambda^{m + \alpha - 1} \exp(-(\beta + 1)\lambda) }{\Gamma(m +
+\alpha)} d\lambda
+\end{align}\]</span></p>
+<p><span class="math inline">\(k = m + \alpha\)</span>, <span
+class="math inline">\(c = \beta + 1\)</span>と置くと、積分の中が<span
+class="math inline">\(c^{k}\lambda^{k+1}\exp(-c\lambda)/\Gamma(k)\)</span>となり、ガウス分布の確率密度関数なのが分かります。よって、<span
+class="math inline">\([0, \infty)\)</span>で積分すると<span
+class="math inline">\(1\)</span>になります。</p>
+<p><span
+class="math inline">\(\alpha\)</span>は整数と仮定すると、ガンマ関数を階乗に変換できます。</p>
+<p><span class="math display">\[\begin{align}
+&amp;= \frac{\beta^\alpha}{m!(\alpha - 1)!} \frac{(m + \alpha -
+1)!}{(\beta + 1)^{m + \alpha}} \\
+&amp;= \frac{(m + \alpha - 1)!}{m!(\alpha - 1)!} \beta^\alpha (\beta +
+1)^{-(m + \alpha)} \\
+&amp;= \begin{pmatrix} m + \alpha - 1 \\ \alpha - 1 \end{pmatrix}
+\beta^\alpha (\beta + 1)^{-(m + \alpha)}
+\end{align}\]</span></p>
+<p><span class="math inline">\(\beta = p/(1-p)\)</span>と置くと、</p>
+<p><span class="math display">\[\begin{align}
+&amp;= \begin{pmatrix} m + \alpha - 1 \\ \alpha - 1 \end{pmatrix} \bigg(
+\frac{1-p}{p} \bigg)^\alpha p^{m + \alpha} \\
+&amp;= \begin{pmatrix} m + \alpha - 1 \\ \alpha - 1 \end{pmatrix}
+p^\alpha (1-p)^m
+\end{align}\]</span></p>
+<p>と負の二項分布の確率質量関数が導出できます。</p>
+</div>
+</div>
+<div id="計量モデル-1" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> 計量モデル</h2>
+<p>負の二項分布だと分かるように導出しましたが、線形予測部分は期待値を説明するので、このままでは推定できません<a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>。期待値<span
+class="math inline">\(\mu\)</span>とシェープ<span
+class="math inline">\(\theta\)</span>で書き直します<a href="#fn4"
+class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
+<p><span class="math display">\[
+f^{NB}_X(m) = \frac{\Gamma(m + \theta)}{\Gamma(\theta)m!}\frac{\mu^m
+\theta^\theta}{(\mu + \theta)^{m + \theta}}
+\]</span></p>
+<p>ポアソン回帰と同様に、<span
+class="math inline">\(\mu\)</span>を対数線形回帰などで予測できるとして推定します。</p>
+</div>
+<div id="変則glmによる推定" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span>
+変則GLMによる推定</h2>
+<p>Rでは<code>MASS::glm.nb</code>で負の二項分布を推定できます。<code>family = negative.binomial(theta = 1)</code>というように<span
+class="math inline">\(\theta\)</span>を固定したリンク関数をGLMに与えて線形予測部分を推定し、線形予測部分を固定して<span
+class="math inline">\(\theta\)</span>を推定することを交互に行う、EMアルゴリズム的な方法をとっているそうです。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">library</span>(MASS)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">summary</span>(r_nb <span class="ot">&lt;-</span> <span class="fu">glm.nb</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> <span class="fu">offset</span>(<span class="fu">log</span>(o)), df01))</span></code></pre></div>
+<pre><code>
+Call:
+glm.nb(formula = y ~ x + z + offset(log(o)), data = df01, init.theta = 4.310738114, 
+    link = log)
+
+Coefficients:
+            Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)  0.01743    0.07464   0.233    0.815    
+x            1.94193    0.15189  12.785   &lt;2e-16 ***
+z           -1.09089    0.13171  -8.283   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+(Dispersion parameter for Negative Binomial(4.3107) family taken to be 1)
+
+    Null deviance: 257.798  on 49  degrees of freedom
+Residual deviance:  54.469  on 47  degrees of freedom
+AIC: 469.73
+
+Number of Fisher Scoring iterations: 1
+
+              Theta:  4.311 
+          Std. Err.:  0.992 
+
+ 2 x log-likelihood:  -461.725 </code></pre>
+<p>推定結果を見ると<span
+class="math inline">\(\hat{\theta}\)</span>が整数ではありません。実のところ、拡張された負の二項分布を使っています。不連続なパラメーターは推定しづらいですからね。</p>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>GLMは指数分布族の確率分布のモデルに対して使うことができ、フィッシャー情報行列でヘッセ行列を置き換えることで、二階微分が不要になっているスコア推定のことです。ウェイト付線形回帰の形式に持っていけることから、一般線形モデル（OLS）の拡張となります。詳細はドブソン『<a href="https://www.amazon.co.jp/gp/product/4320014626/ref=as_li_qf_asin_il_tl?ie=UTF8&tag=uncorrelated-22&creative=1211&linkCode=as2&creativeASIN=4320014626&linkId=42a8deef762279872e8f57655c8fc9a9" target="_blank">統計モデル入門</a>』の第3章と第4章と関連した付録AとBを参照してください。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><span
+class="math inline">\(\beta\)</span>が同じガンマ分布のモーメント母関数の積は、やはりガンマ分布のモーメント母関数になります。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><span class="math inline">\(\mu = m(1-p)/p\)</span>,
+<span class="math inline">\(\theta = \alpha -
+1\)</span>と書けるので、最尤法で推定するときは、本文中の式を導出する必要は無いです。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>Zeileis, Kleiber and Jackman (2008) "Regression Models
+for Count Data in R," Journal of Statistical Software, 27(8), pp.1–25.
+<a
+href="https://doi.org/10.18637/jss.v027.i08">https://doi.org/10.18637/jss.v027.i08</a><a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
