@@ -436,7 +436,7 @@ class="math inline">\(n\)</span>として、</p>
 <p>となり、これを対数化したものを最適化の目的関数とします。</p>
 <p><span class="math display">\[
 \begin{aligned}
-\log{ \mathfrak{L}(\mu, \sigma^2)} \\
+&amp;\log{ \mathfrak{L}(\mu, \sigma^2)} \\
 &amp;= \log{ (2\pi)^{-\frac{n}{2}}} + \log{ (\sigma^2)^{-\frac{n}{2}}} +
 \log{ \exp \big( -\frac{1}{2\sigma^2} \sum^n_{i=1} (y_i - \mu)^2
 \big)  } \\
