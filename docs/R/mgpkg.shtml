@@ -376,7 +376,11 @@ class="toc-section-number">2.1</span> インストールを促す</a></li>
 <li><a href="#取扱説明書" id="toc-取扱説明書"><span
 class="toc-section-number">3</span> 取扱説明書</a></li>
 <li><a href="#ロード" id="toc-ロード"><span
-class="toc-section-number">4</span> ロード</a></li>
+class="toc-section-number">4</span> ロード</a>
+<ul>
+<li><a href="#ロードなし利用" id="toc-ロードなし利用"><span
+class="toc-section-number">4.1</span> ロードなし利用</a></li>
+</ul></li>
 <li><a href="#アンロード" id="toc-アンロード"><span
 class="toc-section-number">5</span> アンロード</a></li>
 <li><a href="#アップデート" id="toc-アップデート"><span
@@ -446,26 +450,32 @@ class="toc-section-number">7</span> 削除</a></li>
 <p>パッケージ名を指定してロードします。ダブルコーテーションは要りません。</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">library</span>(png)</span></code></pre></div>
 <p>変数でパッケージ名を指定したい場合（もしくはダブルコーテーションをつけたい場合）は、<code>character.only = TRUE</code>をつけてください。</p>
+<div id="ロードなし利用" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> ロードなし利用</h2>
+<p>パッケージ内の関数などのオブジェクトは、関数名の前に<code>::</code>を挟んでパッケージ名を指定すれば、<code>library</code>で呼び出さなくても利用することができます。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">&quot;mgpkg.Rmd&quot;</span>)</span></code></pre></div>
+<p>関数名が被ったときなどに使います。</p>
+</div>
 </div>
 <div id="アンロード" class="section level1" number="5">
 <h1><span class="header-section-number">5</span> アンロード</h1>
 <p>ロードしたパッケージを消すときは、以下のようにします。</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">detach</span>(<span class="st">&quot;package:png&quot;</span>, <span class="at">unload=</span><span class="st">&quot;TRUE&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">detach</span>(<span class="st">&quot;package:png&quot;</span>, <span class="at">unload=</span><span class="st">&quot;TRUE&quot;</span>)</span></code></pre></div>
 <p>引数はパッケージ名に<code>package:</code>のプリフィックスがついているだけですが、<code>search()</code>で確認できます。</p>
 </div>
 <div id="アップデート" class="section level1" number="6">
 <h1><span class="header-section-number">6</span> アップデート</h1>
 <p>再インストールしてもよいのですが、<code>update.packages</code>で一括アップデートできます。<code>library</code>でロードしている場合はアップデートに失敗するので、Rの起動直後に行うのが無難です。</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">update.packages</span>(<span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">update.packages</span>(<span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>なお、古いパッケージを<code>old.packages()</code>でリストできます。</p>
 </div>
 <div id="削除" class="section level1" number="7">
 <h1><span class="header-section-number">7</span> 削除</h1>
 <p>インストール先のフォルダーを消せばよいです。間違えると惨劇になるので、OSから消した方が無難でしょう。それでもRから行う場合は、以下のようにします。</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">with</span>(<span class="fu">library</span>(<span class="at">quietly=</span><span class="cn">TRUE</span>, <span class="at">verbose=</span><span class="cn">FALSE</span>), {</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>    r <span class="ot">&lt;-</span> results[results[, <span class="st">&quot;Package&quot;</span>]<span class="sc">==</span><span class="st">&quot;png&quot;</span>, ]</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>    <span class="fu">file.path</span>(r[<span class="st">&quot;LibPath&quot;</span>], r[<span class="st">&quot;Package&quot;</span>])</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>}), <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">with</span>(<span class="fu">library</span>(<span class="at">quietly=</span><span class="cn">TRUE</span>, <span class="at">verbose=</span><span class="cn">FALSE</span>), {</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>    r <span class="ot">&lt;-</span> results[results[, <span class="st">&quot;Package&quot;</span>]<span class="sc">==</span><span class="st">&quot;png&quot;</span>, ]</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="fu">file.path</span>(r[<span class="st">&quot;LibPath&quot;</span>], r[<span class="st">&quot;Package&quot;</span>])</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>}), <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 
 </div>
