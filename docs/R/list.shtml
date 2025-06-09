@@ -13,7 +13,7 @@
 
 <title>Rのリストの扱い方のざっとした説明</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -570,22 +570,36 @@ $c
 class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span>
 いちいちリストを指定しないで、中身を参照する</h2>
+<p><code>with</code>関数を使うと、リスト/データフレーム/環境の中身をローカル変数として扱えます。</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">with</span>(<span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">c =</span> <span class="dv">3</span>), {</span>
 <span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>    a <span class="sc">+</span> b <span class="sc">+</span> c</span>
 <span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a>})</span></code></pre></div>
 <pre><code>[1] 6</code></pre>
+<p><code>within</code>関数も同様ですが、リスト/データフレームに使うことができ、指定したリスト/データフレームが戻り値になるところが異なります。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">within</span>(<span class="fu">list</span>(<span class="at">a =</span> <span class="dv">1</span>, <span class="at">b =</span> <span class="dv">2</span>), {</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>    <span class="co"># ローカル変数を作成すると、リストに追加される</span></span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>    a <span class="sc">+</span> b <span class="ot">-&gt;</span> c</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>$a
+[1] 1
+
+$b
+[1] 2
+
+$c
+[1] 3</code></pre>
 </div>
 </div>
 <div id="リストにデータを追加する" class="section level1" number="4">
 <h1><span class="header-section-number">4</span>
 リストにデータを追加する</h1>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># &quot;d&quot;を追加する</span></span>
-<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>lst[<span class="st">&quot;d&quot;</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="co"># &quot;d&quot;を追加する</span></span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>lst[<span class="st">&quot;d&quot;</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span></code></pre></div>
 <div id="複数のリストを統合する" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span>
 複数のリストを統合する</h2>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># &quot;d&quot;を追加する</span></span>
-<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">c</span>(lst, <span class="fu">list</span>(<span class="at">x=</span><span class="fl">0.1</span>, <span class="at">y=</span><span class="fl">0.2</span>, <span class="at">z=</span><span class="sc">-</span><span class="fl">0.1</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># &quot;d&quot;を追加する</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="fu">c</span>(lst, <span class="fu">list</span>(<span class="at">x=</span><span class="fl">0.1</span>, <span class="at">y=</span><span class="fl">0.2</span>, <span class="at">z=</span><span class="sc">-</span><span class="fl">0.1</span>))</span></code></pre></div>
 <pre><code>$a
 [1] 123
 
@@ -611,42 +625,42 @@ $z
 <div id="リストからデータを削除する" class="section level1" number="5">
 <h1><span class="header-section-number">5</span>
 リストからデータを削除する</h1>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># &quot;b&quot;を消す</span></span>
-<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>lst[<span class="st">&quot;b&quot;</span>] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co"># &quot;b&quot;を消す</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>lst[<span class="st">&quot;b&quot;</span>] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div>
 </div>
 <div id="リストに要素があるか調べる" class="section level1" number="6">
 <h1><span class="header-section-number">6</span>
 リストに要素があるか調べる</h1>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="co"># 名前&quot;d&quot;の要素が含まれているか調べる</span></span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(lst[[<span class="st">&quot;d&quot;</span>]])) <span class="fu">print</span>(<span class="st">&quot;名前dの要素は無い&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="co"># 名前&quot;d&quot;の要素が含まれているか調べる</span></span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(lst[[<span class="st">&quot;d&quot;</span>]])) <span class="fu">print</span>(<span class="st">&quot;名前dの要素は無い&quot;</span>)</span></code></pre></div>
 <pre><code>[1] &quot;名前dの要素は無い&quot;</code></pre>
 </div>
 <div id="リストの要素の名前をすべて得る" class="section level1"
 number="7">
 <h1><span class="header-section-number">7</span>
 リストの要素の名前をすべて得る</h1>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">names</span>(lst)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">names</span>(lst)</span></code></pre></div>
 <pre><code>[1] &quot;a&quot; &quot;c&quot; &quot;d&quot;</code></pre>
 </div>
 <div id="リストの要素をすべて得る" class="section level1" number="8">
 <h1><span class="header-section-number">8</span>
 リストの要素をすべて得る</h1>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">unlist</span>(lst)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">unlist</span>(lst)</span></code></pre></div>
 <pre><code>  a   c   d 
 123 789   0 </code></pre>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">unlist</span>(lst, <span class="at">use.names =</span> <span class="cn">FALSE</span>) <span class="co"># ベクトルの要素にラベルをつけない</span></span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">unlist</span>(lst, <span class="at">use.names =</span> <span class="cn">FALSE</span>) <span class="co"># ベクトルの要素にラベルをつけない</span></span></code></pre></div>
 <pre><code>[1] 123 789   0</code></pre>
 </div>
 <div id="リストの長さを得る" class="section level1" number="9">
 <h1><span class="header-section-number">9</span> リストの長さを得る</h1>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">length</span>(lst)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="fu">length</span>(lst)</span></code></pre></div>
 <pre><code>[1] 3</code></pre>
 </div>
 <div id="リストの中身を操作する" class="section level1" number="10">
 <h1><span class="header-section-number">10</span>
 リストの中身を操作する</h1>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="co"># 全部の要素から17を引いたリストをつくる</span></span>
-<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a><span class="fu">lapply</span>(lst, <span class="cf">function</span>(x){ x <span class="sc">-</span> <span class="dv">17</span> })</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="co"># 全部の要素から17を引いたリストをつくる</span></span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a><span class="fu">lapply</span>(lst, <span class="cf">function</span>(x){ x <span class="sc">-</span> <span class="dv">17</span> })</span></code></pre></div>
 <pre><code>$a
 [1] 106
 
@@ -655,12 +669,12 @@ $c
 
 $d
 [1] -17</code></pre>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="co"># 全部の要素に31を足したベクトルを得る</span></span>
-<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a><span class="fu">sapply</span>(lst, <span class="cf">function</span>(x){ x <span class="sc">+</span> <span class="dv">31</span> })</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="co"># 全部の要素に31を足したベクトルを得る</span></span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a><span class="fu">sapply</span>(lst, <span class="cf">function</span>(x){ x <span class="sc">+</span> <span class="dv">31</span> })</span></code></pre></div>
 <pre><code>  a   c   d 
 154 820  31 </code></pre>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="co"># リストの各要素の2番目の値を取り出す</span></span>
-<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a><span class="fu">sapply</span>(vlst, <span class="st">&quot;[[&quot;</span>, <span class="dv">2</span>) <span class="co"># &quot;[[&quot;はgetElementでもOK</span></span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="co"># リストの各要素の2番目の値を取り出す</span></span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a><span class="fu">sapply</span>(vlst, <span class="st">&quot;[[&quot;</span>, <span class="dv">2</span>) <span class="co"># &quot;[[&quot;はgetElementでもOK</span></span></code></pre></div>
 <pre><code>a b c 
 2 5 8 </code></pre>
 </div>
