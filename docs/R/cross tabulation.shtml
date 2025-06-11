@@ -557,7 +557,8 @@ class="math inline">\(\sum_{ij} (f_{ij} - e_{ij}) /
 <span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>(odds_confint <span class="ot">&lt;-</span> <span class="fu">exp</span>(log_odds_confint))</span></code></pre></div>
 <pre><code>   lower estimate    upper 
 1.107895 1.501326 2.034470 </code></pre>
-<p>二項分布は正規分布に分布収束し、二項分布に従う確率変数は非負なので、その対数は連続関数になるため、対数オッズ比は正規分布で近似することができ、デルタ法を用いることでその分散がクロス表の4つのセルの観測数のそれぞれの逆数の和で近似することができるので、そのように計算しています。</p>
+<p><a
+href="./var_log_odds_ratio.shtml">対数オッズ比の分散はクロス表の4つのセルの観測数のそれぞれの逆数の和で近似することができる</a>ので、そのように計算しています。</p>
 <p>なお、実用では<code>epitools</code>パッケージなどを使う方がよいでしょう。2行以上の行列も処理してくれますし、独立性検定なども複数の手法で同時にやってくれます。</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">library</span>(epitools)</span>
 <span id="cb21-2"><a href="#cb21-2" tabindex="-1"></a>(r_odds <span class="ot">&lt;-</span> <span class="fu">oddsratio.wald</span>(M))<span class="sc">$</span>measure</span></code></pre></div>
