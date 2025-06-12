@@ -375,6 +375,8 @@ class="toc-section-number">2.1</span> GLMによる推定</a>
 class="toc-section-number">2.1.1</span> 予測値</a></li>
 <li><a href="#限界効果" id="toc-限界効果"><span
 class="toc-section-number">2.1.2</span> 限界効果</a></li>
+<li><a href="#オッズとオッズ比" id="toc-オッズとオッズ比"><span
+class="toc-section-number">2.1.3</span> オッズとオッズ比</a></li>
 </ul></li>
 <li><a href="#最尤法による推定" id="toc-最尤法による推定"><span
 class="toc-section-number">2.2</span> 最尤法による推定</a></li>
@@ -636,21 +638,70 @@ Comparison: dY/dX</code></pre>
 Type: response
 Comparison: dY/dX</code></pre>
 </div>
+<div id="オッズとオッズ比" class="section level3" number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span>
+オッズとオッズ比</h3>
+<p>疫学方面ではオッズとオッズ比がよく参照されています。</p>
+<p>オッズは、推定された線形部分の予測値の指数になります。</p>
+<p><span class="math display">\[\begin{align}
+P(U_1) &amp;= \frac{\exp(V_1-V_2)}{1 + \exp(\exp(V_1-V_2))} \\
+P(U_2) &amp;= \frac{1}{1 + \exp(\exp(V_1-V_2))}
+\end{align}\]</span></p>
+<p>なので、オッズを計算すると</p>
+<p><span class="math display">\[
+\frac{P(U_1)}{P(U_2)} = \exp(V_1-V_2)
+\]</span></p>
+<p>になるからです。</p>
+<p>オッズ比は、線形部分の係数になります。線形部分を<span
+class="math inline">\(\beta_D D + \cdots\)</span>と説明変数<span
+class="math inline">\(D\)</span>と係数<span
+class="math inline">\(\beta_D\)</span>で書き換え、<span
+class="math inline">\(D=1\)</span>のときのオッズと<span
+class="math inline">\(D=0\)</span>のときのオッズの比をとると、</p>
+<p><span class="math display">\[
+\frac{\exp(\beta_D 1 + \cdots)}{\exp(\beta_D 0 + \cdots)} = \exp(\beta_D
+1 + \cdots - \cdots) = \exp(\beta_D)
+\]</span></p>
+<p>となるからです。</p>
+<p>Rで点推定する場合は、</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># オッズ</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">predict</span>(r_glm, newdata))</span></code></pre></div>
+<pre><code>       1 
+12.82882 </code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># オッズ比</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(r_glm))</span></code></pre></div>
+<pre><code>(Intercept)          x1          x2 
+   1.366876    2.048566    2.140444 </code></pre>
+<p>となります。</p>
+<p>区間推定をする場合は、</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># オッズの予測区間</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>prdct <span class="ot">&lt;-</span> <span class="fu">predict</span>(r_glm, newdata, <span class="at">se.fit =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="fu">exp</span>(prdct<span class="sc">$</span>fit <span class="sc">+</span> prdct<span class="sc">$</span>se.fit <span class="sc">*</span> <span class="fu">c</span>(<span class="fu">qnorm</span>(a<span class="sc">/</span><span class="dv">2</span>), <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> a<span class="sc">/</span><span class="dv">2</span>)))</span></code></pre></div>
+<pre><code>[1]  3.332785 49.381699</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># オッズ比の信頼区間</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">confint</span>(r_glm))</span></code></pre></div>
+<pre><code>                2.5 %   97.5 %
+(Intercept) 0.6708505 3.007097
+x1          1.5490764 3.021127
+x2          1.6538080 3.112791</code></pre>
+<p>となります。</p>
+</div>
 </div>
 <div id="最尤法による推定" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span> 最尤法による推定</h2>
 <p>（対数）尤度関数を書けば、<code>optim</code>などの最適化アルゴリズムを用いて推定することもできます。</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(r <span class="sc">~</span> x1 <span class="sc">+</span> x2, df01) <span class="co"># モデル式とデータフレームをまとめる</span></span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf) <span class="co"># 説明変数を行列にまとめる</span></span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf) <span class="co"># 被説明変数を取り出す</span></span>
-<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>objf <span class="ot">&lt;-</span> <span class="cf">function</span>(theta){ <span class="co"># 目的関数</span></span>
-<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>   y <span class="ot">&lt;-</span> X <span class="sc">%*%</span> theta </span>
-<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>   p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>y))</span>
-<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>   <span class="co"># 各行のCombination項は1!/(1!0!)=1になる</span></span>
-<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>   <span class="fu">sum</span>(r<span class="sc">*</span><span class="fu">log</span>(p) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> r)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p))</span>
-<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>}</span>
-<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co"># optimは目的関数を最小化しようとするので、controlで目的関数の符号の反転を指示</span></span>
-<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>(r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), objf, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(r <span class="sc">~</span> x1 <span class="sc">+</span> x2, df01) <span class="co"># モデル式とデータフレームをまとめる</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf) <span class="co"># 説明変数を行列にまとめる</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf) <span class="co"># 被説明変数を取り出す</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>objf <span class="ot">&lt;-</span> <span class="cf">function</span>(theta){ <span class="co"># 目的関数</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>   y <span class="ot">&lt;-</span> X <span class="sc">%*%</span> theta </span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>   p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>y))</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>   <span class="co"># 各行のCombination項は1!/(1!0!)=1になる</span></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>   <span class="fu">sum</span>(r<span class="sc">*</span><span class="fu">log</span>(p) <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> r)<span class="sc">*</span><span class="fu">log</span>(<span class="dv">1</span> <span class="sc">-</span> p))</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>}</span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a><span class="co"># optimは目的関数を最小化しようとするので、controlで目的関数の符号の反転を指示</span></span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>(r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), objf, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>)))</span></code></pre></div>
 <pre><code>$par
 [1] 0.3125301 0.7171431 0.7610165
 
@@ -747,17 +798,17 @@ w_{i,k} \\
 <p>実用では<code>mlogit</code>パッケージを用いるのが一般的です。<code>mlogit</code>は<ruby>vigniette<rp>（</rp><rt>ヴィネット</rt><rp>）</rp></ruby>にコード例が充実している<a
 href="#fn9" class="footnote-ref"
 id="fnref9"><sup>9</sup></a>のですが、そこにある利用例をひとつ紹介します。</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;zoo&quot;</span>)</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;Fishing&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mlogit&quot;</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="co"># データを整形してmlogitが処理できる形式にする</span></span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>Fish <span class="ot">&lt;-</span> <span class="fu">mlogit.data</span>(Fishing, <span class="at">varying =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">9</span>), <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>, <span class="at">choice =</span> <span class="st">&quot;mode&quot;</span>)</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a><span class="co"># mlogitで推定を行う．モデル式は</span></span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a><span class="co"># 1. choice situation and alternative specificな説明変数とalternative specificな係数（省略するには0を入れる）</span></span>
-<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a><span class="co"># 2. choice situation specificな説明変数とalternative specificな係数（省略するには0を入れる; (3)が無ければ省略可）</span></span>
-<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a><span class="co"># 3. choice situation and alternative specificな説明変数とchoice situation and alternative specificな係数（省略可）</span></span>
-<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a><span class="co"># を | でつなぐ。</span></span>
-<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>(m <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(mode <span class="sc">~</span> price <span class="sc">|</span> income <span class="sc">|</span> catch, <span class="at">data =</span> Fish))</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">library</span>(mlogit)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;zoo&quot;</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;Fishing&quot;</span>, <span class="at">package =</span> <span class="st">&quot;mlogit&quot;</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co"># データを整形してmlogitが処理できる形式にする</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>Fish <span class="ot">&lt;-</span> <span class="fu">mlogit.data</span>(Fishing, <span class="at">varying =</span> <span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">9</span>), <span class="at">shape =</span> <span class="st">&quot;wide&quot;</span>, <span class="at">choice =</span> <span class="st">&quot;mode&quot;</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co"># mlogitで推定を行う．モデル式は</span></span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co"># 1. choice situation and alternative specificな説明変数とalternative specificな係数（省略するには0を入れる）</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a><span class="co"># 2. choice situation specificな説明変数とalternative specificな係数（省略するには0を入れる; (3)が無ければ省略可）</span></span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co"># 3. choice situation and alternative specificな説明変数とchoice situation and alternative specificな係数（省略可）</span></span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a><span class="co"># を | でつなぐ。</span></span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a>(m <span class="ot">&lt;-</span> <span class="fu">mlogit</span>(mode <span class="sc">~</span> price <span class="sc">|</span> income <span class="sc">|</span> catch, <span class="at">data =</span> Fish))</span></code></pre></div>
 <pre><code>
 Call:
 mlogit(formula = mode ~ price | income | catch, data = Fish,     method = &quot;nr&quot;)
@@ -771,12 +822,12 @@ Coefficients:
         -1.3550e-04           3.1177e+00           2.5425e+00  
       catch:charter           catch:pier  
          7.5949e-01           2.8512e+00  </code></pre>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># 説明変数の平均値を求める</span></span>
-<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">with</span>(Fish, <span class="fu">data.frame</span>(<span class="at">price =</span> <span class="fu">tapply</span>(price, <span class="fu">idx</span>(m, <span class="dv">2</span>), mean), <span class="at">catch =</span> <span class="fu">tapply</span>(catch, <span class="fu">idx</span>(m, <span class="dv">2</span>), mean), <span class="at">income =</span> <span class="fu">mean</span>(income)))</span>
-<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="co"># 平均値における限界効果を計算</span></span>
-<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a><span class="co"># typeはaもしくはrの2文字を指定（デフォルトはaa）</span></span>
-<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a><span class="co"># aは絶対値，rは相対値．1番目の文字は確率，2番目は変数での指定になる</span></span>
-<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="fu">effects</span>(m, <span class="at">covariate =</span> <span class="st">&quot;income&quot;</span>, <span class="at">type =</span> <span class="st">&quot;aa&quot;</span>, <span class="at">data =</span> z)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># 説明変数の平均値を求める</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">with</span>(Fish, <span class="fu">data.frame</span>(<span class="at">price =</span> <span class="fu">tapply</span>(price, <span class="fu">idx</span>(m, <span class="dv">2</span>), mean), <span class="at">catch =</span> <span class="fu">tapply</span>(catch, <span class="fu">idx</span>(m, <span class="dv">2</span>), mean), <span class="at">income =</span> <span class="fu">mean</span>(income)))</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="co"># 平均値における限界効果を計算</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co"># typeはaもしくはrの2文字を指定（デフォルトはaa）</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a><span class="co"># aは絶対値，rは相対値．1番目の文字は確率，2番目は変数での指定になる</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="fu">effects</span>(m, <span class="at">covariate =</span> <span class="st">&quot;income&quot;</span>, <span class="at">type =</span> <span class="st">&quot;aa&quot;</span>, <span class="at">data =</span> z)</span></code></pre></div>
 <pre><code>        beach          boat       charter          pier 
  1.132964e-06  3.113069e-05 -2.408677e-05 -8.176876e-06 </code></pre>
 <p>モデル選択のための統計的仮説検定は、<code>waldtest</code>，<code>lmtest</code>，<code>scoretest</code>で、ワルド検定、尤度比検定、ラグランジェ乗数検定を行えます。</p>
@@ -917,15 +968,15 @@ class="math inline">\(j=k\)</span>のとき1、<span class="math inline">\(j
 class="math inline">\(\Pi_{i=1}^n
 \pi_{i1}^{I(j=1)}\pi_{i2}^{I(j=2)}\cdots\pi_{iJ}^{I(j=J)}\)</span>です。間違いがないように<code>ordinal::clm</code>や<code>MASS::polr</code>などによる推定を推奨しますが、Rのnlm関数やoptim関数あたりに対数尤度関数を与えて推定することも、そんなに難しくは無いです。</p>
 <p><code>MASS::polr</code>を使って推定してみます。なお、GLMではなくて、最尤法による推定です。</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;https://wh.anlyznews.com/R/dataset/for_ologit.txt&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>df01<span class="sc">$</span>g <span class="ot">&lt;-</span> <span class="fu">ordered</span>(df01<span class="sc">$</span>g, <span class="fu">c</span>(<span class="st">&quot;d&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>)) <span class="co"># 順序データにする; 序列はアルファベット順と逆</span></span>
-<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;https://wh.anlyznews.com/R/dataset/for_ologit.txt&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>df01<span class="sc">$</span>g <span class="ot">&lt;-</span> <span class="fu">ordered</span>(df01<span class="sc">$</span>g, <span class="fu">c</span>(<span class="st">&quot;d&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>)) <span class="co"># 順序データにする; 序列はアルファベット順と逆</span></span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code></pre></div>
 <pre><code>
 次のパッケージを付け加えます: &#39;MASS&#39;</code></pre>
 <pre><code>以下のオブジェクトは &#39;package:dfidx&#39; からマスクされています:
 
     select</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">summary</span>(r_polr <span class="ot">&lt;-</span> <span class="fu">polr</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, df01, <span class="at">Hess =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">summary</span>(r_polr <span class="ot">&lt;-</span> <span class="fu">polr</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, df01, <span class="at">Hess =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <pre><code>Call:
 polr(formula = g ~ x1 + x2 + d, data = df01, Hess = TRUE)
 
@@ -948,13 +999,13 @@ AIC: 211.8555 </code></pre>
 <div id="限界効果-2" class="section level2" number="5.1">
 <h2><span class="header-section-number">5.1</span> 限界効果</h2>
 <p>限界効果も二項ロジットと同様に計算できます。</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
-<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>r_pe <span class="ot">&lt;-</span> <span class="fu">predictorEffects</span>(r_polr, <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">confidence.level =</span> <span class="fl">0.99</span>)</span>
-<span id="cb25-3"><a href="#cb25-3" tabindex="-1"></a><span class="fu">plot</span>(r_pe, <span class="at">axes =</span> <span class="fu">list</span>(<span class="at">grid =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>r_pe <span class="ot">&lt;-</span> <span class="fu">predictorEffects</span>(r_polr, <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">confidence.level =</span> <span class="fl">0.99</span>)</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a><span class="fu">plot</span>(r_pe, <span class="at">axes =</span> <span class="fu">list</span>(<span class="at">grid =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <p><img src="common_files/figure-html/ologit01-1.png" width="672" /></p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">options</span>(<span class="at">marginaleffects_startup_message =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a><span class="fu">avg_slopes</span>(r_polr)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="fu">options</span>(<span class="at">marginaleffects_startup_message =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="fu">avg_slopes</span>(r_polr)</span></code></pre></div>
 <pre><code>
  Term Group         Contrast Estimate Std. Error      z Pr(&gt;|z|)    S    2.5 %
    d      d phoenix - dragon  -0.0129     0.0301 -0.429   0.6678  0.6 -0.07180
@@ -997,26 +1048,26 @@ Type: probs</code></pre>
 <h2><span class="header-section-number">5.2</span>
 最適化関数を使った推定</h2>
 <p>Rの行列のデータ構造を活かして行列で処理するところをベクトルで処理してループを削減したため見通しが悪いですが、意外に簡単に推定できます。</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>llf <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
-<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>    ng <span class="ot">&lt;-</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>    g <span class="ot">&lt;-</span> p[<span class="dv">1</span><span class="sc">:</span>ng]</span>
-<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">2</span> <span class="sc">&lt;=</span> ng) <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>ng) <span class="cf">if</span>(g[i] <span class="sc">&lt;=</span> g[i<span class="dv">-1</span>]) <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>    b <span class="ot">&lt;-</span> p[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>ng)]</span>
-<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>    y <span class="ot">&lt;-</span> X <span class="sc">%*%</span> b</span>
-<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>    a <span class="ot">&lt;-</span> <span class="fu">matrix</span>(g, n, <span class="fu">length</span>(g), <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">replicate</span>(<span class="fu">length</span>(g), <span class="fu">c</span>(y))</span>
-<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">exp</span>(a))</span>
-<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>    dp <span class="ot">&lt;-</span> <span class="fu">cbind</span>(p, <span class="dv">1</span>) <span class="sc">-</span> <span class="fu">cbind</span>(<span class="dv">0</span>, p)</span>
-<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">log</span>(dp[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dp) <span class="sc">+</span> <span class="fu">nrow</span>(dp)<span class="sc">*</span>(s_id <span class="sc">-</span> <span class="dv">1</span>)]))</span>
-<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>}</span>
-<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a></span>
-<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, df01)</span>
-<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>s_id <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">model.response</span>(mf))</span>
-<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf)</span>
-<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a>init.p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">ncol</span>(X)))</span>
-<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a>r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(init.p, llf, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
-<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a><span class="co"># 閾値-切片項と変数の係数</span></span>
-<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a><span class="fu">with</span>(r_optim, <span class="fu">c</span>(par[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="sc">-</span> par[<span class="dv">4</span>], par[<span class="dv">5</span><span class="sc">:</span><span class="dv">8</span>]))</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>llf <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>    ng <span class="ot">&lt;-</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>    g <span class="ot">&lt;-</span> p[<span class="dv">1</span><span class="sc">:</span>ng]</span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">2</span> <span class="sc">&lt;=</span> ng) <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>ng) <span class="cf">if</span>(g[i] <span class="sc">&lt;=</span> g[i<span class="dv">-1</span>]) <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>    b <span class="ot">&lt;-</span> p[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>ng)]</span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>    y <span class="ot">&lt;-</span> X <span class="sc">%*%</span> b</span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a>    a <span class="ot">&lt;-</span> <span class="fu">matrix</span>(g, n, <span class="fu">length</span>(g), <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">replicate</span>(<span class="fu">length</span>(g), <span class="fu">c</span>(y))</span>
+<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">exp</span>(a))</span>
+<span id="cb36-10"><a href="#cb36-10" tabindex="-1"></a>    dp <span class="ot">&lt;-</span> <span class="fu">cbind</span>(p, <span class="dv">1</span>) <span class="sc">-</span> <span class="fu">cbind</span>(<span class="dv">0</span>, p)</span>
+<span id="cb36-11"><a href="#cb36-11" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">log</span>(dp[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dp) <span class="sc">+</span> <span class="fu">nrow</span>(dp)<span class="sc">*</span>(s_id <span class="sc">-</span> <span class="dv">1</span>)]))</span>
+<span id="cb36-12"><a href="#cb36-12" tabindex="-1"></a>}</span>
+<span id="cb36-13"><a href="#cb36-13" tabindex="-1"></a></span>
+<span id="cb36-14"><a href="#cb36-14" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, df01)</span>
+<span id="cb36-15"><a href="#cb36-15" tabindex="-1"></a>s_id <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">model.response</span>(mf))</span>
+<span id="cb36-16"><a href="#cb36-16" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf)</span>
+<span id="cb36-17"><a href="#cb36-17" tabindex="-1"></a>init.p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">ncol</span>(X)))</span>
+<span id="cb36-18"><a href="#cb36-18" tabindex="-1"></a>r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(init.p, llf, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb36-19"><a href="#cb36-19" tabindex="-1"></a><span class="co"># 閾値-切片項と変数の係数</span></span>
+<span id="cb36-20"><a href="#cb36-20" tabindex="-1"></a><span class="fu">with</span>(r_optim, <span class="fu">c</span>(par[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="sc">-</span> par[<span class="dv">4</span>], par[<span class="dv">5</span><span class="sc">:</span><span class="dv">8</span>]))</span></code></pre></div>
 <pre><code>[1] -1.7853543 -0.4621157  1.5432442 -3.9394564  4.6513028  0.2306246 -1.2237194</code></pre>
 <p><code>MASS::polr</code>とほぼ同じ推定結果になっていますね。<code>ordinal::clm</code>か<code>MASS::polr</code>を使いましょう。</p>
 </div>
