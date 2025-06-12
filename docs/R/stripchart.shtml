@@ -370,6 +370,10 @@ class="toc-section-number">4</span> 色の変更</a></li>
 id="toc-群ごとに領域色を変更する方法"><span
 class="toc-section-number">5</span>
 群ごとに領域色を変更する方法</a></li>
+<li><a href="#同じ群の因子ごとに色を変える"
+id="toc-同じ群の因子ごとに色を変える"><span
+class="toc-section-number">6</span>
+同じ群の因子ごとに色を変える</a></li>
 </ul>
 </div>
 
@@ -438,6 +442,44 @@ number="5">
 <span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="fu">box</span>()</span></code></pre></div>
 <p><img src="common_files/figure-html/stripchart08-1.png" width="672" /></p>
 <p>線の太さの調整のために、目盛りと枠は<code>axis</code>と<code>box</code>で描画しました。</p>
+</div>
+<div id="同じ群の因子ごとに色を変える" class="section level1"
+number="6">
+<h1><span class="header-section-number">6</span>
+同じ群の因子ごとに色を変える</h1>
+<p>群が種ごとで、その中の雌雄で色を変えるのは有用かも知れません。因子が二つある<code>palmerpenguins</code>データセットを使って、試してみましょう。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>model <span class="ot">&lt;-</span> bill_length_mm <span class="sc">~</span> species</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>pch <span class="ot">&lt;-</span> <span class="dv">21</span></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>col <span class="ot">&lt;-</span> <span class="st">&quot;black&quot;</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>cex <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>lwd <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>method <span class="ot">&lt;-</span> <span class="st">&quot;jitter&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">range</span>(penguins<span class="sc">$</span>bill_length_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">levels</span>(penguins<span class="sc">$</span>species)</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(penguins[, <span class="fu">c</span>(<span class="st">&quot;bill_length_mm&quot;</span>, <span class="st">&quot;species&quot;</span>, <span class="st">&quot;sex&quot;</span>)])</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a><span class="fu">levels</span>(df01<span class="sc">$</span>sex) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">levels</span>(df01<span class="sc">$</span>sex), <span class="st">&quot;N/A&quot;</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>df01<span class="sc">$</span>sex[<span class="fu">is.na</span>(df01<span class="sc">$</span>sex)] <span class="ot">&lt;-</span> <span class="st">&quot;N/A&quot;</span> </span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> df01[<span class="fu">complete.cases</span>(df01), ]</span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>labels_sex <span class="ot">&lt;-</span> <span class="fu">levels</span>(df01<span class="sc">$</span>sex)</span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>pt.bg <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;pink&quot;</span>, <span class="st">&quot;lightblue&quot;</span>, <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>bg <span class="ot">&lt;-</span> pt.bg[df01<span class="sc">$</span>sex]</span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>sn <span class="ot">&lt;-</span> <span class="st">&quot;Adelie&quot;</span></span>
+<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a><span class="fu">stripchart</span>(model, df01, <span class="at">subset =</span> species <span class="sc">==</span> sn, <span class="at">vertical =</span> <span class="cn">TRUE</span>, <span class="at">method =</span> method, <span class="at">pch =</span> pch, <span class="at">col =</span> col, <span class="at">bg =</span> bg[df01<span class="sc">$</span>species <span class="sc">==</span> sn], <span class="at">cex =</span> cex, <span class="at">lwd =</span> lwd, <span class="at">axes =</span> <span class="cn">FALSE</span>, <span class="at">ylim =</span> ylim)</span>
+<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a>sn <span class="ot">&lt;-</span> <span class="st">&quot;Chinstrap&quot;</span></span>
+<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="fu">stripchart</span>(model, df01, <span class="at">subset =</span> species <span class="sc">==</span> sn, <span class="at">vertical =</span> <span class="cn">TRUE</span>, <span class="at">method =</span> method, <span class="at">pch =</span> pch, <span class="at">col =</span> col, <span class="at">bg =</span> bg[df01<span class="sc">$</span>species <span class="sc">==</span> sn], <span class="at">cex =</span> cex, <span class="at">lwd =</span> lwd , <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>sn <span class="ot">&lt;-</span> <span class="st">&quot;Gentoo&quot;</span></span>
+<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a><span class="fu">stripchart</span>(model, df01, <span class="at">subset =</span> species <span class="sc">==</span> sn, <span class="at">vertical =</span> <span class="cn">TRUE</span>, <span class="at">method =</span> method, <span class="at">pch =</span> pch, <span class="at">col =</span> col, <span class="at">bg =</span> bg[df01<span class="sc">$</span>species <span class="sc">==</span> sn], <span class="at">cex =</span> cex, <span class="at">lwd =</span> lwd, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">at =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="at">labels =</span> labels, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>)</span>
+<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>)</span>
+<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a><span class="fu">box</span>()</span>
+<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;bottomright&quot;</span>, labels_sex, <span class="at">col =</span> col, <span class="at">pch =</span> pch, <span class="at">pt.bg =</span> pt.bg, <span class="at">pt.cex =</span> cex, <span class="at">bty =</span> <span class="st">&quot;n&quot;</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/stripchart09-1.png" width="672" /></p>
+<p><code>NA</code>が混じっていると色と因子の対応がずれがちなので注意してください。</p>
 </div>
 
 </div>
