@@ -450,8 +450,9 @@ class="math inline">\(i\)</span>行になる確率と<span
 class="math inline">\(i\)</span>列になる確率を乗じたものになります。つまり、<span
 class="math inline">\(i\)</span>行の頻度の合計と<span
 class="math inline">\(j\)</span>列の頻度の合計を乗じたものを、全体の頻度の合計で二回割ったものが期待確率です。期待頻度は、それにさらに全体の頻度をかけたものになります。</p>
-<p>観測値と期待頻度の差は二項分布に、近似的に正規分布に従います。よって差の二乗は、χ二乗分布に従うと看做すことができます。よってχ二乗検定を用いて、独立性の検定を行うことができます<a
-href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>。</p>
+<p>観測値と期待頻度の差は二項分布に、近似的に正規分布に従います。よって標準化された差の二乗は、χ二乗分布に従うと看做すことができます。よってχ二乗検定を用いて、独立性の検定を行うことができます<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。また、各セルの差も正規分布を用いて外れ値ではないか検定ができます。</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>(xst <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(xt, <span class="at">correct =</span> <span class="cn">FALSE</span>)) <span class="co"># 2×2表でもイェーツの連続性補正は行わない</span></span></code></pre></div>
 <pre><code>Warning in chisq.test(xt, correct = FALSE): カイ自乗近似は不正確かもしれません</code></pre>
 <pre><code>
