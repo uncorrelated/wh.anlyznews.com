@@ -13,7 +13,7 @@
 
 <title>Rの言語オブジェクトの存在を知っておこう</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -407,7 +407,13 @@ id="toc-クロージャを書き換える"><span
 class="toc-section-number">2.4</span> クロージャを書き換える</a></li>
 </ul></li>
 <li><a href="#evalが使う環境" id="toc-evalが使う環境"><span
-class="toc-section-number">3</span> <code>eval</code>が使う環境</a></li>
+class="toc-section-number">3</span> <code>eval</code>が使う環境</a>
+<ul>
+<li><a href="#引数で渡された表現式の関数内での処理"
+id="toc-引数で渡された表現式の関数内での処理"><span
+class="toc-section-number">3.1</span>
+引数で渡された表現式の関数内での処理</a></li>
+</ul></li>
 <li><a href="#まとめ" id="toc-まとめ"><span
 class="toc-section-number">4</span> まとめ</a></li>
 </ul>
@@ -632,7 +638,7 @@ y</code></pre>
 <pre><code>[1] 8</code></pre>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">eval</span>(e1, <span class="at">envir=</span>myenv) <span class="co"># x=3, y=4で計算</span></span></code></pre></div>
 <pre><code>[1] 81</code></pre>
-<p>関数内では別環境になるので、以上のようにわざわざ指定することは少ないと思います。</p>
+<p>関数内では別環境になるので、環境を指定しなくても変数のスコープが切り替わります。</p>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>e1 <span class="ot">&lt;-</span> <span class="fu">expression</span>(x<span class="sc">^</span>y)</span>
 <span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a>fn <span class="ot">&lt;-</span> <span class="cf">function</span>(e){</span>
 <span id="cb42-3"><a href="#cb42-3" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="dv">3</span></span>
@@ -644,6 +650,20 @@ y</code></pre>
 <pre><code>[1] 8</code></pre>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="fu">fn</span>(e1) <span class="co"># x=3, y=4で計算</span></span></code></pre></div>
 <pre><code>[1] 81</code></pre>
+<div id="引数で渡された表現式の関数内での処理" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span>
+引数で渡された表現式の関数内での処理</h2>
+<p><code>data</code>と<code>subset</code>を引数に持つ関数は多いのですが、<code>eval</code>を使って同様に引数で指定された数式を使うのにはコツが要ります。</p>
+<p><code>eval</code>の引数に単純に変数名を書くと、<code>eval</code>が処理する前に変数の中身を評価してしまうので、<code>eval</code>が機能しません。引数の式は<code>expression</code>関数の中に無いからです。<code>data</code>にある変数の値を参照しない不具合がおきます。</p>
+<p>そこで、引数で渡された式を処理する関数では、例えば</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a>e_subset <span class="ot">&lt;-</span> <span class="cf">function</span>(data, subset){</span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>   data[<span class="fu">eval</span>(<span class="fu">substitute</span>(subset), data), ]</span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>}</span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a><span class="fu">e_subset</span>(<span class="fu">data.frame</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>), x <span class="sc">&lt;=</span> <span class="dv">5</span>)</span></code></pre></div>
+<pre><code>[1] 1 2 3 4 5</code></pre>
+<p>と言う風に、<code>substitute</code>で式の入った変数をラップします。<code>eval</code>が<code>substitute(subset)</code>を評価するときにはじめて<code>subset</code>が評価されます。</p>
+</div>
 </div>
 <div id="まとめ" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> まとめ</h1>
