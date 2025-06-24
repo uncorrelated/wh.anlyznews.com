@@ -30,6 +30,11 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="common_files/navigation-1.1/tabsets.js"></script>
+<link href="common_files/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="common_files/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="common_files/viz-1.8.2/viz.js"></script>
+<link href="common_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="common_files/grViz-binding-1.0.11/grViz.js"></script>
 <meta name="ROBOTS" content="INDEX,FOLLOW"/>
 <link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
 <link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
@@ -847,8 +852,16 @@ y_b)
 \]</span></p>
 <p>他にどのような選択肢があるかは関係がないことが分かります。</p>
 <p>バニラ味のアイスクリームと塩バター風味のポップコーンの二択に、チョコ味のアイスクリームが加わることを考えます。IIAなので、バニラ味のアイスクリームと塩バター風味のポップコーンが選ばれる確率の比は、チョコ味のアイスクリームが選択肢にあるかないかで代わりません。バニラ味のアイスクリームと塩バター風味のポップコーンの需要が同じ割合で減ることになります。また、バニラ味のアイスクリームの味が落ちたとき、塩バター風味のポップコーンとチョコ味のアイスクリームの需要が同じように増えます（交差弾性値が一定）。</p>
+<div style="padding: 32px 0 0 48px;">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-0648a433e8a8f27ec633" style="width:384px;height:240px;"></div>
+<script type="application/json" data-for="htmlwidget-0648a433e8a8f27ec633">{"x":{"diagram":"digraph multinominal_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"multinominal logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a21\n  a00 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
 <p>このIIAという性質は、非直感的で、非現実的です。アイスクリームの種類が増えたとき、需要が大きく減るのは他のアイスクリームであって、ポップコーンでは無さそうですよね。種類が増えると選ぶ楽しみが増えて、ポップコーンの方が大きく影響を受けるのかも知れませんが、少なくとも需要の減少が一定と言うことは無さそうです。将来予測や反実仮想を考えるときに問題になりえます。</p>
 <p><ruby>入れ籠<rp>（</rp><rt>いれこ</rt><rp>）</rp></ruby>ロジットモデルは、このIIAの性質を緩和することができます。アイスクリームとポップコーンの選択のロジットモデルと、アイスクリームの中でバニラ味とチョコ味の選択のロジットモデルの二つを同時に推定することで、選択肢の増減の影響を変化させます。多項プロビットモデルを使っても解決するのですが、IIAが問題になるときは入れ籠ロジットがよく使われています。</p>
+<div style="padding: 32px 0 0 48px;">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-43e8a9b1061c0c078a39" style="width:384px;height:211.2px;"></div>
+<script type="application/json" data-for="htmlwidget-43e8a9b1061c0c078a39">{"x":{"diagram":"digraph nested_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"nested logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a02 [shape = plaintext, label = \"ice cream\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a02\n  a02 -> a21\n  a02 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
 <p>これも<code>mlogit</code>パッケージで推定できます。</p>
 </div>
 </div>
