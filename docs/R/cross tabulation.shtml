@@ -493,8 +493,8 @@ class="math inline">\(e_{ij}\)</span>置いて、高さが<span
 class="math inline">\((f_{ij} - e_{ij}) /
 \sqrt{e_{ij}}\)</span>、幅が<span
 class="math inline">\(\sqrt{e_{ij}}\)</span>です。χ二乗検定の検定統計量は、<span
-class="math inline">\(\sum_{ij} (f_{ij} - e_{ij}) /
-\sqrt{e_{ij}}\)</span>です。</p>
+class="math inline">\(\sum_{ij} (f_{ij} - e_{ij})^2 /
+e_{ij}\)</span>です。</p>
 </div>
 <div id="クロス表のプロット" class="section level2" number="2.2">
 <h2><span class="header-section-number">2.2</span>
