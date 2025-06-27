@@ -758,7 +758,7 @@ class="math inline">\(J-1\)</span>本の方程式を推定しますが、係数�
 <h2><span class="header-section-number">3.2</span> 混合ロジット（mixed
 logit）</h2>
 <p>線形部分が、選択時の状況（choice
-situation）を示す説明変数と選択（alternative）によって変わる係数の項と、選択（alternative）によって変わる説明変数と共通の係数の項で構成されるモデルを、混合ロジットと混乱を招く呼び名<a
+situation）を示す説明変数と選択（alternative）によって変わる係数の項と、選択によって変わる説明変数と共通の係数の項で構成されるモデルを、混合ロジットと混乱を招く呼び名<a
 href="#fn7" class="footnote-ref"
 id="fnref7"><sup>7</sup></a>で呼ぶときがあります。</p>
 <p><span class="math inline">\(y\)</span>が線形予測値、<span
@@ -787,7 +787,7 @@ class="math inline">\(1\)</span>なので、個体<span
 class="math inline">\(i\)</span>が実際に選択した選択肢を<span
 class="math inline">\(c_i\)</span>と置いて、<span
 class="math inline">\(\prod^n_{i=1} p_{i,c_i}\)</span>となります。</p>
-<p>以上に加えて、選択（alternative）によって変わる説明変数と選択（alternative）によって変わる係数の項が加えられることがあります。車と電車で目的地までの所要時間が変わる影響があるが、同じ時間でも電車の方がよりストレスになる場合などに使います<a
+<p>以上に加えて、選択によって変わる説明変数と選択によって変わる係数の項が加えられることがあります。車と電車で目的地までの所要時間が変わる影響があるが、同じ時間でも電車の方がよりストレスになる場合などに使います<a
 href="#fn8" class="footnote-ref"
 id="fnref8"><sup>8</sup></a>。このタイプの項の変数を<span
 class="math inline">\(w\)</span>、係数を<span
@@ -853,16 +853,58 @@ y_b)
 <p>他にどのような選択肢があるかは関係がないことが分かります。</p>
 <p>バニラ味のアイスクリームと塩バター風味のポップコーンの二択に、チョコ味のアイスクリームが加わることを考えます。IIAなので、バニラ味のアイスクリームと塩バター風味のポップコーンが選ばれる確率の比は、チョコ味のアイスクリームが選択肢にあるかないかで代わりません。バニラ味のアイスクリームと塩バター風味のポップコーンの需要が同じ割合で減ることになります。また、バニラ味のアイスクリームの味が落ちたとき、塩バター風味のポップコーンとチョコ味のアイスクリームの需要が同じように増えます（交差弾性値が一定）。</p>
 <div style="padding: 32px 0 0 48px;">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-ff1b480e188b30d785ed" style="width:384px;height:240px;"></div>
-<script type="application/json" data-for="htmlwidget-ff1b480e188b30d785ed">{"x":{"diagram":"digraph multinominal_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"multinominal logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a21\n  a00 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-fe895746e0e23a697e47" style="width:384px;height:240px;"></div>
+<script type="application/json" data-for="htmlwidget-fe895746e0e23a697e47">{"x":{"diagram":"digraph multinominal_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"multinominal logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a21\n  a00 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <p>このIIAという性質は、非直感的で、非現実的です。アイスクリームの種類が増えたとき、需要が大きく減るのは他のアイスクリームであって、ポップコーンでは無さそうですよね。種類が増えると選ぶ楽しみが増えて、ポップコーンの方が大きく影響を受けるのかも知れませんが、少なくとも需要の減少が一定と言うことは無さそうです。将来予測や反実仮想を考えるときに問題になりえます。</p>
-<p><ruby>入れ籠<rp>（</rp><rt>いれこ</rt><rp>）</rp></ruby>ロジットモデルは、このIIAの性質を緩和することができます。アイスクリームとポップコーンの選択のロジットモデルと、アイスクリームの中でバニラ味とチョコ味の選択のロジットモデルの二つを同時に推定することで、選択肢の増減の影響を変化させます。多項プロビットモデルを使っても解決するのですが、IIAが問題になるときは入れ籠ロジットがよく使われています。</p>
+<p><ruby>入れ籠<rp>（</rp><rt>いれこ</rt><rp>）</rp></ruby>ロジットモデルは、このIIAの性質を緩和することができます。アイスクリームとポップコーンの選択のロジットモデルと、アイスクリームの中でバニラ味とチョコ味の選択のロジットモデルの二つを同時に推定することで、選択肢の増減の影響を変化させます。</p>
 <div style="padding: 32px 0 0 48px;">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-3c77b16b21d03e64d6cd" style="width:384px;height:211.2px;"></div>
-<script type="application/json" data-for="htmlwidget-3c77b16b21d03e64d6cd">{"x":{"diagram":"digraph nested_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"nested logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a02 [shape = plaintext, label = \"ice cream\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a02\n  a02 -> a21\n  a02 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-7e56a3524fa8c248a076" style="width:384px;height:211.2px;"></div>
+<script type="application/json" data-for="htmlwidget-7e56a3524fa8c248a076">{"x":{"diagram":"digraph nested_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"nested logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a02 [shape = plaintext, label = \"ice cream\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a02\n  a02 -> a21\n  a02 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
-<p>これも<code>mlogit</code>パッケージで推定できます。</p>
+<p>具体的には、選択肢<span
+class="math inline">\(j\)</span>が選ばれる確率を、サブカテゴリー<span
+class="math inline">\(l\)</span>が選ばれたときに選択肢<span
+class="math inline">\(j\)</span>が選ばれる確率と、選択肢<span
+class="math inline">\(j\)</span>を含むサブカテゴリー<span
+class="math inline">\(l\)</span>が選ばれる確率の積で表し、尤度関数を構成して推定します。</p>
+<p>このとき、まず（効用を表す）線形部分<span
+class="math inline">\(V_j\)</span>を、選択肢に依存する<span
+class="math inline">\(Z_j\)</span>と、サブカテゴリーに依存する<span
+class="math inline">\(W_l\)</span>に分離します。</p>
+<p><span class="math display">\[
+V_j = Z_j + W_l
+\]</span></p>
+<p>次にinclusive valueもしくはinclusive
+utilityもしくはlog-sumと呼ばれる変数を考えます。これは、サブカテゴリー<span
+class="math inline">\(l\)</span>に含まれる選択肢の集合を<span
+class="math inline">\(B_l\)</span>と書き、</p>
+<p><span class="math display">\[
+\mathit{IV}_l = \log \sum_{k\ \in B_l} e^\frac{{V_k}}{\lambda_l}
+\]</span></p>
+<p>と定義されます。<span
+class="math inline">\(\lambda_l\)</span>はサブカテゴリー内の相関を表す変数です。</p>
+<p>このinclusive valueを使うと、選択肢<span
+class="math inline">\(j\)</span>が選ばれる確率を、<span
+class="math inline">\(G\)</span>をサブカテゴリーの数として、</p>
+<p><span class="math display">\[\begin{align}
+p_j &amp;= P(\{j|j \in B(l)\}) \cdot P(\{j \in B(l)\}) \\
+&amp;= \frac{\exp(\frac{Z_j}{\lambda_l})}{\sum_{k \in B_l}
+\exp(\frac{Z_k}{\lambda_l})} \cdot \frac{\exp(W_l + \lambda_l
+\mathit{IV}_l)}{ \sum^G_{g=1} \exp(W_g + \lambda_g \mathit{IV}_g) }
+\end{align}\]</span></p>
+<p>と書くことができます。これは、以下の累積分布関数を<span
+class="math inline">\(V_j\)</span>で微分して周辺分布を求めることで導出できます。</p>
+<p><span class="math display">\[
+\exp\bigg(-\sum^G_{g=1}\big(\sum_{k \in B_g}
+\exp(-\frac{V_k}{\lambda_g}) \big)^{\lambda_g} \bigg)
+\]</span></p>
+<p><span
+class="math inline">\(p_j\)</span>を表す式から、入れ籠ロジットモデルでは、多項ロジットモデルの係数の他、<span
+class="math inline">\(\mathit{IV}_j\)</span>の係数として<span
+class="math inline">\(\lambda_j\)</span>が得られることが分かります。なお、<span
+class="math inline">\(\lambda_l=1\)</span>のときは、ただの多項ロジットになります。</p>
+<p>これも<code>mlogit</code>パッケージで推定できます。多項プロビットモデルを使っても解決するのですが、IIAが問題になるときは入れ籠ロジットがよく使われています。</p>
 </div>
 </div>
 <div id="集計データのオッズに対する推定" class="section level1"
