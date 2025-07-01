@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rによる適合度のχ二乗検定</title>
+
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rによる適合度のχ二乗検定</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>何かと使われるχ²検定の理屈を抑えておきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#χ二乗分布の導出" id="toc-χ二乗分布の導出"><span
+class="toc-section-number">1</span> χ二乗分布の導出</a>
+<ul>
+<li><a href="#自由度1" id="toc-自由度1"><span
+class="toc-section-number">1.1</span> 自由度<span
+class="math inline">\(1\)</span></a></li>
+<li><a href="#自由度n" id="toc-自由度n"><span
+class="toc-section-number">1.2</span> 自由度<span
+class="math inline">\(n\)</span></a></li>
+<li><a href="#ガンマ分布のモーメント母関数と再生性"
+id="toc-ガンマ分布のモーメント母関数と再生性"><span
+class="toc-section-number">1.3</span>
+ガンマ分布のモーメント母関数と再生性</a></li>
+</ul></li>
+<li><a href="#行列式の補題" id="toc-行列式の補題"><span
+class="toc-section-number">2</span> 行列式の補題</a></li>
+<li><a href="#シャーマンモリソンの公式"
+id="toc-シャーマンモリソンの公式"><span
+class="toc-section-number">3</span> シャーマン・モリソンの公式</a></li>
+<li><a href="#適合度検定の統計量がχ二乗分布に従うことの証明"
+id="toc-適合度検定の統計量がχ二乗分布に従うことの証明"><span
+class="toc-section-number">4</span>
+適合度検定の統計量がχ二乗分布に従うことの証明</a></li>
+<li><a href="#rによる適合度検定" id="toc-rによる適合度検定"><span
+class="toc-section-number">5</span> Rによる適合度検定</a></li>
+</ul>
+</div>
+
+<p>適合度のχ二乗検定についての数理的な理屈を確認した上で、Rによる実践方法を確認しましょう。</p>
+<div id="χ二乗分布の導出" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> χ二乗分布の導出</h1>
+<p>自由度と同じ数の標準正規分布に従う確率変数の二乗和の分布がχ二乗分布です。</p>
+<div id="自由度1" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> 自由度<span
+class="math inline">\(1\)</span></h2>
+<p>標準正規分布に従う確率変数<span
+class="math inline">\(x\)</span>が<span class="math inline">\((-\infty,
+\sqrt{z})\)</span>に入る確率は、</p>
+<p><span class="math display">\[
+\int_{-\infty}^{\sqrt{z}} f(x) dx = \int_{-\infty}^{\sqrt{z}}
+\frac{1}{\sqrt{2\pi}}\exp\big(-\frac{x^2}{2}\big) dx
+\]</span></p>
+<p>となります。</p>
+<p><span class="math inline">\(y = x^2\)</span>として、<span
+class="math inline">\(y\)</span>が非負なので2点<span
+class="math inline">\(-x\)</span>と<span
+class="math inline">\(x\)</span>が1点<span
+class="math inline">\(y\)</span>に写されることに注意し、<span
+class="math inline">\(x\)</span>と<span
+class="math inline">\(y\)</span>を変数変換をします。</p>
+<p><span class="math display">\[
+\frac{dy}{dx} = 2x = 2\sqrt{y}
+\]</span></p>
+<p><span class="math display">\[
+\int_0^{z} f(y) dy = \int_0^{z}
+2\frac{1}{\sqrt{2\pi}}\exp\big(-\frac{y}{2}\big)\frac{1}{2\sqrt{y}} dy
+\]</span></p>
+<p><span class="math inline">\(\Gamma(1/2) =
+\sqrt{\pi}\)</span>に注意して整理すると、</p>
+<p><span class="math display">\[
+\int_0^{z} f(y) dy = \int_0^{z} \frac{1}{2^\frac{1}{2} \Gamma(1/2)}
+y^{-\frac{1}{2}} \exp\big(-\frac{y}{2}\big) dy
+\]</span></p>
+<p>と自由度<span
+class="math inline">\(1\)</span>のχ²分布に従う確率変数が、<span
+class="math inline">\([0, z)\)</span>の間をとる確率になります。</p>
+</div>
+<div id="自由度n" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> 自由度<span
+class="math inline">\(n\)</span></h2>
+<p>自由度<span class="math inline">\(1\)</span>のχ²分布は<span
+class="math inline">\(k=1/2\)</span>, <span
+class="math inline">\(\theta=2\)</span>のガンマ関数で、後述するガンマ関数の再生性から直ちに自由度<span
+class="math inline">\(n\)</span>のχ²分布に従う確率変数の形状を言えますが、自由度<span
+class="math inline">\(2\)</span>以上のχ二乗分布について畳み込み計算で示します。</p>
+<p><span class="math display">\[
+y_{n-1} = x_1^2 + \cdots + x_{n-1}^2
+\]</span></p>
+<p>が、χ二乗分布に従うとします。<span class="math inline">\(x_i\
+(i\in[1, n-1])\)</span>は、標準正規分布に従う確率変数です。このとき<span
+class="math inline">\(y_{n-1} + y_1\)</span>の確率密度関数は、</p>
+<p><span class="math display">\[\begin{align}
+f_n(y) &amp;= \int_0^y f_{n-1}(t) f_1(x-t) dt \\
+&amp;= \frac{\exp\big( -\frac{y}{2} \big)}{2^\frac{n}{2}
+\Gamma\big(\frac{n-1}{2} \big)\sqrt{\pi}} \int^y_0 t^\frac{n-3}{2}
+(y-t)^{-\frac{1}{2}}dt
+\end{align}\]</span></p>
+<p>となり、<span
+class="math inline">\(u=t/x\)</span>で変数変換をすると</p>
+<p><span class="math display">\[\begin{align}
+&amp;= \frac{\exp\big( -\frac{y}{2} \big) y^{\frac{n-3}{2} - \frac{1}{2}
++ 1} }{2^\frac{n}{2} \Gamma\big(\frac{n-1}{2} \big)
+\Gamma\big(\frac{1}{2} \big)} \int^1_0
+u^\frac{n-3}{2}(1-u)^{-\frac{1}{2}}du \\
+&amp;= \frac{\exp\big( -\frac{y}{2} \big) y^{\frac{n-3}{2} - \frac{1}{2}
++ 1} }{2^\frac{n}{2} \Gamma\big(\frac{n-1}{2} \big)
+\Gamma\big(\frac{1}{2} \big)} B \bigg( \frac{n-1}{2}, \frac{1}{2} \bigg)
+\\
+&amp;= \frac{\exp\big( -\frac{y}{2} \big) y^{\frac{n-3}{2} - \frac{1}{2}
++ 1} }{2^\frac{n}{2} \Gamma\big(\frac{n-1}{2} \big)
+\Gamma\big(\frac{1}{2} \big)}
+\frac{\Gamma\bigg(\frac{n-1}{2}\bigg)\Gamma\bigg(\frac{1}{2}\bigg)}{\Gamma\bigg(\frac{n}{2}\bigg)}
+\\
+&amp;= \frac{1}{2^\frac{n}{2} \Gamma\big( \frac{n}{2} \big)} \exp\big(
+-\frac{y}{2} \big) y^{\frac{n}{2} - 1}
+\end{align}\]</span></p>
+<p><span class="math inline">\(k=n/2\)</span>, <span
+class="math inline">\(\theta=2\)</span>のガンマ分布になりました。</p>
+</div>
+<div id="ガンマ分布のモーメント母関数と再生性" class="section level2"
+number="1.3">
+<h2><span class="header-section-number">1.3</span>
+ガンマ分布のモーメント母関数と再生性</h2>
+<p>中心極限定理を使う場合、モーメント母関数もしくは特性関数の性質を認めているわけで、そちらから計算した方が楽です。</p>
+<p><span class="math display">\[\begin{align}
+M_X(t) &amp;= \int \exp(tx) \frac{x^{k-1}
+\exp\big(-\frac{x}{\theta}\big)}{\Gamma(k)\theta^k} dx \\
+&amp;= (1-\theta t)^{-k} \int \frac{x^{k-1}\exp\big(-\frac{1-\theta
+t}{\theta} \big)}{\Gamma(k)\big(\frac{\theta}{1-\theta t}\big)^k} dx
+\end{align}\]</span></p>
+<p>積分の内側の<span class="math inline">\(\theta/(1-\theta
+t)\)</span>を<span
+class="math inline">\(z\)</span>と置くと、ガンマ関数の確率密度関数になり、確率密度関数の定義から積分の値が<span
+class="math inline">\(1\)</span>になることが分かります。</p>
+<p>よってガンマ分布のモーメント母関数は、</p>
+<p><span class="math display">\[
+M_X(t) = (1-\theta t)^{-k}
+\]</span></p>
+<p>となります。</p>
+<p>よってパラメーターが<span
+class="math inline">\(\theta\)</span>と<span
+class="math inline">\(k=k_1\)</span>、パラメーターが<span
+class="math inline">\(\theta\)</span>と<span
+class="math inline">\(k=k_2\)</span>のガンマ分布に従う2つの確率変数の和が従う確率分布のモーメント母関数は、</p>
+<p><span class="math display">\[
+M_X^{k=k_1}(t)M_X^{k=k_2}(t) = (1-\theta t)^{-k_1-k_2} = M_X^{k=k_1+k_2}
+\]</span></p>
+<p>となり、パラメーターが<span
+class="math inline">\(\theta\)</span>と<span
+class="math inline">\(k1+k2\)</span>のガンマ分布のモーメント母関数になるので、モーメント母関数の性質から<span
+class="math inline">\(\theta\)</span>が同一であれば再生性があることが分かります。</p>
+</div>
+</div>
+<div id="行列式の補題" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 行列式の補題</h1>
+<p>恒等行列<span class="math inline">\(I\)</span>と、正則行列<span
+class="math inline">\(A\in\mathbb{R}^{n \times
+n}\)</span>と、列ベクトル<span class="math inline">\(\mu, \mu&#39;, \nu
+\in \mathbb{R}^{n}\)</span>を考えます。</p>
+<p><span class="math display">\[\begin{align}
+&amp;\det(I + \mu&#39;{}^t\!\nu) \\
+&amp;= \det\begin{pmatrix}
+I + \mu&#39;{}^t\!\nu &amp; \mu&#39; \\
+0 &amp; 1
+\end{pmatrix} \\
+&amp;= \det\begin{pmatrix}
+I &amp; 0 \\
+{}^t\!\nu &amp; 1
+\end{pmatrix}\det\begin{pmatrix}
+I + \mu&#39;{}^t\!\nu &amp; \mu&#39; \\
+0 &amp; 1
+\end{pmatrix}\det\begin{pmatrix}
+I &amp; 0 \\
+-{}^t\!\nu &amp; 1
+\end{pmatrix} \\
+&amp;= \det\begin{pmatrix}
+I &amp; u \\
+0 &amp; 1+{}^t\!\nu\mu&#39;
+\end{pmatrix} \\
+&amp;= (1 + {}^t\!\nu\mu&#39;) \det(I)
+\end{align}\]</span></p>
+<p>さらに、</p>
+<p><span class="math display">\[\begin{align}
+&amp;\det(A + \mu&#39;{}^t\!\nu) \\
+&amp;= \det(A(I + A^{-1}\mu&#39;{}^t\!\nu)) \\
+&amp;= \det(A)\det(I + A^{-1}\mu&#39;{}^t\!\nu)
+\end{align}\]</span></p>
+<p><span class="math inline">\(\mu&#39; =
+A\mu\)</span>として補題を適応すると</p>
+<p><span class="math display">\[
+\det(A + \mu{}^t\!\nu) = \det(A)(1 + {}^t\!\nu\mu)
+\]</span></p>
+</div>
+<div id="シャーマンモリソンの公式" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+シャーマン・モリソンの公式</h1>
+<p>初見だと使い道が無さそうな気もするのですが、BFGS法の導出に使われていたりと意外に有能なのがSherman–Morrison
+formulaです。具体的には行列<span class="math inline">\(A\in\mathbb{R}^{n
+\times n}\)</span>と、列ベクトル<span class="math inline">\(\mu, \nu \in
+\mathbb{R}^{n}\)</span>に対して、</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(A+\mu{}^t\!\nu\)</span>が正則 ⇔ <span
+class="math inline">\(1+{}^t\!\nu A^{-1}\mu \ne 0\)</span></li>
+<li>(1)のとき、<span class="math inline">\((A + \mu{}^t\!\nu)^{-1} =
+A^{-1} - \frac{A^{-1}\mu{}^t\!\nu A^{-1}}{1+{}^t\!\nu
+A^{-1}\mu}\)</span></li>
+</ol>
+<p>の二つを主張しています。</p>
+<p>(1)の<span class="math inline">\(1 + {}^t\!\nu A^{-1}\mu \ne
+0\)</span> ⇒ <span class="math inline">\(A +
+\mu{}^t\!\nu\)</span>が正則は、(2)の右辺に<span class="math inline">\(A
++ \mu{}^t\!\nu\)</span>を乗じると、</p>
+<p><span class="math display">\[\begin{align}
+&amp;(A + \mu{}^t\!\nu)(A^{-1} - \frac{A^{-1}\mu{}^t\!\nu
+A^{-1}}{1+{}^t\!\nu A^{-1}\mu}) \\
+&amp;= (A^{-1} - \frac{A^{-1}\mu{}^t\!\nu A^{-1}}{1+{}^t\!\nu
+A^{-1}\mu})(A + \mu{}^t\!\nu) \\
+&amp;= AA^{-1} + \mu{}^t\!\nu A^{-1} - \frac{AA^{-1}\mu{}^t\!\nu A^{-1}
++ \mu{}^t\!\nu A^{-1}\mu{}^t\!\nu A^{-1}}{1 + {}^t\!\nu A^{-1}\mu} \\
+&amp;= I + \mu{}^t\!\nu A^{-1} - \frac{\mu(1 + {}^t\!\nu
+A^{-1}\mu){}^t\!\nu A^{-1}}{1 + {}^t\!\nu A^{-1}\mu} \\
+&amp;= I + \mu{}^t\!\nu A^{-1} - \mu{}^t\!\nu A^{-1} \\
+&amp;= I
+\end{align}\]</span></p>
+<p>と、<span class="math inline">\(A^{-1} - \frac{A^{-1}\mu{}^t\!\nu
+A^{-1}}{1+{}^t\!\nu A^{-1}\mu}\)</span>が<span class="math inline">\(A +
+\mu{}^t\!\nu\)</span>の逆行列となることから分かります。逆行列があれば正則です。同時に(2)が示されます。</p>
+<p><span class="math inline">\(1 + {}^t\!\nu A^{-1}\mu =
+0\)</span>だとすると、</p>
+<p><span class="math display">\[\begin{align}
+&amp;\det(A + \mu{}^t\!\nu) \\
+&amp;= \det(A(I + (A^{-1}\mu){}^t\!\nu)) \\
+&amp;= \det(A)(1 + {}^t\!\nu A^{-1}\mu) \\
+&amp;= 0
+\end{align}\]</span></p>
+<p>となり、<span class="math inline">\(A +
+\mu{}^t\!\nu\)</span>は逆行列が無いので非正則となります。</p>
+<p><span
+class="math inline">\(k\)</span>種類の因子にそれぞれ観測値がある適合度の検定を考えます。<span
+class="math inline">\(X_i\)</span>を多項分布に従う観測値のベクトルで、ある要素だけが<span
+class="math inline">\(1\)</span>で、他は<span
+class="math inline">\(0\)</span>となります。集計表に記入された生起数は<span
+class="math inline">\(\sum_{i=1}^n X_i\)</span>です。</p>
+</div>
+<div id="適合度検定の統計量がχ二乗分布に従うことの証明"
+class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
+適合度検定の統計量がχ二乗分布に従うことの証明</h1>
+<p>証明方法は多くある<a href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>のですが、シャーマン・モリソンの公式を使ったものを確認しましょう。</p>
+<p>帰無仮説が示すその期待値<span
+class="math inline">\(E[X_i]\)</span>を<span
+class="math inline">\(p\)</span>とおきます。<span
+class="math inline">\(p\)</span>はベクトルで、その要素を<span
+class="math inline">\(p_1, p_2, \cdots,
+p_k\)</span>と書きます。中心極限定理から</p>
+<p><span class="math display">\[
+\sqrt{n}(\bar{X}_n - p) \xrightarrow[n \to \infty]{\mathrm{d}}
+\mathcal{N}_k(0, \Sigma)
+\]</span></p>
+<p>となり、k次元の正規分布で近似できることが分かります。ここで<span
+class="math inline">\(\bar{X}_n\)</span>は観測数<span
+class="math inline">\(n\)</span>の観測値の平均ベクトルであり、<span
+class="math inline">\(\Sigma\)</span>は分散共分散行列です。多項分布ですから、分散が<span
+class="math inline">\(p_i(1-p_i)\)</span>で、共分散は<span
+class="math inline">\(-p_ip_j\ (i \ne j)\)</span>となります。また、<span
+class="math inline">\(\sum_{i=1}^k p_i=1\)</span>なので、<span
+class="math inline">\(\Sigma\)</span>の各行と各列は線形従属しており、逆行列をつくれません。</p>
+<p>観測値から<span
+class="math inline">\(k\)</span>番目の要素を除外したベクトルを<span
+class="math inline">\(X_i^*\)</span>，期待値から<span
+class="math inline">\(k\)</span>番目の要素を除外したベクトルを<span
+class="math inline">\(p^*\)</span>と置きます。</p>
+<p><span class="math display">\[
+X_i^* = \begin{pmatrix}
+X_{i1} \\
+X_{i2} \\
+\vdots \\
+X_{ik-1}
+\end{pmatrix},\qquad p^* = \begin{pmatrix}
+p_1 \\
+p_2 \\
+\vdots \\
+p_{k-1}
+\end{pmatrix}
+\]</span></p>
+<p><span
+class="math inline">\(X_i^*\)</span>に対応する分散共分散行列は、</p>
+<p><span class="math display">\[\begin{align}
+\Sigma^* &amp;= \begin{pmatrix}
+p_1(1-p_1) &amp; -p_1p_2 &amp; \cdots &amp; -p_1p_{k-1} \\
+-p_1p_2 &amp; p_2(1-p_2) &amp; \cdots &amp; -p_2p_{k-1} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+-p_1p_{k-1} &amp; -p_2p_{k-1} &amp; \cdots &amp; p_{k-1}(1-p_{k-1})
+\end{pmatrix} \\
+&amp;= \begin{pmatrix}
+p_1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; p_2 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; p_{k-1}
+\end{pmatrix} - \begin{pmatrix}
+p_1p_1 &amp; p_1p_2 &amp; \cdots &amp; p_1p_{k-1} \\
+p_1p_2 &amp; p_2p_2 &amp; \cdots &amp; p_2p_{k-1} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+p_1p_{k-1} &amp; p_2p_{k-1} &amp; \cdots &amp; p_{k-1}p_{k-1}
+\end{pmatrix}\\
+&amp;= \begin{pmatrix}
+p_1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; p_2 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; p_{k-1}
+\end{pmatrix} - \begin{pmatrix}
+p_1 \\
+p_2 \\
+\vdots \\
+p_{k-1}
+\end{pmatrix}\begin{pmatrix}
+p_1 &amp; p_2 &amp; \cdots &amp; p_{k-1}
+\end{pmatrix} \\
+&amp;= \mathrm{diag}(p) - p^*{}^t\!p^*
+\end{align}\]</span></p>
+<p>となります。</p>
+<p><span class="math display">\[
+1 - {}^t\!p^* \mathrm{diag}(p^*)^{-1} p = \sum_{i=1}^k p_i -
+\sum_{i=1}^{k-1} p_i = p_k
+\]</span></p>
+<p><span class="math display">\[
+\mathrm{diag}(p^*)^{-1} p = \begin{pmatrix}
+1 \\
+1 \\
+\vdots \\
+1
+\end{pmatrix}
+\]</span></p>
+<p>上の二つの式に注意して、<span class="math inline">\((\mathrm{diag}(p)
+- p^*{}^t\!p^*)^{-1}\)</span>に、<span
+class="math inline">\(A=\mathrm{diag}(p^*)\)</span>, <span
+class="math inline">\(\mu=\nu=p^*\)</span>とおいて、前節で導出したSherman–Morrison
+formulaを用いると、</p>
+<p><span class="math display">\[
+(\Sigma^*)^{-1} = \begin{pmatrix}
+1/p_1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; 1/p_2 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; 1/p_{k-1}
+\end{pmatrix} + \frac{1}{p_k}\begin{pmatrix}
+1 &amp; 1 &amp; \cdots &amp; 1 \\
+1 &amp; 1 &amp; \cdots &amp; 1 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+1 &amp; 1 &amp; \cdots &amp; 1
+\end{pmatrix}
+\]</span></p>
+<p>が得られます。</p>
+<p>ここからχ二乗統計量が何を意味するのか調べていきましょう。集計表に記入される因子<span
+class="math inline">\(i\)</span>の観測値は<span
+class="math inline">\(n\bar{X}_i\)</span>、その期待値は<span
+class="math inline">\(np_i\)</span>になりますが、そのχ二乗統計量を変形します。</p>
+<p><span class="math display">\[\begin{align}
+\chi^2 &amp;= \sum_{i=1}^k \frac{(n\bar{X}_i - np_i)^2}{np_i} \\
+&amp;= n \sum_{i=1}^k \frac{(\bar{X}_i - p_i)^2}{p_i} \\
+&amp;= n \bigg[ \sum_{i=1}^{k-1} \frac{(\bar{X}_i - p_i)^2}{p_i}
++  \frac{(\bar{X}_k - p_k)^2}{p_k} \bigg] \\
+&amp;= n \bigg[ \sum_{i=1}^{k-1} \frac{(\bar{X}_i - p_i)^2}{p_i}
++  \frac{(\sum_{i=1}^{k-1}(\bar{X}_i - p_i))^2}{p_k} \bigg]
+\end{align}\]</span></p>
+<p>最後の変形は<span class="math inline">\(\sum_{i=1}^{k}\bar{X}_i =
+1\)</span>, <span class="math inline">\(\sum_{i=1}^{k}p_i =
+1\)</span>から、<span class="math inline">\(\sum_{i=1}^{k}(\bar{X}_i -
+p_i)=0\)</span>となることを使いました。</p>
+<p>行列を使って書き直します。</p>
+<p><span class="math display">\[\begin{align}
+\chi^2 &amp;= n\ {}^t\!(\bar{X}^* - p^*) (\Sigma^*)^{-1} (\bar{X}^* -
+p^*)
+\end{align}\]</span></p>
+<p>二次形式になりました。</p>
+<p>中心極限定理から、上の式の平方根である<span
+class="math inline">\(\sqrt{n} (\Sigma^*)^{-1/2} (\bar{X}^* -
+p^*)\)</span>は<span class="math inline">\(\mathcal{N}_{k-1}(0,
+I_{k-1})\)</span>に分布収束します。よって、</p>
+<p><span class="math display">\[\begin{align}
+\chi^2 \xrightarrow[n \to \infty]{\mathrm{d}} {}^t\!\mathcal{N}_{k-1}(0,
+I_{k-1}) \mathcal{N}_{k-1}(0, I_{k-1})
+\end{align}\]</span></p>
+<p>となり、χ二乗統計量は<span
+class="math inline">\(k-1\)</span>次元の標準正規分布の二乗、つまり自由度<span
+class="math inline">\(k-1\)</span>のχ二乗分布に収束することが分かります。これで適合度のχ二乗検定を行う前提を確認できました。</p>
+</div>
+<div id="rによる適合度検定" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Rによる適合度検定</h1>
+<p>適合度検定（goodness-of-fit）を試します。</p>
+<p>まずは教科書的に統計量から計算してみます。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># 練習用にデータセットを乱数から生成</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">522</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">25</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>(X <span class="ot">&lt;-</span> <span class="fu">rmultinom</span>(n, <span class="dv">1</span>, <span class="at">prob =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.4</span>)))</span></code></pre></div>
+<pre><code>     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12]
+[1,]    0    0    0    0    0    1    0    0    0     0     0     0
+[2,]    0    0    0    0    0    0    0    1    0     1     1     0
+[3,]    1    1    1    1    1    0    1    0    1     0     0     1
+     [,13] [,14] [,15] [,16] [,17] [,18] [,19] [,20] [,21] [,22]
+[1,]     0     1     0     0     0     0     0     0     0     0
+[2,]     1     0     1     0     1     1     1     1     0     1
+[3,]     0     0     0     1     0     0     0     0     1     0
+     [,23] [,24] [,25]
+[1,]     0     0     0
+[2,]     0     1     1
+[3,]     1     0     0</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># 合計する</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>(sX <span class="ot">&lt;-</span> <span class="fu">apply</span>(X, <span class="dv">1</span>, sum))</span></code></pre></div>
+<pre><code>[1]  2 12 11</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># 自由度を計算</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">length</span>(sX)</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># 帰無仮説を設定</span></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>k</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># χ二乗統計量を計算</span></span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>q <span class="ot">&lt;-</span> <span class="fu">sum</span>((sX <span class="sc">-</span> n<span class="sc">*</span>p)<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(n<span class="sc">*</span>p))</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># p値を計算</span></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="fu">pchisq</span>(q, k<span class="dv">-1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>[1] 0.02625234</code></pre>
+<p>次により実践的に、ビルトイン関数を使います。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># χ二乗検定をかける(帰無仮説はp = c(1/3, 1/3, 1/3))</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">chisq.test</span>(sX)</span></code></pre></div>
+<pre><code>
+    Chi-squared test for given probabilities
+
+data:  sX
+X-squared = 7.28, df = 2, p-value = 0.02625</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># χ二乗検定をかける(帰無仮説はp = c(0.1, 0.5, 0.4))</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">chisq.test</span>(sX, <span class="at">p =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.5</span>, <span class="fl">0.4</span>))</span></code></pre></div>
+<pre><code>Warning in chisq.test(sX, p = c(0.1, 0.5, 0.4)):
+カイ自乗近似は不正確かもしれません</code></pre>
+<pre><code>
+    Chi-squared test for given probabilities
+
+data:  sX
+X-squared = 0.22, df = 2, p-value = 0.8958</code></pre>
+<p>簡単ですね。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p><a
+href="https://doi.org/10.48550/arXiv.1808.09171">Benhamou and Melot
+(2018)</a>に7種類紹介されています。<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

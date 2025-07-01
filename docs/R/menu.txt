@@ -56,6 +56,7 @@ div.right h2.menu {
     <dt><a href="logit.shtml">みんな大好きロジットモデル</a></dt>
     <dt><a href="countdata.shtml">カチカチ数えるカウントデータの推定</a></dt>
     <dt><a href="cauchy_dist.shtml">コーシー分布とのつきあい方</a></dt>
+    <dt><a href="chi-squared-test.shtml">Rによる適合度のχ二乗検定</a></dt>
     <dt><a href="cross%20tabulation.shtml">Rでチマチマとクロス表の検定と信頼区間の計算</a></dt>
 </dl>
 
