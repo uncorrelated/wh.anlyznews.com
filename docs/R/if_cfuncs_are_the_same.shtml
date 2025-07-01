@@ -13,7 +13,7 @@
 
 <title>特性関数が同じならば、確率密度関数も同じ</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -407,8 +407,9 @@ b}{2}\big)\bigg) \quad (a \le b,\ c \ge 0)
 テント関数の特性関数</h1>
 <p><span class="math inline">\(U,V \sim U(0, a)\)</span>のとき，<span
 class="math inline">\(U-V\)</span>の確率密度関数は<span
-class="math inline">\(T_{-a, a, 1/a}\)</span>となる．</p>
-<p><span class="math inline">\(U-V\)</span>の累積分布関数を考える．</p>
+class="math inline">\(T_{-a, a, 1/a}\)</span>となります．</p>
+<p><span
+class="math inline">\(U-V\)</span>の累積分布関数を考えます．</p>
 <p><span class="math display">\[
 \begin{align*}
     F(t) &amp;= P(U-V \le t) \\
@@ -462,7 +463,7 @@ F&#39;(t) &amp;= \begin{cases}
 \end{align*}
 \]</span></p>
 <p><span class="math inline">\(T_{-a,a,1/a}\)</span>は<span
-class="math inline">\(U-V\)</span>と同値であるため，特性関数も同じである．
+class="math inline">\(U-V\)</span>と同値であるため，特性関数も同じです．
 <span class="math inline">\(\exp(iaz) = \cos(az) +
 i\sin(az)\)</span>に注意して，</p>
 <p><span class="math display">\[
@@ -628,7 +629,8 @@ number="6">
 class="math inline">\(\varphi_X, \varphi_Y\)</span>とするとき，<span
 class="math inline">\(\varphi_X(z) = \varphi_Y(z) \quad \forall z \in
 \mathbb{R}\)</span>ならば，<span class="math inline">\(X\)</span>と<span
-class="math inline">\(Y\)</span>の分布は一致する． なぜならば</p>
+class="math inline">\(Y\)</span>の分布は一致します．</p>
+<p>なぜならば</p>
 <p><span class="math display">\[
 \begin{align*}
     E\big[ T_{a,b,c}(X) \big] &amp;= E\big[ T_{a,b,c}(Y) \big] \\
@@ -641,10 +643,10 @@ class="math inline">\(Y\)</span>の分布は一致する． なぜならば</p>
 <p><span class="math display">\[
 P(a \lt X \lt b) = P(a \lt X \lt b)
 \]</span></p>
-<p>となる．<span class="math inline">\(a\)</span>と<span
+<p>となります．<span class="math inline">\(a\)</span>と<span
 class="math inline">\(b\)</span>は任意なので、<span
 class="math inline">\(X\)</span>と<span
-class="math inline">\(Y\)</span>の分布は一致する．</p>
+class="math inline">\(Y\)</span>の分布は一致します．</p>
 </div>
 
 </div>
