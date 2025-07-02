@@ -533,7 +533,7 @@ document.getElementsByTagName('head')[0].appendChild(style);
 <section data-background='url(revealjs_cover.png)' data-background-size='cover' data-background-repeat='no-repeat'>
     <h1 class="title">R Markdownで作るベタなプレゼン資料</h1>
     <h2 class="author">zombie, uncorrelated</h2>
-    <h3 class="date">2025/06/03</h3>
+    <h3 class="date">2025/07/06</h3>
 </section>
 
 <section>
@@ -1160,6 +1160,18 @@ warning=FALSE, message=FALSE}</td>
 </tbody>
 </table>
 </section>
+<section id="出力の一行あたりの文字数" class="slide level2">
+<h2>出力の一行あたりの文字数</h2>
+<p>RとHTMLで折り返し位置が合わないときは、Rの方で調整できる。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>txt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;This is a pen.&quot;</span>, <span class="st">&quot;This is an apple.&quot;</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(txt)</span></code></pre></div>
+<pre><code>[1] &quot;This is a pen.&quot;    &quot;This is an apple.&quot;</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1行13文字にする</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">width=</span><span class="dv">13</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(txt)</span></code></pre></div>
+<pre><code>[1] &quot;This is a pen.&quot;   
+[2] &quot;This is an apple.&quot;</code></pre>
+</section>
 <section id="r-markdown記法のコード表示問題①"
 class="slide level2 smaller">
 <h2 class="smaller">R Markdown記法のコード表示問題①</h2>
@@ -1215,19 +1227,19 @@ x[3]` | `r y[3]` | `r z[3]` |
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">0.97958</td>
-<td style="text-align: center;">-0.02136</td>
-<td style="text-align: center;">0.74908</td>
+<td style="text-align: center;">0.02457</td>
+<td style="text-align: center;">0.63151</td>
+<td style="text-align: center;">0.0767</td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">0.53461</td>
-<td style="text-align: center;">-1.43299</td>
-<td style="text-align: center;">0.97419</td>
+<td style="text-align: center;">0.12553</td>
+<td style="text-align: center;">0.24736</td>
+<td style="text-align: center;">0.42526</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">0.74355</td>
-<td style="text-align: center;">2.12452</td>
-<td style="text-align: center;">0.48554</td>
+<td style="text-align: center;">0.94442</td>
+<td style="text-align: center;">1.14992</td>
+<td style="text-align: center;">0.84818</td>
 </tr>
 </tbody>
 </table>
@@ -1253,21 +1265,21 @@ tr {
 <h2>表の作成 データフレームを表示</h2>
 <p>データフレームや行列を表示すると見栄えが悪い。 code
 chunkのオプションにresult=“asis”かcomment=““が無いと行頭に##をつけてくる。</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df01, <span class="dv">8</span>)</span></code></pre></div>
-<pre><code>          y       x         z
-1 -0.021358 0.97958 0.7490828
-2 -1.432986 0.53461 0.9741856
-3  2.124517 0.74355 0.4855368
-4  0.991986 0.42325 0.4396802
-5  0.463185 0.64565 0.5638545
-6  2.277489 0.48074 0.0810543
-7  0.314642 0.05991 0.4409182
-8  2.218763 0.46857 0.0054586</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df01, <span class="dv">8</span>)</span></code></pre></div>
+<pre><code>         y        x          z
+1  0.63151 0.024573 0.07669633
+2  0.24736 0.125527 0.42526402
+3  1.14992 0.944417 0.84817609
+4  0.17707 0.479637 0.60167426
+5  1.40880 0.759737 0.41544334
+6 -0.24521 0.378687 0.89865285
+7  2.37847 0.629138 0.00016118
+8  0.21904 0.341802 0.49520883</code></pre>
 </section>
 <section id="表の作成-knitrkableで表示" class="slide level2">
 <h2>表の作成 knitr::kableで表示</h2>
 <p>データフレームをパイプ表に変換してくれる。</p>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(df01, <span class="dv">4</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(df01, <span class="dv">4</span>))</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1278,32 +1290,32 @@ chunkのオプションにresult=“asis”かcomment=““が無いと行頭�
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">-0.02136</td>
-<td style="text-align: right;">0.97958</td>
-<td style="text-align: right;">0.74908</td>
+<td style="text-align: right;">0.63151</td>
+<td style="text-align: right;">0.02457</td>
+<td style="text-align: right;">0.07670</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">-1.43299</td>
-<td style="text-align: right;">0.53461</td>
-<td style="text-align: right;">0.97419</td>
+<td style="text-align: right;">0.24736</td>
+<td style="text-align: right;">0.12553</td>
+<td style="text-align: right;">0.42526</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">2.12452</td>
-<td style="text-align: right;">0.74355</td>
-<td style="text-align: right;">0.48554</td>
+<td style="text-align: right;">1.14992</td>
+<td style="text-align: right;">0.94442</td>
+<td style="text-align: right;">0.84818</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">0.99199</td>
-<td style="text-align: right;">0.42325</td>
-<td style="text-align: right;">0.43968</td>
+<td style="text-align: right;">0.17707</td>
+<td style="text-align: right;">0.47964</td>
+<td style="text-align: right;">0.60167</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="表の作成-matrixを表示" class="slide level2">
 <h2>表の作成 matrixを表示</h2>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">23</span>, <span class="dv">19</span>, <span class="dv">7</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">dimnames=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))), </span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">align=</span><span class="fu">c</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>), <span class="at">caption=</span><span class="st">&quot;2×2表&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">23</span>, <span class="dv">19</span>, <span class="dv">7</span>), <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">dimnames=</span><span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))), </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">align=</span><span class="fu">c</span>(<span class="st">&quot;r&quot;</span>, <span class="st">&quot;r&quot;</span>), <span class="at">caption=</span><span class="st">&quot;2×2表&quot;</span>)</span></code></pre></div>
 <table>
 <caption>2×2表</caption>
 <thead>
@@ -1331,7 +1343,7 @@ chunkのオプションにresult=“asis”かcomment=““が無いと行頭�
 <h2 class="smaller">表の作成 DT::datatableで表示</h2>
 <p>なぜかバージョン0.9では動かないので、コードだけ示す。</p>
 <p>高機能だが狭い。細かい調整は困難。</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(df01, <span class="at">options=</span><span class="fu">list</span>(<span class="at">pageLength=</span><span class="dv">3</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(df01, <span class="at">options=</span><span class="fu">list</span>(<span class="at">pageLength=</span><span class="dv">3</span>))</span></code></pre></div>
 </section></section>
 <section>
 <section id="推定結果の表示" class="title-slide slide level1">
@@ -1351,9 +1363,9 @@ chunkのオプションにresult=“asis”かcomment=““が無いと行頭�
 <li>code
 chunkのオプションに<code>results="asis", warning=FALSE, message=FALSE</code>を忘れると困った表示になる</li>
 </ul>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>r_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data=</span>df01)</span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stargazer, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stargazer</span>(r_lm, <span class="at">type=</span><span class="st">&quot;html&quot;</span>, <span class="at">out.header=</span><span class="cn">FALSE</span>, <span class="at">suppress.errors=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>r_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data=</span>df01)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stargazer, <span class="at">quietly =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">stargazer</span>(r_lm, <span class="at">type=</span><span class="st">&quot;html&quot;</span>, <span class="at">out.header=</span><span class="cn">FALSE</span>, <span class="at">suppress.errors=</span><span class="cn">TRUE</span>)</span></code></pre></div>
 <ul>
 <li>情報量が多いので、CSSで表示サイズと配色を設定したほうが無難</li>
 </ul>
@@ -1411,14 +1423,14 @@ y
 x
 </td>
 <td>
-1.980<sup>***</sup>
+2.088<sup>***</sup>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.177)
+(0.153)
 </td>
 </tr>
 <tr>
@@ -1432,14 +1444,14 @@ x
 z
 </td>
 <td>
--3.414<sup>***</sup>
+-2.766<sup>***</sup>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.185)
+(0.143)
 </td>
 </tr>
 <tr>
@@ -1453,14 +1465,14 @@ z
 Constant
 </td>
 <td>
-1.119<sup>***</sup>
+0.878<sup>***</sup>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.138)
+(0.115)
 </td>
 </tr>
 <tr>
@@ -1486,7 +1498,7 @@ Observations
 R<sup>2</sup>
 </td>
 <td>
-0.826
+0.857
 </td>
 </tr>
 <tr>
@@ -1494,7 +1506,7 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.822
+0.854
 </td>
 </tr>
 <tr>
@@ -1502,7 +1514,7 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-0.529 (df = 97)
+0.413 (df = 97)
 </td>
 </tr>
 <tr>
@@ -1510,7 +1522,7 @@ Residual Std. Error
 F Statistic
 </td>
 <td>
-229.790<sup>***</sup> (df = 2; 97)
+290.400<sup>***</sup> (df = 2; 97)
 </td>
 </tr>
 <tr>
@@ -1547,7 +1559,7 @@ R package version 5.2.3. https://CRAN.R-project.org/package=stargazer
 <section id="parametersパッケージ" class="slide level2 smaller">
 <h2 class="smaller">parametersパッケージ</h2>
 <p>プレゼンもしくは最近需要が高くなった信頼区間を考えるとこっちの方がよいかも</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>insight<span class="sc">::</span><span class="fu">export_table</span>(parameters<span class="sc">::</span><span class="fu">model_parameters</span>(r_lm), <span class="at">format=</span><span class="st">&quot;markdown&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>insight<span class="sc">::</span><span class="fu">export_table</span>(parameters<span class="sc">::</span><span class="fu">model_parameters</span>(r_lm), <span class="at">format=</span><span class="st">&quot;markdown&quot;</span>)</span></code></pre></div>
 <table>
 <colgroup>
 <col style="width: 16%" />
@@ -1576,36 +1588,36 @@ R package version 5.2.3. https://CRAN.R-project.org/package=stargazer
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">1.12</td>
-<td style="text-align: left;">0.14</td>
+<td style="text-align: right;">0.88</td>
+<td style="text-align: left;">0.12</td>
 <td style="text-align: left;">0.95</td>
-<td style="text-align: right;">0.85</td>
-<td style="text-align: right;">1.39</td>
-<td style="text-align: right;">8.12</td>
+<td style="text-align: right;">0.65</td>
+<td style="text-align: right;">1.11</td>
+<td style="text-align: right;">7.63</td>
 <td style="text-align: right;">97</td>
-<td style="text-align: left;">1.47e-12</td>
+<td style="text-align: left;">1.66e-11</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">x</td>
-<td style="text-align: right;">1.98</td>
-<td style="text-align: left;">0.18</td>
+<td style="text-align: right;">2.09</td>
+<td style="text-align: left;">0.15</td>
 <td style="text-align: left;">0.95</td>
-<td style="text-align: right;">1.63</td>
-<td style="text-align: right;">2.33</td>
-<td style="text-align: right;">11.21</td>
+<td style="text-align: right;">1.78</td>
+<td style="text-align: right;">2.39</td>
+<td style="text-align: right;">13.66</td>
 <td style="text-align: right;">97</td>
-<td style="text-align: left;">3.29e-19</td>
+<td style="text-align: left;">2.52e-24</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">z</td>
-<td style="text-align: right;">-3.41</td>
-<td style="text-align: left;">0.18</td>
+<td style="text-align: right;">-2.77</td>
+<td style="text-align: left;">0.14</td>
 <td style="text-align: left;">0.95</td>
-<td style="text-align: right;">-3.78</td>
 <td style="text-align: right;">-3.05</td>
-<td style="text-align: right;">-18.46</td>
+<td style="text-align: right;">-2.48</td>
+<td style="text-align: right;">-19.36</td>
 <td style="text-align: right;">97</td>
-<td style="text-align: left;">1.67e-33</td>
+<td style="text-align: left;">4.31e-35</td>
 </tr>
 </tbody>
 </table>
@@ -1613,17 +1625,17 @@ R package version 5.2.3. https://CRAN.R-project.org/package=stargazer
 <section id="交差検証loocvの表示①" class="slide level2 smaller">
 <h2 class="smaller">交差検証（LOOCV）の表示①</h2>
 <p>自動で表が作られない場合、例えばLOOCVは表をつくる。</p>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>frml <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;y ~ x + z&quot;</span>, <span class="st">&quot;y ~ x&quot;</span>, <span class="st">&quot;y ~ z&quot;</span>)</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">length</span>(frml), <span class="dv">2</span>, <span class="at">dimnames=</span><span class="fu">list</span>(</span>
-<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TeXの\\はRの文字列の中では\\\\と書かないとエスケープ文字</span></span>
-<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_1 x + </span><span class="sc">\\</span><span class="st">beta_2 z + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>, <span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_1 x + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>, <span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_2 z + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>),</span>
-<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;raw&quot;</span>, <span class="st">&quot;adjusted&quot;</span>)</span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(frml)){</span>
-<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    delta[i, ] <span class="ot">&lt;-</span> <span class="fu">cv.glm</span>(df01, <span class="fu">glm</span>(<span class="fu">formula</span>(frml[i]), <span class="at">data=</span>df01))<span class="sc">$</span>delta</span>
-<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(delta)</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>frml <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;y ~ x + z&quot;</span>, <span class="st">&quot;y ~ x&quot;</span>, <span class="st">&quot;y ~ z&quot;</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">length</span>(frml), <span class="dv">2</span>, <span class="at">dimnames=</span><span class="fu">list</span>(</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TeXの\\はRの文字列の中では\\\\と書かないとエスケープ文字</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_1 x + </span><span class="sc">\\</span><span class="st">beta_2 z + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>, <span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_1 x + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>, <span class="st">&quot;$y = </span><span class="sc">\\</span><span class="st">beta_0 + </span><span class="sc">\\</span><span class="st">beta_2 z + </span><span class="sc">\\</span><span class="st">epsilon$&quot;</span>),</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="st">&quot;raw&quot;</span>, <span class="st">&quot;adjusted&quot;</span>)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(frml)){</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>    delta[i, ] <span class="ot">&lt;-</span> <span class="fu">cv.glm</span>(df01, <span class="fu">glm</span>(<span class="fu">formula</span>(frml[i]), <span class="at">data=</span>df01))<span class="sc">$</span>delta</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(delta)</span></code></pre></div>
 <table>
 <thead>
 <tr class="header">
@@ -1636,20 +1648,20 @@ R package version 5.2.3. https://CRAN.R-project.org/package=stargazer
 <tr class="odd">
 <td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
 \beta_1 x + \beta_2 z + \epsilon\)</span></td>
-<td style="text-align: right;">0.28694</td>
-<td style="text-align: right;">0.28687</td>
+<td style="text-align: right;">0.17655</td>
+<td style="text-align: right;">0.17650</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
 \beta_1 x + \epsilon\)</span></td>
-<td style="text-align: right;">1.27485</td>
-<td style="text-align: right;">1.27460</td>
+<td style="text-align: right;">0.83891</td>
+<td style="text-align: right;">0.83874</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
 \beta_2 z + \epsilon\)</span></td>
-<td style="text-align: right;">0.64750</td>
-<td style="text-align: right;">0.64738</td>
+<td style="text-align: right;">0.50697</td>
+<td style="text-align: right;">0.50685</td>
 </tr>
 </tbody>
 </table>
@@ -1681,24 +1693,25 @@ R package version 5.2.3. https://CRAN.R-project.org/package=stargazer
 <tr class="odd">
 <td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
 \beta_1 x + \beta_2 z + \epsilon\)</span></td>
-<td style="text-align: right;">0.28694</td>
-<td style="text-align: right;">0.28687</td>
+<td style="text-align: right;">0.17655</td>
+<td style="text-align: right;">0.1765</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
 \beta_1 x + \epsilon\)</span></td>
-<td style="text-align: right;">1.27485</td>
-<td style="text-align: right;">1.2746</td>
+<td style="text-align: right;">0.83891</td>
+<td style="text-align: right;">0.83874</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><span class="math inline">\(y = \beta_0 +
 \beta_2 z + \epsilon\)</span></td>
-<td style="text-align: right;">0.6475</td>
-<td style="text-align: right;">0.64738</td>
+<td style="text-align: right;">0.50697</td>
+<td style="text-align: right;">0.50685</td>
 </tr>
 </tbody>
 </table>
 </section></section>
+<section>
 <section id="プロットの表示" class="title-slide slide level1 smaller">
 <h1 class="smaller">プロットの表示</h1>
 <ul>
@@ -1707,9 +1720,22 @@ R package version 5.2.3. https://CRAN.R-project.org/package=stargazer
 fig.heigth=4のようにつける</li>
 <li>Rのコードでも<code>par(mar=c(4, 4, 0.1, 0.1))</code>などと表示調整</li>
 </ul>
-<p><img src="revealjs_files/figure-revealjs/unnamed-chunk-12-1.png" width="864" style="display: block; margin: auto;" /></p>
+<p><img src="revealjs_files/figure-revealjs/unnamed-chunk-15-1.png" width="864" style="display: block; margin: auto;" /></p>
 </section>
-
+<section id="余白の一括調整" class="slide level2">
+<h2>余白の一括調整</h2>
+<p>最初のチャンク名<code>setup</code>のコードチャンクでRmarkdownの設定を変えてから、</p>
+<div class="psudopre">
+```{r setup, include=FALSE}<br/> knitr::opts_knit$set(global.par =
+TRUE)<br /> ```
+</div>
+<p>次のコードチャンクで<code>par</code>を指定する。</p>
+<div class="psudopre">
+```{r echo=FALSE}<br/> par(mar = c(4, 4, 1, 1))<br /> ```
+</div>
+<p>同じコードチャンクでは機能しない。</p>
+<p>他のパラメーターの変更も同様にできる（ハズ）。</p>
+</section></section>
 <section>
 <section id="図shapeの表示" class="title-slide slide level1">
 <h1>図（shape）の表示</h1>
@@ -1753,9 +1779,9 @@ href="https://rich-iannone.github.io/DiagrammeR/">DiagrammeRパッケージ</a>�
 </section>
 <section id="graphvizを使う" class="slide level2">
 <h2>Graphvizを使う</h2>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(<span class="st">&quot;example.gv&quot;</span>, <span class="at">width=</span><span class="dv">1024</span>, <span class="at">height=</span><span class="dv">384</span>)</span></code></pre></div>
-<div id="htmlwidget-4f834d958698dedaa515" style="width:1024px;height:384px;" class="grViz html-widget"></div>
-<script type="application/json" data-for="htmlwidget-4f834d958698dedaa515">{"x":{"diagram":"digraph causal_diagram {\n    graph [rankdir = RL, bgcolor = transparent]\n\n    node [shape = oval,\n        penwidth = 0.5,\n        width = 0.2, height = 0.2,\n        fixedsize = true,\n        fontname = \"Times New Roman\",\n        fontsize = 10]\n    z [label = <<i>z<\/i><sub><font point-size=\"6.0\">i<\/font><\/sub>> ]\n\n    node [shape = plaintext,\n        width = 0.2, height = 0.2,\n        fixedsize = true,\n        fontname = \"Times New Roman\",\n        fontsize = 10]\n    x [label = <<i>x<\/i><sub><font point-size=\"6.0\">it<\/font><\/sub>> ]\n    y [label = <<i>y<\/i><sub><font point-size=\"6.0\">it<\/font><\/sub>> ]\n\n    y->x [arrowsize = 0.5, penwidth = 0.5, headport = s ]\n    x->y [arrowsize = 0.5, penwidth = 0.5, label = \"&#x03B2;&#x2081;\", fontname = \"Times New Roman\", fontsize = 8 ]\n    z->x [arrowsize = 0.5, penwidth = 0.5, label = \"&#x03B3;&#x2081;\", fontname = \"Times New Roman\", fontsize = 8 ]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>DiagrammeR<span class="sc">::</span><span class="fu">grViz</span>(<span class="st">&quot;example.gv&quot;</span>, <span class="at">width=</span><span class="dv">1024</span>, <span class="at">height=</span><span class="dv">384</span>)</span></code></pre></div>
+<div id="htmlwidget-5bc52d7e28a704b3d6f3" style="width:1024px;height:384px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-5bc52d7e28a704b3d6f3">{"x":{"diagram":"digraph causal_diagram {\n    graph [rankdir = RL, bgcolor = transparent]\n\n    node [shape = oval,\n        penwidth = 0.5,\n        width = 0.2, height = 0.2,\n        fixedsize = true,\n        fontname = \"Times New Roman\",\n        fontsize = 10]\n    z [label = <<i>z<\/i><sub><font point-size=\"6.0\">i<\/font><\/sub>> ]\n\n    node [shape = plaintext,\n        width = 0.2, height = 0.2,\n        fixedsize = true,\n        fontname = \"Times New Roman\",\n        fontsize = 10]\n    x [label = <<i>x<\/i><sub><font point-size=\"6.0\">it<\/font><\/sub>> ]\n    y [label = <<i>y<\/i><sub><font point-size=\"6.0\">it<\/font><\/sub>> ]\n\n    y->x [arrowsize = 0.5, penwidth = 0.5, headport = s ]\n    x->y [arrowsize = 0.5, penwidth = 0.5, label = \"&#x03B2;&#x2081;\", fontname = \"Times New Roman\", fontsize = 8 ]\n    z->x [arrowsize = 0.5, penwidth = 0.5, label = \"&#x03B3;&#x2081;\", fontname = \"Times New Roman\", fontsize = 8 ]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </section>
 <section id="mermaid.jsを何とか使う" class="slide level2">
 <h2>Mermaid.jsを何とか使う</h2>
