@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>t検定への道</title>
+
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">t検定への道</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>t分布の導出を確認して、その理屈を抑えましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#グラムシュミットの正規直交化"
+id="toc-グラムシュミットの正規直交化"><span
+class="toc-section-number">1</span> グラム＝シュミットの正規直交化</a>
+<ul>
+<li><a href="#ある形式の線形独立なベクトルの正規直交化"
+id="toc-ある形式の線形独立なベクトルの正規直交化"><span
+class="toc-section-number">1.1</span>
+ある形式の線形独立なベクトルの正規直交化</a></li>
+</ul></li>
+<li><a href="#標本平均と標本分散" id="toc-標本平均と標本分散"><span
+class="toc-section-number">2</span> 標本平均と標本分散</a></li>
+<li><a href="#標本分散が従う分布の導出"
+id="toc-標本分散が従う分布の導出"><span
+class="toc-section-number">3</span> 標本分散が従う分布の導出</a></li>
+<li><a href="#t分布の導出" id="toc-t分布の導出"><span
+class="toc-section-number">4</span> t分布の導出</a></li>
+<li><a href="#標本平均の検定" id="toc-標本平均の検定"><span
+class="toc-section-number">5</span> 標本平均の検定</a></li>
+<li><a href="#二標本の平均値の差の検定"
+id="toc-二標本の平均値の差の検定"><span
+class="toc-section-number">6</span> 二標本の平均値の差の検定</a>
+<ul>
+<li><a href="#students-t-test" id="toc-students-t-test"><span
+class="toc-section-number">6.1</span> Student’s t-test</a></li>
+<li><a href="#welchs-t-test" id="toc-welchs-t-test"><span
+class="toc-section-number">6.2</span> Welch’s t-test</a></li>
+<li><a href="#対応のある検定paired-t-test"
+id="toc-対応のある検定paired-t-test"><span
+class="toc-section-number">6.3</span> 対応のある検定（paired t
+test）</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>t検定は、標本の平均値がゼロなどの特定の値から、もしくは、二標本の平均値の差が、誤差と言えないほど離れているかを判定する代表的な手続きで、統計解析で広く使われています。t分布の導出を確認して、その理屈を抑えましょう。</p>
+<div id="グラムシュミットの正規直交化" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span>
+グラム＝シュミットの正規直交化</h1>
+<p>学部一般教養の線形代数の教科書にも載っているグラム＝シュミットの正規直交化（orthonormalization）を思いしましょう。</p>
+<p>まず、任意の<span
+class="math inline">\(n\)</span>本の線形独立なベクトル<span
+class="math inline">\(\{\nu_i\}_{i \in \{ j \in \mathbb{N} \mid 1 \le j
+\le n \}}\)</span>を、<span
+class="math inline">\(n\)</span>本の直交ベクトル<span
+class="math inline">\(\{\mu_i\}_{i \in \{ j \in \mathbb{N} \mid 1 \le j
+\le n \}}\)</span>に変換します。</p>
+<p>大仰な感じがしますが、実際はベクトル<span
+class="math inline">\(x\)</span>と<span
+class="math inline">\(y\)</span>の内積を<span class="math inline">\((x,
+y)\)</span>と置いて、</p>
+<p><span class="math display">\[\begin{align}
+\mu_1 &amp;= \nu_1 \\
+\mu_2 &amp;= \nu_2 - \frac{(\mu_1, \nu_2)}{(\mu_1, \mu_1)} \mu_1\\
+\mu_3 &amp;= \nu_3 - \frac{(\mu_1, \nu_3)}{(\mu_1, \mu_1)} \mu_1 -
+\frac{(\mu_2, \nu_3)}{(\mu_2, \mu_2)} \mu_2\\
+&amp;\vdots\\
+\mu_i &amp;= \nu_i - \frac{(\mu_1, \nu_i)}{(\mu_1, \mu_1)} \mu_1 -
+\frac{(\mu_2, \nu_3)}{(\mu_2, \mu_2)} \mu_2 - \cdots - \frac{(\mu_{i-1},
+\nu_3)}{(\mu_{i-1}, \mu_{i-1})}  \mu_{i-1} \\
+&amp;\vdots\\
+\mu_n &amp;= \nu_n - \sum^{n-1}_{j=1} \frac{(\mu_j, \nu_n)}{(\mu_j,
+\mu_j)} \mu_j
+\end{align}\]</span></p>
+<p>と計算するだけです。<span
+class="math inline">\(\nu_i\)</span>から<span
+class="math inline">\(\{\mu_j\}_{1 \le j \le
+i-1}\)</span>とその大きさで表される成分を抜いて、<span
+class="math inline">\(\mu_i\)</span>としています。</p>
+<p>何をしているかと言うと、ベクトルは他のベクトルで成分分解することができるわけですが、<span
+class="math inline">\(\{\mu_j\}_{1 \le j \le
+i-1}\)</span>と直交しない成分を消してしまうことで、<span
+class="math inline">\(\{\mu_j\}_{1 \le j \le
+i-1}\)</span>と直交する成分だけを残しています。<span
+class="math inline">\(\mu_i\)</span>は<span
+class="math inline">\(\{\mu_j\}_{1 \le j \le
+i-1}\)</span>と直交するように計算され、<span
+class="math inline">\(\{\mu_j\}_{i+1 \le j \le n}\)</span>は<span
+class="math inline">\(\mu_i\)</span>と直交するように計算されるので、<span
+class="math inline">\(\{\mu_i\}_{i \in \{ j \in \mathbb{N} \mid 1 \le j
+\le n
+\}}\)</span>に含まれるベクトルはそれぞれ直交することになります。</p>
+<p>次に、直交ベクトルを内積が<span
+class="math inline">\(1\)</span>になるように正規化します。</p>
+<p><span class="math display">\[
+\tilde{\mu_i} = \frac{\mu_i}{\sqrt{(\mu_i, \mu_i)}}
+\]</span></p>
+<p>これで正規直交化したベクトルの族<span
+class="math inline">\(\{\tilde{\mu_i}\}_{i \in \{ j \in \mathbb{N} \mid
+1 \le j \le n \}}\)</span>ができました。</p>
+<div id="ある形式の線形独立なベクトルの正規直交化"
+class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span>
+ある形式の線形独立なベクトルの正規直交化</h2>
+<p>各行が線形独立なベクトルとなっている、以下のような行列を考えます。</p>
+<p><span class="math display">\[
+V = \begin{pmatrix}
+\frac{1}{\sqrt{n}} &amp; \frac{1}{\sqrt{n}} &amp; \cdots &amp;
+\frac{1}{\sqrt{n}} \\
+0 &amp; 1 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; 1
+\end{pmatrix}
+\]</span></p>
+<p>これをグラム＝シュミットの正規直交化すると、<span
+class="math inline">\(1\)</span>行目の各成分は<span
+class="math inline">\(\frac{1}{\sqrt{n}}\)</span>と不変になります。</p>
+<p><span class="math display">\[
+\tilde{\mu_1} = \frac{1}{\sqrt{n}} \bigg/ \frac{1}{\sqrt{\sum^n_{j=1}
+\frac{1}{\sqrt{n}} \frac{1}{\sqrt{n}} }} = \frac{1}{\sqrt{n}}
+\]</span></p>
+<p>Rのコードで確認しておきましょう。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>gsp <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">4</span>, <span class="at">V =</span> { V <span class="ot">&lt;-</span> <span class="fu">diag</span>(n); V[<span class="dv">1</span>, ] <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(n), n); V }){</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>   U <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, n, n)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>   U[<span class="dv">1</span>, ] <span class="ot">&lt;-</span> V[<span class="dv">1</span>, ]</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>   <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n){</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>      W <span class="ot">&lt;-</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>(j<span class="dv">-1</span>), \(i){</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>         <span class="fu">c</span>(<span class="fu">t</span>(V[j, ]) <span class="sc">%*%</span> U[i, ] <span class="sc">/</span> (<span class="fu">t</span>(U[i, ]) <span class="sc">%*%</span> U[i, ])) <span class="sc">*</span> U[i, ]</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>      })      </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>      U[j, ] <span class="ot">&lt;-</span> V[j, ] <span class="sc">-</span> <span class="fu">apply</span>(W, <span class="dv">1</span>, sum) </span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>   }</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>   N <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>n, \(i){</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>      U[i, ]<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">c</span>(<span class="fu">t</span>(U[i, ])<span class="sc">%*%</span>U[i, ]))</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>   }))</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>   <span class="co"># U: orthogonalization</span></span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>   <span class="co"># N: orthonormalization</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>   <span class="fu">list</span>(<span class="at">o =</span> U, <span class="at">on =</span> N)</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>}</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a><span class="co"># 5行5列を計算してみる</span></span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">gsp</span>(<span class="dv">5</span>)<span class="sc">$</span>on, <span class="dv">5</span>)</span></code></pre></div>
+<pre><code>         [,1]    [,2]     [,3]     [,4]     [,5]
+[1,]  0.44721 0.44721  0.44721  0.44721  0.44721
+[2,] -0.22361 0.89443 -0.22361 -0.22361 -0.22361
+[3,] -0.28868 0.00000  0.86603 -0.28868 -0.28868
+[4,] -0.40825 0.00000  0.00000  0.81650 -0.40825
+[5,] -0.70711 0.00000  0.00000  0.00000  0.70711</code></pre>
+<p><span
+class="math inline">\(1/\sqrt{5}\)</span>は、約0.44721です。</p>
+<p>正規直交化したベクトルでつくられた行列の逆行列は、転置行列になり、直交行列の条件を満たします。転置した行列の行<span
+class="math inline">\(i\)</span>と、もとの行列の列<span
+class="math inline">\(j\)</span>の内積は、<span
+class="math inline">\(i=j\)</span>のとき<span
+class="math inline">\(1\)</span>であり、<span class="math inline">\(i\ne
+j\)</span>のとき<span class="math inline">\(0\)</span>だからです。</p>
+</div>
+</div>
+<div id="標本平均と標本分散" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 標本平均と標本分散</h1>
+<p><span class="math inline">\(\{X_i\}_{i \in \{ j \in \mathbb{N} \mid 1
+\le j \le n \}}\)</span>を正規分布<span
+class="math inline">\(\mathcal{N}(\mu,
+\sigma^2)\)</span>に従う確率変数の標本とします。標本平均は</p>
+<p><span class="math display">\[\begin{align}
+\bar{X} &amp;= \frac{1}{n}\sum^n_{i=1} X_i
+\end{align}\]</span></p>
+<p>となります。</p>
+<p>標本分散は、確率変数の分散と、標本平均の分散を分けて計算することで導出できます。</p>
+<p><span class="math display">\[\begin{align}
+&amp;E\bigg[\sum^n_{i=1} ( X_i - \bar{X} )^2 \bigg] \\
+&amp;= E\bigg[\sum^n_{i=1} ( X_i - \mu + \mu - \bar{X} )^2 \bigg] \\
+&amp;= E\bigg[\sum^n_{i=1} (X_i - \mu)^2 - n(\bar{X} - \mu)^2 \bigg] \\
+&amp;= n\sigma^2 - E\bigg[n(\bar{X} - \mu)^2 \bigg]
+\end{align}\]</span></p>
+<p>となりますが、<span class="math inline">\(E[(\bar{X} -
+\mu)^2]\)</span>は<span class="math inline">\((x_1 + x_2 + x_3 + \cdots
++ x_n)/n\)</span>の分散なので、</p>
+<p><span class="math display">\[\begin{align}
+&amp;\mathit{VAR}\bigg(\frac{x_1 + x_2 + x_3 + \cdots + x_n}{n}\bigg) \\
+&amp;=\frac{\mathit{VAR}(x_1 + x_2 + x_3 + \cdots + x_n)}{n^2} \\
+&amp;=\frac{n\sigma^2}{n^2} = \frac{\sigma^2}{n}
+\end{align}\]</span></p>
+<p>となることに注意すると、</p>
+<p><span class="math display">\[
+E\bigg[\sum^n_{i=1} ( X_i - \bar{X} )^2 \bigg] = n\sigma^2 - \sigma^2 =
+(n-1)\sigma^2
+\]</span></p>
+<p>なので、</p>
+<p><span class="math display">\[
+\sigma^2 = E\bigg[\frac{\sum^n_{i=1} ( X_i - \bar{X} )^2}{n-1} \bigg]
+\]</span></p>
+<p>となります。よって標本分散は、</p>
+<p><span class="math display">\[\begin{align}
+s^2 &amp;= \frac{1}{n-1}\sum^n_{i=1} (X_i - \bar{X})^2
+\end{align}\]</span></p>
+<p>です。</p>
+</div>
+<div id="標本分散が従う分布の導出" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+標本分散が従う分布の導出</h1>
+<p>必要なのは標本分散が従う分布なのですが、ほとんど同じ計算なので標本平均と標本分散が独立であることの証明を確認します。</p>
+<p>標準化された観測値のベクトル<span
+class="math inline">\(U\)</span>を考えます。</p>
+<p><span class="math display">\[\begin{align}
+U = \begin{pmatrix}
+\frac{X_1 - \mu}{\sigma} \\
+\vdots \\
+\frac{X_n - \mu}{\sigma}
+\end{pmatrix}
+\end{align}\]</span></p>
+<p><span class="math inline">\(U\)</span>に1行目が<span
+class="math inline">\(1/\sqrt{n}\)</span>の直交行列<span
+class="math inline">\(A\)</span>をかけた行列を<span
+class="math inline">\(V\)</span>と置きます。そのような<span
+class="math inline">\(A\)</span>がとれることは、前節で確認しました。</p>
+<p><span class="math display">\[
+V = \begin{pmatrix}
+V_1 \\
+\vdots \\
+V_n
+\end{pmatrix} = AU
+\]</span></p>
+<p>正規化直交行列の逆行列が転置行列になることに注意して、<span
+class="math inline">\(V\)</span>と<span
+class="math inline">\(U\)</span>の関係を確認しましょう。</p>
+<p><span class="math display">\[
+\sum^n_{i=1}V_i^2 = {}^t\!VV = {}^t\!(AU)(AU) = {}^t\!U({}^t\!AA)U =
+{}^t\!UU = \sum^n_{i=1}U_i^2
+\]</span></p>
+<p><span class="math inline">\(\bar{X}\)</span>と<span
+class="math inline">\(s^2\)</span>を書き直します。</p>
+<p><span class="math display">\[\begin{align}
+\bar{X} &amp;= \frac{1}{n}\sum^n_{i=1} X_i \\
+&amp;= \frac{1}{n}\sum^n_{i=1} (\mu + \sigma U_i) \\
+&amp;= \mu + \frac{\sigma}{\sqrt{n}} \sum^n_{i=1} \frac{U_i}{\sqrt{n}}
+\\
+&amp;= \mu + \frac{\sigma}{\sqrt{n}} \sum^n_{i=1} A_{1i} U_i \\
+&amp;= \mu + \frac{\sigma}{\sqrt{n}} V_1
+\end{align}\]</span></p>
+<p><span class="math display">\[\begin{align}
+s^2 &amp;= \frac{1}{n-1}\sum^n_{i=1}(X_i - \bar{X})^2 \\
+&amp;= \frac{1}{n-1}\sum^n_{i=1}(\mu + \sigma U_i - \mu - \sigma
+\bar{U})^2 \quad \bigg( \bar{U} = \sum^n_{i=1} \frac{U_i}{n} \bigg)\\
+&amp;= \frac{\sigma}{n-1}\sum^n_{i=1}(U_i - \bar{U})^2 \\
+&amp;= \frac{\sigma}{n-1}\sum^n_{i=1}(U_i^2 - 2 U_i \bar{U} + \bar{U}^2)
+\\
+&amp;= \frac{\sigma}{n-1} \big( \sum^n_{i=1} U_i^2 - 2 \sum^n_{i=1} U_i
+\bar{U} + \sum^n_{i=1} \bar{U}^2 \big) \\
+&amp;= \frac{\sigma}{n-1} \big( \sum^n_{i=1} U_i^2 - 2 n \bar{U} \bar{U}
++ n \bar{U}^2 \big) \\
+&amp;= \frac{\sigma}{n-1} \big( \sum^n_{i=1} U_i^2 - n \bar{U}^2 \big)
+\\
+&amp;= \frac{\sigma}{n-1} \bigg( \sum^n_{i=1} U_i^2 - \bigg( \frac{ n
+\bar{U}}{ \sqrt{n} } \bigg)^2  \bigg) \\
+&amp;= \frac{\sigma}{n-1} \bigg( \sum^n_{i=1} U_i^2 - \bigg( \frac{
+\sum^n_{i=1} U_i }{ \sqrt{n} } \bigg)^2 \bigg) \\
+&amp;= \frac{\sigma}{n-1} \big( \sum^n_{i=1} U_i^2 - \big( \sum^n_{i=1}
+A_{1i} U_i \big)^2 \big) \\
+&amp;= \frac{\sigma}{n-1} \big( \sum^n_{i=1} V_i^2 - V_1^2 \big) \\
+&amp;= \frac{\sigma}{n-1} \sum^n_{i=2} V_i^2
+\end{align}\]</span></p>
+<p><span class="math inline">\(V_1\)</span>と<span
+class="math inline">\(\{V_i\}_{2\le i \le
+n}\)</span>の式になりました。</p>
+<p>ところで確率変数を要素にとる<span
+class="math inline">\(n\)</span>次元ベクトル<span
+class="math inline">\(V\)</span>が<span
+class="math inline">\(D\)</span>の中に入る確率と、<span
+class="math inline">\(U\)</span>が<span
+class="math inline">\(A^{-1}D\)</span>の中に入る確率は同じになります。<span
+class="math inline">\(U\)</span>の各要素が標準正規分布に従い、対称行列の行列式が<span
+class="math inline">\(\pm 1\)</span>であることに注意すると、</p>
+<p><span class="math display">\[\begin{align}
+P(V \in D) &amp;= P(U \in A^{-1}D) \\
+&amp;= \int_{A^{-1}D} \frac{1}{\sqrt{2\pi}}
+\exp(-\frac{u_1^2}{2})  \cdots \frac{1}{\sqrt{2\pi}}
+\exp(-\frac{u_n^2}{2}) du_1 \cdots du_n \\
+&amp;= \int_{A^{-1}D} \bigg( \frac{1}{\sqrt{2\pi}} \bigg)^n
+\exp(-\frac{\sum^n_{i=1} u_i^2}{2}) du_1 \cdots du_n \\
+&amp;= \int_{D} \bigg( \frac{1}{\sqrt{2\pi}} \bigg)^n
+\exp(-\frac{\sum^n_{i=1} v_i^2}{2}) \mid A \mid dv_1 \cdots dv_n \\
+&amp;= \int_{D} \bigg( \frac{1}{\sqrt{2\pi}} \bigg)^n
+\exp(-\frac{\sum^n_{i=1} v_i^2}{2}) dv_1 \cdots dv_n \\
+&amp;= \int_{D} \frac{1}{\sqrt{2\pi}} \exp(-\frac{v_1^2}{2})  \cdots
+\frac{1}{\sqrt{2\pi}} \exp(-\frac{v_n^2}{2}) dv_1 \cdots dv_n
+\end{align}\]</span></p>
+<p>と<span
+class="math inline">\(V\)</span>の各要素も標準正規分布に従う確率密度になることが分かります。よって、<span
+class="math inline">\(V\)</span>の要素と要素は独立です。これで、<span
+class="math inline">\(V_1\)</span>と<span
+class="math inline">\(\{V_i\}_{2\le i \le
+n}\)</span>が独立になることが分かりました。</p>
+<p>さらに</p>
+<p><span class="math display">\[
+s^2\frac{n-1}{\sigma} = \sum^n_{i=2} V_i^2
+\]</span></p>
+<p>は、標準正規分布に従う<span
+class="math inline">\(n-1\)</span>個の確率変数の二乗和なので、自由度<span
+class="math inline">\(n-1\)</span>のχ二乗分布<a href="#fn1"
+class="footnote-ref"
+id="fnref1"><sup>1</sup></a>に従うことが分かります。</p>
+</div>
+<div id="t分布の導出" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> t分布の導出</h1>
+<p>母集団の平均<span class="math inline">\(\mu\)</span>と標準誤差<span
+class="math inline">\(\sigma\)</span>が分かっていれば、標本平均を標準化した値</p>
+<p><span class="math display">\[
+Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}
+\]</span></p>
+<p>が、標準正規分布に従います。<span
+class="math inline">\(\mu\)</span>を<span
+class="math inline">\(\bar{X}\)</span>で、<span
+class="math inline">\(\sigma\)</span>を<span
+class="math inline">\(s\)</span>で置き換えて、Z値を計算し、標準正規分布を用いてp値を計算すると、Z検定になります。しかし、小サンプルの場合、標本分散の誤差を考慮しないZ検定は誤差が大きくなります。</p>
+<p>そこで、</p>
+<p><span class="math display">\[
+T = \frac{\bar{X} - \mu}{s/\sqrt{n}} = \frac{\bar{X} -
+\mu}{\sqrt{s^2/n}}
+\]</span></p>
+<p>の分布を求めて統計的仮説検定を行います。t検定です。</p>
+<p><span
+class="math inline">\(\bar{X}\)</span>は標準正規分布に従います。<span
+class="math inline">\(s^2\)</span>は自由度<span
+class="math inline">\(n-1\)</span>のχ二乗分布に従うことは前節で確認しました。標準正規分布とχ二乗分布の同時確率密度を考えれば、<span
+class="math inline">\(t&lt;\alpha\)</span>となる確率を求めることができます。</p>
+<p><span class="math inline">\(u=\bar{X} - \mu\)</span>, <span
+class="math inline">\(v=s^2\)</span>, <span
+class="math inline">\(k=n-1\)</span>と置いて、</p>
+<p><span class="math display">\[
+P(T&lt;\alpha) = \int_{\frac{u}{\sqrt{v/n}} &lt; \alpha} \bigg(
+\frac{1}{\sqrt{2\pi}} \exp\bigg(-\frac{u^2}{2}\bigg)\bigg) \bigg(
+\frac{1}{\Gamma(k/2) 2^{k/2}} v^{k/2 - 1}
+\exp\bigg(-\frac{v}{2}\bigg)\bigg) dudv
+\]</span></p>
+<p><span class="math inline">\(t=u/\sqrt{v/k}\)</span>, <span
+class="math inline">\(v=v\)</span>で変数変換します。</p>
+<p><span class="math display">\[
+P(T&lt;\alpha) = \int_{-\infty}^\alpha \int_0^\infty
+\frac{1}{\sqrt{2\pi}2^{k/2}\Gamma(k/2)}
+\exp\bigg(-\frac{ut^2}{2k}-\frac{v}{2}\bigg)v^{k/2-1} \begin{vmatrix}
+\sqrt{v/k} &amp; * \\
+0 &amp; 1
+\end{vmatrix} dv dt
+\]</span></p>
+<p><span class="math inline">\(q=vt^2/(2k)+v/2\)</span>, <span
+class="math inline">\(t=t\)</span>で変数変換します。</p>
+<p><span class="math display">\[\begin{align}
+&amp;P(T&lt;\alpha) \\
+&amp;= \int_{-\infty}^\alpha \int_0^\infty
+\frac{1}{\sqrt{2\pi}2^{k/2}\Gamma(k/2)} \exp(-q)\bigg( \frac{q}{t^2/(2k)
++ 1/2}  \bigg)^{k/2-1} \begin{vmatrix}
+\frac{1}{t^2/(2k) + 1/2} &amp; * \\
+0 &amp; 1
+\end{vmatrix} dq dt\\
+&amp;= \int_{-\infty}^\alpha \int_0^\infty
+\frac{1}{\sqrt{k\pi}2^{(k+1)/2}\Gamma(k/2)}
+q^{\frac{k+1}{2}-1}
+\exp(-q)
+\frac{1}{\big( t^2/(2k) + 1/2 \big)^{k/2+1}} dq dt\\
+&amp;=
+\frac{\Gamma\big(\frac{k+1}{2}\big)}{\sqrt{k\pi}\Gamma\big(\frac{k}{2}\big)}
+\int_{-\infty}^\alpha \bigg( \frac{t^2}{k} + 1 \bigg)^{-\frac{k+1}{2}}dt
+\end{align}\]</span></p>
+<p>自由度<span
+class="math inline">\(k\)</span>のt分布の累積分布関数が導出できました。確率密度関数は微分積分学の基本公式から、</p>
+<p><span class="math display">\[
+f(t) =
+\frac{\Gamma\big(\frac{k+1}{2}\big)}{\sqrt{k\pi}\Gamma\big(\frac{k}{2}\big)}
+\bigg( \frac{t^2}{k} + 1 \bigg)^{-\frac{k+1}{2}}
+\]</span></p>
+<p>となります。</p>
+</div>
+<div id="標本平均の検定" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> 標本平均の検定</h1>
+<p>効果ゼロなどの帰無仮説が正しいときに、分析したデータから計算したパラメーターの推定量と同じかより極端な推定量が観察される相対頻度であるp値を求めましょう。</p>
+<p>標本平均が特定の値であると言う帰無仮説に対するp値は、t分布の累積分布関数からそのまま出ます。実際に試してみましょう。</p>
+<p>データセットをつくります。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">with</span>(<span class="fu">new.env</span>(), {</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>   <span class="fu">set.seed</span>(<span class="dv">20250708</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>   n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>   mu <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>   <span class="fu">rnorm</span>(n, <span class="at">mean =</span> mu, <span class="at">sd =</span> <span class="dv">1</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>})</span></code></pre></div>
+<p>生成されたサンプルを教科書的に推定すると、次のようになります。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(x)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>H0 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="co"># 帰無仮説</span></span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>T <span class="ot">&lt;-</span> (m <span class="sc">-</span> H0)<span class="sc">/</span><span class="fu">sqrt</span>(s<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n)</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;左片側 p値: %.5f&quot;</span>, (p.value <span class="ot">&lt;-</span> <span class="fu">pt</span>(T, n <span class="sc">-</span> <span class="dv">1</span>)))</span></code></pre></div>
+<pre><code>[1] &quot;左片側 p値: 0.96559&quot;</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;右片側 p値: %.5f&quot;</span>, <span class="dv">1</span> <span class="sc">-</span> p.value)</span></code></pre></div>
+<pre><code>[1] &quot;右片側 p値: 0.03441&quot;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;両側 p値: %.5f&quot;</span>, <span class="dv">2</span><span class="sc">*</span><span class="fu">min</span>(p.value, <span class="dv">1</span> <span class="sc">-</span> p.value))</span></code></pre></div>
+<pre><code>[1] &quot;両側 p値: 0.06883&quot;</code></pre>
+<p><code>pt</code>はt分布の累積分布関数になります。</p>
+<p>図示すると、</p>
+<p><img src="common_files/figure-html/t-dist-1.png" width="672" /></p>
+<p>t分布をT統計量で分断し、左側と右側の積分値を求めていることが分かりやすいと思います。</p>
+<p>左側の灰色の領域は、帰無仮説（と標本分散）が真だとして、同じサンプルサイズの観測を繰り返したときに、観測値された値と同じか、より小さい値が得られる確率で、右側の白い領域は、同じか、より大きい値が得られる確率です。両側検定のp値は小さい方のp値の2倍となります。それぞれの側の有意水準は表示の半分で評価するため、p値を2倍にしないと有意水準の値そのままと比較できないためです。</p>
+<p>便利な<code>t.test</code>関数があるので、こんなに書かなくても大丈夫です。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">t.test</span>(x, <span class="at">mu =</span> H0, <span class="at">alternative =</span> <span class="st">&quot;two.sided&quot;</span>)</span></code></pre></div>
+<pre><code>
+    One Sample t-test
+
+data:  x
+t = 2.0658, df = 9, p-value = 0.06883
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ -0.05163488  1.13823318
+sample estimates:
+mean of x 
+0.5432992 </code></pre>
+</div>
+<div id="二標本の平均値の差の検定" class="section level1" number="6">
+<h1><span class="header-section-number">6</span>
+二標本の平均値の差の検定</h1>
+<p>統制変数が入れられないので理工系の研究室のラボでないとあまり使わない気もしますが、仕組みは抑えておきましょう。</p>
+<div id="students-t-test" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Student’s t-test</h2>
+<p>教科書には載っているのですが、二標本が等分散という強い仮定が置かれていて、かつ、現在ではその仮定を外した分析を手軽に利用できるため、実用上は使うべきではなくなったStudent’s
+t testを説明します。実用には使えませんが、後述するWelch’s t
+testの説明の前提知識になるので理屈は把握しておきましょう。</p>
+<p>同じ分布の母集団から無作為抽出された二つの標本があるとします。それぞれの標本に含まれる観測値は、独立で同一の分布に従います。この二標本の平均値<span
+class="math inline">\(\bar{X}_1\)</span>と<span
+class="math inline">\(\bar{X}_2\)</span>の差の分布を考えましょう。</p>
+<p>だいたいの場合、<span class="math inline">\(\bar{X}_1\)</span>と<span
+class="math inline">\(\bar{X}_2\)</span>はそれぞれ正規分布に従うと看做せます。中心極限定理があるからです。また、二標本に含まれる個々の観測値の分散<span
+class="math inline">\(\sigma^2\)</span>は同一ですから、以下のように書けます。</p>
+<p><span class="math display">\[\begin{align}
+\bar{X}_1 &amp;\sim \mathcal{N}(\mu, \frac{\sigma^2}{n_1})\\
+\bar{X}_2 &amp;\sim \mathcal{N}(\mu, \frac{\sigma^2}{n_2})
+\end{align}\]</span></p>
+<p>サンプルサイズを<span class="math inline">\(n_1\)</span>と<span
+class="math inline">\(n_2\)</span>とおくと、二標本の差の分布は</p>
+<p><span class="math display">\[
+\bar{X}_1 - \bar{X}_2 \sim \mathcal{N}(0, \frac{\sigma^2}{n_1} +
+\frac{\sigma^2}{n_2})
+\]</span></p>
+<p>になります。</p>
+<p><span
+class="math inline">\(\sigma^2\)</span>は観察不能なため、標本分散<span
+class="math inline">\(s_1\)</span>と<span
+class="math inline">\(s_2\)</span>を代わりに使うことを考えます。</p>
+<p>自由度を<span class="math inline">\(k_1\)</span>，<span
+class="math inline">\(k_2\)</span>と置き、<span
+class="math inline">\(k_1s_1 +
+k_2s_2\)</span>の分布を考えましょう。<span
+class="math inline">\(k_1s_1\)</span>と<span
+class="math inline">\(k_2s_2\)</span>は、これまで見てきたようにχ二乗分布に従います。<span
+class="math inline">\(k_1=n_1-1\)</span>，<span
+class="math inline">\(k_1=n_1-2\)</span>であることも確認してきました。</p>
+<p>さて、χ二乗分布には再生性があります。自由度<span
+class="math inline">\(k\)</span>のときのモーメント母関数が</p>
+<p><span class="math display">\[
+M_X^k(t) = (1-2t)^{-\frac{k}{2}}
+\]</span></p>
+<p>になるからです<a href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>。それぞれχ二乗分布に従う変数の合計のモーメント母関数は</p>
+<p><span class="math display">\[
+M_X^{k_1}(t)M_X^{k_2}(t) = (1-2t)^{-\frac{k_1+k_2}{2}}
+\]</span></p>
+<p>となり、やはりχ二乗分布のモーメント母関数になっています。</p>
+<p><span class="math inline">\(s^2(n-1)/\sigma =
+\sum^n_{i=2}V_i^2\)</span>であったことに注意すると、</p>
+<p><span class="math display">\[
+\frac{s_1^2(n_1-1)}{\sigma^2} + \frac{s_2^2(n_2-1)}{\sigma^2}
+\]</span></p>
+<p>は、自由度<span class="math inline">\(n_1 + n_2 -
+2\)</span>のχ二乗分布に従います。</p>
+<p>また、平均値の差の（プールされた）標本分散<span
+class="math inline">\(s_p\)</span>は</p>
+<p><span class="math display">\[
+s_p^2 = \frac{s_1^2(n_1-1) + s_2^2(n_2-1)}{n_1 + n_2 - 2}
+\]</span></p>
+<p>と書けます。<span class="math inline">\(s(n-1)\)</span>が<span
+class="math inline">\(\sigma\sum^n_{i=2}V_i^2 \sim
+\chi^2_{n-1}\)</span>であったことをに注意すると、<span
+class="math inline">\(s_1^2(n_1-1) + s_2^2(n_2-1)\)</span>は<span
+class="math inline">\(n_1 + n_2 -
+2\)</span>個の標準正規分布に従う変数の二乗和だからです。</p>
+<p>サンプルの抽出方法の前提から<span
+class="math inline">\(E[s_1]=E[s_2]\)</span>を仮定できるので、検定統計量</p>
+<p><span class="math display">\[
+T = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{ s_p^2 \big( \frac{1}{n_1} +
+\frac{1}{n_2} \big) }}
+\]</span></p>
+<p>が自由度<span class="math inline">\(n_1 + n_2 -
+2\)</span>のt分布に従うことが分かります。</p>
+</div>
+<div id="welchs-t-test" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Welch’s t-test</h2>
+<p>観測値の分散がすべて等しいというのは、かなり強い仮定です。男女のような属性ごとで分散が異なるのはよくあることですし、ランダム化比較実験であっても、処置によって介入群と処置群の性質が変わってしまうかも知れません。</p>
+<p>幸い、等分散の仮定を緩める手法Welch’s t
+testがあり、広く使われています。この方法はt検定に用いる自由度を変えて補正します。等分散であった場合はStudent’s
+t testと同様の結果になるので、迷わずWelch’s t testを使いましょう<a
+href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+<p>ウェルチのt検定で用いる自由度の計算方法を確認しましょう。まず、</p>
+<p><span class="math display">\[\begin{align}
+V_s &amp;= \sum^n_{n=2} V_i^2 \\
+\sigma^2_p &amp;= \bigg(\frac{\sigma_1^2}{n_1} +
+\frac{\sigma_2^2}{n_2}\bigg) \\
+W &amp;= \frac{k s_p^2}{\sigma_p^2} \\
+Y &amp;= \frac{\bar{X}_1 - \bar{X}_2}{\sigma_p}
+\end{align}\]</span></p>
+<p>と定義します。</p>
+<p><span class="math inline">\(s^2 = \sigma^2 \sum^n_{n=2} V_i^2 /
+k\)</span>であったわけで、等分散であれば<span class="math inline">\(W =
+V_s\)</span>です。また、<span
+class="math inline">\(Y/\sqrt{V_s/k}\)</span>はt分布になります。</p>
+<p><span class="math inline">\(\sigma_1 \ne
+\sigma_2\)</span>のときに、<span
+class="math inline">\(k\)</span>を調整して、<span
+class="math inline">\(Y/\sqrt{W/k}\)</span>を<span
+class="math inline">\(Y/\sqrt{V_s/k}\)</span>で近似できないか考えます。具体的には<span
+class="math inline">\(W\)</span>と<span
+class="math inline">\(V_s\)</span>の一次、二次モーメントが一致するように<span
+class="math inline">\(k\)</span>を定めます。</p>
+<p>まず、一次モーメントを考えましょう。</p>
+<p><span
+class="math inline">\(sigma_p^2\)</span>の定義に注意すると、</p>
+<p><span class="math display">\[
+E[W] = \frac{k}{\sigma_p^2} \bigg(\frac{\sigma_1^2}{n_1} +
+\frac{\sigma_2^2}{n_2}\bigg) = k
+\]</span></p>
+<p>となります。</p>
+<p>一方、<span
+class="math inline">\(V_s\)</span>はχ二乗分布に従うので、</p>
+<p><span class="math display">\[
+E[V_s] = k
+\]</span></p>
+<p>となります。</p>
+<p>一次モーメントは<span
+class="math inline">\(k\)</span>に関わらず一致します。</p>
+<p>次に、二次モーメントを考えます。</p>
+<p><span class="math display">\[
+E[W^2] = E[V_s^2] \iff \mathit{VAR}(W) = \mathit{VAR}(V_s)
+\]</span></p>
+<p>なので、分散を考えます。</p>
+<p><span class="math display">\[
+\mathit{VAR}(W) = \sqrt{k^2}{\sigma_p^4} \bigg(
+\frac{\mathit{VAR}(s_1^2)}{n_1^2} + \frac{\mathit{VAR}(s_2^2)}{n_2^2}
+\bigg)
+\]</span></p>
+<p>ここで</p>
+<p><span class="math display">\[
+\frac{(n_1-1)s^2}{\sigma_1^2} \sim \chi^2_{n_1 - 1}
+\]</span></p>
+<p>なので、<span
+class="math inline">\(\frac{(n_1-1)s^2}{\sigma_1^2}\)</span>はχ二乗分布の分散と等しくなります。よって、</p>
+<p><span class="math display">\[\begin{align}
+\frac{(n_1 - 1)^2 \mathit{VAR}(s_1^2)}{\sigma_1^4} &amp;= 2(n_1 - 1) \\
+\mathit{VAR}(s_1^2) &amp;= \frac{2\sigma_1^4}{n_1 - 1}
+\end{align}\]</span></p>
+<p>同様に</p>
+<p><span class="math display">\[
+\mathit{VAR}(s_2^2) = \frac{2\sigma_2^4}{n_2 - 1}
+\]</span></p>
+<p>よって</p>
+<p><span class="math display">\[
+\mathit{VAR}(W) = \frac{k^2}{\sigma_p^4} \bigg(
+\frac{2\sigma_1^4}{n_1^2(n_1 - 1)} + \frac{2\sigma_2^4}{n_2^2(n_2 - 1)}
+\bigg)
+\]</span></p>
+<p>となります。</p>
+<p>一方、<span
+class="math inline">\(V_s\)</span>はχ二乗分布に従うので</p>
+<p><span class="math display">\[
+\mathit{VAR}(V_s) = 2k
+\]</span></p>
+<p>です。</p>
+<p>よって、<span class="math inline">\(\mathit{VAR}(W) =
+\mathit{VAR}(V_s)\)</span>となるのは、</p>
+<p><span class="math display">\[
+k = \frac{ \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2} }{
+\frac{1}{n_1 - 1}\big( \frac{\sigma_1^2}{n_1} \big)^2 + \frac{1}{n_2 -
+1}\big( \frac{\sigma_2^2}{n_2} \big)^2 }
+\]</span></p>
+<p>のときになります。実際には<span
+class="math inline">\(\sigma_1\)</span>と<span
+class="math inline">\(\sigma_2\)</span>は観察できないので、実際の自由度は<span
+class="math inline">\(s_1\)</span>と<span
+class="math inline">\(s_2\)</span>を代わりに使って計算します。これがWelch-Satterwaithe
+approximationです。</p>
+<p>Rの<code>t.test</code>関数は、二標本の平均値の差の検定においては、標準でWelch’s
+t testを用います。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">710</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">15</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="fu">t.test</span>(x1, x2)</span></code></pre></div>
+<pre><code>
+    Welch Two Sample t-test
+
+data:  x1 and x2
+t = 0.38559, df = 9.945, p-value = 0.7079
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.6643788  0.9421981
+sample estimates:
+mean of x mean of y 
+0.6926676 0.5537579 </code></pre>
+<p><code>df</code>に小数点がありますね。実際のところ、あれこれ考える必要はありません。</p>
+</div>
+<div id="対応のある検定paired-t-test" class="section level2"
+number="6.3">
+<h2><span class="header-section-number">6.3</span>
+対応のある検定（paired t test）</h2>
+<p>二標本の差の検定なのですが、二つのベクトルの対応する値と値を引いて一つのベクトルにしてから検定をかけるので、手法としては帰無仮説がゼロの一標本の平均値の検定になります。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">710</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="at">mean =</span> <span class="dv">1</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">10</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="fu">t.test</span>(x1, x2, <span class="at">paired =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>
+    Paired t-test
+
+data:  x1 and x2
+t = 0.14945, df = 9, p-value = 0.8845
+alternative hypothesis: true mean difference is not equal to 0
+95 percent confidence interval:
+ -0.7055616  0.8053790
+sample estimates:
+mean difference 
+     0.04990873 </code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="co"># 以下でも同じ</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="fu">t.test</span>(x1 <span class="sc">-</span> x2)</span></code></pre></div>
+<pre><code>
+    One Sample t-test
+
+data:  x1 - x2
+t = 0.14945, df = 9, p-value = 0.8845
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ -0.7055616  0.8053790
+sample estimates:
+ mean of x 
+0.04990873 </code></pre>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>χ二乗分布の導出は<a
+href="./chi-squared-test.shtml">Rによる適合度のχ二乗検定</a>を参照してください。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>χ二乗分布はガンマ関数の特殊形になります。<a
+href="./chi-squared-test.shtml#ガンマ分布のモーメント母関数と再生性">ガンマ関数のモーメント母関数の導出</a>を参考にしてください。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>等分散性の検定でStudentとWelchのどちらにするかを選択した場合、それに対するp値の補正が必要になりますが、一般的な手法として確立していません。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

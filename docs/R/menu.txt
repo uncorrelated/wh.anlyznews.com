@@ -58,6 +58,7 @@ div.right h2.menu {
     <dt><a href="cauchy_dist.shtml">コーシー分布とのつきあい方</a></dt>
     <dt><a href="chi-squared-test.shtml">Rによる適合度のχ二乗検定</a></dt>
     <dt><a href="cross%20tabulation.shtml">Rでチマチマとクロス表の検定と信頼区間の計算</a></dt>
+    <dt><a href="t-test.shtml">t検定への道</a></dt>
 </dl>
 
 <h2 class="menu">Rグラフィックス</h2>
