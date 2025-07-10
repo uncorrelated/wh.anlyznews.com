@@ -477,7 +477,8 @@ class="math inline">\(j\)</span>列の頻度の合計を乗じたものを、全
 href="#fn1" class="footnote-ref"
 id="fnref1"><sup>1</sup></a>、χ二乗検定を用いて独立性の検定を行うことができます<a
 href="#fn2" class="footnote-ref"
-id="fnref2"><sup>2</sup></a>。また、各セルの差も正規分布を用いて外れ値ではないか検定ができます。</p>
+id="fnref2"><sup>2</sup></a>。また、各セルの差も正規分布を用いて外れ値でないか検定ができます<a
+href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>(xst <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(xt, <span class="at">correct =</span> <span class="cn">FALSE</span>)) <span class="co"># 2×2表でもイェーツの連続性補正は行わない</span></span></code></pre></div>
 <pre><code>Warning in chisq.test(xt, correct = FALSE): カイ自乗近似は不正確かもしれません</code></pre>
 <pre><code>
@@ -491,7 +492,7 @@ X-squared = 24.373, df = 4, p-value = 6.722e-05</code></pre>
 a 0.01647524 0.0214869316 0.9624113
 b 0.23439541 0.9624112772 0.2343954
 c 0.65342761 0.0008567694 0.2343954</code></pre>
-<p>警告で近似が不正確かも知れないと脅されますが、<code>chisq.test(xt, simulate.p.value = TRUE, B = 1000000)</code>と大きなサンプリングサイズのシミュレーションで値を計算しても、話が変わるようなことはほとんどないと思います。</p>
+<p>近似が不正確かも知れないと警告されます。期待値が小さいセルがあるからです。教科書的には<code>fisher.test</code>かシミュレーションの値を使うべきとなります。ただし、<code>chisq.test(xt, simulate.p.value = TRUE, B = 1000000)</code>と大きなサンプリングサイズのシミュレーションで値を計算しても、話が変わるようなことはほとんどないと思います。</p>
 <div id="検定統計量のプロット" class="section level2" number="2.1">
 <h2><span class="header-section-number">2.1</span>
 検定統計量のプロット</h2>
@@ -698,6 +699,11 @@ href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li
 id="fn2"><p>正規分布を仮定しないFisherの正確検定をかける場合は、<code>fisher.test(xt)</code>です。<a
 href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>セルごとに期待値<span
+class="math inline">\(e_{ij}\)</span>が出るので、観測値を<span
+class="math inline">\(n\)</span>として、多項分布の性質からセルごとに分散<span
+class="math inline">\(n(e_{ij}/n)(1 - e_{ij}/n)\)</span>が出ます。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
