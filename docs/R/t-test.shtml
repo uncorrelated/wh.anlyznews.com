@@ -689,7 +689,7 @@ class="math inline">\(v=v\)</span>で変数変換します。</p>
 P(T&lt;\alpha) = \int_{-\infty}^\alpha \int_0^\infty
 \frac{1}{\sqrt{2\pi}2^{k/2}\Gamma(k/2)}
 \exp\bigg(-\frac{ut^2}{2k}-\frac{v}{2}\bigg)v^{k/2-1} \begin{vmatrix}
-\sqrt{v/k} &amp; * \\
+\sqrt{v/k} &amp; \frac{-2k}{u}\big(\frac{v}{k}\big)^\frac{3}{2} \\
 0 &amp; 1
 \end{vmatrix} dv dt
 \]</span></p>
@@ -700,7 +700,7 @@ class="math inline">\(t=t\)</span>で変数変換します。</p>
 &amp;= \int_{-\infty}^\alpha \int_0^\infty
 \frac{1}{\sqrt{2\pi}2^{k/2}\Gamma(k/2)} \exp(-q)\bigg( \frac{q}{t^2/(2k)
 + 1/2}  \bigg)^{k/2-1} \begin{vmatrix}
-\frac{1}{t^2/(2k) + 1/2} &amp; * \\
+\frac{1}{t^2/(2k) + 1/2} &amp; \frac{k}{\nu t} \\
 0 &amp; 1
 \end{vmatrix} dq dt\\
 &amp;= \int_{-\infty}^\alpha \int_0^\infty
