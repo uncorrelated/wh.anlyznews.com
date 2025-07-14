@@ -367,11 +367,11 @@ id="toc-ある形式の線形独立なベクトルの正規直交化"><span
 class="toc-section-number">1.1</span>
 ある形式の線形独立なベクトルの正規直交化</a></li>
 </ul></li>
-<li><a href="#標本平均と標本分散" id="toc-標本平均と標本分散"><span
-class="toc-section-number">2</span> 標本平均と標本分散</a></li>
-<li><a href="#標本分散が従う分布の導出"
-id="toc-標本分散が従う分布の導出"><span
-class="toc-section-number">3</span> 標本分散が従う分布の導出</a></li>
+<li><a href="#標本平均と不偏分散" id="toc-標本平均と不偏分散"><span
+class="toc-section-number">2</span> 標本平均と不偏分散</a></li>
+<li><a href="#不偏分散が従う分布の導出"
+id="toc-不偏分散が従う分布の導出"><span
+class="toc-section-number">3</span> 不偏分散が従う分布の導出</a></li>
 <li><a href="#t分布の導出" id="toc-t分布の導出"><span
 class="toc-section-number">4</span> t分布の導出</a></li>
 <li><a href="#標本平均の検定" id="toc-標本平均の検定"><span
@@ -506,8 +506,8 @@ class="math inline">\(1\)</span>であり、<span class="math inline">\(i\ne
 j\)</span>のとき<span class="math inline">\(0\)</span>だからです。</p>
 </div>
 </div>
-<div id="標本平均と標本分散" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> 標本平均と標本分散</h1>
+<div id="標本平均と不偏分散" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 標本平均と不偏分散</h1>
 <p><span class="math inline">\(\{X_i\}_{i \in \{ j \in \mathbb{N} \mid 1
 \le j \le n \}}\)</span>を正規分布<span
 class="math inline">\(\mathcal{N}(\mu,
@@ -516,7 +516,7 @@ class="math inline">\(\mathcal{N}(\mu,
 \bar{X} &amp;= \frac{1}{n}\sum^n_{i=1} X_i
 \end{align}\]</span></p>
 <p>となります。</p>
-<p>標本分散は、確率変数の分散と、標本平均の分散を分けて計算することで導出できます。</p>
+<p>標本分散を母分散の推定量として扱うと過小推定バイアスが入るので、小標本ではとくに不偏分散を用います。不偏分散は、確率変数の分散と、標本平均の分散を分けて計算することで導出できます。</p>
 <p><span class="math display">\[\begin{align}
 &amp;E\bigg[\sum^n_{i=1} ( X_i - \bar{X} )^2 \bigg] \\
 &amp;= E\bigg[\sum^n_{i=1} ( X_i - \mu + \mu - \bar{X} )^2 \bigg] \\
@@ -540,16 +540,16 @@ E\bigg[\sum^n_{i=1} ( X_i - \bar{X} )^2 \bigg] = n\sigma^2 - \sigma^2 =
 <p><span class="math display">\[
 \sigma^2 = E\bigg[\frac{\sum^n_{i=1} ( X_i - \bar{X} )^2}{n-1} \bigg]
 \]</span></p>
-<p>となります。よって標本分散は、</p>
+<p>となります。よって不偏分散は、</p>
 <p><span class="math display">\[\begin{align}
 s^2 &amp;= \frac{1}{n-1}\sum^n_{i=1} (X_i - \bar{X})^2
 \end{align}\]</span></p>
 <p>です。</p>
 </div>
-<div id="標本分散が従う分布の導出" class="section level1" number="3">
+<div id="不偏分散が従う分布の導出" class="section level1" number="3">
 <h1><span class="header-section-number">3</span>
-標本分散が従う分布の導出</h1>
-<p>必要なのは標本分散が従う分布なのですが、ほとんど同じ計算なので標本平均と標本分散が独立であることの証明を確認します。</p>
+不偏分散が従う分布の導出</h1>
+<p>必要なのは不偏分散が従う分布なのですが、ほとんど同じ計算なので標本平均と不偏分散が独立であることの証明を確認します。</p>
 <p>標準化された観測値のベクトル<span
 class="math inline">\(U\)</span>を考えます。</p>
 <p><span class="math display">\[\begin{align}
@@ -662,7 +662,7 @@ Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}
 class="math inline">\(\mu\)</span>を<span
 class="math inline">\(\bar{X}\)</span>で、<span
 class="math inline">\(\sigma\)</span>を<span
-class="math inline">\(s\)</span>で置き換えて、Z値を計算し、標準正規分布を用いてp値を計算すると、Z検定になります。しかし、小サンプルの場合、標本分散の誤差を考慮しないZ検定は誤差が大きくなります。</p>
+class="math inline">\(s\)</span>で置き換えて、Z値を計算し、標準正規分布を用いてp値を計算すると、Z検定になります。しかし、小サンプルの場合、不偏分散の誤差を考慮しないZ検定は誤差が大きくなります。</p>
 <p>そこで、</p>
 <p><span class="math display">\[
 T = \frac{\bar{X} - \mu}{s/\sqrt{n}} = \frac{\bar{X} -
@@ -748,7 +748,7 @@ f(t) =
 <p>図示すると、</p>
 <p><img src="common_files/figure-html/t-dist-1.png" width="672" /></p>
 <p>t分布をT統計量で分断し、左側と右側の積分値を求めていることが分かりやすいと思います。</p>
-<p>左側の灰色の領域は、帰無仮説（と標本分散）が真だとして、同じサンプルサイズの観測を繰り返したときに、観測値された値と同じか、より小さい値が得られる確率で、右側の白い領域は、同じか、より大きい値が得られる確率です。両側検定のp値は小さい方のp値の2倍となります。それぞれの側の有意水準は表示の半分で評価するため、p値を2倍にしないと有意水準の値そのままと比較できないためです。</p>
+<p>左側の灰色の領域は、帰無仮説（と不偏分散）が真だとして、同じサンプルサイズの観測を繰り返したときに、観測値された値と同じか、より小さい値が得られる確率で、右側の白い領域は、同じか、より大きい値が得られる確率です。両側検定のp値は小さい方のp値の2倍となります。それぞれの側の有意水準は表示の半分で評価するため、p値を2倍にしないと有意水準の値そのままと比較できないためです。</p>
 <p>便利な<code>t.test</code>関数があるので、こんなに書かなくても大丈夫です。</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">t.test</span>(x, <span class="at">mu =</span> H0, <span class="at">alternative =</span> <span class="st">&quot;two.sided&quot;</span>)</span></code></pre></div>
 <pre><code>
@@ -790,7 +790,7 @@ class="math inline">\(n_2\)</span>とおくと、二標本の差の分布は</p>
 \]</span></p>
 <p>になります。</p>
 <p><span
-class="math inline">\(\sigma^2\)</span>は観察不能なため、標本分散<span
+class="math inline">\(\sigma^2\)</span>は観察不能なため、不偏分散<span
 class="math inline">\(s_1\)</span>と<span
 class="math inline">\(s_2\)</span>を代わりに使うことを考えます。</p>
 <p>自由度を<span class="math inline">\(k_1\)</span>，<span
@@ -819,7 +819,7 @@ M_X^{k_1}(t)M_X^{k_2}(t) = (1-2t)^{-\frac{k_1+k_2}{2}}
 \]</span></p>
 <p>は、自由度<span class="math inline">\(n_1 + n_2 -
 2\)</span>のχ二乗分布に従います。</p>
-<p>また、平均値の差の（プールされた）標本分散<span
+<p>また、平均値の差の（プールされた）不偏分散<span
 class="math inline">\(s_p\)</span>は</p>
 <p><span class="math display">\[
 s_p^2 = \frac{s_1^2(n_1-1) + s_2^2(n_2-1)}{n_1 + n_2 - 2}
