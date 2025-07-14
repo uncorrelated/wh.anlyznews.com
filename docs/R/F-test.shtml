@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rによる等分散性の検定と分散分析（ANOVA）</title>
+
+<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rによる等分散性の検定と分散分析（ANOVA）</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>分散分析で使われるF分布について基本的な事項を確認し、尖度による自由度補正をかける適用できる分布の条件を緩めた手法を紹介します。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#f分布の導出" id="toc-f分布の導出"><span
+class="toc-section-number">1</span> F分布の導出</a></li>
+<li><a href="#等分散性の検定" id="toc-等分散性の検定"><span
+class="toc-section-number">2</span> 等分散性の検定</a>
+<ul>
+<li><a href="#尖度による自由度補正" id="toc-尖度による自由度補正"><span
+class="toc-section-number">2.1</span> 尖度による自由度補正</a></li>
+</ul></li>
+<li><a href="#分散分析anova" id="toc-分散分析anova"><span
+class="toc-section-number">3</span> 分散分析（ANOVA）</a>
+<ul>
+<li><a href="#一元配置分散分析one-way-anova"
+id="toc-一元配置分散分析one-way-anova"><span
+class="toc-section-number">3.1</span> 一元配置分散分析（one-way
+ANOVA）</a>
+<ul>
+<li><a href="#推定モデル" id="toc-推定モデル"><span
+class="toc-section-number">3.1.1</span> 推定モデル</a></li>
+<li><a href="#平方和の分解" id="toc-平方和の分解"><span
+class="toc-section-number">3.1.2</span> 平方和の分解</a></li>
+<li><a href="#因子効果の平方和の期待値"
+id="toc-因子効果の平方和の期待値"><span
+class="toc-section-number">3.1.3</span>
+因子効果の平方和の期待値</a></li>
+<li><a href="#誤差項の平方和の期待値"
+id="toc-誤差項の平方和の期待値"><span
+class="toc-section-number">3.1.4</span> 誤差項の平方和の期待値</a></li>
+<li><a href="#検定統計量とその意味" id="toc-検定統計量とその意味"><span
+class="toc-section-number">3.1.5</span> 検定統計量とその意味</a></li>
+<li><a href="#rによる実践" id="toc-rによる実践"><span
+class="toc-section-number">3.1.6</span> Rによる実践</a></li>
+</ul></li>
+<li><a href="#二元配置分散分析two-way-anova"
+id="toc-二元配置分散分析two-way-anova"><span
+class="toc-section-number">3.2</span> 二元配置分散分析（two-way
+ANOVA）</a>
+<ul>
+<li><a href="#プロット" id="toc-プロット"><span
+class="toc-section-number">3.2.1</span> プロット</a></li>
+</ul></li>
+<li><a href="#高度な手法" id="toc-高度な手法"><span
+class="toc-section-number">3.3</span> 高度な手法</a></li>
+</ul></li>
+</ul>
+</div>
+
+<div id="f分布の導出" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> F分布の導出</h1>
+<p>それぞれ自由度<span class="math inline">\(m\)</span>と<span
+class="math inline">\(n\)</span>のχ二乗分布に従う独立な確率変数<span
+class="math inline">\(X\)</span>, <span
+class="math inline">\(Y\)</span>で表される</p>
+<p><span class="math display">\[
+z = \frac{X/m}{Y/n}
+\]</span></p>
+<p>が従うのがF分布です。</p>
+<p>導出には、まず、<span class="math inline">\(X\)</span>と<span
+class="math inline">\(Y\)</span>の同時確率密度を考えます。</p>
+<p>独立なので</p>
+<p><span class="math display">\[\begin{align}
+f_{m,n}(X, Y) &amp;= f_m(X)f_n(Y) \\
+&amp;=
+\frac{X^{\frac{m}{2}-1}\exp(-\frac{X}{2})}{2^{\frac{m}{2}}\Gamma\big(\frac{m}{2}\big)}
+\frac{Y^{\frac{n}{2}-1}\exp(-\frac{Y}{2})}{2^{\frac{n}{2}}\Gamma\big(\frac{n}{2}\big)}
+\end{align}\]</span></p>
+<p>となります。</p>
+<p><span class="math display">\[\begin{align}
+z &amp;= \frac{X/m}{Y/n} \\
+y &amp;= Y
+\end{align}\]</span></p>
+<p>で変数変換をすると、</p>
+<p><span class="math display">\[\begin{align}
+f_{m,n}(z, y) &amp;= \frac{ \big(\frac{m}{n} zy \big)^{\frac{m}{2}-1}
+\exp\big(-\frac{mzy}{2n}\big) }{2^\frac{m}{2}
+\Gamma\big(\frac{m}{2}\big) }
+\frac{ y^{\frac{n}{2}-1}\exp\big(-\frac{y}{2}\big) }{ 2^\frac{n}{2}
+\Gamma\big(\frac{n}{2}\big) }
+\begin{vmatrix}
+\frac{m}{n}y &amp; \frac{my^2}{nX} \\
+0 &amp; 1
+\end{vmatrix} \\
+&amp;= \frac{ \big( \frac{m}{n} \big)^\frac{m}{2} z^{\frac{m}{2}-1}  }{
+2^\frac{m + n}{2}
+\Gamma\big(\frac{m}{2}\big)\Gamma\big(\frac{n}{2}\big)}
+y^{\frac{m+n}{2}-1}\exp\bigg(-\frac{(n+mz)y}{2n}\bigg)
+\end{align}\]</span></p>
+<p>となります。</p>
+<p><span class="math inline">\(y\)</span>で積分すると、<span
+class="math inline">\(z\)</span>の確率密度関数になります。</p>
+<p><span class="math display">\[\begin{align}
+&amp;f_{m,n}(z) \\
+&amp;= \frac{ \big( \frac{m}{n} \big)^\frac{m}{2} z^{\frac{m}{2}-1}  }{
+2^\frac{m + n}{2}
+\Gamma\big(\frac{m}{2}\big)\Gamma\big(\frac{n}{2}\big)}
+\int_0^{\infty} y^{\frac{m+n}{2}-1}\exp\bigg(-\frac{(n+mz)y}{2n}\bigg)
+dy
+\end{align}\]</span></p>
+<p>この積分はガンマ関数の形に持ち込めます。つまり<span
+class="math inline">\(u=(mz+n)y/2n\)</span>と変数変換します。</p>
+<p><span class="math display">\[\begin{align}
+&amp;= \frac{ \big( \frac{m}{n} \big)^\frac{m}{2} z^{\frac{m}{2}-1}  }{
+2^\frac{m + n}{2}
+\Gamma\big(\frac{m}{2}\big)\Gamma\big(\frac{n}{2}\big)}
+\bigg( \frac{2n}{mz + n}\bigg)^\frac{m+n}{2}
+\int_0^{\infty} u^{\frac{m+n}{2}-1}\exp(-u) du \\
+&amp;= \frac{ \big( \frac{m}{n} \big)^\frac{m}{2} z^{\frac{m}{2}-1}  }{
+\Gamma\big(\frac{m}{2}\big)\Gamma\big(\frac{n}{2}\big)}
+\bigg( \frac{n}{mz + n}\bigg)^\frac{m+n}{2}
+\Gamma\bigg(\frac{m+n}{2}\bigg)
+\end{align}\]</span></p>
+<p>ガンマ関数とベータ関数の関係を思い出して整理すると、</p>
+<p><span class="math display">\[\begin{align}
+&amp;=\frac{ \big( \frac{m}{n} \big)^\frac{m}{2} z^{\frac{m}{2}-1} }{
+B\big(\frac{m}{2}, \frac{n}{2}\big) }
+z^{\frac{n}{2}-1}
+\bigg( \frac{n}{mz + n}\bigg)^\frac{m+n}{2} \\
+f_{m,n}(z) &amp;=\frac{ 1 }{ B\big(\frac{m}{2}, \frac{n}{2}\big) }
+\bigg( \frac{m}{n} \bigg)^\frac{m}{2}
+z^{\frac{m}{2}-1}
+\bigg( 1 + \frac{m}{n}z\bigg)^{-\frac{m+n}{2}}
+\end{align}\]</span></p>
+<p>となります。なお、書き方にバリエーションが色々あり、上記の式以外を紹介していることも多いです。</p>
+</div>
+<div id="等分散性の検定" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 等分散性の検定</h1>
+<p>F分布の導出は二つのχ二乗分布からでした。何に使えば良く分からないわけですが、二つの分布の母分散<span
+class="math inline">\(\sigma^2\)</span>が等しいという帰無仮説の下で、標本分散を<span
+class="math inline">\(s^2_x\)</span>と<span
+class="math inline">\(s^2_y\)</span>、χ二乗統計量を<span
+class="math inline">\(X\)</span>と<span
+class="math inline">\(Y\)</span>とおくと、</p>
+<p><span class="math display">\[
+z = \frac{X/m}{Y/n} = \frac{s^2_x/\sigma^2}{s^2_y/\sigma^2} =
+\frac{s^2_x}{s^2_y}
+\]</span></p>
+<p>となるので、標本分散比の分布になっていることが分かります。</p>
+<p>Rで実際に検定してみましょう。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">713</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>, <span class="at">sd =</span> <span class="dv">2</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p>と乱数をつくり</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span><span class="fu">pf</span>(<span class="fu">var</span>(x)<span class="sc">/</span><span class="fu">var</span>(y), <span class="fu">length</span>(x) <span class="sc">-</span> <span class="dv">1</span>, <span class="fu">length</span>(y) <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>[1] 0.5087843</code></pre>
+<p>教科書的にp値を出せます。</p>
+<p><code>var.test</code>を使う方が簡単です。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">var.test</span>(x, y)</span></code></pre></div>
+<pre><code>
+    F test to compare two variances
+
+data:  x and y
+F = 1.4575, num df = 9, denom df = 14, p-value = 0.5088
+alternative hypothesis: true ratio of variances is not equal to 1
+95 percent confidence interval:
+ 0.4541509 5.5355408
+sample estimates:
+ratio of variances 
+          1.457507 </code></pre>
+<p>実用上、等分散性の検定はANOVAやOLSなどで制約付きモデルと制約無しモデルの比較で用いることが多く、<code>var.test</code>を用いることは少ないと思います。</p>
+<p>昔はStudentのt検定を行うか、Welchのt検定を行うかを、等分散性の検定をかけて判定するという悪習があったのですが、今は迷わずWelchのt検定をかけるほうが望ましいとされています。</p>
+<p>また、等分散性の検定は正規分布を前提にしており、他の分布で検定をかけると大きなバイアスが入ることが知られています。観測値の真の分布は通常、分かりませんから、使うには強い仮定が必要です。</p>
+<div id="尖度による自由度補正" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span>
+尖度による自由度補正</h2>
+<p>F検定が正規分布にしか適用ができないのは、分布の裾野の厚さ、尖度が問題であって、尖度が分かればそれで自由度を補正してより広い分布に使えることが知られています（<a href="https://doi.org/10.1080/00031305.2014.966589" target="_blank">O’Neill
+(2014)</a>）。参考文献で示されている補正法を実装してみます。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>kurtosis <span class="ot">&lt;-</span> <span class="cf">function</span>(...){</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>    <span class="co"># 尖度の不偏推定量を計算（注意：正規分布の尖度が0ではなく3になる方）</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    args <span class="ot">&lt;-</span> <span class="fu">list</span>(...)</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    kappa <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(args))</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(args)){</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>        a <span class="ot">&lt;-</span> args[[i]]</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>        n <span class="ot">&lt;-</span> <span class="fu">length</span>(a)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>        m <span class="ot">&lt;-</span> <span class="fu">mean</span>(a)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>        kappa[i] <span class="ot">&lt;-</span> n <span class="sc">*</span> (n <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sum</span>((a <span class="sc">-</span> m)<span class="sc">^</span><span class="dv">4</span>) <span class="sc">/</span> <span class="fu">sum</span>((a <span class="sc">-</span> m)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    }</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>    kappa</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>}</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>on2014ss2ss <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, <span class="at">alternative =</span> <span class="cn">NULL</span>){</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>    <span class="co"># サブサンプルとサブサンプルの分散比の統計量を、自由度補正してF検定</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">length</span>(a), <span class="fu">length</span>(b))</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>    s2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">var</span>(a), <span class="fu">var</span>(b))</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>    kappa <span class="ot">&lt;-</span> <span class="fu">kurtosis</span>(<span class="fu">c</span>(a <span class="sc">-</span> <span class="fu">mean</span>(a), b <span class="sc">-</span> <span class="fu">mean</span>(b)))</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>    DF_n <span class="ot">&lt;-</span> <span class="cf">function</span>(n) <span class="dv">2</span><span class="sc">*</span>n <span class="sc">/</span> (kappa <span class="sc">-</span> (n <span class="sc">-</span> <span class="dv">3</span>)<span class="sc">/</span>(n <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>    cpf <span class="ot">&lt;-</span> <span class="cf">function</span>(i, j) <span class="fu">pf</span>(s2[i]<span class="sc">/</span>s2[j], <span class="fu">DF_n</span>(n[i]), <span class="fu">DF_n</span>(n[j]))</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.null</span>(alternative)) alternative <span class="ot">&lt;-</span> <span class="st">&quot;two.sided&quot;</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a>    (<span class="cf">switch</span>(alternative, <span class="st">&quot;two.sided&quot;</span> <span class="ot">=</span> <span class="cf">function</span>(){</span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>        <span class="dv">2</span><span class="sc">*</span><span class="fu">min</span>(<span class="fu">cpf</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="fu">cpf</span>(<span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>    }, <span class="st">&quot;less&quot;</span> <span class="ot">=</span> <span class="cf">function</span>(){</span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>        <span class="fu">cpf</span>(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>    }, <span class="st">&quot;greater&quot;</span> <span class="ot">=</span> <span class="cf">function</span>(){</span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>        <span class="fu">cpf</span>(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>    }))()</span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>}</span></code></pre></div>
+<p>実際にガンマ分布に応用してみましょう。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">scale =</span> <span class="dv">3</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">scale =</span> <span class="dv">3</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a><span class="fu">on2014ss2ss</span>(a, b)</span></code></pre></div>
+<pre><code>[1] 0.4629295</code></pre>
+<p>これだと有用性が分からないので、教科書的なF検定、上で紹介したO’Neillの方法、（詳細は省きますが）Levene法の三つをシミュレーションで比較しました。</p>
+<p>まず、5%に近ければ近いほどよい偽陽性率です。パラメーターが同じサンプルサイズ70と30の二つの群を、1000回比較しました。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">norm</th>
+<th align="right">laplace</th>
+<th align="right">unif</th>
+<th align="right">gamma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">F-test</td>
+<td align="right">0.041</td>
+<td align="right">0.132</td>
+<td align="right">0.006</td>
+<td align="right">0.114</td>
+</tr>
+<tr class="even">
+<td align="left">O’Neill</td>
+<td align="right">0.050</td>
+<td align="right">0.050</td>
+<td align="right">0.044</td>
+<td align="right">0.054</td>
+</tr>
+<tr class="odd">
+<td align="left">levene</td>
+<td align="right">0.043</td>
+<td align="right">0.046</td>
+<td align="right">0.043</td>
+<td align="right">0.044</td>
+</tr>
+</tbody>
+</table>
+<p>F検定は正規分布（norm）以外では偽陽性率がよくないです。O’Neillとleveneは概ね設定した危険率通りの値になっています。</p>
+<p>次に、偽陽性率が一定のとき、高ければ高いほどよい真陽性率です。母分散が異なるサンプルサイズ70と30の二つの群を、1000回比較しました。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">norm</th>
+<th align="right">laplace</th>
+<th align="right">unif</th>
+<th align="right">gamma</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">F-test</td>
+<td align="right">0.833</td>
+<td align="right">0.681</td>
+<td align="right">0.553</td>
+<td align="right">0.966</td>
+</tr>
+<tr class="even">
+<td align="left">O’Neill</td>
+<td align="right">0.721</td>
+<td align="right">0.391</td>
+<td align="right">0.683</td>
+<td align="right">0.851</td>
+</tr>
+<tr class="odd">
+<td align="left">levene</td>
+<td align="right">0.661</td>
+<td align="right">0.440</td>
+<td align="right">0.449</td>
+<td align="right">0.895</td>
+</tr>
+</tbody>
+</table>
+<p>上で紹介したO’Neillの方法が、levene法と遜色のない結果になっているのが分かります。</p>
+</div>
+</div>
+<div id="分散分析anova" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 分散分析（ANOVA）</h1>
+<p><abbr title="Analysis of Variance">ANOVA</abbr>はF検定の応用で最もよく使われているものです。何かの従属変数の説明において、オス/メスや品種などの因子ごとの影響を統制したときに、誤差が同じと言えるかを検定します。異なる場合は、因子が従属変数に影響していることがわかります。</p>
+<p>オスとメスのような2つの水準の因子であればt検定をかけることもできますが、品種のように3以上になりうる場合はANOVAを使うことになります。また、因子の主効果をみる一元配置分散分析（one-way
+ANOVA）だけではなく、因子と因子の交互作用を見る二元配置分散分析（two-way
+ANOVA）を行うことができます。</p>
+<p>ただし、教科書的なANOVAを用いなくなっている分野も多いです。ANOVAは説明変数を因子としたOLSと同等です。OLSの方は因子以外の説明変数も同時に入れることができ、制約付きモデルと制約無しモデルのANOVAを手軽にかけることができるためです。OLSを使ったANOVAは、共分散分析（<abbr title="ANalysis OF COVAriance">ANCOVA</abbr>）と呼ばれます。</p>
+<div id="一元配置分散分析one-way-anova" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span>
+一元配置分散分析（one-way ANOVA）</h2>
+<p>複数の因子を考えても同様の計算が成り立ちますし、二元配置も交互作用を表す因子を追加するだけなので、一元配置分散分析をしっかり理解することが肝要です。</p>
+<div id="推定モデル" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> 推定モデル</h3>
+<p>因子に<span
+class="math inline">\(k\)</span>種類の水準/群があるとします。因子の水準/群<span
+class="math inline">\(g\)</span>の<span
+class="math inline">\(i\)</span>番目の観測値<span
+class="math inline">\(Y_{gi}\)</span>が、平均<span
+class="math inline">\(\mu\)</span>、水準/群ごとの効果<span
+class="math inline">\(\tau_g\)</span>、誤差項<span
+class="math inline">\(\epsilon_{gi}\)</span>で表されるとします。</p>
+<p><span class="math display">\[
+Y_{gi} = \mu + \tau_g + \epsilon_{gi}
+\]</span></p>
+<p>水準ごとの効果の合計は<span
+class="math inline">\(0\)</span>とします。合計を定めないと<span
+class="math inline">\(\mu\)</span>があるので一意に定まりません。</p>
+<p><span class="math display">\[
+\sum^k_{g=0} \tau_g = 0
+\]</span></p>
+<p>統計的仮説検定をかけるときの帰無仮説は、すべての<span
+class="math inline">\(\tau_g\)</span>が<span
+class="math inline">\(0\)</span>です。</p>
+</div>
+<div id="平方和の分解" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> 平方和の分解</h3>
+<p>観測値から平均値をひいて二乗した数の和を、平方和といいます。左辺と右辺の各項ごとに平方和を考えます。</p>
+<p><span class="math display">\[\begin{align}
+\mathit{TSS} &amp;= \sum^k_{g=1} \sum^{n_g}_{i=1} (Y_{gi} - \bar{Y})^2
+\\
+\mathit{SST} &amp;= \sum^k_{g=1} \sum^{n_g}_{i=1} (\bar{Y_{g}} -
+\bar{Y})^2 = \sum^k_{g=1} n_g (\bar{Y_{g}} - \bar{Y})^2 \\
+\mathit{SSE} &amp;= \sum^k_{g=1} \sum^{n_g}_{i=1} (Y_{gi} -
+\bar{Y_{g}})^2
+\end{align}\]</span></p>
+<p><span class="math inline">\(\bar{Y}\)</span>は全体の平均値、<span
+class="math inline">\(n_g\)</span>は水準ごとのサンプルサイズ、<span
+class="math inline">\(\bar{Y}_g\)</span>は水準ごとの平均値です。</p>
+<p><span
+class="math inline">\(\mathit{TSS}\)</span>は全体の平方和、<span
+class="math inline">\(\mathit{SST}\)</span>は因子効果の平方和、<span
+class="math inline">\(\mathit{SSE}\)</span>は誤差項の平方和になります。</p>
+<p>このとき全体の平方和を、因子効果の平方和と誤差項の平方和に分解することができます。</p>
+<p><span class="math display">\[
+\mathit{TSS} = \mathit{SST} + \mathit{SSE}
+\]</span></p>
+<p>こうなることを確認しましょう。</p>
+<p><span class="math display">\[\begin{align}
+\mathit{TSS} &amp;= \sum^k_{g=1} \sum^{n_g}_{i=1} (Y_{gi} - \bar{Y})^2
+\\
+&amp;= \sum^k_{g=1} \sum^{n_g}_{i=1} (Y_{ij} - \bar{Y}_g + \bar{Y}_g -
+\bar{Y})^2 \\
+&amp;= \sum^k_{g=1} \sum^{n_g}_{i=1} \big[ (Y_{ij} - \bar{Y}_g)^2 +
+2(Y_{ij} - \bar{Y}_g)(\bar{Y}_g - \bar{Y}) + (\bar{Y}_g - \bar{Y})^2
+\big] \\
+&amp;= \sum^k_{g=1} \bigg[ \sum^{n_g}_{i=1} (Y_{ij} - \bar{Y}_g)^2 + 2
+(\bar{Y}_g - \bar{Y}) \sum^{n_g}_{i=1} (Y_{ij} - \bar{Y}_g) +
+\sum^{n_g}_{i=1} (\bar{Y}_g - \bar{Y})^2 \bigg]
+\end{align}\]</span></p>
+<p><span class="math inline">\(\sum^{n_g}_{i=1} (Y_{ij} - \bar{Y}_g) =
+n_g \bar{Y}_g - n_g \bar{Y}_g = 0\)</span>に注意すると、</p>
+<p><span class="math display">\[\begin{align}
+\mathit{TSS} &amp;= \sum^k_{g=1} \sum^{n_g}_{i=1} (Y_{ij} - \bar{Y}_g)^2
++ \sum^k_{g=1} \sum^{n_g}_{i=1} (\bar{Y}_g - \bar{Y})^2 \\
+&amp;= \mathit{SSE} + \mathit{SST}
+\end{align}\]</span></p>
+</div>
+<div id="因子効果の平方和の期待値" class="section level3"
+number="3.1.3">
+<h3><span class="header-section-number">3.1.3</span>
+因子効果の平方和の期待値</h3>
+<p><span
+class="math inline">\(E[\mathit{SST}]\)</span>の計算の前に準備をしましょう。</p>
+<p><span class="math display">\[\begin{align}
+\bar{Y}_g &amp;= \frac{1}{n_g} \sum^{n_g}_{i=1} Y_{gi} \\
+&amp;= \frac{1}{n_g} \sum^{n_g}_{i=1} (\mu + \tau_g + \epsilon_{gi})\\
+&amp;= \mu + \tau_g + \bar{\epsilon}_g \quad \mbox{where} \ \
+\bar{\epsilon}_g = \frac{1}{n_g} \sum^{n_g}_{i=1} \epsilon_{gi}
+\end{align}\]</span></p>
+<p><span
+class="math inline">\(\epsilon_{gi}\)</span>はi.i.d.な確率変数で、<span
+class="math inline">\(E\big[ \epsilon_{gi} \big] = 0\)</span>、<span
+class="math inline">\(\mathit{VAR}\big[ \epsilon_{gi} \big] =
+\sigma^2\)</span>なので、</p>
+<p><span class="math display">\[\begin{align}
+E\big[ \bar{\epsilon}_{g} \big] &amp;= 0 \\
+\mathit{VAR}\big[ \bar{\epsilon}_{g} \big] &amp;= \frac{\sigma^2}{n}
+\quad \mbox{where} \ \ n = \sum^k_{g=1} n_g
+\end{align}\]</span></p>
+<p>になります。</p>
+<p>同様に</p>
+<p><span class="math display">\[\begin{align}
+\bar{Y} &amp;= \frac{1}{n} \sum^k_{g=1} \sum^{n_g}_{i=1} Y_{gi} \\
+&amp;= \frac{1}{n} \sum^k_{g=1} \sum^{n_g}_{i=1} (\mu + \tau_g +
+\epsilon_{gi})\\
+&amp;= \mu + \bar{\tau} + \bar{\epsilon} \quad \mbox{where} \ \
+\bar{\tau} = \frac{1}{n} \sum^k_{g=1} n_g \tau_g, \ \bar{\epsilon} =
+\frac{1}{n} \sum^k_{g=1} \sum^{n_g}_{i=1} \epsilon_{gi}
+\end{align}\]</span></p>
+<p>になります。なお、</p>
+<p><span class="math display">\[\begin{align}
+\bar{\tau} &amp;= \frac{1}{n} \sum^k_{g=1} n_g \tau_g \\
+\bar{\epsilon} &amp;= \frac{1}{n} \sum^k_{g=1} \sum^{n_g}_{i=1}
+\epsilon_{gi}
+\end{align}\]</span></p>
+<p>です。<span class="math inline">\(\tau_g\)</span>は定数なので<span
+class="math inline">\(\bar{\tau}\)</span>も定数になり、</p>
+<p><span class="math display">\[\begin{align}
+E\big[ \bar{\epsilon} \big] &amp;= 0 \\
+\mathit{VAR}\big[ \bar{\epsilon} \big] &amp;= \frac{\sigma^2}{n}
+\end{align}\]</span></p>
+<p>となります。</p>
+<p>因子効果の平方和の期待値を計算していきます。</p>
+<p><span class="math display">\[\begin{align}
+E[\mathit{SST}] &amp;= E\bigg[ \sum^k_{g=1} n_g (\bar{Y}_g -
+\bar{Y})\bigg] \\
+&amp;= E\bigg[ \sum^k_{g=1} n_g (\tau_g + \bar{\epsilon}_g - \bar{\tau}
+- \bar{\epsilon}) \bigg] \\
+&amp;= E\bigg[ \sum^k_{g=1} n_g (\tau_g - \bar{\tau})^2 + \sum^k_{g=1}
+2n_g(\tau_g - \bar{\tau})(\bar{\epsilon}_g - \bar{\epsilon}) +
+\sum^k_{g=1} n_g(\bar{\epsilon}_g - \bar{\epsilon})^2 \bigg]\\
+&amp;= E\bigg[ \sum^k_{g=1} n_g (\tau_g - \bar{\tau})^2 -
+\bar{\epsilon}) + \sum^k_{g=1} n_g(\bar{\epsilon}_g - \bar{\epsilon})^2
+\bigg]
+\end{align}\]</span></p>
+<p>ここで</p>
+<p><span class="math display">\[\begin{align}
+E[\sum^k_{g=1} n_g(\bar{\epsilon}_g - \bar{\epsilon})^2] &amp;= E\big[
+\sum^k_{g=1} (n_g \bar{\epsilon}_g^2 -
+2n_g\bar{\epsilon}_g\bar{\epsilon} + n_g\bar{\epsilon}^2) \big]\\
+&amp;= E\big[ \sum^k_{g=1} n_g \bar{\epsilon}_g^2 - 2n_g\bar{\epsilon}^2
++ n\bar{\epsilon}^2 \big]\\
+&amp;= E\big[\sum^k_{g=1} n_g \bar{\epsilon}_g^2 - n_g\bar{\epsilon}^2
+\big] \\
+&amp;= \sum^k_{g=1} n_g E[\bar{\epsilon}_g^2] - n_gE[\bar{\epsilon}^2 ]
+\\
+&amp;= k\sigma^2 - \sigma^2 \\
+&amp;= (k-1)\sigma^2
+\end{align}\]</span></p>
+<p>なので、</p>
+<p><span class="math display">\[
+E[\mathit{SST}] = \sum^k_{g=1} n_g (\tau_g - \bar{\tau})^2 + (k -
+1)\sigma^2
+\]</span></p>
+<p>となります。</p>
+</div>
+<div id="誤差項の平方和の期待値" class="section level3" number="3.1.4">
+<h3><span class="header-section-number">3.1.4</span>
+誤差項の平方和の期待値</h3>
+<p><span
+class="math inline">\(\mathit{SSE}\)</span>は級数和が二重になっているのですが、内側の級数和の期待値は<a
+href="./t-test.shtml#%E6%A8%99%E6%9C%AC%E5%B9%B3%E5%9D%87%E3%81%A8%E4%B8%8D%E5%81%8F%E5%88%86%E6%95%A3">t検定の説明での不偏分散の導出</a>のときと同様に</p>
+<p><span class="math display">\[\begin{align}
+E[ \mathit{SSE} ] &amp;= E\bigg[ \sum^k_{g=1} \sum^{n_g}_{i=1} (Y_{gi} -
+\hat{Y}_g)^2 \bigg] \\
+&amp;= \sum^k_{g=1} E\bigg[\sum^{n_g}_{i=1} (Y_{gi} - \hat{Y}_g)^2
+\bigg] \\
+&amp;= \sum^k_{g=1} (n_g - 1) \sigma^2 \\
+&amp;= (n - k)\sigma^2
+\end{align}\]</span></p>
+<p>と計算できます。自由度が<span
+class="math inline">\(n-1\)</span>ではなく、<span
+class="math inline">\(n-k\)</span>になるのに注意してください。</p>
+</div>
+<div id="検定統計量とその意味" class="section level3" number="3.1.5">
+<h3><span class="header-section-number">3.1.5</span>
+検定統計量とその意味</h3>
+<p>ANOVAの検定統計量としてのF値は以下のようになります。</p>
+<p><span class="math display">\[
+F = \frac{\mathit{SST}/(k-1)}{\mathit{SSE}/(n-k)} =
+\frac{\mathit{MST}}{\mathit{MSE}}
+\]</span></p>
+<p>因子効果の平均平方<span
+class="math inline">\(\mathit{MST}\)</span>となる分子の期待値は</p>
+<p><span class="math display">\[
+\frac{E[\mathit{SST}]}{k-1} = E\bigg[ \frac{1}{k-1}\sum^k_{g=1} n_g
+(\tau_g - \bar{\tau})^2 \bigg] + \sigma^2
+\]</span></p>
+<p>なので、帰無仮説<span class="math inline">\(H_0: \tau_1 = \cdots =
+\tau_k = 0\)</span>の下で、<span
+class="math inline">\(\sigma^2\)</span>の不偏推定量となります。<span
+class="math inline">\(H_0\)</span>では右辺第一項が<span
+class="math inline">\(0\)</span>になるからです。自由度は<span
+class="math inline">\(k-1\)</span>です。</p>
+<p>誤差項の平均平方<span
+class="math inline">\(\mathit{MSE}\)</span>となる分母は、分散<span
+class="math inline">\(\sigma^2\)</span>の不偏推定量となります。</p>
+<p>帰無仮説の下では、分子と分母は分散<span
+class="math inline">\(\sigma^2\)</span>の不偏推定量となり、この検定統計量に対してF検定を用いることができることがわかります。</p>
+</div>
+<div id="rによる実践" class="section level3" number="3.1.6">
+<h3><span class="header-section-number">3.1.6</span> Rによる実践</h3>
+<p>まずは教科書的に検定してみましょう。<code>iris</code>データセットを使います。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>y <span class="ot">&lt;-</span> iris<span class="sc">$</span>Sepal.Length</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>g <span class="ot">&lt;-</span> iris<span class="sc">$</span>Species</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(g))</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>TSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((y <span class="sc">-</span> <span class="fu">mean</span>(y))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>mean_y_by_g <span class="ot">&lt;-</span> <span class="fu">tapply</span>(y, g, mean)[g]</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>SSE <span class="ot">&lt;-</span> <span class="fu">sum</span>((y <span class="sc">-</span> mean_y_by_g)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a><span class="co"># SST &lt;- TSS - SSE と計算もできる</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>SST <span class="ot">&lt;-</span> <span class="fu">sum</span>((mean_y_by_g <span class="sc">-</span> <span class="fu">mean</span>(y))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>df_g <span class="ot">&lt;-</span> k <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>df_e <span class="ot">&lt;-</span> n <span class="sc">-</span> k</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>(f_value <span class="ot">&lt;-</span> (SST<span class="sc">/</span>df_g)<span class="sc">/</span>(SSE<span class="sc">/</span>df_e))</span></code></pre></div>
+<pre><code>[1] 119.2645</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="dv">2</span><span class="sc">*</span><span class="fu">pf</span>(f_value, k <span class="sc">-</span> <span class="dv">1</span>, n <span class="sc">-</span> k, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>[1] 3.339338e-31</code></pre>
+<p><code>anova</code>関数と<code>aov</code>関数を組み合わせると、簡単に検定できます。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">aov</span>(Sepal.Length <span class="sc">~</span> Species, iris))</span></code></pre></div>
+<pre><code>Analysis of Variance Table
+
+Response: Sepal.Length
+           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+Species     2 63.212  31.606  119.26 &lt; 2.2e-16 ***
+Residuals 147 38.956   0.265                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>表示のDfは自由度、Sum Sqは平方和、Mean Sqは平均平方和です。</p>
+<p>教科書的な手順と<code>anova</code>と<code>aov</code>を使った手順で、p値の表示方法に差異はありますが、どちらもF値は同じ値になりますね。</p>
+<div id="群間比較" class="section level4" number="3.1.6.1">
+<h4><span class="header-section-number">3.1.6.1</span> 群間比較</h4>
+<p>ANOVAで因子全体が影響しているとは言えるわけですが、因子のどの水準/群とどの水準/群に差異があるか分かりません。</p>
+<p><code>aov</code>の結果オブジェクトを<code>TukeyHSD</code>関数に入れると、水準と水準の差の信頼区間とp値の計算を多重比較補正つきでしてくれます。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">TukeyHSD</span>(<span class="fu">aov</span>(Sepal.Length <span class="sc">~</span> Species, iris), <span class="st">&quot;Species&quot;</span>)</span></code></pre></div>
+<pre><code>  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = Sepal.Length ~ Species, data = iris)
+
+$Species
+                      diff       lwr       upr p adj
+versicolor-setosa    0.930 0.6862273 1.1737727     0
+virginica-setosa     1.582 1.3382273 1.8257727     0
+virginica-versicolor 0.652 0.4082273 0.8957727     0</code></pre>
+<p>群間比較は<a
+href="https://wh.anlyznews.com/R/dotchart.shtml">ガブリエル比較区間による視覚化</a>などの選択肢もあるので、状況にあわせて利用しましょう。</p>
+</div>
+<div id="ols" class="section level4" number="3.1.6.2">
+<h4><span class="header-section-number">3.1.6.2</span> OLS</h4>
+<p>ここまでの記述を超える方法ですが、OLSを使って推定することもできます。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(Sepal.Length <span class="sc">~</span> Species, iris)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>r_lm_0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Sepal.Length <span class="sc">~</span> <span class="dv">1</span>, iris)</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>r_lm_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Sepal.Length <span class="sc">~</span> Species, iris)</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="fu">anova</span>(r_lm_1, r_lm_0)</span></code></pre></div>
+<pre><code>Analysis of Variance Table
+
+Model 1: Sepal.Length ~ Species
+Model 2: Sepal.Length ~ 1
+  Res.Df     RSS Df Sum of Sq      F    Pr(&gt;F)    
+1    147  38.956                                  
+2    149 102.168 -2   -63.212 119.26 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+</div>
+</div>
+<div id="二元配置分散分析two-way-anova" class="section level2"
+number="3.2">
+<h2><span class="header-section-number">3.2</span>
+二元配置分散分析（two-way ANOVA）</h2>
+<p>複数の因子による一元配置分散分析と、それら因子の交互作用の一元配置分散分析を組み合わせたものです。
+性別と種の因子があるパルマーペンギンのデータセットで試してみましょう。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span></code></pre></div>
+<pre><code>
+次のパッケージを付け加えます: &#39;palmerpenguins&#39;</code></pre>
+<pre><code>以下のオブジェクトは &#39;package:datasets&#39; からマスクされています:
+
+    penguins, penguins_raw</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">aov</span>(bill_length_mm <span class="sc">~</span> species<span class="sc">*</span>sex, penguins))</span></code></pre></div>
+<pre><code>Analysis of Variance Table
+
+Response: bill_length_mm
+             Df Sum Sq Mean Sq  F value Pr(&gt;F)    
+species       2 7015.4  3507.7 654.1894 &lt;2e-16 ***
+sex           1 1135.7  1135.7 211.8066 &lt;2e-16 ***
+species:sex   2   24.5    12.2   2.2841 0.1035    
+Residuals   327 1753.3     5.4                    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div id="プロット" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> プロット</h3>
+<p>二元配置分散分析の場合、交互作用をどう図示するかと言う問題があります。よくあるのが、</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">with</span>(penguins, <span class="fu">interaction.plot</span>(sex, species, bill_length_mm, <span class="at">type =</span> <span class="st">&quot;b&quot;</span>))</span></code></pre></div>
+<p><img src="common_files/figure-html/interaction.plot-1.png" width="672" /></p>
+<p>と言う風に、横軸に一方の因子をとり、他方の因子ごとに線を引く方法です。因子と因子の間に中間点はないので奇妙に思われるかも知れませんが、因子ごとの線が並行でない場合は交互作用があることになります。</p>
+<p><code>ggplot2</code>だと<code>ggpubr::ggline</code>で同様のプロットが出せ、さらに標準誤差なども簡単に描き込んでくれます。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a><span class="fu">ggline</span>(penguins[<span class="fu">complete.cases</span>(penguins), ], <span class="at">x =</span> <span class="st">&quot;sex&quot;</span>, <span class="at">y =</span> <span class="st">&quot;bill_length_mm&quot;</span>, <span class="at">color =</span> <span class="st">&quot;species&quot;</span>, <span class="at">add =</span> <span class="st">&quot;mean_se&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="高度な手法" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> 高度な手法</h2>
+<p>ANOVAには、既に紹介したANCOVAの他、クラスカル＝ウォリス一元配置分散分析といったノンパラメトリック手法の代替や、応答変数が複数の多変量分散分析（<abbr title="Multivariate ANalysis OF VAriance">MANOVA</abbr>）、ANCOVAを多変量に拡張した<abbr title="Multivariate ANalysis OF COVAriance">MANCOVA</abbr>といった発展的な手法があります。MANOVA/MANCOVAは社会科学分野では見かけない気がしますが、心理学やその応用のマーケティング分野では一般的なようです。</p>
+</div>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
