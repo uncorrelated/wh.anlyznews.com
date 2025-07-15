@@ -612,8 +612,10 @@ p_k\)</span>と書きます。中心極限定理から</p>
 class="math inline">\(\bar{X}_n\)</span>は観測数<span
 class="math inline">\(n\)</span>の観測値の平均ベクトルであり、<span
 class="math inline">\(\Sigma\)</span>は分散共分散行列です。多項分布ですから、分散が<span
-class="math inline">\(p_i(1-p_i)\)</span>で、共分散は<span
-class="math inline">\(-p_ip_j\ (i \ne j)\)</span>となります。また、<span
+class="math inline">\(p_i(1-p_i)\)</span>で、<a
+href="./var_log_odds_ratio.shtml#多項分布の共分散">共分散は<span
+class="math inline">\(-p_ip_j\ (i \ne
+j)\)</span></a>となります。また、<span
 class="math inline">\(\sum_{i=1}^k p_i=1\)</span>なので、<span
 class="math inline">\(\Sigma\)</span>の各行と各列は線形従属しており、逆行列をつくれません。</p>
 <p>観測値から<span
