@@ -390,16 +390,27 @@ class="toc-section-number">3.1.5</span> 検定統計量とその意味</a></li>
 <li><a href="#rによる実践" id="toc-rによる実践"><span
 class="toc-section-number">3.1.6</span> Rによる実践</a></li>
 </ul></li>
+<li><a href="#複数の因子がある場合の計算"
+id="toc-複数の因子がある場合の計算"><span
+class="toc-section-number">3.2</span> 複数の因子がある場合の計算</a>
+<ul>
+<li><a href="#type-ⅰ" id="toc-type-ⅰ"><span
+class="toc-section-number">3.2.1</span> Type Ⅰ</a></li>
+<li><a href="#type-ⅱ" id="toc-type-ⅱ"><span
+class="toc-section-number">3.2.2</span> Type Ⅱ</a></li>
+</ul></li>
 <li><a href="#二元配置分散分析two-way-anova"
 id="toc-二元配置分散分析two-way-anova"><span
-class="toc-section-number">3.2</span> 二元配置分散分析（two-way
+class="toc-section-number">3.3</span> 二元配置分散分析（two-way
 ANOVA）</a>
 <ul>
+<li><a href="#type-ⅲ" id="toc-type-ⅲ"><span
+class="toc-section-number">3.3.1</span> Type Ⅲ</a></li>
 <li><a href="#プロット" id="toc-プロット"><span
-class="toc-section-number">3.2.1</span> プロット</a></li>
+class="toc-section-number">3.3.2</span> プロット</a></li>
 </ul></li>
 <li><a href="#高度な手法" id="toc-高度な手法"><span
-class="toc-section-number">3.3</span> 高度な手法</a></li>
+class="toc-section-number">3.4</span> 高度な手法</a></li>
 </ul></li>
 </ul>
 </div>
@@ -886,12 +897,9 @@ href="./dotchart.shtml">ガブリエル比較区間による視覚化</a>など�
 <div id="ols" class="section level4" number="3.1.6.2">
 <h4><span class="header-section-number">3.1.6.2</span> OLS</h4>
 <p>ここまでの記述を超える方法ですが、OLSを使って推定することもできます。</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(Sepal.Length <span class="sc">~</span> Species, iris)</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf)</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>r_lm_0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Sepal.Length <span class="sc">~</span> <span class="dv">1</span>, iris)</span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>r_lm_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Sepal.Length <span class="sc">~</span> Species, iris)</span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a><span class="fu">anova</span>(r_lm_1, r_lm_0)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>r_lm_0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Sepal.Length <span class="sc">~</span> <span class="dv">1</span>, iris)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>r_lm_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Sepal.Length <span class="sc">~</span> Species, iris)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="fu">anova</span>(r_lm_1, r_lm_0)</span></code></pre></div>
 <pre><code>Analysis of Variance Table
 
 Model 1: Sepal.Length ~ Species
@@ -901,17 +909,140 @@ Model 2: Sepal.Length ~ 1
 2    149 102.168 -2   -63.212 119.26 &lt; 2.2e-16 ***
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>自由度は直観どおり分散分解したときと一致しますが、厳密には<a
+href="./OLS.shtml">Rで簡単にOLS</a>を参照してください。</p>
 </div>
+</div>
+</div>
+<div id="複数の因子がある場合の計算" class="section level2"
+number="3.2">
+<h2><span class="header-section-number">3.2</span>
+複数の因子がある場合の計算</h2>
+<p>複数の因子を用いる場合は、因子それぞれの平方和を計算する必要があります。</p>
+<div id="type-ⅰ" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Type Ⅰ</h3>
+<p>もっとも基本的な方法であるType-1 ANOVAでは、因子の数を<span
+class="math inline">\(J\)</span>として</p>
+<ol style="list-style-type: decimal">
+<li>因子<span
+class="math inline">\(1\)</span>の水準ごとの従属変数の平均値を求め</li>
+<li>従属変数から因子<span
+class="math inline">\(1\)</span>の水準ごとの平均値を除した残差<span
+class="math inline">\(1\)</span>を計算し</li>
+<li>因子<span class="math inline">\(j\ (j \ge
+2)\)</span>の水準ごとの残差<span
+class="math inline">\(j-1\)</span>の平均値を求め</li>
+<li>残差<span class="math inline">\(j\)</span>から因子<span
+class="math inline">\(j\)</span>の水準ごとの平均値を除した残差<span
+class="math inline">\(j\)</span>を計算し</li>
+<li>因子<span
+class="math inline">\(j&lt;J\)</span>であれば、ステップ(2)にもどり</li>
+<li>因子<span class="math inline">\(j \ge
+J\)</span>であれば、計算した因子ごとの平均値と残差から<span
+class="math inline">\(SST_j\ (1 \le j \le J)\)</span>と<span
+class="math inline">\(SSE\)</span>を</li>
+</ol>
+<p>求めます。</p>
+<p>実際に、性別と種の因子があるパルマーペンギンのデータセットで試してみましょう。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span></code></pre></div>
+<pre><code>
+次のパッケージを付け加えます: &#39;palmerpenguins&#39;</code></pre>
+<pre><code>以下のオブジェクトは &#39;package:datasets&#39; からマスクされています:
+
+    penguins, penguins_raw</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">subset</span>(penguins, <span class="fu">complete.cases</span>(penguins))</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> df01<span class="sc">$</span>bill_length_mm</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>factor1 <span class="ot">&lt;-</span> df01<span class="sc">$</span>species</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>factor2 <span class="ot">&lt;-</span> df01<span class="sc">$</span>sex</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>TSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((y <span class="sc">-</span> <span class="fu">mean</span>(y))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>mean_y_by_factor1 <span class="ot">&lt;-</span> <span class="fu">tapply</span>(y, factor1, mean)[factor1]</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>r <span class="ot">&lt;-</span> y <span class="sc">-</span> mean_y_by_factor1</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>mean_r_by_factor2 <span class="ot">&lt;-</span> <span class="fu">tapply</span>(r, factor2, mean)[factor2]</span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>SST1 <span class="ot">&lt;-</span> <span class="fu">sum</span>((<span class="fu">mean</span>(y) <span class="sc">-</span> mean_y_by_factor1)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>SST2 <span class="ot">&lt;-</span> <span class="fu">sum</span>((<span class="fu">mean</span>(r) <span class="sc">-</span> mean_r_by_factor2)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a>SSE <span class="ot">&lt;-</span> <span class="fu">sum</span>((y <span class="sc">-</span> mean_y_by_factor1 <span class="sc">-</span> mean_r_by_factor2)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb22-13"><a href="#cb22-13" tabindex="-1"></a>df_factor1 <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(factor1)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb22-14"><a href="#cb22-14" tabindex="-1"></a>df_factor2 <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(factor2)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb22-15"><a href="#cb22-15" tabindex="-1"></a>df_e <span class="ot">&lt;-</span> n <span class="sc">-</span> df_factor1 <span class="sc">-</span> df_factor2 <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb22-16"><a href="#cb22-16" tabindex="-1"></a>f_value1 <span class="ot">&lt;-</span> (SST1<span class="sc">/</span>df_factor1)<span class="sc">/</span>(SSE<span class="sc">/</span>df_e)</span>
+<span id="cb22-17"><a href="#cb22-17" tabindex="-1"></a>f_value2 <span class="ot">&lt;-</span> (SST2<span class="sc">/</span>df_factor2)<span class="sc">/</span>(SSE<span class="sc">/</span>df_e)</span>
+<span id="cb22-18"><a href="#cb22-18" tabindex="-1"></a>(r_type1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(</span>
+<span id="cb22-19"><a href="#cb22-19" tabindex="-1"></a>df_factor1, df_factor2, df_e,</span>
+<span id="cb22-20"><a href="#cb22-20" tabindex="-1"></a>SST1, SST2, SSE,</span>
+<span id="cb22-21"><a href="#cb22-21" tabindex="-1"></a>SST1<span class="sc">/</span>df_factor1, SST2<span class="sc">/</span>df_factor2, SSE<span class="sc">/</span>df_e,</span>
+<span id="cb22-22"><a href="#cb22-22" tabindex="-1"></a>f_value1, f_value2, <span class="cn">NA</span></span>
+<span id="cb22-23"><a href="#cb22-23" tabindex="-1"></a>), <span class="dv">3</span>, <span class="dv">4</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;factor1&quot;</span>, <span class="st">&quot;factor2&quot;</span>, <span class="st">&quot;Residuals&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;Df&quot;</span>, <span class="st">&quot;Sum Sq&quot;</span>, <span class="st">&quot;Mean Sq&quot;</span>, <span class="st">&quot;F value&quot;</span>))))</span></code></pre></div>
+<pre><code>           Df   Sum Sq     Mean Sq  F value
+factor1     2 7015.386 3507.692873 649.0617
+factor2     1 1135.518 1135.518116 210.1157
+Residuals 329 1777.999    5.404252       NA</code></pre>
+<p>Rの標準のanovaとほぼ同じ結果になっています。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">aov</span>(y <span class="sc">~</span> factor1 <span class="sc">+</span> factor2))</span></code></pre></div>
+<pre><code>Analysis of Variance Table
+
+Response: y
+           Df Sum Sq Mean Sq F value    Pr(&gt;F)    
+factor1     2 7015.4  3507.7  649.12 &lt; 2.2e-16 ***
+factor2     1 1135.7  1135.7  210.17 &lt; 2.2e-16 ***
+Residuals 329 1777.8     5.4                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+</div>
+<div id="type-ⅱ" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Type Ⅱ</h3>
+<p>標準のType-1
+ANOVAは、因子の並びにそって残差を減らしていく計算です。因子の順番を入れ替えて計算すると結果が変わるときがあります。因子と因子の共分散がゼロとは限らないからです。</p>
+<p>Type-2
+ANOVAは発想を変えて、全ての因子を同時に使って計算した残差平方和と、目的とする因子を除いて計算した残差平方和を求め、その差を目的とする因子の平方和とします。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>r_lm_0 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> factor1 <span class="sc">+</span> factor2)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>r_lm_1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> factor1)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>r_lm_2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> factor2)</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>TSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((y <span class="sc">-</span> <span class="fu">mean</span>(y))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>SSE <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(r_lm_0)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>SST1 <span class="ot">&lt;-</span> <span class="fu">sum</span>((<span class="fu">residuals</span>(r_lm_0) <span class="sc">-</span> <span class="fu">residuals</span>(r_lm_2))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>SST2 <span class="ot">&lt;-</span> <span class="fu">sum</span>((<span class="fu">residuals</span>(r_lm_0) <span class="sc">-</span> <span class="fu">residuals</span>(r_lm_1))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>df_factor1 <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(factor1)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>df_factor2 <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(factor2)) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a>df_e <span class="ot">&lt;-</span> n <span class="sc">-</span> df_factor1 <span class="sc">-</span> df_factor2 <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>f_value1 <span class="ot">&lt;-</span> (SST1<span class="sc">/</span>df_factor1)<span class="sc">/</span>(SSE<span class="sc">/</span>df_e)</span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>f_value2 <span class="ot">&lt;-</span> (SST2<span class="sc">/</span>df_factor2)<span class="sc">/</span>(SSE<span class="sc">/</span>df_e)</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>(r_type2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(</span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a>SST1, SST2, SSE,</span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>df_factor1, df_factor2, df_e,</span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>SST1<span class="sc">/</span>df_factor1, SST2<span class="sc">/</span>df_factor2, SSE<span class="sc">/</span>df_e,</span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>f_value1, f_value2, <span class="cn">NA</span></span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a>), <span class="dv">3</span>, <span class="dv">4</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;factor1&quot;</span>, <span class="st">&quot;factor2&quot;</span>, <span class="st">&quot;Residuals&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;Sum Sq&quot;</span>, <span class="st">&quot;Df&quot;</span>, <span class="st">&quot;Mean Sq&quot;</span>, <span class="st">&quot;F value&quot;</span>))))</span></code></pre></div>
+<pre><code>            Sum Sq  Df     Mean Sq  F value
+factor1   6975.592   2 3487.795803 645.4401
+factor2   1135.684   1 1135.683888 210.1660
+Residuals 1777.833 329    5.403748       NA</code></pre>
+<p>平方和の合計に関する規則は成り立っていないことには注意してください。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>TSS</span></code></pre></div>
+<pre><code>[1] 9928.903</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>SSE <span class="sc">+</span> SST1 <span class="sc">+</span> SST2</span></code></pre></div>
+<pre><code>[1] 9889.109</code></pre>
+<p>こんなに書かなくても、<code>car</code>パッケージの<code>Anova</code>関数で簡単に計算できます。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(<span class="fu">aov</span>(y <span class="sc">~</span> factor1 <span class="sc">+</span> factor2), <span class="at">type =</span> <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>Anova Table (Type II tests)
+
+Response: y
+          Sum Sq  Df F value    Pr(&gt;F)    
+factor1   6975.6   2  645.44 &lt; 2.2e-16 ***
+factor2   1135.7   1  210.17 &lt; 2.2e-16 ***
+Residuals 1777.8 329                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 </div>
 <div id="二元配置分散分析two-way-anova" class="section level2"
-number="3.2">
-<h2><span class="header-section-number">3.2</span>
+number="3.3">
+<h2><span class="header-section-number">3.3</span>
 二元配置分散分析（two-way ANOVA）</h2>
 <p>複数の因子による一元配置分散分析と、それら因子の交互作用の一元配置分散分析を組み合わせたものです。
 性別と種の因子があるパルマーペンギンのデータセットで試してみましょう。</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
-<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">aov</span>(bill_length_mm <span class="sc">~</span> species<span class="sc">*</span>sex, penguins))</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">library</span>(palmerpenguins)</span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="fu">anova</span>(<span class="fu">aov</span>(bill_length_mm <span class="sc">~</span> species<span class="sc">*</span>sex, penguins))</span></code></pre></div>
 <pre><code>Analysis of Variance Table
 
 Response: bill_length_mm
@@ -922,19 +1053,40 @@ species:sex   2   24.5    12.2   2.2841 0.1035
 Residuals   327 1753.3     5.4                    
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<div id="プロット" class="section level3" number="3.2.1">
-<h3><span class="header-section-number">3.2.1</span> プロット</h3>
+<div id="type-ⅲ" class="section level3" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Type Ⅲ</h3>
+<p>Type-2
+ANOVAでは、主効果の平方和を求めるときには交互作用を含めず計算し、交互作用の平方和を求めるときは、全ての因子とその交互作用を同時に使って計算した残差平方和と、目的とする因子とその交互作用を除いて計算した残差平方和を求め、その差を計算します。</p>
+<p>Type-3
+ANOVAは、主効果の平方和を求めるときにも交互作用を含めて計算する方法です。<code>car::Anova</code>で計算することができます。</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="st">&quot;contr.sum&quot;</span>, <span class="st">&quot;contr.sum&quot;</span>))</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(<span class="fu">aov</span>(bill_length_mm <span class="sc">~</span> species<span class="sc">*</span>sex, penguins), <span class="at">type =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>Anova Table (Type III tests)
+
+Response: bill_length_mm
+            Sum Sq  Df    F value Pr(&gt;F)    
+(Intercept) 609824   1 1.1373e+05 &lt;2e-16 ***
+species       6973   2 6.5021e+02 &lt;2e-16 ***
+sex           1116   1 2.0806e+02 &lt;2e-16 ***
+species:sex     24   2 2.2841e+00 0.1035    
+Residuals     1753 327                      
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p><code>options</code>で平方和の計算に使う制約を指定しています。ないと結果が変わり、他の統計解析パッケージと互換性が無くなるので忘れずつけましょう。</p>
+</div>
+<div id="プロット" class="section level3" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> プロット</h3>
 <p>二元配置分散分析の場合、交互作用をどう図示するかと言う問題があります。よくあるのが、</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">with</span>(penguins, <span class="fu">interaction.plot</span>(sex, species, bill_length_mm, <span class="at">type =</span> <span class="st">&quot;b&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="fu">with</span>(penguins, <span class="fu">interaction.plot</span>(sex, species, bill_length_mm, <span class="at">type =</span> <span class="st">&quot;b&quot;</span>))</span></code></pre></div>
 <p><img src="common_files/figure-html/interaction.plot-1.png" width="672" /></p>
 <p>と言う風に、横軸に一方の因子をとり、他方の因子ごとに線を引く方法です。因子と因子の間に中間点はないので奇妙に思われるかも知れませんが、因子ごとの線が並行でない場合は交互作用があることになります。</p>
 <p><code>ggplot2</code>だと<code>ggpubr::ggline</code>で同様のプロットが出せ、さらに標準誤差なども簡単に描き込んでくれます。</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="fu">ggline</span>(penguins[<span class="fu">complete.cases</span>(penguins), ], <span class="at">x =</span> <span class="st">&quot;sex&quot;</span>, <span class="at">y =</span> <span class="st">&quot;bill_length_mm&quot;</span>, <span class="at">color =</span> <span class="st">&quot;species&quot;</span>, <span class="at">add =</span> <span class="st">&quot;mean_se&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">library</span>(ggpubr)</span>
+<span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a><span class="fu">ggline</span>(penguins[<span class="fu">complete.cases</span>(penguins), ], <span class="at">x =</span> <span class="st">&quot;sex&quot;</span>, <span class="at">y =</span> <span class="st">&quot;bill_length_mm&quot;</span>, <span class="at">color =</span> <span class="st">&quot;species&quot;</span>, <span class="at">add =</span> <span class="st">&quot;mean_se&quot;</span>)</span></code></pre></div>
 </div>
 </div>
-<div id="高度な手法" class="section level2" number="3.3">
-<h2><span class="header-section-number">3.3</span> 高度な手法</h2>
+<div id="高度な手法" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> 高度な手法</h2>
 <p>ANOVAには、既に紹介したANCOVAの他、クラスカル＝ウォリス一元配置分散分析といったノンパラメトリック手法の代替や、応答変数が複数の多変量分散分析（<abbr title="Multivariate ANalysis OF VAriance">MANOVA</abbr>）、ANCOVAを多変量に拡張した<abbr title="Multivariate ANalysis OF COVAriance">MANCOVA</abbr>といった発展的な手法があります。MANOVA/MANCOVAは社会科学分野では見かけない気がしますが、心理学やその応用のマーケティング分野では一般的なようです。</p>
 </div>
 </div>
