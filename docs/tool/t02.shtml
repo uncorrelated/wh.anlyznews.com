@@ -106,7 +106,7 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script></div>
 </div>
 
-<p>『<a href="http://mercurial.selenic.com/wiki/JapaneseTutorial" target="_blank">Mercurial の使い方のチュートリアル</a>』を一読しておけば、日常作業に困る事は無いと思います。しかし、たまにはリポジトリに間違ったコミットをしてしまうものですし、最初は誰でも間違いがちです。そこで間違えたときに打つべきコマンドの覚え書きとして、以下のコマンド入力例を公開します。</p>
+<p>『<a href="https://wiki.mercurial-scm.org/JapaneseTutorial" target="_blank">Mercurial の使い方のチュートリアル</a>』を一読しておけば、日常作業に困る事は無いと思います。しかし、たまにはリポジトリに間違ったコミットをしてしまうものですし、最初は誰でも間違いがちです。そこで間違えたときに打つべきコマンドの覚え書きとして、以下のコマンド入力例を公開します。</p>
 <p>ワーキングツリーにカレント・ディレクトリを移動している状態を前提にした操作例なので注意してください。また、各コマンドの詳細なオプションは hg help [コマンド] を見て確認してください。なお、Mercurialはバージョン<s>1.7.3</s>6.1.3で動作確認しています。</p>
 <ol>
 <li><a href="#chg01">リポジトリへの追加登録を取り消す</a></li>
