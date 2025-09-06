@@ -3,5 +3,6 @@
 <dl class="menu">
 <dt class="menu"><a href="t02.shtml">Mercurial初心者が絶対にブックマークすべきページ</a></dt>
 <dt class="menu"><a href="t03.shtml">いつものMercurialの設定</a></dt>
+<dt class="menu"><a href="t04.shtml">自分が何をしていたのか思い出すためのMercurialのコマンド</a></dt>
 </dl>
 <br/>
