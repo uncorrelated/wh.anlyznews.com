@@ -113,6 +113,7 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <li><a href="#chg02">編集を取り消し、あるリビジョンの状態に戻す</a></li>
 <li><a href="#chg14">編集済み変更の一部だけをコミットする</a></li>
 <li><a href="#chg03">コミットをやり直す、コミット・メッセージを変更する</a></li>
+<li><a href="#chg16">ファイル編集後、親リビジョンを変更してコミットする</a></li>
 <li><a href="#chg04">チェンジセットを消す</a></li>
 <li><a href="#chg05">チェンジセットを打ち消す</a></li>
 <li><a href="#chg06">チェンジセットの内容を変更する</a></li>
@@ -190,7 +191,24 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <h5>4.2. hg commit --amend<span class="type">標準コマンド</span><span class="type">リポジトリ変更</span></h4>
 <p>hg-commitに--amendをつけることで、前回コミットに追記ができます。バージョン2.2で追加されました。</p>
 
-<a name="chg04"><h4>5. チェンジセットを消す<span class="ext">mq</span><span class="type">リポジトリ変更</span><span class="jpn">ストリップ</span></h4></a>
+<a name="chg16"><h4>5. ファイル編集後、親リビジョンを変更してコミットする<span class="type">標準コマンド</span></h4></a>
+<p>hg-summaryでコミット時の親リビジョンを確認できますが、うっかりファイル編集後に親リビジョンを間違えていることに気づくことがあります。この場合は、hg-shelveで待避したあとに、hg-updateで親リビジョンの変更をし、hg-unshelveをすればよいです。</p>
+<div class="console">
+~/Repository$ <span class="cinput">hg shelve</span> <span class="example">example.cpp</span><br />
+<span class="coutput">変更内容を default という名前で退避<br />
+ファイルの更新数 1、 マージ数 0、 削除数 0、 衝突未解消数 0 </span><br />
+~/Repository$ <span class="cinput">hg update -C -r</span> <span class="example">tip</span><br />
+<span class="coutput"></span>
+~/Repository$ <span class="cinput">hg unshelve</span><br />
+<span class="coutput">退避情報 'default' を復旧中<br />
+退避した変更の移動 (rebase) 中</span><br />
+~/Repository$ <span class="cinput">hg commit -m</span> <span class="example">"update a file"</span><br />
+<span class="coutput"></span>
+</div>
+<p>現在およびhg-update先のリビジョンで、まだ管理対象外の新規ファイルを追加した場合は、hg-update -Cで消されることはないので、待避しなくても大丈夫です。</p>
+<p>現在の親リビジョンでは管理対象外で、hg-update先では管理対象のファイルの場合は、hg-shelveができない一方、hg-updateで消されてしまうので、一時ファイルにコピーするなどする必要があります。</p>
+
+<a name="chg04"><h4>6. チェンジセットを消す<span class="ext">mq</span><span class="type">リポジトリ変更</span><span class="jpn">ストリップ</span></h4></a>
 <p>特定のチェンジセットと、その子孫を消す事ができます。</p>
 <p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/MqExtension" target="_blank">Mercurial Queues Extension</a>を有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
 <div class="code">
@@ -212,7 +230,7 @@ mq =</div>
 (作業領域の更新は 'hg update')</span>
 </div>
 
-<a name="chg05"><h4>6. チェンジセットを打ち消す<span class="type">標準コマンド</span><span class="type">リポジトリ変更</span><span class="jpn">バックアウト</span></h4></a>
+<a name="chg05"><h4>7. チェンジセットを打ち消す<span class="type">標準コマンド</span><span class="type">リポジトリ変更</span><span class="jpn">バックアウト</span></h4></a>
 <p>共有リポジトリにpush後は、コミットを取り消したり、チェンジセットを消したりは原則としてできません。チェンジセットの更新内容を打ち消すチェンジセットを作る事になります。</p>
 <p>リビジョン39を打ち消すチェンジセットを作るには、以下のように入力します。</p>
 <div class="console">~/Repository$ <span class="cinput">hg backout <span class="example">39</span></span><br />
@@ -221,7 +239,7 @@ mq =</div>
 
 <p>自動でコミットはされません。</p>
 
-<a name="chg06"><h4>7. チェンジセットの内容を変更する<span class="ext">mq</span><span class="type">リポジトリ変更</span></h4></a>
+<a name="chg06"><h4>8. チェンジセットの内容を変更する<span class="ext">mq</span><span class="type">リポジトリ変更</span></h4></a>
 <p>何回かコミットした後でも、マージや分岐の発生前でpush前であれば、チェンジセットの内容を変更することができます。</p>
 <p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/MqExtension" target="_blank">Mercurial Queues Extension</a>を有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
 <div class="code">
@@ -251,7 +269,7 @@ mq =</div>
 <div class="console">~/Repository$ <span class="cinput">hg qfinish -a</span></div>
 <p>これで、チェンジセットの改編は終わりです。</p>
 
-<a name="chg07"><h4>8. 複数のチェンジセットを一つにまとめる</h4></a>
+<a name="chg07"><h4>9. 複数のチェンジセットを一つにまとめる</h4></a>
 <p>マージや分岐の発生前でpush前であれば、後述するMQ Extensionで複数のチェンジセットをまとめて一つにできます。オーソドックスな方法と、強引な方法と、後の節で説明する楽な方法の三種類があります。</p>
 
 <h5>8.1. MQ Extensionを使う<span class="ext">mq</span><span class="type">リポジトリ変更</span></h5>
@@ -326,7 +344,7 @@ histedit =</div>
 
 <p>と、再度、histeditを用います。</p>
 
-<a name="chg13"><h4 style="width:150%;">10. 「中止: 作業領域の変更が未コミットです」を回避する<span class="type">標準コマンド</span></h4></a>
+<a name="chg13"><h4 style="width:150%;">11. 「中止: 作業領域の変更が未コミットです」を回避する<span class="type">標準コマンド</span></h4></a>
 
 <p>ワーキングツリーにコミット前の編集中ファイルが残っている場合、「中止: 作業領域の変更が未コミットです」とエラーが出て履歴改変ができませんが、</p>
 
@@ -344,7 +362,7 @@ shelve=</div>
 
 <p>とする必要があります。</p>
 
-<a name="chg09"><h4>11. pushしたのを無かったことにする<span class="jpn">戻す</span><span class="type">標準コマンド</span></h4></a>
+<a name="chg09"><h4>12. pushしたのを無かったことにする<span class="jpn">戻す</span><span class="type">標準コマンド</span></h4></a>
 
 <p>一度、サーバーにpushすると履歴改変ができなくなりますが、それを管理しているフェーズを変更することで可能になります。以下の例では、リビジョン34からtipまでのフェーズをdraftに戻すことでサーバーへのpushを可能にしています。</p>
 
@@ -359,7 +377,7 @@ rebase =<br />
 </div>
 <div class="console">~/Repository$ <span class="cinput">hg pull --rebase</span></div>
 
-<a name="chg10"><h4>13. 履歴をさかのぼって特定のファイルを削除する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
+<a name="chg10"><h4>14. 履歴をさかのぼって特定のファイルを削除する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
 <p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/ConvertExtension" target="_blank">ConvertExtension</a>有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
 <div class="code">
 [extensions]<br />
@@ -375,7 +393,7 @@ exclude &quot;ftp_account_information.txt&quot;</div>
 <div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span></div>
 <p>なお、上記の例では除外するファイルを指定していますが、includeで含むファイルを指定したり、includeとexcludeを組み合わせることも可能です。</p>
 
-<a name="chg11"><h4>14. 履歴をさかのぼってファイル名を変換する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
+<a name="chg11"><h4>15. 履歴をさかのぼってファイル名を変換する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
 <p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/ConvertExtension" target="_blank">ConvertExtension</a>有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
 <div class="code">
 [extensions]<br />
@@ -391,7 +409,7 @@ rename &quot;old_filename.txt&quot; &quot;new_filename.txt&quot;</div>
 <div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span></div>
 <p>なお、ファイルの削除と同時に行う事ができます。</p>
 
-<a name="chg12"><h4>15. コミットしている著者名を変更する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
+<a name="chg12"><h4>16. コミットしている著者名を変更する<span class="ext">Convert</span><span class="type">リポジトリ変更</span></h4></a>
 <p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/ConvertExtension" target="_blank">ConvertExtension</a>有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
 <div class="code">
 [extensions]<br />
