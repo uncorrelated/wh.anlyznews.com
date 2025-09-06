@@ -125,9 +125,6 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <li><a href="#chg10">履歴をさかのぼって特定のファイルを削除する</a></li>
 <li><a href="#chg11">履歴をさかのぼってファイル名を変換する</a></li>
 <li><a href="#chg12">コミットしている著者名を変更する</a></li>
-<li><a href="#hgrc15">デフォルトや短縮名のpush/pull先を設定する</a></li>
-<li><a href="#hgrc16">リポジトリで使うユーザー情報を設定する</a></li>
-<li><a href="#hgrc17">改行コードを強制指定する</a></li>
 </ol>
 <a name="chg01"><h4>1. リポジトリへの追加登録を取り消す<span class="type">標準コマンド</span></h4></a>
 <p>間違ってhg-addした場合は、hg-revertで構成管理へのファイルの追加登録を取り消す事ができます。</p>
@@ -405,35 +402,6 @@ uncorrelated=uncorrelated zombie &lt;uncorrelated@yahoo.co.jp&gt;</div>
 ~/Repository$ <span class="cinput">hg convert --authors <span class="example">authors.txt</span> <span class="example">Repository</span> <span class="example">Repository2</span></span></div>
 <p>最後に、新しいリポジトリで、古いリポジトリを置き換えれば完了です。</p>
 <div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span></div>
-
-<a name="hgrc15"><h4>16. デフォルトや短縮名のpush/pull先を設定する<span class="type">リポジトリ設定</span></h4></a>
-<p>リポジトリの.hg/hgrcの[paths]の項目で設定します。デフォルト値はdefaultで、他は短縮名として扱われます。</p>
-<div class="code">
-[paths]<br />
-default = ssh://example.com//var/hg/Repository<br />
-http = http://user@example.com/Repository<br />
-media = E:/hg/Repository
-</div>
-
-<a name="hgrc16"><h4>17. リポジトリで使うユーザー情報を設定する<span class="type">リポジトリ設定</span></h4></a>
-<p>%USERPROFILE%¥Mercurial.iniか~/.hgrcに書いているものと同様に.hg/hgrcに[ui]の項目を書くことで、そのリポジトリで使うユーザー情報を設定できます。</p>
-<div class="code">
-[ui]<br />
-username = uncorrelated zombie <uncorrelated@yahoo.co.jp>
-</div>
-
-<a name="hgrc17"><h4>18. 改行コードを強制指定する<span class="type">リポジトリ設定</span></h4></a>
-<p>.hg/hgrcの[extensions]にeolを追加し、[patterns]の項目を書くことで、そのリポジトリで使う改行コードを強制指定できます。コミット時に変換されます。</p>
-<div class="code">
-[extensions]<br />
-eol =<br />
-</div>
-<div class="code">
-[patterns]<br />
-**.java = LF<br />
-**.c = LF<br />
-**.f90 = LF
-</div>
 
 <div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
 <script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
