@@ -3,7 +3,7 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head>
-<title>いつものMercurialの設定 - ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
+<title>いつもまいどのMercurialの設定 - ゲリラ的 uncorrelated ウェブ・テクニカル・ノート</title>
 <link rel="stylesheet" type="text/css" href="../style.css"/>
 <meta name="description" content=""/>
 <style type="text/css">
@@ -82,7 +82,7 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 </div>
 
 <div class="article" id="article">
-<h2>いつものMercurialの設定</h2>
+<h2>いつもまいどのMercurialの設定</h2>
 
 <!--#include virtual="/parts/under_h2.txt"-->
 <div>
