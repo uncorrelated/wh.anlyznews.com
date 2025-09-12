@@ -117,7 +117,7 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <li><a href="#chg05">チェンジセットを打ち消す</a></li>
 <li><a href="#chg06">チェンジセットの内容を変更する</a></li>
 <li><a href="#chg07">複数のチェンジセットを一つにまとめる</a></li>
-<li><a href="#chg08">(5)(7)(8)とチェンジセットの入れ替えを手軽に行なう</a></li>
+<li><a href="#chg08">(5)(6)(8)とチェンジセットの入れ替えを手軽に行なう</a></li>
 <li><a href="#chg13">「中止: 作業領域の変更が未コミットです」を回避する</a></li>
 <li><a href="#chg09">pushしたのを無かったことにする</a></li>
 <li><a href="#chg15">pullすると同時に、ブランチヘッドを作業領域の親に
@@ -307,7 +307,7 @@ mq =</div>
 <div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span>
 </div>
 
-<a name="chg08"><h4 style="width:150%;">9. (5)(7)(8)とチェンジセットの入れ替えを手軽に行なう<span class="ext">Histedit</span></h4></a>
+<a name="chg08"><h4 style="width:150%;">9. (5)(6)(8)とチェンジセットの入れ替えを手軽に行なう<span class="ext">Histedit</span></h4></a>
 
 <p>見てきたようにチェンジセットをまとめるのは手間暇ですが、作業を簡略化してくれるHistedit Extensionと言うのがあります。</p>
 
