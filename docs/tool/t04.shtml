@@ -203,10 +203,10 @@ M .hgignore<br />
 <p>hg-annotate（別名でhg-blame）で調べることができます。</p>
 <div class="console">
 ~/Repository$ <span class="cinput">hg annotate -un <span class="example">ShinyEB.R</span></span><br />
-<span class="output">uncorrelated 4: source(&quote;loadLib.R&qupte;)<br />
-uncorrelated 0: source(&quote;EdgeworthBox.R&quote;)<br />
+<span class="output">uncorrelated 4: source(&quot;loadLib.R&quot;)<br />
+uncorrelated 0: source(&quot;EdgeworthBox.R&quot;)<br />
 uncorrelated 0: <br/>
-uncorrelated 0: loadLib(&quote;nleqslv&quote;, &quote;shiny&quote;) </span><br />
+uncorrelated 0: loadLib(&quot;nleqslv&quot;, &quot;shiny&quot;) </span><br />
 <div style="width:100%; margin-top: 8px; text-align:center;">(以下、省略）</div>
 </div>
 <p>オプション -un でユーザー名とリビジョン番号が出ます。</p>

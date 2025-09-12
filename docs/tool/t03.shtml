@@ -157,7 +157,7 @@ eol =<br />
 <p>MS-Windows環境でしか使わないと思いますが、%USERPROFILE%¥Mercurial.iniか~/.hgrcの[ui]の項目で、sshクライアントを指定することができます。</p>
 <div class="code">
 [ui]<br />
-ssh = &quote;C:\Program Files\PuTTY\plink.exe&quote; -agent
+ssh = &quot;C:\Program Files\PuTTY\plink.exe&quot; -agent
 </div>
 
 <div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
