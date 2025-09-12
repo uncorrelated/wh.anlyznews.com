@@ -118,7 +118,7 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <li><a href="#chg05">チェンジセットを打ち消す</a></li>
 <li><a href="#chg06">チェンジセットの内容を変更する</a></li>
 <li><a href="#chg07">複数のチェンジセットを一つにまとめる</a></li>
-<li><a href="#chg08">(5)(6)(8)とチェンジセットの入れ替えを手軽に行なう</a></li>
+<li><a href="#chg08">(6)から(9)とチェンジセットの入れ替えを手軽に行なう</a></li>
 <li><a href="#chg13">「中止: 作業領域の変更が未コミットです」を回避する</a></li>
 <li><a href="#chg09">pushしたのを無かったことにする</a></li>
 <li><a href="#chg15">pullすると同時に、ブランチヘッドを作業領域の親に
@@ -272,7 +272,7 @@ mq =</div>
 <a name="chg07"><h4>9. 複数のチェンジセットを一つにまとめる</h4></a>
 <p>マージや分岐の発生前でpush前であれば、後述するMQ Extensionで複数のチェンジセットをまとめて一つにできます。オーソドックスな方法と、強引な方法と、後の節で説明する楽な方法の三種類があります。</p>
 
-<h5>8.1. MQ Extensionを使う<span class="ext">mq</span><span class="type">リポジトリ変更</span></h5>
+<h5>9.1. MQ Extensionを使う<span class="ext">mq</span><span class="type">リポジトリ変更</span></h5>
 <p>標準では無効になっている、<a href="http://mercurial.selenic.com/wiki/MqExtension" target="_blank">Mercurial Queues Extension</a>を有効にしている必要があり、%USERPROFILE%&yen;Mercurial.iniか、~/.hgrcに以下の内容を追加する必要があります。</p>
 <div class="code">
 [extensions]<br />
@@ -295,7 +295,7 @@ mq =</div>
 <div class="console">~/Repository$ <span class="cinput">hg qfinish -a</span></div>
 <p>これで、チェンジセットの合成は終わりです。</p>
 
-<h5>8.2. hg archive &amp; hg update -C &amp; hg clone<span class="type">標準コマンド</span><span class="type">リポジトリ変更</span></h5>
+<h5>9.2. hg archive &amp; hg update -C &amp; hg clone<span class="type">標準コマンド</span><span class="type">リポジトリ変更</span></h5>
 <p>マージや分岐を含めてチェンジセットを統合する荒業もあります。</p>
 <p>まずは、テンポラリ・ディレクトリに最新版のアーカイブを吐き出します。テンポラリ・ディレクトリは空フォルダであれば、任意の場所で問題ないでしょう。</p>
 <div class="console">
@@ -324,7 +324,7 @@ mq =</div>
 <div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span>
 </div>
 
-<a name="chg08"><h4 style="width:150%;">9. (5)(6)(8)とチェンジセットの入れ替えを手軽に行なう<span class="ext">Histedit</span></h4></a>
+<a name="chg08"><h4 style="width:150%;">10. (6)から(9)とチェンジセットの入れ替えを手軽に行なう<span class="ext">Histedit</span></h4></a>
 
 <p>見てきたようにチェンジセットをまとめるのは手間暇ですが、作業を簡略化してくれるHistedit Extensionと言うのがあります。</p>
 
