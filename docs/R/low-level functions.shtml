@@ -13,7 +13,7 @@
 
 <title>Rのグラフィカル・オプションと低水準描画関数</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -523,7 +523,9 @@ number="1">
 <h1><span class="header-section-number">1</span>
 縦横サイズを指定したウィンドウを作る</h1>
 <p>以下のように<code>dev.new</code>で縦横の物理サイズを指定したウィンドウを開くことができます。</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">dev.new</span>(<span class="at">width =</span> <span class="dv">1024</span>, <span class="at">height =</span> <span class="dv">768</span>, <span class="at">unit =</span> <span class="st">&quot;px&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">dev.new</span>(<span class="at">width =</span> <span class="dv">1024</span>, <span class="at">height =</span> <span class="dv">768</span>, <span class="at">unit =</span> <span class="st">&quot;px&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># X11などピクセル指定をサポートしないデバイスの場合はインチ指定</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co"># dev.new(width = 12, height = 9, units = &quot;in&quot;)</span></span></code></pre></div>
 <p>空ウィンドウが開いたら、<code>plot</code>などを呼び出せばそこに描画できます。</p>
 <p>ファイルやプリンターに出力するときはもちろん、統合開発環境内のウィンドウやブラウザーに描画する場合は縦横サイズが有効にならないので注意してください。</p>
 </div>
