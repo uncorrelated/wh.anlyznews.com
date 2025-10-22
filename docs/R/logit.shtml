@@ -422,9 +422,11 @@ logit）</a>
 <ul>
 <li><a href="#限界効果-2" id="toc-限界効果-2"><span
 class="toc-section-number">5.1</span> 限界効果</a></li>
+<li><a href="#平行性の検定" id="toc-平行性の検定"><span
+class="toc-section-number">5.2</span> 平行性の検定</a></li>
 <li><a href="#最適化関数を使った推定"
 id="toc-最適化関数を使った推定"><span
-class="toc-section-number">5.2</span> 最適化関数を使った推定</a></li>
+class="toc-section-number">5.3</span> 最適化関数を使った推定</a></li>
 </ul></li>
 </ul>
 </div>
@@ -853,14 +855,14 @@ y_b)
 <p>他にどのような選択肢があるかは関係がないことが分かります。</p>
 <p>バニラ味のアイスクリームと塩バター風味のポップコーンの二択に、チョコ味のアイスクリームが加わることを考えます。IIAなので、バニラ味のアイスクリームと塩バター風味のポップコーンが選ばれる確率の比は、チョコ味のアイスクリームが選択肢にあるかないかで代わりません。バニラ味のアイスクリームと塩バター風味のポップコーンの需要が同じ割合で減ることになります。また、バニラ味のアイスクリームの味が落ちたとき、塩バター風味のポップコーンとチョコ味のアイスクリームの需要が同じように増えます（交差弾性値が一定）。</p>
 <div style="padding: 32px 0 0 48px;">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-183919e88a9f39a5869a" style="width:384px;height:240px;"></div>
-<script type="application/json" data-for="htmlwidget-183919e88a9f39a5869a">{"x":{"diagram":"digraph multinominal_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"multinominal logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a21\n  a00 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-d38e3fcf3143e91f3f30" style="width:384px;height:240px;"></div>
+<script type="application/json" data-for="htmlwidget-d38e3fcf3143e91f3f30">{"x":{"diagram":"digraph multinominal_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"multinominal logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a21\n  a00 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <p>このIIAという性質は、非直感的で、非現実的です。アイスクリームの種類が増えたとき、需要が大きく減るのは他のアイスクリームであって、ポップコーンでは無さそうですよね。種類が増えると選ぶ楽しみが増えて、ポップコーンの方が大きく影響を受けるのかも知れませんが、少なくとも需要の減少が一定と言うことは無さそうです。将来予測や反実仮想を考えるときに問題になりえます。</p>
 <p><ruby>入れ籠<rp>（</rp><rt>いれこ</rt><rp>）</rp></ruby>ロジットモデルは、このIIAの性質を緩和することができます。アイスクリームとポップコーンの選択のロジットモデルと、アイスクリームの中でバニラ味とチョコ味の選択のロジットモデルの二つを同時に推定することで、選択肢の増減の影響を変化させます。</p>
 <div style="padding: 32px 0 0 48px;">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-739b13591df4ef9188e1" style="width:384px;height:211.2px;"></div>
-<script type="application/json" data-for="htmlwidget-739b13591df4ef9188e1">{"x":{"diagram":"digraph nested_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"nested logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a02 [shape = plaintext, label = \"ice cream\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a02\n  a02 -> a21\n  a02 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-1e545134484055aeb38f" style="width:384px;height:211.2px;"></div>
+<script type="application/json" data-for="htmlwidget-1e545134484055aeb38f">{"x":{"diagram":"digraph nested_logit {\n  graph [\n    charset = \"UTF-8\";\n    label = \"nested logit model\"\n    #fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  a01 [shape = plain, label = \"popcorn\\n(salted butter)\", margin=\"0.0, 0.2\"]\n  a02 [shape = plaintext, label = \"ice cream\"]\n  a21 [shape = plaintext, label = \"ice cream\\n(vanilla)\"]\n  a22 [shape = plaintext, label = \"ice cream\\n(chocolate)\"]\n  a00 [shape = point ]\n  a00 -> a01\n  a00 -> a02\n  a02 -> a21\n  a02 -> a22\n}\n","config":{"engine":400,"options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <p>具体的には、選択肢<span
 class="math inline">\(j\)</span>が選ばれる確率を、サブカテゴリー<span
@@ -1094,30 +1096,51 @@ AIC: 211.8555 </code></pre>
 
 Type: probs</code></pre>
 </div>
-<div id="最適化関数を使った推定" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span>
+<div id="平行性の検定" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> 平行性の検定</h2>
+<p>上で推定した順序ロジットは、複数の閾値を推定するモデルの係数が、すべて同一である平行性が仮定されています。しかし、これは必ずしもそうとは限りません。平行性の仮定が疑わしいときはbrant検定で確認します。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">library</span>(brant)</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="fu">brant</span>(r_polr)</span></code></pre></div>
+<pre><code>-------------------------------------------- 
+Test for    X2  df  probability 
+-------------------------------------------- 
+Omnibus     9.33    8   0.32
+x1      4.27    2   0.12
+x2      0.08    2   0.96
+dphoenix    2.4 2   0.3
+dtiger      1.34    2   0.51
+-------------------------------------------- 
+
+H0: Parallel Regression Assumption holds</code></pre>
+<p>平行性を仮定できない場合は、<code>VGAM</code>パッケージを用いて一般化順序ロジットモデルを推定します。</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">library</span>(VGAM)</span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a><span class="fu">vglm</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, <span class="at">family =</span> <span class="fu">cumulative</span>(<span class="at">parallel =</span> <span class="cn">FALSE</span>, <span class="at">reverse =</span> <span class="cn">FALSE</span>), <span class="at">data =</span> df01)</span></code></pre></div>
+<p>この例のデータセットでは警告が出るので、結果は割愛します。</p>
+</div>
+<div id="最適化関数を使った推定" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span>
 最適化関数を使った推定</h2>
 <p>Rの行列のデータ構造を活かして行列で処理するところをベクトルで処理してループを削減したため見通しが悪いですが、意外に簡単に推定できます。</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>llf <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
-<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>    ng <span class="ot">&lt;-</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>    g <span class="ot">&lt;-</span> p[<span class="dv">1</span><span class="sc">:</span>ng]</span>
-<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">2</span> <span class="sc">&lt;=</span> ng) <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>ng) <span class="cf">if</span>(g[i] <span class="sc">&lt;=</span> g[i<span class="dv">-1</span>]) <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
-<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>    b <span class="ot">&lt;-</span> p[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>ng)]</span>
-<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a>    y <span class="ot">&lt;-</span> X <span class="sc">%*%</span> b</span>
-<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
-<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a>    a <span class="ot">&lt;-</span> <span class="fu">matrix</span>(g, n, <span class="fu">length</span>(g), <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">replicate</span>(<span class="fu">length</span>(g), <span class="fu">c</span>(y))</span>
-<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">exp</span>(a))</span>
-<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a>    dp <span class="ot">&lt;-</span> <span class="fu">cbind</span>(p, <span class="dv">1</span>) <span class="sc">-</span> <span class="fu">cbind</span>(<span class="dv">0</span>, p)</span>
-<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">log</span>(dp[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dp) <span class="sc">+</span> <span class="fu">nrow</span>(dp)<span class="sc">*</span>(s_id <span class="sc">-</span> <span class="dv">1</span>)]))</span>
-<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a>}</span>
-<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a></span>
-<span id="cb33-14"><a href="#cb33-14" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, df01)</span>
-<span id="cb33-15"><a href="#cb33-15" tabindex="-1"></a>s_id <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">model.response</span>(mf))</span>
-<span id="cb33-16"><a href="#cb33-16" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf)</span>
-<span id="cb33-17"><a href="#cb33-17" tabindex="-1"></a>init.p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">ncol</span>(X)))</span>
-<span id="cb33-18"><a href="#cb33-18" tabindex="-1"></a>r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(init.p, llf, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
-<span id="cb33-19"><a href="#cb33-19" tabindex="-1"></a><span class="co"># 閾値-切片項と変数の係数</span></span>
-<span id="cb33-20"><a href="#cb33-20" tabindex="-1"></a><span class="fu">with</span>(r_optim, <span class="fu">c</span>(par[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="sc">-</span> par[<span class="dv">4</span>], par[<span class="dv">5</span><span class="sc">:</span><span class="dv">8</span>]))</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>llf <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>    ng <span class="ot">&lt;-</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>    g <span class="ot">&lt;-</span> p[<span class="dv">1</span><span class="sc">:</span>ng]</span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">2</span> <span class="sc">&lt;=</span> ng) <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>ng) <span class="cf">if</span>(g[i] <span class="sc">&lt;=</span> g[i<span class="dv">-1</span>]) <span class="fu">return</span>(<span class="sc">-</span><span class="cn">Inf</span>)</span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>    b <span class="ot">&lt;-</span> p[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span>ng)]</span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>    y <span class="ot">&lt;-</span> X <span class="sc">%*%</span> b</span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a>    a <span class="ot">&lt;-</span> <span class="fu">matrix</span>(g, n, <span class="fu">length</span>(g), <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">-</span> <span class="fu">replicate</span>(<span class="fu">length</span>(g), <span class="fu">c</span>(y))</span>
+<span id="cb36-9"><a href="#cb36-9" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">exp</span>(a))</span>
+<span id="cb36-10"><a href="#cb36-10" tabindex="-1"></a>    dp <span class="ot">&lt;-</span> <span class="fu">cbind</span>(p, <span class="dv">1</span>) <span class="sc">-</span> <span class="fu">cbind</span>(<span class="dv">0</span>, p)</span>
+<span id="cb36-11"><a href="#cb36-11" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">log</span>(dp[<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(dp) <span class="sc">+</span> <span class="fu">nrow</span>(dp)<span class="sc">*</span>(s_id <span class="sc">-</span> <span class="dv">1</span>)]))</span>
+<span id="cb36-12"><a href="#cb36-12" tabindex="-1"></a>}</span>
+<span id="cb36-13"><a href="#cb36-13" tabindex="-1"></a></span>
+<span id="cb36-14"><a href="#cb36-14" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(g <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> d, df01)</span>
+<span id="cb36-15"><a href="#cb36-15" tabindex="-1"></a>s_id <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">model.response</span>(mf))</span>
+<span id="cb36-16"><a href="#cb36-16" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="fu">terms</span>(mf), mf)</span>
+<span id="cb36-17"><a href="#cb36-17" tabindex="-1"></a>init.p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">seq</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="at">length.out =</span> <span class="fu">max</span>(s_id) <span class="sc">-</span> <span class="dv">1</span>), <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">ncol</span>(X)))</span>
+<span id="cb36-18"><a href="#cb36-18" tabindex="-1"></a>r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(init.p, llf, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>))</span>
+<span id="cb36-19"><a href="#cb36-19" tabindex="-1"></a><span class="co"># 閾値-切片項と変数の係数</span></span>
+<span id="cb36-20"><a href="#cb36-20" tabindex="-1"></a><span class="fu">with</span>(r_optim, <span class="fu">c</span>(par[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>] <span class="sc">-</span> par[<span class="dv">4</span>], par[<span class="dv">5</span><span class="sc">:</span><span class="dv">8</span>]))</span></code></pre></div>
 <pre><code>[1] -1.7853543 -0.4621157  1.5432442 -3.9394564  4.6513028  0.2306246
 [7] -1.2237194</code></pre>
 <p><code>MASS::polr</code>とほぼ同じ推定結果になっていますね。<code>ordinal::clm</code>か<code>MASS::polr</code>を使いましょう。</p>
