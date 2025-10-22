@@ -1093,36 +1093,56 @@ id="fnref2"><sup>2</sup></a>、</p>
 <h1><span class="header-section-number">16</span>
 複数のグラフを並べる</h1>
 <p><code>par(mfrow = c(m, n))</code>の後に<code>m*n</code>回プロットを行なえば、<code>m</code>行<code>n</code>列で合計<code>m*n</code>個のグラフを同時にプロットできます。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co"># mfrow = c(2, 1)で、2行1列に分割</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="co"># omaはページ全体の余白の指定</span></span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>), <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">0</span>, <span class="dv">3</span>, <span class="fl">0.5</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">mgp =</span> <span class="fu">c</span>(<span class="fl">2.5</span>, <span class="dv">1</span>, <span class="dv">0</span>))</span>
+<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a>at <span class="ot">&lt;-</span> (<span class="dv">0</span><span class="sc">:</span><span class="dv">4</span>)<span class="sc">*</span>pi<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">expression</span>(pi<span class="sc">/</span><span class="dv">2</span>), <span class="fu">expression</span>(pi), <span class="fu">expression</span>(<span class="dv">3</span><span class="sc">*</span>pi<span class="sc">/</span><span class="dv">2</span>), <span class="fu">expression</span>(<span class="dv">2</span><span class="sc">*</span>pi))</span>
+<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a>drawAxes <span class="ot">&lt;-</span> <span class="cf">function</span>(){</span>
+<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a>  <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>, <span class="at">at =</span> at, <span class="at">labels =</span> labels)</span>
+<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a>  <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>, <span class="at">at =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">1</span>))</span>
+<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a>  <span class="fu">box</span>()</span>
+<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a>}</span>
+<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">2</span><span class="sc">*</span>pi)</span>
+<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a>xrange <span class="ot">&lt;-</span> xlim <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span>pi<span class="sc">/</span><span class="dv">2</span>, pi<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="fu">curve</span>(sin, xrange[<span class="dv">1</span>], xrange[<span class="dv">2</span>], <span class="at">xlim =</span> xlim, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="fu">expression</span>(<span class="fu">sin</span>(x)), <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a><span class="fu">drawAxes</span>()</span>
+<span id="cb32-15"><a href="#cb32-15" tabindex="-1"></a><span class="fu">curve</span>(cos, xrange[<span class="dv">1</span>], xrange[<span class="dv">2</span>], <span class="at">xlim =</span> xlim, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="fu">expression</span>(<span class="fu">cos</span>(x)), <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb32-16"><a href="#cb32-16" tabindex="-1"></a><span class="fu">drawAxes</span>()</span>
+<span id="cb32-17"><a href="#cb32-17" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">&quot;注意) 特にありません．&quot;</span>, <span class="at">side =</span> <span class="dv">1</span>, <span class="at">line =</span> <span class="dv">3</span>, <span class="at">adj =</span> <span class="dv">0</span>)</span>
+<span id="cb32-18"><a href="#cb32-18" tabindex="-1"></a><span class="co"># outer = TRUEをつけると、個々のグラフではなくページ全体のタイトルとなる</span></span>
+<span id="cb32-19"><a href="#cb32-19" tabindex="-1"></a><span class="fu">title</span>(<span class="at">main =</span> <span class="st">&quot;ページ分割の例&quot;</span>, <span class="at">outer =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/plot_mfrow-1.png" width="672" /></p>
 <div id="変則的な分割を行なう" class="section level2" number="16.1">
 <h2><span class="header-section-number">16.1</span>
 変則的な分割を行なう</h2>
 <p>1行目は1つのプロットで2列を使い、2行目は2つのプロットを表示するような変則的な同時プロットも、<code>split.screen</code>関数で入れ籠構造をつくれば表示できます。</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">mgp=</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="co"># 2行1列の親領域をまずつくり、スクリーン番号の戻り値を得る</span></span>
-<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a>ss_p <span class="ot">&lt;-</span> <span class="fu">split.screen</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)) </span>
-<span id="cb32-4"><a href="#cb32-4" tabindex="-1"></a><span class="co"># スクリーン番号を指定して、1行2列の子領域をつくる</span></span>
-<span id="cb32-5"><a href="#cb32-5" tabindex="-1"></a>ss_c <span class="ot">&lt;-</span> <span class="fu">split.screen</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), ss_p[<span class="dv">2</span>])</span>
-<span id="cb32-6"><a href="#cb32-6" tabindex="-1"></a><span class="co"># 親領域のスクリーン番号を指定して描画</span></span>
-<span id="cb32-7"><a href="#cb32-7" tabindex="-1"></a><span class="fu">screen</span>(ss_p[<span class="dv">1</span>])</span>
-<span id="cb32-8"><a href="#cb32-8" tabindex="-1"></a><span class="fu">curve</span>(dlnorm, <span class="dv">0</span>, <span class="dv">6</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>))</span>
-<span id="cb32-9"><a href="#cb32-9" tabindex="-1"></a><span class="co"># 子領域のスクリーン番号を指定して描画</span></span>
-<span id="cb32-10"><a href="#cb32-10" tabindex="-1"></a><span class="fu">screen</span>(ss_c[<span class="dv">1</span>])</span>
-<span id="cb32-11"><a href="#cb32-11" tabindex="-1"></a><span class="fu">curve</span>(dnorm, <span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>))</span>
-<span id="cb32-12"><a href="#cb32-12" tabindex="-1"></a><span class="co"># 子領域のスクリーン番号を指定して描画</span></span>
-<span id="cb32-13"><a href="#cb32-13" tabindex="-1"></a><span class="fu">screen</span>(ss_c[<span class="dv">2</span>])</span>
-<span id="cb32-14"><a href="#cb32-14" tabindex="-1"></a><span class="fu">curve</span>(dexp, <span class="dv">0</span>, <span class="dv">4</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">mgp=</span><span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a><span class="co"># 2行1列の親領域をまずつくり、スクリーン番号の戻り値を得る</span></span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>ss_p <span class="ot">&lt;-</span> <span class="fu">split.screen</span>(<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>)) </span>
+<span id="cb33-4"><a href="#cb33-4" tabindex="-1"></a><span class="co"># スクリーン番号を指定して、1行2列の子領域をつくる</span></span>
+<span id="cb33-5"><a href="#cb33-5" tabindex="-1"></a>ss_c <span class="ot">&lt;-</span> <span class="fu">split.screen</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), ss_p[<span class="dv">2</span>])</span>
+<span id="cb33-6"><a href="#cb33-6" tabindex="-1"></a><span class="co"># 親領域のスクリーン番号を指定して描画</span></span>
+<span id="cb33-7"><a href="#cb33-7" tabindex="-1"></a><span class="fu">screen</span>(ss_p[<span class="dv">1</span>])</span>
+<span id="cb33-8"><a href="#cb33-8" tabindex="-1"></a><span class="fu">curve</span>(dlnorm, <span class="dv">0</span>, <span class="dv">6</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>))</span>
+<span id="cb33-9"><a href="#cb33-9" tabindex="-1"></a><span class="co"># 子領域のスクリーン番号を指定して描画</span></span>
+<span id="cb33-10"><a href="#cb33-10" tabindex="-1"></a><span class="fu">screen</span>(ss_c[<span class="dv">1</span>])</span>
+<span id="cb33-11"><a href="#cb33-11" tabindex="-1"></a><span class="fu">curve</span>(dnorm, <span class="sc">-</span><span class="dv">4</span>, <span class="dv">4</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">3</span>))</span>
+<span id="cb33-12"><a href="#cb33-12" tabindex="-1"></a><span class="co"># 子領域のスクリーン番号を指定して描画</span></span>
+<span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a><span class="fu">screen</span>(ss_c[<span class="dv">2</span>])</span>
+<span id="cb33-14"><a href="#cb33-14" tabindex="-1"></a><span class="fu">curve</span>(dexp, <span class="dv">0</span>, <span class="dv">4</span>, <span class="at">xlab=</span><span class="st">&quot;&quot;</span>, <span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>))</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_split_screen-1.png" width="672" /></p>
 <p>分割をやめるときは、以下のように終了します。</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">close.screen</span>(<span class="at">all.screens =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">close.screen</span>(<span class="at">all.screens =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 </div>
 </div>
 <div id="グラフを保存する" class="section level1" number="17">
 <h1><span class="header-section-number">17</span> グラフを保存する</h1>
 <p><code>png</code>や<code>postscript</code>などでグラフィックスデバイスを開いた後、<code>plot</code>をして、<code>dev.off</code>でグラフィックスデバイスを閉じれば保存できます。</p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">png</span>(<span class="at">filename =</span> <span class="st">&quot;sin.png&quot;</span>, </span>
-<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
-<span id="cb34-3"><a href="#cb34-3" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
-<span id="cb34-4"><a href="#cb34-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">png</span>(<span class="at">filename =</span> <span class="st">&quot;sin.png&quot;</span>, </span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
+<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 <p><code>bg</code>は背景色を示す引数で、<code>transparent</code>を指定すると透明です。DPIは72になります。</p>
 <div id="グラフィックスデバイスの開閉とプロットを分離"
 class="section level2" number="17.1">
@@ -1131,24 +1151,24 @@ class="section level2" number="17.1">
 <p>グラフィックスデバイスのオープンとプロットを分離したい場合は、遅延実行を応用します。
 プロット部分だけ関数化できるので、同じ描画のコードを、画面確認，Web用PNG，TeX用EPS，R
 Markdownなどに使いまわしたいときに便利です。</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>save_as_png <span class="ot">&lt;-</span> <span class="cf">function</span>(fname, plot_expression){</span>
-<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>    <span class="fu">png</span>(<span class="at">filename =</span> fname,</span>
-<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
-<span id="cb35-4"><a href="#cb35-4" tabindex="-1"></a>    plot_expression</span>
-<span id="cb35-5"><a href="#cb35-5" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
-<span id="cb35-6"><a href="#cb35-6" tabindex="-1"></a>}</span>
-<span id="cb35-7"><a href="#cb35-7" tabindex="-1"></a></span>
-<span id="cb35-8"><a href="#cb35-8" tabindex="-1"></a><span class="fu">save_as_png</span>(<span class="st">&quot;sin.png&quot;</span>, { <span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi) })</span></code></pre></div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>save_as_png <span class="ot">&lt;-</span> <span class="cf">function</span>(fname, plot_expression){</span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a>    <span class="fu">png</span>(<span class="at">filename =</span> fname,</span>
+<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>        <span class="at">width =</span> <span class="dv">800</span>, <span class="at">height =</span> <span class="dv">600</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
+<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a>    plot_expression</span>
+<span id="cb36-5"><a href="#cb36-5" tabindex="-1"></a>    <span class="fu">dev.off</span>()</span>
+<span id="cb36-6"><a href="#cb36-6" tabindex="-1"></a>}</span>
+<span id="cb36-7"><a href="#cb36-7" tabindex="-1"></a></span>
+<span id="cb36-8"><a href="#cb36-8" tabindex="-1"></a><span class="fu">save_as_png</span>(<span class="st">&quot;sin.png&quot;</span>, { <span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi) })</span></code></pre></div>
 </div>
 <div id="ディスプレイに表示した後に保存" class="section level2"
 number="17.2">
 <h2><span class="header-section-number">17.2</span>
 ディスプレイに表示した後に保存</h2>
 <p><code>plot</code>してディスプレイに表示した後に保存したくなった場合は、<code>dev.copy</code>や<code>dev.copy2eps</code>を使います。</p>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
-<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="fu">dev.copy</span>(png,</span>
-<span id="cb36-3"><a href="#cb36-3" tabindex="-1"></a>    <span class="at">file =</span> <span class="st">&quot;sin.png&quot;</span>, <span class="at">width=</span><span class="dv">600</span>, <span class="at">height=</span><span class="dv">400</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
-<span id="cb36-4"><a href="#cb36-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
+<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a><span class="fu">dev.copy</span>(png,</span>
+<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a>    <span class="at">file =</span> <span class="st">&quot;sin.png&quot;</span>, <span class="at">width=</span><span class="dv">600</span>, <span class="at">height=</span><span class="dv">400</span>, <span class="at">type=</span><span class="st">&quot;cairo&quot;</span>)</span>
+<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 <div id="背景色" class="section level3" number="17.2.1">
 <h3><span class="header-section-number">17.2.1</span> 背景色</h3>
 <p><code>dev.copy</code>は背景色の引数<code>bg</code>をとらないので、<code>par(bg = "white")</code>のように指定してください。</p>
@@ -1158,10 +1178,10 @@ number="17.2">
 <h2><span class="header-section-number">17.3</span>
 EPSファイルの用紙サイズ</h2>
 <p><code>postscript</code>でEPSファイルをつくるときは、<code>width</code>と<code>height</code>と<code>paper = "special"</code>をつけておいた方が、回転などで取り回しが楽だと思います。<code>paper = "special"</code>は、<code>width</code>と<code>height</code>にあわせて非定形用紙サイズが指定されるもので、<code>pdf</code>では標準です。</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">postscript</span>(<span class="at">file =</span> <span class="st">&quot;sin.eps&quot;</span>, </span>
-<span id="cb37-2"><a href="#cb37-2" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>, <span class="at">paper =</span> <span class="st">&quot;special&quot;</span>)</span>
-<span id="cb37-3"><a href="#cb37-3" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
-<span id="cb37-4"><a href="#cb37-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="fu">postscript</span>(<span class="at">file =</span> <span class="st">&quot;sin.eps&quot;</span>, </span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a>    <span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="dv">7</span>, <span class="at">paper =</span> <span class="st">&quot;special&quot;</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">sin</span>(x), <span class="sc">-</span>pi, pi)</span>
+<span id="cb38-4"><a href="#cb38-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
 <p>なお、<code>width</code>と<code>height</code>はinch（=2.54cm）指定です。TeXで利用する人が多いと思いますが、1
 inchが72
 bpになり、bp単位でBoundingBoxが保存されます。上の例だと、<code>%%BoundingBox: 0 0 504 504</code>が入ります。TeXの<code>graphicsx</code>パッケージの<code>bb</code>オプションはこのBoundingBoxを標準で入っています。</p>
