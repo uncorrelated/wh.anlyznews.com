@@ -90,9 +90,16 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
-<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async='async' src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + window.location.href + "+" + document.title;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -424,7 +431,7 @@ uncorrelated=uncorrelated zombie &lt;uncorrelated@yahoo.co.jp&gt;</div>
 <div class="console">~/Repository$ <span class="cinput">mv <span class="example">NewRepository</span> <span class="example">Repository</span></span></div>
 
 <div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
-<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+<script async='async' defer='defer'>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
 </div>
 </div>
 </body>
