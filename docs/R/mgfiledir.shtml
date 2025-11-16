@@ -13,7 +13,7 @@
 
 <title>Rでのファイルとディレクトリの管理</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -364,26 +371,32 @@ class="toc-section-number">1</span> カレントディレクトリを確認</a><
 <li><a href="#カレントディレクトリを移動"
 id="toc-カレントディレクトリを移動"><span
 class="toc-section-number">2</span> カレントディレクトリを移動</a></li>
+<li><a href="#ファイルパスの一部分を得る"
+id="toc-ファイルパスの一部分を得る"><span
+class="toc-section-number">3</span> ファイルパスの一部分を得る</a></li>
+<li><a href="#省略形をフルパスにする"
+id="toc-省略形をフルパスにする"><span
+class="toc-section-number">4</span> 省略形をフルパスにする</a></li>
 <li><a href="#ファイル一覧を得る" id="toc-ファイル一覧を得る"><span
-class="toc-section-number">3</span> ファイル一覧を得る</a></li>
+class="toc-section-number">5</span> ファイル一覧を得る</a></li>
 <li><a href="#ファイルの存在を確認する"
 id="toc-ファイルの存在を確認する"><span
-class="toc-section-number">4</span> ファイルの存在を確認する</a></li>
+class="toc-section-number">6</span> ファイルの存在を確認する</a></li>
 <li><a href="#ファイルの情報を得る" id="toc-ファイルの情報を得る"><span
-class="toc-section-number">5</span> ファイルの情報を得る</a></li>
+class="toc-section-number">7</span> ファイルの情報を得る</a></li>
 <li><a href="#osにコマンドを実行させる"
 id="toc-osにコマンドを実行させる"><span
-class="toc-section-number">6</span> OSにコマンドを実行させる</a></li>
+class="toc-section-number">8</span> OSにコマンドを実行させる</a></li>
 <li><a href="#ファイルをコピーする" id="toc-ファイルをコピーする"><span
-class="toc-section-number">7</span> ファイルをコピーする</a></li>
+class="toc-section-number">9</span> ファイルをコピーする</a></li>
 <li><a href="#ファイル名を変更する" id="toc-ファイル名を変更する"><span
-class="toc-section-number">8</span> ファイル名を変更する</a></li>
+class="toc-section-number">10</span> ファイル名を変更する</a></li>
 <li><a href="#ファイルもしくはディレクトリを削除する"
 id="toc-ファイルもしくはディレクトリを削除する"><span
-class="toc-section-number">9</span>
+class="toc-section-number">11</span>
 ファイルもしくはディレクトリを削除する</a></li>
 <li><a href="#ディレクトリをつくる" id="toc-ディレクトリをつくる"><span
-class="toc-section-number">10</span> ディレクトリをつくる</a></li>
+class="toc-section-number">12</span> ディレクトリをつくる</a></li>
 </ul>
 </div>
 
@@ -401,76 +414,100 @@ class="toc-section-number">10</span> ディレクトリをつくる</a></li>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">file.path</span>(<span class="st">&quot;C:&quot;</span>, <span class="st">&quot;Program Files&quot;</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="fu">setwd</span>(<span class="fu">Sys.getenv</span>(<span class="st">&quot;HOME&quot;</span>))</span></code></pre></div>
 </div>
-<div id="ファイル一覧を得る" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> ファイル一覧を得る</h1>
-<p>オプションは多いので<code>?dir</code>で確認しながら使いましょう。</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># カレントディレクトリのファイル一覧</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">dir</span>()</span>
-<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co"># 正規表現で絞る</span></span>
-<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="fu">dir</span>(<span class="at">pattern =</span> <span class="st">&quot;.*[.]txt$&quot;</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co"># ディレクトリの一覧を出す</span></span>
-<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="fu">list.dirs</span>(<span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co"># ワイルドカードを用いる</span></span>
-<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="fu">Sys.glob</span>(<span class="st">&quot;*.csv&quot;</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="fu">Sys.glob</span>(<span class="fu">file.path</span>(<span class="fu">R.home</span>(), <span class="st">&quot;library&quot;</span>, <span class="st">&quot;*&quot;</span>, <span class="st">&quot;R&quot;</span>, <span class="st">&quot;*.rdx&quot;</span>))</span></code></pre></div>
+<div id="ファイルパスの一部分を得る" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+ファイルパスの一部分を得る</h1>
+<p>ファイルとディレクトリの操作では必要となります。正規表現などで間に合わせがちですが、拡張子がないときの処理を忘れてしまったりするので、これらを使いましょう。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>filepath <span class="ot">&lt;-</span> <span class="st">&quot;/home/uncorrelated/docs/example.csv&quot;</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co"># 拡張子以外を得る</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>(sans_ext <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">file_path_sans_ext</span>(filepath))</span></code></pre></div>
+<pre><code>[1] &quot;/home/uncorrelated/docs/example&quot;</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># 拡張子を得る</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>(ext <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">file_ext</span>(filepath))</span></code></pre></div>
+<pre><code>[1] &quot;csv&quot;</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># ファイル名を得る</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>(filename <span class="ot">&lt;-</span> <span class="fu">basename</span>(filepath))</span></code></pre></div>
+<pre><code>[1] &quot;example.csv&quot;</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># パスを得る</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>(path <span class="ot">&lt;-</span> <span class="fu">dirname</span>(filepath))</span></code></pre></div>
+<pre><code>[1] &quot;/home/uncorrelated/docs&quot;</code></pre>
 </div>
-<div id="ファイルの存在を確認する" class="section level1" number="4">
+<div id="省略形をフルパスにする" class="section level1" number="4">
 <h1><span class="header-section-number">4</span>
+省略形をフルパスにする</h1>
+<p>ドットやチルダをつかったファイルパスはそのままでは扱いづらい事がありますが、正規化されたフルパスに変更できます。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>fullpath <span class="ot">&lt;-</span> <span class="fu">normalizePath</span>(<span class="st">&quot;.&quot;</span>)</span></code></pre></div>
+</div>
+<div id="ファイル一覧を得る" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> ファイル一覧を得る</h1>
+<p>オプションは多いので<code>?dir</code>で確認しながら使いましょう。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># カレントディレクトリのファイル一覧</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="fu">dir</span>()</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co"># 正規表現で絞る</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a><span class="fu">dir</span>(<span class="at">pattern =</span> <span class="st">&quot;.*[.]txt$&quot;</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co"># ディレクトリの一覧を出す</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a><span class="fu">list.dirs</span>(<span class="at">recursive =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="co"># ワイルドカードを用いる</span></span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="fu">Sys.glob</span>(<span class="st">&quot;*.csv&quot;</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="fu">Sys.glob</span>(<span class="fu">file.path</span>(<span class="fu">R.home</span>(), <span class="st">&quot;library&quot;</span>, <span class="st">&quot;*&quot;</span>, <span class="st">&quot;R&quot;</span>, <span class="st">&quot;*.rdx&quot;</span>))</span></code></pre></div>
+</div>
+<div id="ファイルの存在を確認する" class="section level1" number="6">
+<h1><span class="header-section-number">6</span>
 ファイルの存在を確認する</h1>
 <p>バッチ処理などでは入れておいた方がよいです。</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">file.exists</span>(<span class="st">&quot;example.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">file.exists</span>(<span class="st">&quot;example.csv&quot;</span>)</span></code></pre></div>
 </div>
-<div id="ファイルの情報を得る" class="section level1" number="5">
-<h1><span class="header-section-number">5</span>
+<div id="ファイルの情報を得る" class="section level1" number="7">
+<h1><span class="header-section-number">7</span>
 ファイルの情報を得る</h1>
 <p><code>file.info</code>と<code>file.mode</code>があれば足りるのですが、他にもあります。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># ファイルの情報を得る</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">file.info</span>(fname)</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># 更新日時（file.infoでも出る）</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="fu">file.mtime</span>(fname)</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># サイズ（file.infoでも出る）</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="fu">file.size</span>(fname)</span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co"># アクセス制限（BSD UNIX準拠）</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="fu">file.mode</span>(fname)</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># ファイルの情報を得る</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">file.info</span>(fname)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co"># 更新日時（file.infoでも出る）</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a><span class="fu">file.mtime</span>(fname)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co"># サイズ（file.infoでも出る）</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="fu">file.size</span>(fname)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co"># アクセス制限（BSD UNIX準拠）</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="fu">file.mode</span>(fname)</span></code></pre></div>
 </div>
-<div id="osにコマンドを実行させる" class="section level1" number="6">
-<h1><span class="header-section-number">6</span>
+<div id="osにコマンドを実行させる" class="section level1" number="8">
+<h1><span class="header-section-number">8</span>
 OSにコマンドを実行させる</h1>
 <p><code>system</code>でOSのコマンドを実行させられます。これでディレクトリをつくったり、ファイルコピーをしたりもできます。</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># シェルの`echo`を呼び出す</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="fu">system</span>(<span class="st">&quot;echo </span><span class="sc">\&quot;</span><span class="st">Hello, Shell!</span><span class="sc">\&quot;</span><span class="st">&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># シェルの`echo`を呼び出す</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">system</span>(<span class="st">&quot;echo </span><span class="sc">\&quot;</span><span class="st">Hello, Shell!</span><span class="sc">\&quot;</span><span class="st">&quot;</span>)</span></code></pre></div>
 </div>
-<div id="ファイルをコピーする" class="section level1" number="7">
-<h1><span class="header-section-number">7</span>
+<div id="ファイルをコピーする" class="section level1" number="9">
+<h1><span class="header-section-number">9</span>
 ファイルをコピーする</h1>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="st">&quot;example.csv&quot;</span>, <span class="st">&quot;example_copied.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">file.copy</span>(<span class="st">&quot;example.csv&quot;</span>, <span class="st">&quot;example_copied.csv&quot;</span>)</span></code></pre></div>
 </div>
-<div id="ファイル名を変更する" class="section level1" number="8">
-<h1><span class="header-section-number">8</span>
+<div id="ファイル名を変更する" class="section level1" number="10">
+<h1><span class="header-section-number">10</span>
 ファイル名を変更する</h1>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">file.rename</span>(<span class="st">&quot;example_copied.csv&quot;</span>, <span class="st">&quot;example02.csv&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">file.rename</span>(<span class="st">&quot;example_copied.csv&quot;</span>, <span class="st">&quot;example02.csv&quot;</span>)</span></code></pre></div>
 <p><code>Sys.chmod</code>でファイルの属性を変更したり、<code>Sys.setFileTime</code>でファイルの日時を変更したりもできます。</p>
 </div>
 <div id="ファイルもしくはディレクトリを削除する" class="section level1"
-number="9">
-<h1><span class="header-section-number">9</span>
+number="11">
+<h1><span class="header-section-number">11</span>
 ファイルもしくはディレクトリを削除する</h1>
 <p><code>unlink</code>でファイルとディレクトリを消去できます。<code>recursive = TRUE</code>をつければ、入っているファイルごとディレクトリを消去できます。<code>file.remove</code>と言うのもあります。</p>
 </div>
-<div id="ディレクトリをつくる" class="section level1" number="10">
-<h1><span class="header-section-number">10</span>
+<div id="ディレクトリをつくる" class="section level1" number="12">
+<h1><span class="header-section-number">12</span>
 ディレクトリをつくる</h1>
 <p>存在するディレクトリを作ろうとすると警告が出るので、警告を出なくするか、存在しないことを確認しておいたほうが心理的によいです。</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># 警告を抑制</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">dir.create</span>(<span class="st">&quot;newdir&quot;</span>))</span></code></pre></div>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># 存在しないことを確認してから作成</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>mkdir <span class="ot">&lt;-</span> <span class="cf">function</span>(dname){</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">dir.exists</span>(dname)){</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>        <span class="fu">dir.create</span>(dname)</span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    }</span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    dname</span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>}</span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>newdir <span class="ot">&lt;-</span> <span class="fu">mkdir</span>(<span class="st">&quot;newdir&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co"># 警告を抑制</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a><span class="fu">suppressWarnings</span>(<span class="fu">dir.create</span>(<span class="st">&quot;newdir&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="co"># 存在しないことを確認してから作成</span></span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>mkdir <span class="ot">&lt;-</span> <span class="cf">function</span>(dname){</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">dir.exists</span>(dname)){</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>        <span class="fu">dir.create</span>(dname)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>    }</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>    dname</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>}</span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>newdir <span class="ot">&lt;-</span> <span class="fu">mkdir</span>(<span class="st">&quot;newdir&quot;</span>)</span></code></pre></div>
 </div>
 
 </div>

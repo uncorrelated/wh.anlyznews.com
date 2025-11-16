@@ -378,9 +378,6 @@ class="toc-section-number">3</span> sweep</a></li>
 id="toc-guiのファイルダイアログを使う"><span
 class="toc-section-number">4</span>
 GUIのファイル・ダイアログを使う</a></li>
-<li><a href="#ファイルパスを分解する"
-id="toc-ファイルパスを分解する"><span
-class="toc-section-number">5</span> ファイルパスを分解する</a></li>
 </ul>
 </div>
 
@@ -413,24 +410,6 @@ GUIのファイル・ダイアログを使う</h1>
 <p>使いどころは乏しい気もしますが、<code>file.choose()</code>でできます。</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">file.edit</span>(<span class="fu">file.choose</span>())</span></code></pre></div>
 <p>とすれば、ファイルを指定してエディターで編集できます。</p>
-</div>
-<div id="ファイルパスを分解する" class="section level1" number="5">
-<h1><span class="header-section-number">5</span>
-ファイルパスを分解する</h1>
-<p>正規表現を使うと、拡張子がないときの処理を忘れてしまったりするので、これらを使いましょう。</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>filepath <span class="ot">&lt;-</span> <span class="st">&quot;/home/uncorrelated/docs/example.csv&quot;</span></span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co"># 拡張子以外を得る</span></span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>(sans_ext <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">file_path_sans_ext</span>(filepath))</span></code></pre></div>
-<pre><code>[1] &quot;/home/uncorrelated/docs/example&quot;</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># 拡張子を得る</span></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>(ext <span class="ot">&lt;-</span> tools<span class="sc">::</span><span class="fu">file_ext</span>(filepath))</span></code></pre></div>
-<pre><code>[1] &quot;csv&quot;</code></pre>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># ファイル名を得る</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>(filename <span class="ot">&lt;-</span> <span class="fu">basename</span>(filepath))</span></code></pre></div>
-<pre><code>[1] &quot;example.csv&quot;</code></pre>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># パスを得る</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>(path <span class="ot">&lt;-</span> <span class="fu">dirname</span>(filepath))</span></code></pre></div>
-<pre><code>[1] &quot;/home/uncorrelated/docs&quot;</code></pre>
 </div>
 
 </div>
