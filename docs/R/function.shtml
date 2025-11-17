@@ -13,7 +13,7 @@
 
 <title>Rの関数のざっとした説明</title>
 
-<script src="common_files/header-attrs-2.25/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -374,6 +381,8 @@ class="toc-section-number">5</span>
 class="toc-section-number">6</span> 置換関数</a></li>
 <li><a href="#演算子" id="toc-演算子"><span
 class="toc-section-number">7</span> 演算子</a></li>
+<li><a href="#終了時処理" id="toc-終了時処理"><span
+class="toc-section-number">8</span> 終了時処理</a></li>
 </ul>
 </div>
 
@@ -408,7 +417,7 @@ NULL</code></pre>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">body</span>(fnc) <span class="co"># コードを表示</span></span></code></pre></div>
 <pre><code>1 + x + x^2</code></pre>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">environment</span>(fnc) <span class="co"># 定義された環境を表示</span></span></code></pre></div>
-<pre><code>&lt;environment: 0x5fa6b417ffd8&gt;</code></pre>
+<pre><code>&lt;environment: 0x56ce8782d280&gt;</code></pre>
 <p>環境は変数が保存される領域のことですが、詳しくは<a
 href="./environment.shtml">Rの名前空間とスコーピング</a>を参照してください。</p>
 </div>
@@ -493,18 +502,26 @@ number="5">
 <span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a>(m1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">4</span>, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">9.5</span>)), <span class="dv">2</span>))</span></code></pre></div>
 <pre><code>     [,1] [,2]
 [1,]    8    1
-[2,]    4    5</code></pre>
+[2,]    5    5</code></pre>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>(m2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">4</span>, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">9.5</span>)), <span class="dv">2</span>))</span></code></pre></div>
 <pre><code>     [,1] [,2]
-[1,]    4    6
-[2,]    5    6</code></pre>
+[1,]    5    2
+[2,]    5    2</code></pre>
 <div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>m1 <span class="sc">%t%</span> m2</span></code></pre></div>
 <pre><code>     [,1] [,2]
-[1,]  -19   20
-[2,]  -23   19</code></pre>
+[1,]   -5    3
+[2,]    0    5</code></pre>
 <p>実際の利用ではオブジェクトによって操作を変える必要があるため、S3もしくはS4オブジェクト指向システムに沿った記述にしましょう。詳細は<a
 href="./OOP.shtml">Rのオブジェクト指向システム（S3/S4/RC）</a>の説明を参照してください。</p>
 <p>なお、先頭と末尾の文字が<code>%</code>ではない<code>+</code>や<code>-</code>といった演算子は、S4クラスの関数として定義されています。</p>
+</div>
+<div id="終了時処理" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> 終了時処理</h1>
+<p><code>on.exit</code>で関数終了時の処理を指定することができます。<code>tryCatch</code>の<code>finally</code>引数で式を指定するよりもネストが浅く、記述が簡素になります。
+ファイル操作のクローズ処理に用いるのが典型例です。エラーなどで関数が処理の途中で終了しても、クローズ処理がされない事がなくなります。</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">file</span>(<span class="st">&quot;example.txt&quot;</span>, <span class="st">&quot;r&quot;</span>)</span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a><span class="fu">on.exit</span>(<span class="fu">close</span>(con), <span class="at">add =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p><code>add = TRUE</code>があると、既にセットしてある終了時処理の式に加えて新たな終了時処理の式がセットされます。無いと上書きになります。<code>add = TRUE</code>で、引数<code>after</code>が<code>FALSE</code>だと、関数終了時に最初に実行される位置に追加の式を記録します。<code>after = TRUE</code>だと最後です。</p>
 </div>
 
 </div>
