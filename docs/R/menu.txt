@@ -60,6 +60,7 @@ div.right h2.menu {
     <dt><a href="cross%20tabulation.shtml">Rでチマチマとクロス表の検定と信頼区間の計算</a></dt>
     <dt><a href="t-test.shtml">t検定への道</a></dt>
     <dt><a href="F-test.shtml">Rによる等分散性の検定と分散分析（ANOVA）</a></dt>
+    <dt><a href="ivm.shtml">操作変数法を学んで、計量経済学に踏み出そう</a></dt>
 </dl>
 
 <h2 class="menu">Rグラフィックス</h2>

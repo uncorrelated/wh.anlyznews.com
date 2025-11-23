@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>操作変数法を学んで、計量経済学に踏み出そう</title>
+
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">操作変数法を学んで、計量経済学に踏み出そう</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>社会科学ではどうしても出てくる内生性への対処方法の基本的手法を学びましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#同時方程式" id="toc-同時方程式"><span
+class="toc-section-number">1</span> 同時方程式</a>
+<ul>
+<li><a href="#価格の内生性と同時性バイアス"
+id="toc-価格の内生性と同時性バイアス"><span
+class="toc-section-number">1.1</span>
+価格の内生性と同時性バイアス</a></li>
+</ul></li>
+<li><a href="#二段階最小二乗法tsls" id="toc-二段階最小二乗法tsls"><span
+class="toc-section-number">2</span>
+二段階最小二乗法（<abbr title="two-stage least squares">TSLS</abbr>）</a></li>
+<li><a href="#操作変数法ivm" id="toc-操作変数法ivm"><span
+class="toc-section-number">3</span>
+操作変数法（<abbr title="instrumental variables method">IVM</abbr>）</a>
+<ul>
+<li><a href="#係数" id="toc-係数"><span
+class="toc-section-number">3.1</span> 係数</a>
+<ul>
+<li><a href="#一致性の確認" id="toc-一致性の確認"><span
+class="toc-section-number">3.1.1</span> 一致性の確認</a></li>
+</ul></li>
+<li><a href="#分散共分散行列" id="toc-分散共分散行列"><span
+class="toc-section-number">3.2</span> 分散共分散行列</a></li>
+<li><a href="#ivmの例" id="toc-ivmの例"><span
+class="toc-section-number">3.3</span> IVMの例</a>
+<ul>
+<li><a href="#データセット" id="toc-データセット"><span
+class="toc-section-number">3.3.1</span> データセット</a></li>
+</ul></li>
+<li><a href="#推定" id="toc-推定"><span
+class="toc-section-number">3.4</span> 推定</a>
+<ul>
+<li><a href="#誤った分散共分散行列" id="toc-誤った分散共分散行列"><span
+class="toc-section-number">3.4.1</span> 誤った分散共分散行列</a></li>
+</ul></li>
+<li><a href="#不均一分散" id="toc-不均一分散"><span
+class="toc-section-number">3.5</span> 不均一分散</a></li>
+</ul></li>
+<li><a href="#tslsの実践" id="toc-tslsの実践"><span
+class="toc-section-number">4</span> TSLSの実践</a>
+<ul>
+<li><a href="#行列による計算" id="toc-行列による計算"><span
+class="toc-section-number">4.1</span> 行列による計算</a></li>
+<li><a href="#弱相関検定" id="toc-弱相関検定"><span
+class="toc-section-number">4.2</span> 弱相関検定</a></li>
+<li><a href="#過剰識別検定" id="toc-過剰識別検定"><span
+class="toc-section-number">4.3</span> 過剰識別検定</a></li>
+<li><a href="#dwh検定" id="toc-dwh検定"><span
+class="toc-section-number">4.4</span> DWH検定</a></li>
+</ul></li>
+<li><a href="#制御関数法cfm" id="toc-制御関数法cfm"><span
+class="toc-section-number">5</span>
+制御関数法（<abbr title="Control Function Method">CFM</abbr>）</a></li>
+<li><a href="#完全情報最尤法fiml" id="toc-完全情報最尤法fiml"><span
+class="toc-section-number">6</span>
+完全情報最尤法（<abbr title = "Full Information Maximum Likelihood">FIML</abbr>）</a></li>
+</ul>
+</div>
+
+<p>経済学では複数の条件式を同時に満たす均衡点を考えるため、計量経済学では同時方程式を取り扱うことが多いのですが、含まれる内生変数は一般最小二乗法（OLS）では説明変数として扱えません。そのため、操作変数法（<abbr title="Method of Instrumental Variables">IVM</abbr>）を扱うことが多いです。</p>
+<div id="同時方程式" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> 同時方程式</h1>
+<p>内生変数が出てくる状況は多様ですが、需給の分析が典型的です。供給関数と需要関数を定義してみましょう。</p>
+<p><span class="math display">\[\begin{align}
+\mbox{需要関数: }d &amp;= \alpha_{10} + \alpha_{11} p + \xi_1 \\
+\mbox{供給関数: }s &amp;= \alpha_{20} + \alpha_{21} p  + \alpha_{22} z +
+\xi_2
+\end{align}\]</span></p>
+<p><span class="math inline">\(d\)</span>は需要、<span
+class="math inline">\(s\)</span>は供給、<span
+class="math inline">\(p\)</span>は価格、<span
+class="math inline">\(z\)</span>は天候などの外生変数、<span
+class="math inline">\(\alpha\)</span>は係数、<span
+class="math inline">\(\xi\)</span>は誤差項です。需給が一致したときに取引は行われるはずなので、観測データは</p>
+<p><span class="math display">\[
+\mbox{均衡条件: }d = s
+\]</span></p>
+<p>を満たします。</p>
+<div id="価格の内生性と同時性バイアス" class="section level2"
+number="1.1">
+<h2><span class="header-section-number">1.1</span>
+価格の内生性と同時性バイアス</h2>
+<p>この均衡条件を満たす均衡価格<span
+class="math inline">\(p^*\)</span>を計算すると、</p>
+<p><span class="math display">\[
+\mbox{均衡価格: }p^*=\frac{\alpha_{20} - \alpha_{10}}{\alpha_{11} -
+\alpha_{21}} + \frac{ \alpha_{22}}{\alpha_{11} - \alpha_{21}} z  +
+\frac{ \xi_2 - \xi_1 }{\alpha_{11} - \alpha_{21}}
+\]</span></p>
+<p>となります。</p>
+<p>需要関数を推定することを考えましょう。観測データにある価格は均衡価格<span
+class="math inline">\(p^*\)</span>になるわけですが、<span
+class="math inline">\(p^*\)</span>を説明変数に用いると、<span
+class="math inline">\(p^*\)</span>の第3項に<span
+class="math inline">\(\xi_1\)</span>があるため、<span
+class="math inline">\(\mathrm{COV}(p^*, \xi_1) \neq
+0\)</span>となり一般最小二乗法（OLS）の前提を満たしません。需要関数の価格の係数の推定量は</p>
+<p><span class="math display">\[
+E[\hat{\alpha_{11}}_{OLS}]=\alpha_{11}+\frac{\mathrm{COV}(p^*,
+\xi_1)}{\mathrm{VAR}(p^*)}
+\]</span></p>
+<p>とバイアスが入ります。</p>
+<p>この価格のように連立方程式の中で定まる変数のことを内生変数と呼びます。</p>
+</div>
+</div>
+<div id="二段階最小二乗法tsls" class="section level1" number="2">
+<h1><span class="header-section-number">2</span>
+二段階最小二乗法（<abbr title="two-stage least squares">TSLS</abbr>）</h1>
+<p>価格が需要に影響すると同時に、需要が価格に影響するために、価格と誤差項の共分散が非ゼロとなりました。OLSが一致推定量になる前提が満たされません。</p>
+<p>この解決策として、2段階最小二乗法（<abbr title="two-stage least squares">2SLS</abbr>/<abbr title="two-stage least squares">TSLS</abbr>）と呼ばれる手法が広く知られています。具体的には</p>
+<ol style="list-style-type: decimal">
+<li>内生変数である価格と相関し、かつ従属変数である需要で説明されないデータ（操作変数）を探す</li>
+<li>内生変数以外の説明変数（外生変数）と操作変数で、内生変数にOLSをかける</li>
+<li>OLSの結果から内生変数の予測値をつくる</li>
+<li>内生変数の予測値を、内生変数の代わりに使って、従属変数を回帰</li>
+</ol>
+<p>します。内生変数の予測値は、従属変数で説明されない変数で構成されるので、内生性の問題は生じません。理屈上はTSLSで解決です。</p>
+<p>ただし、実用しやすいかと言うとそうでもないです。</p>
+<ul>
+<li>操作変数が見つかりません。需要と供給の分析では、よく天候データが使われていますが、農作物以外はどうしたらいいかわかりませんし、農作物でも厳密には生産地と消費地の天候が異なるものである必要があります<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。また、操作変数が内生変数と十分に相関しない（弱相関）とダメですし、複数の操作変数を使うと内生性が出てくる過剰識別の問題が生じます。今まで使われてこなかった有用な操作変数を見つけると、経済学の博士論文が書けると言われているぐらいです。</li>
+<li>多重共線性の問題が生じやすいです。内生変数の予測値は、通常、すべての外生変数を用いて作成します。操作変数以外の外生変数を省いた場合、予測値の誤差が外生変数と相関していると、二段階目のOLSで外生変数の係数の推定値に同時性バイアスが入りこむことになるからです。一方、すべての外生変数を用いて予測値をつくると、予測値と外生変数の相関係数があがり、分散拡大係数（<abbr title="variance inflation factor">VIF</abbr>）が上昇し、推定係数の標準誤差が跳ね上がっていきます。解決のためには、大きなサンプルサイズが必要です。</li>
+</ul>
+<p>出版されている学術論文でも、TSLS（と後述するIVM）を使った分析は、苦しいものが多いです。</p>
+</div>
+<div id="操作変数法ivm" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+操作変数法（<abbr title="instrumental variables method">IVM</abbr>）</h1>
+<p>TSLSの<span class="math inline">\(Z\)</span>と<span
+class="math inline">\(X\)</span>のランクは一致しなくても<span
+class="math inline">\(Z\)</span>の方が大きければ推定可能ですが、ランクが一致している場合を丁度識別と呼びます。また、口頭でTSLSとIVMを厳密に言い分けているわけではないですが、丁度識別のときの推定方法をIVMと呼びます。IVM推定量の導出を確認しましょう。</p>
+<div id="係数" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> 係数</h2>
+<p>上の需給の連立方程式モデルよりも、より一般的な形で考えます。</p>
+<p>従属変数を<span
+class="math inline">\(y\)</span>とおき、内生性のある説明変数を含む行列を<span
+class="math inline">\(X\)</span>とします。ここで、<span
+class="math inline">\(y\)</span>とは独立で、かつ内生変数と強く相関する操作変数を見つけてきます。<span
+class="math inline">\(X\)</span>の内生変数の列を操作変数の列に置き換えた行列を<span
+class="math inline">\(Z\)</span>とします。</p>
+<p><span class="math inline">\(Z\)</span>を用いた<span
+class="math inline">\(X\)</span>のOLSからの予測値は<span
+class="math inline">\(\hat{X}\)</span>は、推定量に<span
+class="math inline">\(X\)</span>を左から乗じたものになるので</p>
+<p><span class="math display">\[
+\hat{X} = Z({}^t\!ZZ)^{-1}{}^t\!ZX
+\]</span></p>
+<p>となります。プロジェクション行列を<span class="math inline">\(P =
+Z({}^t\!ZZ)^{-1}{}^t\!Z\)</span>と置いて</p>
+<p><span class="math display">\[
+\hat{X} = PX
+\]</span></p>
+<p><span class="math inline">\(\hat{X}\)</span>で<span
+class="math inline">\(y\)</span>を回帰して係数<span
+class="math inline">\(\beta\)</span>を求めると、</p>
+<p><span class="math display">\[\begin{align}
+\hat{\beta}_{IV} &amp;= ({}^t\!\hat{X}\hat{X})^{-1}{}^t\!\hat{X}y \\
+&amp;= ({}^t\!(PX)PX)^{-1}{}^t\!(PX)y \\
+&amp;= ({}^t\!ZX)^{-1} {}^t\!Z y
+\end{align}\]</span></p>
+<p>となります。</p>
+<div id="一致性の確認" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> 一致性の確認</h3>
+<p>線形モデルが正しければ観測値<span
+class="math inline">\(y\)</span>は説明変数<span
+class="math inline">\(X\)</span>とその係数<span
+class="math inline">\(\beta\)</span>と誤差項<span
+class="math inline">\(\epsilon\)</span>で、</p>
+<p><span class="math display">\[
+y = X\beta + \epsilon
+\]</span></p>
+<p>と書けます。IVMによる推定量は</p>
+<p><span class="math display">\[\begin{align}
+\hat{\beta}_{IV} &amp;= ({}^t\!ZX)^{-1} {}^t\!Z y \\
+&amp;= ({}^t\!ZX)^{-1} {}^t\!Z (X\beta + \epsilon) \\
+&amp;= \beta + ({}^t\!ZX)^{-1} {}^t\!Z \epsilon \\
+&amp;= \beta + \bigg(\frac{1}{n}{}^t\!ZX\bigg)^{-1} \frac{1}{n}{}^t\!Z
+\epsilon
+\end{align}\]</span></p>
+<p>と展開できます。ここで<span
+class="math inline">\(n\)</span>はサンプルサイズです。</p>
+<p><span class="math inline">\(Z\)</span>と<span
+class="math inline">\(X\)</span>に相関があれば、</p>
+<p><span class="math display">\[
+\lim_{n \rightarrow \infty} \bigg(\frac{1}{n}{}^t\!ZX\bigg)^{-1} \ne 0
+\]</span></p>
+<p>です。<span class="math inline">\(Z\)</span>と<span
+class="math inline">\(\epsilon\)</span>に相関が無ければ、</p>
+<p><span class="math display">\[
+\lim_{n \rightarrow \infty} \frac{1}{n}{}^t\!Z \epsilon = 0
+\]</span></p>
+<p>です。よって、操作変数が誤差項と相関せず、内生変数と相関すると言う操作変数の条件を満たしていれば、</p>
+<p><span class="math display">\[
+\lim_{n \rightarrow \infty} \hat{\beta}_{IV} = \beta
+\]</span></p>
+<p>となるため、IVMによる推定量は一致推定量になります。</p>
+</div>
+</div>
+<div id="分散共分散行列" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> 分散共分散行列</h2>
+<p>OLSと同様に導出できます。</p>
+<p><span class="math display">\[\begin{align}
+\text{VAR}[ \hat{\beta}_{IV} \mid X ] &amp;= E[^t\!(\hat{\beta}_{IV} -
+\beta)(\hat{\beta}_{IV} - \beta) \mid X]\\
+&amp;= E[(^t\!ZX)^{-1}{^t\!Z} \epsilon {^t\!\epsilon} Z (^t\!ZX)^{-1}
+\mid X] \\
+&amp;= (^t\!ZX)^{-1}{^t\!Z} E[\epsilon {^t\!\epsilon} \mid X] Z
+(^t\!ZX)^{-1}\\
+&amp;= (^t\!ZX)^{-1}{^t\!Z} (\sigma^2 I) Z (^t\!ZX)^{-1}\\
+&amp;= \sigma^2 (^t\!ZX)^{-1}{^t\!Z} Z (^t\!ZX)^{-1}
+\end{align}\]</span></p>
+<p>この値は<span class="math inline">\(\sigma^2
+({}^t\!\hat{X}\hat{X})^{-1}\)</span>と一致します。ただし、<span
+class="math inline">\(\sigma^2\)</span>は、<span
+class="math inline">\(\hat{X}\)</span>では無く、<span
+class="math inline">\(X\)</span>の条件付き分散であることに注意してください。つまり、<span
+class="math inline">\(n\)</span>をサンプルサイズ、<span
+class="math inline">\(k\)</span>を説明変数の数として、</p>
+<p><span class="math display">\[
+\hat{\sigma}^2 = \frac{(y - X \hat{\beta}_{IV})^2}{n - k}
+\]</span></p>
+<p>となります。</p>
+<p>パッケージを用いずTSLSで推定したときに、<span
+class="math inline">\(X\)</span>の代わりに<span
+class="math inline">\(\hat{X}\)</span>を入れてしまうと、分散を小さく推定してしまいます。<span
+class="math inline">\(\hat{X}\)</span>と<span
+class="math inline">\(X\)</span>の差になる誤差を無視することになるからです。</p>
+<p>第一段階の推定の相関係数が高いか、第二段階の推定における内生変数の予測値の寄与が（操作変数以外の外生変数のおかげで）小さいか、もしくはその両方であれば、誤って<span
+class="math inline">\(\hat{X}\)</span>を使っても<span
+class="math inline">\(\hat{\sigma}^2\)</span>は何割か程度しか変わらない事になりますが、パッケージを用いて推定する方が無難です。</p>
+</div>
+<div id="ivmの例" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> IVMの例</h2>
+<p>IVMを試してみましょう。上手く推定できることを確認するために、上の需給モデルに沿って乱数から生成したデータセットを用います。</p>
+<div id="データセット" class="section level3" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> データセット</h3>
+<p>需要関数は<span class="math inline">\(d = 100 - p\)</span>,
+供給関数は<span class="math inline">\(s = 2 +
+3p\)</span>を仮定します。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1231</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">with</span>(<span class="fu">new.env</span>(), {</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    a10 <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    a11 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="dv">1</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    a20 <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    a21 <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    a22 <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">3</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">2</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>    nu <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean=</span><span class="dv">0</span>, <span class="at">sd=</span><span class="dv">1</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    p <span class="ot">&lt;-</span> (a20 <span class="sc">-</span> a10 <span class="sc">+</span> a22<span class="sc">*</span>z <span class="sc">+</span> nu <span class="sc">-</span> mu)<span class="sc">/</span>(a11 <span class="sc">-</span> a21)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>    d <span class="ot">&lt;-</span> a10 <span class="sc">+</span> a11<span class="sc">*</span>p <span class="sc">+</span> mu</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    s <span class="ot">&lt;-</span> a20 <span class="sc">+</span> a21<span class="sc">*</span>p <span class="sc">+</span> a22<span class="sc">*</span>z <span class="sc">+</span> nu</span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">s =</span> s, <span class="at">d =</span> d, <span class="at">p =</span> p, <span class="at">z =</span> z)</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+</div>
+<div id="推定" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> 推定</h2>
+<p>行列計算で需要関数の係数と分散共分散行列を出します。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>p, df01)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>z, df01)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>(beta <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(Z) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(Z) <span class="sc">%*%</span> df01<span class="sc">$</span>d)</span></code></pre></div>
+<pre><code>                 [,1]
+(Intercept) 100.11595
+p            -1.01101</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>s2 <span class="ot">&lt;-</span> <span class="fu">sum</span>((df01<span class="sc">$</span>d <span class="sc">-</span> X <span class="sc">%*%</span> beta)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (<span class="fu">nrow</span>(df01) <span class="sc">-</span> <span class="fu">ncol</span>(Z))</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>(vcov <span class="ot">&lt;-</span> s2 <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(Z) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(Z) <span class="sc">%*%</span> Z <span class="sc">%*%</span> <span class="fu">t</span>(<span class="fu">solve</span>(<span class="fu">t</span>(Z) <span class="sc">%*%</span> X)))</span></code></pre></div>
+<pre><code>            (Intercept)           p
+(Intercept)  10.8557453 -0.47138460
+p            -0.4713846  0.02049553</code></pre>
+<p>概ね、DGPの係数通りになりました。</p>
+<div id="誤った分散共分散行列" class="section level3" number="3.4.1">
+<h3><span class="header-section-number">3.4.1</span>
+誤った分散共分散行列</h3>
+<p>上で説明した間違った分散共分散行列の計算をして、誤った係数の標準誤差を見てみましょう。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>r_lm_1st <span class="ot">&lt;-</span> <span class="fu">lm</span>(p <span class="sc">~</span> z, df01)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>(r_lm_2nd <span class="ot">&lt;-</span> <span class="fu">lm</span>(d <span class="sc">~</span> <span class="fu">predict</span>(r_lm_1st), df01))</span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = d ~ predict(r_lm_1st), data = df01)
+
+Coefficients:
+      (Intercept)  predict(r_lm_1st)  
+          100.116             -1.011  </code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># 誤った係数の標準誤差</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(r_lm_2nd)))</span></code></pre></div>
+<pre><code>      (Intercept) predict(r_lm_1st) 
+        2.4767573         0.1076176 </code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># 正しい係数の標準誤差</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">sqrt</span>(<span class="fu">diag</span>(vcov))</span></code></pre></div>
+<pre><code>(Intercept)           p 
+  3.2948058   0.1431626 </code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># 誤った場合と正しい場合の比</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>(<span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(r_lm_2nd)))<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">diag</span>(vcov)))[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>(Intercept) 
+  0.7517157 </code></pre>
+<p>操作変数しかないわけですが、標準誤差は25%ぐらいの過小評価にとどまっています。</p>
+</div>
+</div>
+<div id="不均一分散" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> 不均一分散</h2>
+<p><abbr title="Feasible Generalizaed Least Squares">FGLS</abbr>と組み合わせることで不均一分散に対処するようにTSLS/IVMを発展させることもできますが、不均一分散がどのように入るかの仮定によって手法が多様になるので本稿では割愛します。</p>
+</div>
+</div>
+<div id="tslsの実践" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> TSLSの実践</h1>
+<p>だいぶ前に、<code>sem</code>パッケージの<code>tsls</code>関数を使って、農林水産省の統計情報と気象庁の気象統計情報から、<a
+href="https://www.anlyznews.com/2011/12/blog-post.html">だいこん需要関数の推定を行った</a>ときのRのコードを紹介します。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># semパッケージを読み出す</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">library</span>(sem)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co"># テキスト・ファイルからデータを読み込む</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>df02 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;https://wh.anlyznews.com/R/dataset/for_tsls.txt&quot;</span>, <span class="at">header=</span><span class="cn">TRUE</span>, <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">fileEncoding=</span><span class="st">&quot;UTF-8&quot;</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a><span class="co"># 年次ダミーを作成</span></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>month <span class="ot">&lt;-</span> <span class="fu">factor</span>(df02<span class="sc">$</span>月)</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co"># 年次ダミーを作成（i年10月から(i+1)年9月までをi年とする）</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>df02[<span class="st">&quot;年度&quot;</span>] <span class="ot">&lt;-</span> <span class="fu">with</span>(df02, <span class="fu">ifelse</span>(月 <span class="sc">&gt;=</span> <span class="dv">10</span>, 年 <span class="sc">+</span> <span class="dv">1</span>, 年))</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>year <span class="ot">&lt;-</span> <span class="fu">factor</span>(df02<span class="sc">$</span>年度)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co"># 被説明変数と内生変数と外生変数の推定式</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co"># 係数が需要の価格弾力性をそのまま表すように、変数は対数をとっている</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>frml <span class="ot">&lt;-</span> <span class="fu">log</span>(出荷量) <span class="sc">~</span> <span class="fu">log</span>(価格) <span class="sc">+</span> month <span class="sc">+</span> year</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co"># 操作変数と外生変数を指定</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>zm <span class="ot">&lt;-</span> <span class="er">~</span> <span class="fu">log</span>(降水量<span class="fl">.0</span>) <span class="sc">+</span> <span class="fu">log</span>(日照時間<span class="fl">.3</span>) <span class="sc">+</span> month <span class="sc">+</span> year</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co"># 二段階最小二乗法で推定</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>r_tsls <span class="ot">&lt;-</span> <span class="fu">tsls</span>(frml, zm, <span class="at">data =</span> df02)</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co"># 推定結果を表示</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="fu">summary</span>(r_tsls)</span></code></pre></div>
+<pre><code>
+ 2SLS Estimates
+
+Model Formula: log(出荷量) ~ log(価格) + month + year
+
+Instruments: ~log(降水量.0) + log(日照時間.3) + month + year
+
+Residuals:
+     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+-0.136924 -0.029823 -0.002417  0.000000  0.028451  0.102018 
+
+               Estimate  Std. Error  t value   Pr(&gt;|t|)    
+(Intercept) 12.54087534  0.44125411 28.42098 &lt; 2.22e-16 ***
+log(価格)   -0.33224585  0.10338916 -3.21355 0.00205453 ** 
+month2       0.02824776  0.03002783  0.94072 0.35038603    
+month3       0.10241160  0.03407292  3.00566 0.00378196 ** 
+month4       0.04585596  0.04128979  1.11059 0.27090071    
+month5      -0.02160695  0.03289950 -0.65676 0.51369235    
+month6      -0.05684150  0.02872577 -1.97876 0.05214928 .  
+month7      -0.03827124  0.03008154 -1.27225 0.20788747    
+month8       0.05719311  0.03754859  1.52318 0.13264093    
+month9       0.28282606  0.03871574  7.30520 5.4093e-10 ***
+month10      0.39872012  0.03151535 12.65162 &lt; 2.22e-16 ***
+month11      0.13308131  0.02740148  4.85672 8.0400e-06 ***
+month12      0.10968422  0.03154317  3.47727 0.00091584 ***
+year2005    -0.03049104  0.02241152 -1.36051 0.17844172    
+year2006     0.01249078  0.02284169  0.54684 0.58638949    
+year2007    -0.13721037  0.03190916 -4.30003 5.9475e-05 ***
+year2008    -0.07893549  0.02425310 -3.25466 0.00181582 ** 
+year2009    -0.08253713  0.02208109 -3.73791 0.00039809 ***
+year2010    -0.10265711  0.02228360 -4.60685 1.9996e-05 ***
+year2011    -0.05214745  0.03801860 -1.37163 0.17496834    
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.0494751 on 64 degrees of freedom</code></pre>
+<p>最近は<code>sem::tsls</code>ではなく、<code>AER::ivreg</code>を使うのが一般的のようです。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">library</span>(AER)</span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>r_ivreg <span class="ot">&lt;-</span> <span class="fu">ivreg</span>(<span class="fu">log</span>(出荷量) <span class="sc">~</span> <span class="fu">log</span>(価格) <span class="sc">+</span> month <span class="sc">+</span> year <span class="sc">|</span> <span class="fu">log</span>(降水量<span class="fl">.0</span>) <span class="sc">+</span> <span class="fu">log</span>(日照時間<span class="fl">.3</span>) <span class="sc">+</span> month <span class="sc">+</span> year, <span class="at">data =</span> df02)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="co"># 推定量と後述する検定に対応する検定の結果を表示する</span></span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a><span class="fu">summary</span>(r_ivreg, <span class="at">diagnostics =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div id="行列による計算" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> 行列による計算</h2>
+<p>操作変数ではない外生変数を一段階目の推定に入れるのを忘れたり、誤差項の分散の推定に予測値を使ってしまったり、ありがちな間違いがあるので推奨されませんが、行列で計算することもできます。</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(frml, df02)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(zm, df02)</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>P <span class="ot">&lt;-</span> Z <span class="sc">%*%</span> <span class="fu">solve</span>(<span class="fu">t</span>(Z) <span class="sc">%*%</span> Z) <span class="sc">%*%</span> <span class="fu">t</span>(Z)</span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">log</span>(df02<span class="sc">$</span>出荷量)</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>beta_tsls <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> P <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> P <span class="sc">%*%</span> y</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>s2_tsls <span class="ot">&lt;-</span> <span class="fu">sum</span>((y <span class="sc">-</span> X <span class="sc">%*%</span> beta_tsls)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X))</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>vcov_tsls <span class="ot">&lt;-</span> s2_tsls <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(P <span class="sc">%*%</span> X) <span class="sc">%*%</span> (P <span class="sc">%*%</span> X))</span>
+<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>se_tsls <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(vcov_tsls))</span></code></pre></div>
+<p>なお、<span class="math inline">\(X\)</span>と<span
+class="math inline">\(Z\)</span>のランクが異なるため、IVMの導出途中のような式で計算しますが、手順は同様です。</p>
+</div>
+<div id="弱相関検定" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> 弱相関検定</h2>
+<p>前提条件のひとつ、内生変数と操作変数がしっかり相関しているかテストします。具体的には、操作変数の変わりに定数<span
+class="math inline">\(1\)</span>を用いて推定し、<a
+href="./OLS.shtml#分散分析f検定">分散分析</a>で有意に差があるかを確認します。</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="co">#  操作変数の変わりに定数 1 を用いて推定し、F検定で有意に差があるかを確認</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>r_weak_iv <span class="ot">&lt;-</span> <span class="fu">anova</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>    <span class="fu">lm</span>(<span class="fu">log</span>(価格) <span class="sc">~</span> <span class="dv">1</span> <span class="sc">+</span> month <span class="sc">+</span> year, <span class="at">data =</span> df02),</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>    <span class="fu">lm</span>(<span class="fu">log</span>(価格) <span class="sc">~</span> <span class="fu">log</span>(降水量<span class="fl">.0</span>) <span class="sc">+</span> <span class="fu">log</span>(日照時間<span class="fl">.3</span>) <span class="sc">+</span> month <span class="sc">+</span> year, <span class="at">data =</span> df02)</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>)</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;弱相関テスト&quot;</span>, r_weak_iv[<span class="st">&quot;Pr(&gt;F)&quot;</span>]))</span></code></pre></div>
+<pre><code>[1] &quot;弱相関テスト c(NA, 0.0305046662216007)&quot;</code></pre>
+</div>
+<div id="過剰識別検定" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> 過剰識別検定</h2>
+<p>TSLSで丁度識別ではなく、内生変数の数よりも操作変数の数が多い場合、誤差項と操作変数が相関してしまうときがあります。過剰識別です。<abbr title="Lagrange Multiplier">LM</abbr>統計量を用いて過剰識別ではないかχ二乗検定を行い確認します。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="co"># 操作変数の数が多い場合は過剰識別になり、操作変数うちの一つと誤差項の相関が疑われる</span></span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>r_oi_test <span class="ot">&lt;-</span> <span class="fu">lm</span>(r_tsls<span class="sc">$</span>residuals <span class="sc">~</span> <span class="fu">log</span>(降水量<span class="fl">.0</span>) <span class="sc">+</span> <span class="fu">log</span>(日照時間<span class="fl">.3</span>) <span class="sc">+</span> month <span class="sc">+</span> year, <span class="at">data=</span>df02)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>p_oit <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(<span class="fu">summary</span>(r_oi_test)<span class="sc">$</span>r.squared<span class="sc">*</span><span class="fu">length</span>(r_oi_test<span class="sc">$</span>residuals), <span class="dv">1</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;過剰識別検定 %0.5f&quot;</span>, p_oit))</span></code></pre></div>
+<pre><code>[1] &quot;過剰識別検定 0.83026&quot;</code></pre>
+</div>
+<div id="dwh検定" class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> DWH検定</h2>
+<p>OLSでもTSLSでも推定結果が同じと言うことがあります。内生性がないか、操作変数も実は内生変数である場合です。DWH検定を用いて、推定結果に相違があるか確認します。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># DWH検定</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co">#  まずOLSで推定し、次にOLSとTSLSで有意に差があるかを確認</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co">#  棄却するとOLS推定量が一致推定量でないと言え、TSLS推定量を採用すべきとなる</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>r_ols <span class="ot">&lt;-</span> <span class="fu">lm</span>(frml, <span class="at">data=</span>df02) </span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>h_value <span class="ot">&lt;-</span> <span class="fu">t</span>(r_tsls<span class="sc">$</span>coefficients <span class="sc">-</span> r_ols<span class="sc">$</span>coefficients) <span class="sc">%*%</span> <span class="fu">solve</span>(<span class="fu">vcov</span>(r_tsls) <span class="sc">-</span> <span class="fu">vcov</span>(r_ols)) <span class="sc">%*%</span> (r_tsls<span class="sc">$</span>coefficients <span class="sc">-</span> r_ols<span class="sc">$</span>coefficients)</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>p_dwh <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(h_value, <span class="dv">1</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;DWH検定 %0.5f&quot;</span>, p_dwh))</span></code></pre></div>
+<pre><code>[1] &quot;DWH検定 0.07121&quot;</code></pre>
+</div>
+</div>
+<div id="制御関数法cfm" class="section level1" number="5">
+<h1><span class="header-section-number">5</span>
+制御関数法（<abbr title="Control Function Method">CFM</abbr>）</h1>
+<p>二段階残差算入（<abbr title="two-stage residual inclusion">2SRI</abbr>）、ヘックマン補正とも呼ばれる手法です。</p>
+<p>TSLSが二段階目の推定で内生変数の予測値を内生変数の代わりに用いる一方で、2SRIは内生変数はそのままに一段階目の推定で得られた残差を説明変数に加えます。線形回帰においては、両者の推定される係数はほぼ同じになりますが、2SRIは非線形モデルにも使える利点があります。ロジットモデルと組み合わせる事が多いようです。</p>
+<p>IVMの例のデータを用いて推定してみましょう。</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a>cfm_1st <span class="ot">&lt;-</span> <span class="fu">lm</span>(p <span class="sc">~</span> z, df01)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">summary</span>(cfm_2nd <span class="ot">&lt;-</span> <span class="fu">lm</span>(d <span class="sc">~</span> p <span class="sc">+</span> <span class="fu">residuals</span>(cfm_1st), df01))</span></code></pre></div>
+<pre><code>
+Call:
+lm(formula = d ~ p + residuals(cfm_1st), data = df01)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-2.74052 -0.54686  0.00292  0.58100  2.20684 
+
+Coefficients:
+                    Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)        100.11595    1.38950   72.05   &lt;2e-16 ***
+p                   -1.01101    0.06038  -16.75   &lt;2e-16 ***
+residuals(cfm_1st)   3.22561    0.10580   30.49   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.87 on 297 degrees of freedom
+Multiple R-squared:  0.758, Adjusted R-squared:  0.7564 
+F-statistic: 465.1 on 2 and 297 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p>標準誤差（分散共分散行列）は適切に推定されないので補正をするか、ブートストラッピングを用いる事が推奨されています（<a
+href="https://doi.org/10.1093/aje/kwx175">Palmer et
+al. (2017)</a>）。ここではブートストラッピングを用います。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">603</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>boot_results <span class="ot">&lt;-</span> <span class="fu">boot</span>(<span class="at">data =</span> df01, <span class="at">statistic =</span> <span class="cf">function</span>(data, i){</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a>  s <span class="ot">&lt;-</span> data[i, ]</span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>  cfm_1st <span class="ot">&lt;-</span> <span class="fu">lm</span>(p <span class="sc">~</span> z, s)</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>  cfm_2nd <span class="ot">&lt;-</span> <span class="fu">lm</span>(d <span class="sc">~</span> p <span class="sc">+</span> <span class="fu">residuals</span>(cfm_1st), s)</span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a>  <span class="fu">coef</span>(cfm_2nd)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>}, <span class="at">R =</span> <span class="dv">1000</span>)</span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>(cfm_bootstrapping_stderr <span class="ot">&lt;-</span> <span class="fu">apply</span>(boot_results<span class="sc">$</span>t, <span class="dv">2</span>, sd))</span></code></pre></div>
+<pre><code>[1] 3.1203543 0.1354724</code></pre>
+<p>過小ではありますが、IVMに近い、かなり改善した標準誤差が得られました。</p>
+<table>
+<thead>
+<tr class="header">
+<th align="center">説明変数</th>
+<th align="center">IVM</th>
+<th align="center">CFM-raw</th>
+<th align="center">CFM-Bootstrapping</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Const.</td>
+<td align="center">3.2948058</td>
+<td align="center">1.3895014</td>
+<td align="center">3.1203543</td>
+</tr>
+<tr class="even">
+<td align="center">p</td>
+<td align="center">0.1431626</td>
+<td align="center">0.0603752</td>
+<td align="center">0.1354724</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="完全情報最尤法fiml" class="section level1" number="6">
+<h1><span class="header-section-number">6</span>
+完全情報最尤法（<abbr title = "Full Information Maximum Likelihood">FIML</abbr>）</h1>
+<p>尤度関数を用いることもできます。需要関数と均衡価格式を同時推定することを考えましょう。推定する係数を<span
+class="math inline">\(\beta\)</span>、誤差項を<span
+class="math inline">\(\mu\)</span>と置きなおし、方程式一本ごとに誤差項があると考え、二本の方程式を行列にまとめて書くと、次のようになります。<span
+class="math inline">\(n\)</span>は観測数です。</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+d_1 &amp; p_1 \\
+d_2 &amp; p_2 \\
+\vdots &amp; \vdots \\
+d_n &amp; p_n \end{pmatrix}  = \begin{pmatrix}
+1 &amp; z_1 &amp; p_1\\
+1 &amp; z_2 &amp; p_2\\
+\vdots &amp; \vdots &amp; \vdots \\
+1 &amp; z_n &amp; p_n
+\end{pmatrix}  \begin{pmatrix}
+\beta_{11}  &amp; \beta_{12}  \\
+0  &amp; \beta_{22} \\
+\beta_{31}  &amp; 0 \end{pmatrix} +  \begin{pmatrix}
+\mu_{11}  &amp; \mu_{12}\\
+\mu_{21}  &amp; \mu_{22}\\
+\vdots &amp; \vdots \\
+\mu_{n1} &amp; \mu_{n2} \end{pmatrix}
+\]</span></p>
+<p>IVMの例のDGPの係数とは、<span
+class="math inline">\(\beta_{11}=\alpha_{10}\)</span>や<span
+class="math inline">\(\beta_{12}=(\alpha_{20} -
+\alpha_{10})/(\alpha_{11} -
+\alpha_{21})\)</span>と言った対応関係があります。</p>
+<p>右辺の内生変数と外生変数を分離します。</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+d_1 &amp; p_1 \\
+d_2 &amp; p_2 \\
+\vdots &amp; \vdots \\
+d_n &amp; p_n \end{pmatrix}  = \begin{pmatrix}
+1 &amp; z_1 \\
+1 &amp; z_2 \\
+\vdots &amp; \vdots \\
+1 &amp; z_n
+\end{pmatrix}  \begin{pmatrix}
+\beta_{11}  &amp; \beta_{12}  \\
+0  &amp; \beta_{22} \end{pmatrix} + \begin{pmatrix}
+p_1\\
+p_2\\
+\vdots \\
+p_n
+\end{pmatrix}  \begin{pmatrix}
+\beta_{31}  &amp; 0 \end{pmatrix} +  \begin{pmatrix}
+\mu_{11}  &amp; \mu_{12}\\
+\mu_{21}  &amp; \mu_{22}\\
+\vdots &amp; \vdots \\
+\mu_{n1} &amp; \mu_{n2} \end{pmatrix}
+\]</span></p>
+<p>内生変数を左辺にまとめます。</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+d_1 &amp; p_1 \\
+d_2 &amp; p_2 \\
+\vdots &amp; \vdots \\
+d_n &amp; p_n \end{pmatrix} - \begin{pmatrix}
+p_1\\
+p_2\\
+\vdots \\
+p_n
+\end{pmatrix}  \begin{pmatrix}
+\beta_{31}  &amp; 0 \end{pmatrix} = \begin{pmatrix}
+1 &amp; z_1 \\
+1 &amp; z_2 \\
+\vdots &amp; \vdots \\
+1 &amp; z_n
+\end{pmatrix}  \begin{pmatrix}
+\beta_{11}  &amp; \beta_{12}  \\
+0  &amp; \beta_{22} \end{pmatrix} +  \begin{pmatrix}
+\mu_{11}  &amp; \mu_{12}\\
+\mu_{21}  &amp; \mu_{22}\\
+\vdots &amp; \vdots \\
+\mu_{n1} &amp; \mu_{n2} \end{pmatrix}
+\]</span></p>
+<p>左辺第1項と第2項をまとめましょう。</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+d_1 &amp; p_1 \\
+d_2 &amp; p_2 \\
+\vdots &amp; \vdots \\
+d_n &amp; p_n \end{pmatrix} \begin{pmatrix}
+1 &amp; 0 \\
+- \beta_{31}   &amp; 1 \end{pmatrix} = \begin{pmatrix}
+1 &amp; z_1 \\
+1 &amp; z_2 \\
+\vdots &amp; \vdots \\
+1 &amp; z_n
+\end{pmatrix}  \begin{pmatrix}
+\beta_{11}  &amp; \beta_{12}  \\
+0  &amp; \beta_{22} \end{pmatrix} +  \begin{pmatrix}
+\mu_{11}  &amp; \mu_{12}\\
+\mu_{21}  &amp; \mu_{22}\\
+\vdots &amp; \vdots \\
+\mu_{n1} &amp; \mu_{n2} \end{pmatrix}
+\]</span></p>
+<p>この行列をいちいち書いていられないので、書き直します。</p>
+<p><span class="math display">\[
+Y\Gamma = W B + U
+\]</span></p>
+<p>FIMLでは、この構造方程式を推定します。こう書くとOLSで入るバイアスが入らない理由が分かりづらいですが、この構造方程式の尤度函数は説明変数に内生変数が入らない誘導形<span
+class="math inline">\(Y = W B \Gamma^{-1} + U \Gamma^{-1} = W\Pi +
+V\)</span>の尤度函数から導かれます<a href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>。また、数理的な特性を使って整理すると以下のようなconcentrated
+loglikelihood function<a href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>にできることが知られています<a href="#fn4"
+class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
+<p><span class="math display">\[\begin{align}
+\Sigma &amp;= \frac{1}{n} (Y\Gamma - WB)^{t} (Y\Gamma - WB) \\
+\log L(\beta) &amp;= \frac{-gn}{2}(\log 2\pi + 1)  + n \log | \Gamma | -
+\frac{n}{2} | \Sigma |
+\end{align}\]</span></p>
+<p><span
+class="math inline">\(g\)</span>は内生変数（もしくは左辺にまとめられた被説明変）の数で、ここでは<span
+class="math inline">\(2\)</span>です。<span class="math inline">\(\beta
+= ( \beta_{11}, \beta_{12}, \beta_{22}, -\beta_{31}
+)\)</span>の4つのパラメーターを上の対数尤度函数で推定すればよいです。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df01)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">cbind</span>(d, p))</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">cbind</span>(<span class="fu">rep</span>(<span class="dv">1</span>, n), z))</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>llf <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>    B <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(p[<span class="dv">1</span>], <span class="dv">0</span>, p[<span class="dv">2</span>], p[<span class="dv">3</span>]), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>    G <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, p[<span class="dv">4</span>], <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>) <span class="co"># Γ</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>    E <span class="ot">&lt;-</span> Y<span class="sc">%*%</span>G <span class="sc">-</span> W<span class="sc">%*%</span>B</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>    S <span class="ot">&lt;-</span> <span class="fu">t</span>(E)<span class="sc">%*%</span>E<span class="sc">/</span>n <span class="co"># ∑</span></span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>    <span class="sc">-</span>g<span class="sc">*</span>n<span class="sc">/</span><span class="dv">2</span><span class="sc">*</span>(<span class="fu">log</span>(<span class="dv">2</span><span class="sc">*</span>pi) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">+</span> n<span class="sc">*</span><span class="fu">log</span>(<span class="fu">det</span>(G)) <span class="sc">-</span> n<span class="sc">/</span><span class="dv">2</span><span class="sc">*</span><span class="fu">log</span>(<span class="fu">det</span>(S))</span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>}</span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="cf">function</span>(p){ <span class="sc">-</span><span class="fu">llf</span>(p) }, <span class="at">method=</span><span class="st">&quot;BFGS&quot;</span>, <span class="at">hessian =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>(fiml_beta <span class="ot">&lt;-</span> r_optim<span class="sc">$</span>par[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>)])</span></code></pre></div>
+<pre><code>[1] 100.128351   1.011543</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>(fiml_se <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">solve</span>(r_optim<span class="sc">$</span>hessian)))[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>)])</span></code></pre></div>
+<pre><code>[1] 3.2771152 0.1424937</code></pre>
+<p>推定量も標準誤差も概ねIVMと同じものが得られました。<span
+class="math inline">\(\beta_{31}\)</span>は符号が逆に推定されることに注意してください。</p>
+<p>最尤法は非線形モデルにも適用できるため、応用範囲は広いです。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>天候は生産に大きく響くが、消費には大した影響はないと仮定してもよいと思います。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Davidson and MacKinnon (2003)もしくは<a
+href="http://qed.econ.queensu.ca/ETM/">オンラインで配布している2021年版</a>のpp.503–505とpp.544–545を参照。誘導形はSURと同じ多変量正規分布の尤度函数になるので、<span
+class="math inline">\(\Gamma\)</span>による変形の影響を整理すれば構造形の尤度函数が導出できます。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>定訳不明。<a href="#fnref3"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p>一階条件の節の一階条件に直接関係のないExercise
+12.24を<span class="math inline">\(\Sigma
+\Sigma^{-1}=I\)</span>に注意して<span
+class="math inline">\(\Sigma^{-1}\)</span>の成分を考えて解くことで得ることができるはずです。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
