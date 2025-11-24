@@ -13,7 +13,7 @@
 
 <title>Rでべたべたと最尤法</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -670,8 +677,8 @@ class="math inline">\(0\)</span>のz値が出て来ます。</p>
 </div>
 <div id="wald検定" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> Wald検定</h2>
-<p>複数のパラメーターの値の合計を検定するときは、制約なしモデルの推定結果から検定等計量が計算できるWald検定の使い勝手が、t検定と似ていてよいです。
-試しに<span class="math inline">\(\mu + \sigma^2 =
+<p>複数のパラメーターの値の合計を検定するときは、制約なしモデルの推定結果から検定等計量が計算できるWald検定の使い勝手が、t検定と似ていてよいです。</p>
+<p>試しに<span class="math inline">\(\mu + \sigma^2 =
 25\)</span>を検定してみましょう。</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">matrix</span>(m, <span class="dv">2</span>, <span class="dv">1</span>) <span class="co"># 推定された係数を行列にする</span></span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>C <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">1</span>, <span class="dv">2</span>) <span class="co"># 制約を行列にする</span></span>
@@ -681,6 +688,9 @@ class="math inline">\(0\)</span>のz値が出て来ます。</p>
 <span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(<span class="fu">abs</span>(ws), <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
 <pre><code>     [,1]       
 [1,] &quot;0.0088456&quot;</code></pre>
+<p><a
+href="https://wh.anlyznews.com/R/Wilks.shtml#%E4%BA%8C%E6%AC%A1%E5%BD%A2%E5%BC%8Ftxi---exi-sigma-1-xi---exi%E3%81%AFchi2%E5%88%86%E5%B8%83%E3%81%AB%E5%BE%93%E3%81%86">二次形式が<span
+class="math inline">\(\chi^2\)</span>分布に従う</a>ことから、数理的に正当化されます。</p>
 <p>複数の仮説、例えば<span class="math inline">\(\mu = 9\)</span>で<span
 class="math inline">\(\sigma^2 =
 16\)</span>を検定することもできます。</p>
