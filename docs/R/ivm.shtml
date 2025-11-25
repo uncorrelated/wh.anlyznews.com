@@ -494,9 +494,7 @@ id="fnref1"><sup>1</sup></a>。また、操作変数が内生変数と十分に�
 <div id="操作変数法ivm" class="section level1" number="3">
 <h1><span class="header-section-number">3</span>
 操作変数法（<abbr title="instrumental variables method">IVM</abbr>）</h1>
-<p>TSLSの<span class="math inline">\(Z\)</span>と<span
-class="math inline">\(X\)</span>のランクは一致しなくても<span
-class="math inline">\(Z\)</span>の方が大きければ推定可能ですが、ランクが一致している場合を丁度識別と呼びます。また、口頭でTSLSとIVMを厳密に言い分けているわけではないですが、丁度識別のときの推定方法をIVMと呼びます。IVM推定量の導出を確認しましょう。</p>
+<p>TSLSの操作変数と内生変数の数は一致しなくても操作変数の方が大きければ推定可能ですが、一致している場合を丁度識別と呼びます。また、口頭でTSLSとIVMを厳密に言い分けているわけではないですが、丁度識別のときの推定方法をIVMと呼びます。まず、IVM推定量の導出を確認しましょう。</p>
 <div id="係数" class="section level2" number="3.1">
 <h2><span class="header-section-number">3.1</span> 係数</h2>
 <p>上の需給の連立方程式モデルよりも、より一般的な形で考えます。</p>
@@ -668,7 +666,7 @@ Coefficients:
 </div>
 <div id="不均一分散" class="section level2" number="3.5">
 <h2><span class="header-section-number">3.5</span> 不均一分散</h2>
-<p><abbr title="Feasible Generalizaed Least Squares">FGLS</abbr>と組み合わせることで不均一分散に対処するようにTSLS/IVMを発展させることもできますが、不均一分散がどのように入るかの仮定によって手法が多様になるので本稿では割愛します。</p>
+<p>ウェイトをつけることで不均一分散に対処するようにTSLS/IVMを発展させることもできますが、不均一分散がどのように入るかの仮定によって手法が多様になるので本稿では割愛します。</p>
 </div>
 </div>
 <div id="tslsの実践" class="section level1" number="4">
