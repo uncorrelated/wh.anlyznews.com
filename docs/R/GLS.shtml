@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>一般化最小二乗法（GLS）のやさしい応用例</title>
+
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">一般化最小二乗法（GLS）のやさしい応用例</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>社会データでは何かと出てくる不均一分散への対処方法の教科書的手法を学びましょう</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#一般化最小二乗法gls" id="toc-一般化最小二乗法gls"><span
+class="toc-section-number">1</span>
+一般化最小二乗法（<abbr title="Generalized Least Squares">GLS</abbr>）</a></li>
+<li><a href="#ウェイト付き最小二乗法wls"
+id="toc-ウェイト付き最小二乗法wls"><span
+class="toc-section-number">2</span>
+ウェイト付き最小二乗法（<abbr title="Weighted Least Squares">WLS</abbr>）</a>
+<ul>
+<li><a href="#観察可能な変数をウェイトにする"
+id="toc-観察可能な変数をウェイトにする"><span
+class="toc-section-number">2.1</span>
+観察可能な変数をウェイトにする</a></li>
+<li><a href="#残差を推定して予測値からウェイトをつくる"
+id="toc-残差を推定して予測値からウェイトをつくる"><span
+class="toc-section-number">2.2</span>
+残差を推定して予測値からウェイトをつくる</a>
+<ul>
+<li><a href="#データセット" id="toc-データセット"><span
+class="toc-section-number">2.2.1</span> データセット</a></li>
+<li><a href="#行列演算による推定" id="toc-行列演算による推定"><span
+class="toc-section-number">2.2.2</span> 行列演算による推定</a></li>
+<li><a href="#lmを使った推定" id="toc-lmを使った推定"><span
+class="toc-section-number">2.2.3</span>
+<code>lm</code>を使った推定</a></li>
+</ul></li>
+<li><a href="#不均一分散の存在の検定"
+id="toc-不均一分散の存在の検定"><span
+class="toc-section-number">2.3</span> 不均一分散の存在の検定</a>
+<ul>
+<li><a href="#lmtestbptestを使った検定"
+id="toc-lmtestbptestを使った検定"><span
+class="toc-section-number">2.3.1</span>
+<code>lmtest::bptest</code>を使った検定</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#見かけ上無関係な回帰sur"
+id="toc-見かけ上無関係な回帰sur"><span
+class="toc-section-number">3</span>
+見かけ上無関係な回帰（<abbr title="Seemingly Unrelated Regression">SUR</abbr>）</a>
+<ul>
+<li><a href="#データセット-1" id="toc-データセット-1"><span
+class="toc-section-number">3.1</span> データセット</a></li>
+<li><a href="#行列による推定" id="toc-行列による推定"><span
+class="toc-section-number">3.2</span> 行列による推定</a></li>
+<li><a href="#systemfitで推定" id="toc-systemfitで推定"><span
+class="toc-section-number">3.3</span>
+<code>systemfit</code>で推定</a></li>
+</ul></li>
+<li><a href="#計量経済学の変量効果モデル"
+id="toc-計量経済学の変量効果モデル"><span
+class="toc-section-number">4</span> 計量経済学の変量効果モデル</a>
+<ul>
+<li><a href="#データセット-2" id="toc-データセット-2"><span
+class="toc-section-number">4.1</span> データセット</a></li>
+<li><a href="#行列による推定-1" id="toc-行列による推定-1"><span
+class="toc-section-number">4.2</span> 行列による推定</a></li>
+<li><a href="#plmで推定" id="toc-plmで推定"><span
+class="toc-section-number">4.3</span> <code>plm</code>で推定</a></li>
+<li><a href="#推定結果を比較" id="toc-推定結果を比較"><span
+class="toc-section-number">4.4</span> 推定結果を比較</a></li>
+</ul></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">5</span> まとめ</a></li>
+</ul>
+</div>
+
+<p>一般最小二乗法（<abbr title="Ordinaly Least Squares">OLS</abbr>）では、独立で同一の分布に従う誤差を仮定していました。しかし、観測値の誤差がすべて同一の分布に従うと見做せないことは多いです。不均一分散です。</p>
+<p>集計データでは大きく異なる人口の行政区が同時に集計されていますが、行政区ごとの平均値の標準誤差は人口によって異なります。観察できない偶発的な事象が、ある集団の間で同じように影響する一方、他の集団には影響しないこともあります。個体ごとに複数の状態を考えるとき、ある個体ごとの観察できない状態は、その個体のすべての状態に影響します。無作為に介入群と対称群を割り当てる実験でも、介入の有無でサブサンプルの分布が異なってしまうことはあります。</p>
+<p>不均一分散は二つの意味で問題を引き起こします。一つは、有効推定量にならないことです。小サンプルにおいて点推定に信頼がおけないことになります。一つは、標準誤差にバイアスが入ることです。区間推定と統計的仮説検定に信頼がおけないことになります。大標本でパラメーターの点推定量だけが問題であればさほど気にしなくてもよいのですが、小標本であるなど不均一分散が結果に大きく影響しうる場合で、かつその影響の緩和策が知られている場合は対処する方が望ましいです。</p>
+<div id="一般化最小二乗法gls" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+一般化最小二乗法（<abbr title="Generalized Least Squares">GLS</abbr>）</h1>
+<p>不均一分散を前提とした最小二乗法を一般化最小二乗法（GLS）と呼びます。</p>
+<p><span class="math display">\[
+y = X \beta + \Gamma \epsilon
+\]</span></p>
+<p><span class="math inline">\(y\)</span>は従属変数のベクトル、<span
+class="math inline">\(X\)</span>は説明変数の行列、<span
+class="math inline">\(\epsilon\)</span>はOLSと同様のi.i.dの誤差項です。<span
+class="math inline">\(\Gamma\)</span>が不均一分散をあらわす行列となります。<span
+class="math inline">\(\Gamma\)</span>をどう仮定するかで、様々な不均一分散の入り方を表現することができます。</p>
+<p>例えばサンプルサイズ<span
+class="math inline">\(4\)</span>、説明変数の数を切片項も入れて<span
+class="math inline">\(3\)</span>、1行目と2行目の観測値と、3行目と4行目の観測値がそれぞれ同一集団で、観測値は属する集団の他の観測値に影響している偶発的事象にも影響されるとすると、</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+y_1 \\
+y_2 \\
+y_3 \\
+y_4
+\end{pmatrix} = \begin{pmatrix}
+1 &amp; x_{11} &amp; x_{12} \\
+1 &amp; x_{21} &amp; x_{22} \\
+1 &amp; x_{31} &amp; x_{32} \\
+1 &amp; x_{41} &amp; x_{42}
+\end{pmatrix}\begin{pmatrix}
+\beta_0 \\
+\beta_1 \\
+\beta_2 \end{pmatrix} + \begin{pmatrix}
+1 &amp; \gamma_{12} &amp; 0 &amp; 0 \\
+\gamma_{22} &amp; 1 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; \gamma_{34} \\
+0 &amp; 0 &amp; \gamma_{43} &amp; 1
+\end{pmatrix}\begin{pmatrix}
+\epsilon_1 \\
+\epsilon_2 \\
+\epsilon_3 \\
+\epsilon_4
+\end{pmatrix}
+\]</span></p>
+<p>と書くことができます。1行目の観測値は</p>
+<p><span class="math display">\[
+y_1 = \beta_0 + \beta_1 x_{11} + \beta_2 x_{12} + 1\cdot\epsilon_1 +
+\gamma_{12}\epsilon_2 + 0\cdot\epsilon_3 + 0\cdot\epsilon_4
+\]</span></p>
+<p>になるわけですが、自身に生じた誤差（と言うかモデル外の要因）の影響を<span
+class="math inline">\(1\)</span>だけ受け、同一集団の2行目の観測値に生じた誤差の影響を<span
+class="math inline">\(\gamma_{12}\)</span>だけ受け、異なる集団の3行目と4行目に生じた誤差の影響は受けないことになっているのがわかります。</p>
+<p>推定は<span
+class="math inline">\(\Gamma\)</span>がわかっていて、かつ正則であれば簡単です。逆行列<span
+class="math inline">\(\Gamma^{-1}\)</span>を両辺にかければ</p>
+<p><span class="math display">\[
+\Gamma^{-1} y = \Gamma^{-1} X \beta + \epsilon
+\]</span></p>
+<p>となりますから、OLSの計算がそのまま使えます。係数の推定量は</p>
+<p><span class="math display">\[
+\hat{\beta} =  ({}^t\! X {}^t\! \Gamma^{-1} \Gamma^{-1} X)^{-1} {}^t\! X
+{}^t\! \Gamma^{-1} \Gamma^{-1} y
+\]</span></p>
+<p>となり、ここで<span class="math inline">\(\Omega = {}^t\! \Gamma^{-1}
+\Gamma^{-1}\)</span>と置いて、</p>
+<p><span class="math display">\[
+\hat{\beta} =  ({}^t\! X \Omega X)^{-1} {}^t\! X \Omega y
+\]</span></p>
+<p>と書けます。標準誤差も同様に導出できます。一般化と称されているだけあって、線形回帰モデルに入り込む不均一分散はすべてこの形で表現することができます。</p>
+<p>ただし、仮定した<span
+class="math inline">\(\Gamma\)</span>を観測できるかは別です。一般には観測できず、そもそも不均一分散の入り方を直接観察することもできないため、不均一分散への完全な対処方法はありません。多かれ少なかれ分析者が置く仮定に依存することになります。</p>
+</div>
+<div id="ウェイト付き最小二乗法wls" class="section level1" number="2">
+<h1><span class="header-section-number">2</span>
+ウェイト付き最小二乗法（<abbr title="Weighted Least Squares">WLS</abbr>）</h1>
+<p>もっとも単純な不均一分散は、観測値ごとの誤差の分散が異なると言うものです。この場合、</p>
+<p><span class="math display">\[\begin{align}
+\Gamma = \begin{pmatrix}
+\gamma_{11} &amp; 0 &amp; \cdots &amp; 0 &amp; 0 \\
+0 &amp; \gamma_{22} &amp; \cdots &amp; 0 &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; \gamma_{(n-1)(n-1)} &amp; 0 \\
+0 &amp; 0 &amp; \cdots &amp; 0 &amp; \gamma_{nn}
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>と書け、だいたい<span
+class="math inline">\(\gamma_{ii}\ne\gamma_{jj}\ (i \ne
+j)\)</span>となります。両辺に乗じるのは<span
+class="math inline">\(\Gamma^{-1}\)</span>ですが、この対角成分をウェイトと呼びます。</p>
+<p><span
+class="math inline">\(\Gamma\)</span>が分からないので、このままでは推定できません。何かの仮定をおいて<span
+class="math inline">\(\Gamma\)</span>を推定します。</p>
+<div id="観察可能な変数をウェイトにする" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span>
+観察可能な変数をウェイトにする</h2>
+<p>何か観察可能な変数（を単純に変換したもの）と<span
+class="math inline">\(\Gamma\)</span>が比例するのであれば、それをウェイトにする事ができます。行政区ごとの平均値を回帰する場合であれば、行政区の人口<span
+class="math inline">\(N_i\)</span>の平方根に比例していると考えてよい場合もあるでしょう<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。その場合は、<span
+class="math inline">\(\gamma{ii}=1/\sqrt{N_i}\)</span>と置き、ウェイトを求めます。</p>
+</div>
+<div id="残差を推定して予測値からウェイトをつくる"
+class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+残差を推定して予測値からウェイトをつくる</h2>
+<p>観察可能な変数をどう変換すればよいのか分からない場合は、OLSの残差の大きさを推定し、予測値からウェイトをつくります。<abbr title="Feasible Generalized Least Squares">FGLS</abbr>と呼ばれる手法になります。</p>
+<p>残差の大きさの予測モデルは様々なものが考えられますが、ここではOLSの残差<span
+class="math inline">\(\rho\)</span>の二乗を対数化し、説明変数で回帰します。手間がかかりますが、ウェイトが非負になることが保証されます。</p>
+<p><span class="math display">\[\begin{align}
+\log{\rho^2} &amp;= x_i \alpha + \eta_i\\
+\hat{\rho_i} &amp;=  \sqrt{\exp(x_i \alpha)}
+\end{align}\]</span></p>
+<p>ここでの<span
+class="math inline">\(x_i\)</span>は説明変数の横ベクトルで、<span
+class="math inline">\(\alpha\)</span>は係数の縦ベクトル、<span
+class="math inline">\(\eta\)</span>は誤差項です。</p>
+<p><span class="math inline">\(\hat{\rho_i}\)</span>を<span
+class="math inline">\(\gamma_{ii}\)</span>として用います。</p>
+<div id="データセット" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> データセット</h3>
+<p>不均一分散の入ったデータセットをつくります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">with</span>(<span class="fu">new.env</span>(), {</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, n <span class="sc">-</span> <span class="dv">3</span>), <span class="fu">rep</span>(<span class="dv">10</span>, <span class="dv">3</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">0</span><span class="sc">*</span>z <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">sd =</span> z)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">y =</span> y, <span class="at">x =</span> x, <span class="at">z =</span> z)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>})</span></code></pre></div>
+<p>推定に用いるモデルとは、誤差の作り方が異なることに注意してください。</p>
+</div>
+<div id="行列演算による推定" class="section level3" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span>
+行列演算による推定</h3>
+<p>早速、推定してみましょう。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>model <span class="ot">&lt;-</span> y <span class="sc">~</span> x <span class="sc">+</span> z</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(model, df01)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, mf)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># OLS</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>beta <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((y <span class="sc">-</span> X <span class="sc">%*%</span> beta)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)))</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>ols_vcov <span class="ot">&lt;-</span> sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X)</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># WLS</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>R <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>P <span class="ot">&lt;-</span> X <span class="sc">%*%</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> <span class="fu">log</span>(R<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">exp</span>(<span class="fu">c</span>(P)))</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>Gamma <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="dv">1</span><span class="sc">/</span>W)</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>Omega <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">solve</span>(Gamma)) <span class="sc">%*%</span> <span class="fu">solve</span>(Gamma)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>w_beta <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> y</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>w_sigma <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">sum</span>((W<span class="sc">*</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> w_beta))<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)))</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>w_vcov <span class="ot">&lt;-</span> w_sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> X)</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co"># Comparing WLS with OLS</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>(CMP <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">0</span>), beta, <span class="fu">sqrt</span>(<span class="fu">diag</span>(ols_vcov)), w_beta, <span class="fu">sqrt</span>(<span class="fu">diag</span>(w_vcov))), <span class="at">ncol =</span> <span class="dv">5</span>, </span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>    <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">colnames</span>(X), <span class="fu">c</span>(<span class="st">&quot;Coef.(DGP/True)&quot;</span>, <span class="st">&quot;Coef.(OLS)&quot;</span>, <span class="st">&quot;S.E.(OLS)&quot;</span>, <span class="st">&quot;Coef.(WLS)&quot;</span>, <span class="st">&quot;S.E.(WLS)&quot;</span>))))</span></code></pre></div>
+<pre><code>            Coef.(DGP/True) Coef.(OLS) S.E.(OLS) Coef.(WLS) S.E.(WLS)
+(Intercept)               1 -0.7607539 0.8307883 -0.1264285 0.6529731
+x                         2  3.2196465 1.4706592  2.3943684 0.6625233
+z                         0  0.8993327 0.1797359  0.6736195 0.5921787</code></pre>
+<p>OLS推定量よりも、WLS推定量の方がデータ生成プロセスの係数に近いです。</p>
+</div>
+<div id="lmを使った推定" class="section level3" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span>
+<code>lm</code>を使った推定</h3>
+<p>実践ではビルトイン関数<code>lm</code>を使いましょう。短く記述でき、計算時間もかかりません。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>r_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, df01)</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>r_lgr <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="fu">log</span>(<span class="fu">residuals</span>(r_lm)<span class="sc">^</span><span class="dv">2</span>) <span class="sc">~</span> x <span class="sc">+</span> z, df01)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>r_wls <span class="ot">&lt;-</span> <span class="fu">lm</span>(model, df01, <span class="at">weight =</span> <span class="dv">1</span><span class="sc">/</span><span class="fu">exp</span>(<span class="fu">predict</span>(r_lgr)))</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">coef</span>(<span class="fu">summary</span>(r_wls))</span></code></pre></div>
+<pre><code>              Estimate Std. Error    t value     Pr(&gt;|t|)
+(Intercept) -0.1264285  0.6529731 -0.1936198 0.8473079596
+x            2.3943684  0.6625233  3.6140136 0.0007322129
+z            0.6736195  0.5921787  1.1375274 0.2610838519</code></pre>
+</div>
+</div>
+<div id="不均一分散の存在の検定" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
+不均一分散の存在の検定</h2>
+<p>無視できないほど大きな<strong>WLSで対処できる</strong>不均一分散がありそうか検定をかけることができます。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>r_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, df01)</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>sigma2 <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(r_lm)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">length</span>(<span class="fu">residuals</span>(r_lm))</span></code></pre></div>
+<p>OLSで推定して、分散を計算しておきます。</p>
+<p>教科書的には残差と分散の比がχ二乗分布に従うことを使うBreusch-Pagan検定を用います。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">residuals</span>(r_lm)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> sigma2</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>TSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((g <span class="sc">-</span> <span class="fu">mean</span>(g))<span class="sc">^</span><span class="dv">2</span>) <span class="co"># mean(g)は1</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>r_g <span class="ot">&lt;-</span> <span class="fu">lm</span>(g <span class="sc">~</span> x <span class="sc">+</span> z, df01)</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>RSS <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(r_g)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>(LM <span class="ot">&lt;-</span> (TSS <span class="sc">-</span> RSS)<span class="sc">/</span><span class="dv">2</span>)</span></code></pre></div>
+<pre><code>[1] 273.2341</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">pchisq</span>(LM, <span class="at">df =</span> <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>[1] 4.65542e-60</code></pre>
+<p>実用ではどうもstudentized Breusch-Pagan
+testの方が標準的に使われており、こちらは残差の二乗と分散の差の二乗がχ二乗分布に従うことを使っています。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>w <span class="ot">&lt;-</span> <span class="fu">residuals</span>(r_lm)<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> sigma2</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>TSS <span class="ot">&lt;-</span> <span class="fu">sum</span>((w <span class="sc">-</span> <span class="fu">mean</span>(w))<span class="sc">^</span><span class="dv">2</span>) <span class="co"># mean(w)は0</span></span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>r_w <span class="ot">&lt;-</span> <span class="fu">lm</span>(w <span class="sc">~</span> x <span class="sc">+</span> z, df01)</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>RSS <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">residuals</span>(r_w)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>(s.LM <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">residuals</span>(r_lm)) <span class="sc">*</span> (TSS <span class="sc">-</span> RSS) <span class="sc">/</span> <span class="fu">sum</span>(w<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
+<pre><code>[1] 32.86126</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">pchisq</span>(s.LM, <span class="at">df =</span> <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>[1] 7.315922e-08</code></pre>
+<div id="lmtestbptestを使った検定" class="section level3"
+number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span>
+<code>lmtest::bptest</code>を使った検定</h3>
+<p>間違い予防で<code>lmtest::bptest</code>を使うことを推奨します。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">bptest</span>(r_lm, <span class="at">studentize =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>
+    Breusch-Pagan test
+
+data:  r_lm
+BP = 273.23, df = 2, p-value &lt; 2.2e-16</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">bptest</span>(r_lm, <span class="at">studentize =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  r_lm
+BP = 32.861, df = 2, p-value = 7.316e-08</code></pre>
+</div>
+</div>
+</div>
+<div id="見かけ上無関係な回帰sur" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+見かけ上無関係な回帰（<abbr title="Seemingly Unrelated Regression">SUR</abbr>）</h1>
+<p>WLSより手の混んだGLSに分類される手法としてSURを紹介します。</p>
+<p>以下の連立方程式を同時推定することを考えます。</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+  \left\{
+    \begin{array}{l}
+        y_{1} = X_{1}\beta_1 + \rho_{1} \\
+        y_{2} = X_{2}\beta_2 + \rho_{2}
+    \end{array}
+  \right.
+\end{eqnarray}
+\]</span></p>
+<p><span class="math inline">\(y_1\)</span>と<span
+class="math inline">\(y_2\)</span>は従属変数のベクトルで、<span
+class="math inline">\(X_{1}\)</span>と<span
+class="math inline">\(X_{2}\)</span>は説明変数の行列、<span
+class="math inline">\(\beta_1\)</span>と<span
+class="math inline">\(\beta_2\)</span>はそれらの係数のベクトル、<span
+class="math inline">\(\rho_1\)</span>と<span
+class="math inline">\(\rho_2\)</span>は誤差項のベクトルです。</p>
+<p><span class="math inline">\(\rho_1\)</span>と<span
+class="math inline">\(\rho_2\)</span>は同一の分布に従うとは限りません。<span
+class="math inline">\(X_{1}\)</span>と<span
+class="math inline">\(X_{1}\)</span>は同じ変数が入っていてもよいですし、<span
+class="math inline">\(\beta_1\)</span>と<span
+class="math inline">\(\beta_2\)</span>も同じ値の部分があると仮定することもできます。</p>
+<p>二つの式はそれぞれはOLSの仮定を満たしているので、一つ一つ推定しても良い気がしますが、<span
+class="math inline">\(\mbox{COV}(\rho_1, \rho_2) \neq
+0\)</span>の場合は推定量を改善する余地があります。</p>
+<p>最初は<span class="math inline">\(\mbox{COV}(\rho_1,
+\rho_2)\)</span>の情報が無いので、以下をOLSで推定します。</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+        y_{1} \\
+        y_{2}
+    \end{pmatrix}
+    =
+    \begin{pmatrix}
+        X_{1} &amp; 0 \\
+        0 &amp; X_{2}
+    \end{pmatrix}
+    \begin{pmatrix}
+        \beta_{1} \\
+        \beta_{2}
+    \end{pmatrix}
+    +
+    \begin{pmatrix}
+        \rho_1 \\
+        \rho_2
+    \end{pmatrix}
+\]</span></p>
+<p>今回は<span class="math inline">\(\beta_1\)</span>と<span
+class="math inline">\(\beta_2\)</span>に共通の値はないと仮定しています。</p>
+<p>上の式をOLSで推定すると残差を計算できるので、以下の分散共分散行列<span
+class="math inline">\(\Sigma\)</span>がつくれます。</p>
+<p><span class="math display">\[
+\Sigma = \begin{pmatrix}
+    \mbox{COV}(\rho_1, \rho_1) &amp; \mbox{COV}(\rho_1, \rho_2) \\
+    \mbox{COV}(\rho_1, \rho_2) &amp; \mbox{COV}(\rho_2, \rho_2)
+\end{pmatrix}
+\]</span></p>
+<p><span class="math inline">\(\rho_1\)</span>と<span
+class="math inline">\(\rho_2\)</span>は期待値<span
+class="math inline">\(0\)</span>で分散<span
+class="math inline">\(1\)</span>の誤差項のベクトル<span
+class="math inline">\(\epsilon_1\)</span>と<span
+class="math inline">\(\epsilon_2\)</span>の間とは以下のような関係があります。</p>
+<p><span class="math display">\[
+\begin{pmatrix}
+\rho_1 \\
+\rho_2
+\end{pmatrix} = \Sigma^\frac{1}{2} \begin{pmatrix}
+\epsilon_1 \\
+\epsilon_2
+\end{pmatrix}
+\]</span></p>
+<p>両辺の分散共分散行列をつくると一致するからです。</p>
+<p><span class="math display">\[\begin{align}
+\frac{1}{n}
+\begin{pmatrix}
+\rho_1 \\
+\rho_2
+\end{pmatrix}\begin{pmatrix}
+\rho_1 &amp; \rho_2
+\end{pmatrix} &amp;= \frac{1}{n} \Sigma^\frac{1}{2} \begin{pmatrix}
+\epsilon_1 \\
+\epsilon_2
+\end{pmatrix} \begin{pmatrix}
+\epsilon_1 &amp; \epsilon_2
+\end{pmatrix} {}^t\! \Sigma^\frac{1}{2} \\
+&amp;= \frac{1}{n} \Sigma^\frac{1}{2} \begin{pmatrix}
+n &amp; 0 \\
+0 &amp; n
+\end{pmatrix}{}^t\! \Sigma^\frac{1}{2} \\
+&amp;= \Sigma
+\end{align}\]</span></p>
+<p>二つの式を合併して、以下のように表記を簡素化します。</p>
+<p><span class="math display">\[
+y = X\beta + \rho
+\]</span></p>
+<p><span class="math inline">\(\rho\)</span>を<span
+class="math inline">\(\Sigma^{\frac{1}{2}} \otimes I_n
+\epsilon\)</span>に置き換えると、GLSの形式にできます。</p>
+<p><span class="math display">\[
+y = X\beta + \Sigma^{\frac{1}{2}} \otimes I_n \epsilon
+\]</span></p>
+<p><span class="math inline">\(\otimes\)</span>はクロネッカー積で、<span
+class="math inline">\(I_n\)</span>は<span
+class="math inline">\(n\)</span>行<span
+class="math inline">\(n\)</span>列の恒等行列です。見慣れない演算子かも知れませんが、例えば<span
+class="math inline">\(n=3\)</span>のときは、<span
+class="math inline">\(\Sigma^{\frac{1}{2}}\)</span>の<span
+class="math inline">\(i\)</span>行<span
+class="math inline">\(j\)</span>列の成分を<span
+class="math inline">\(s_{ij}\)</span>として、</p>
+<p><span class="math display">\[\begin{align}
+\Sigma^{\frac{1}{2}} \otimes I_3 \epsilon &amp;= \begin{pmatrix}
+    s_{11} &amp; s_{12} \\
+    s_{12} &amp; s_{22}
+\end{pmatrix} \otimes \begin{pmatrix}
+1 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 1 \\
+\end{pmatrix} \begin{pmatrix}
+\epsilon_{11} \\
+\epsilon_{21} \\
+\epsilon_{31} \\
+\epsilon_{12} \\
+\epsilon_{22} \\
+\epsilon_{32}
+\end{pmatrix}\\
+&amp;= \begin{pmatrix}
+s_{11} &amp; 0 &amp; 0 &amp; s_{12}  &amp; 0 &amp; 0 \\
+0 &amp; s_{11} &amp; 0 &amp; 0 &amp; s_{12}  &amp; 0 \\
+0 &amp; 0 &amp; s_{11} &amp; 0 &amp; 0 &amp; s_{12} \\
+s_{12} &amp; 0 &amp; 0 &amp; s_{22}  &amp; 0 &amp; 0 \\
+0 &amp; s_{12} &amp; 0 &amp; 0 &amp; s_{22}  &amp; 0 \\
+0 &amp; 0 &amp; s_{12} &amp; 0 &amp; 0 &amp; s_{22}
+\end{pmatrix}\begin{pmatrix}
+\epsilon_{11} \\
+\epsilon_{21} \\
+\epsilon_{31} \\
+\epsilon_{12} \\
+\epsilon_{22} \\
+\epsilon_{32}
+\end{pmatrix} \\
+&amp;= \begin{pmatrix}
+s_{11} \epsilon_{11} + s_{12} \epsilon_{12}\\
+s_{11} \epsilon_{21} + s_{12} \epsilon_{22}\\
+s_{11} \epsilon_{31} + s_{12} \epsilon_{32}\\
+s_{12} \epsilon_{11} + s_{22} \epsilon_{12}\\
+s_{12} \epsilon_{21} + s_{22} \epsilon_{22}\\
+s_{12} \epsilon_{31} + s_{22} \epsilon_{32}
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>と展開されます。つまり、左の行列の要素に右の行列を乗じたものでブロック行列をつくって連結します。</p>
+<p>連結前の1番目式の<span
+class="math inline">\(i\)</span>行目の誤差項と2番目の式と<span
+class="math inline">\(i\)</span>行目の誤差項が、それぞれ<span
+class="math inline">\(\epsilon_{i1}\)</span>と<span
+class="math inline">\(\epsilon_{i2}\)</span>の関数となっており、ゼロではない共分散を持つようにできたことがわかります。</p>
+<p><span
+class="math inline">\(\Omega\)</span>は以下のようになります。テキストの定義ではクロネッカー積を乗じる前の逆行列になっていると思うので注意してください。</p>
+<p><span class="math display">\[\begin{align}
+\Omega &amp;= {}^t\!(\Sigma^\frac{1}{2} \otimes I_n)(\Sigma^\frac{1}{2}
+\otimes I_n) \\
+&amp;= (\Sigma \otimes I_n)^{-1} \\
+&amp;= \Sigma^{-1} \otimes I_n
+\end{align}\]</span></p>
+<p>係数の分散共分散行列を計算します。頑強ではなく簡便な手法を用います。</p>
+<p><span class="math display">\[\begin{align}
+\hat{\beta}_{SUR} - \beta &amp;\approx ({}^t \! X \Omega X)^{-1} {}^t \!
+X \Omega y - ({}^t \! X \Omega X)^{-1} {}^t \! X \Omega (y - \rho) \\
+&amp;= ({}^t \! X \Omega X)^{-1} {}^t \! X \Omega \rho \\
+(\hat{\beta} - \beta) {}^t\!(\hat{\beta} - \beta) &amp;= ({}^t \! X
+\Omega X)^{-1} {}^t \! X \Omega \rho {}^t \! \rho {}^t\! \Omega X {}^t
+\! ({}^t \! X \Omega X)^{-1}
+\end{align}\]</span></p>
+<p>方程式が同じであれば等分散を仮定しているので<span
+class="math inline">\(E[\rho {}^t \! \rho]\)</span>は<span
+class="math inline">\(\Sigma \otimes
+I_n\)</span>と見なすことができ、<span
+class="math inline">\(\Sigma\)</span>と<span
+class="math inline">\(\Omega\)</span>は対称行列であることに注意すると、</p>
+<p><span class="math display">\[
+\Sigma \otimes I_n {}^t\! \Omega = \Sigma \otimes I_n \Omega = (\Sigma
+\otimes I_n)(\Sigma \otimes I_n)^{-1} = I_{2n}
+\]</span></p>
+<p>なので、</p>
+<p><span class="math display">\[\begin{align}
+&amp;\approx ({}^t \! X \Omega X)^{-1} {}^t \! X \Omega I_{2n} X {}^t \!
+({}^t \! X \Omega X)^{-1} \\
+&amp;= ({}^t \! X \Omega X)^{-1} {}^t \! X \Omega X {}^t \! ({}^t \! X
+\Omega X)^{-1}\\
+&amp;= {}^t \! ({}^t \! X \Omega X)^{-1} = ({}^t \! X \Omega X)^{-1}
+\end{align}\]</span></p>
+<p>になります。</p>
+<div id="データセット-1" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> データセット</h2>
+<p>二つの方程式を連結したデータセットを作成します。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20181103</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a>df02 <span class="ot">&lt;-</span> <span class="fu">with</span>(<span class="fu">new.env</span>(), {</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="dv">50</span> <span class="co"># 標本サイズが小さい方が、OLSとSURの差が出る</span></span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a>    l <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">sd=</span><span class="dv">2</span>) <span class="co"># 共分散を持つようにする</span></span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>    e1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">sd=</span><span class="dv">1</span>) <span class="sc">+</span> l</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>    e2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">sd=</span><span class="dv">1</span>) <span class="sc">+</span> l</span>
+<span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" tabindex="-1"></a>    x1 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min=</span><span class="dv">0</span>, <span class="at">max=</span><span class="dv">2</span>)</span>
+<span id="cb19-10"><a href="#cb19-10" tabindex="-1"></a>    x2 <span class="ot">&lt;-</span> <span class="fu">runif</span>(n, <span class="at">min=</span><span class="sc">-</span><span class="dv">2</span>, <span class="at">max=</span><span class="dv">2</span>)</span>
+<span id="cb19-11"><a href="#cb19-11" tabindex="-1"></a>    y1 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x1 <span class="sc">+</span> e1</span>
+<span id="cb19-12"><a href="#cb19-12" tabindex="-1"></a>    y2 <span class="ot">&lt;-</span> <span class="dv">3</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x2 <span class="sc">+</span> e2</span>
+<span id="cb19-13"><a href="#cb19-13" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" tabindex="-1"></a>    X1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, n), x1, <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">2</span><span class="sc">*</span>n)), n, <span class="dv">4</span>)</span>
+<span id="cb19-15"><a href="#cb19-15" tabindex="-1"></a>    X2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">2</span><span class="sc">*</span>n), <span class="fu">rep</span>(<span class="dv">1</span>, n), x2), n, <span class="dv">4</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" tabindex="-1"></a>    X <span class="ot">&lt;-</span> <span class="fu">rbind</span>(X1, X2)</span>
+<span id="cb19-17"><a href="#cb19-17" tabindex="-1"></a>    <span class="fu">colnames</span>(X) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Const.1&quot;</span>, <span class="st">&quot;x1&quot;</span>, <span class="st">&quot;Const.2&quot;</span>, <span class="st">&quot;x2&quot;</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">c</span>(y1, y2)</span>
+<span id="cb19-19"><a href="#cb19-19" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" tabindex="-1"></a>    <span class="fu">data.frame</span>(y, X)</span>
+<span id="cb19-21"><a href="#cb19-21" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="行列による推定" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> 行列による推定</h2>
+<p>実際のSUR推定量の計算を行います。<code>browseVignettes("systemfit")</code>をすると統計学的に詳しい説明も参照できます。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(y <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> Const<span class="fl">.1</span> <span class="sc">+</span> x1 <span class="sc">+</span> Const<span class="fl">.2</span> <span class="sc">+</span> x2, df02)</span>
+<span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb20-3"><a href="#cb20-3" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, mf)</span>
+<span id="cb20-4"><a href="#cb20-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb20-5"><a href="#cb20-5" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" tabindex="-1"></a><span class="co"># 1段階目のOLS推定量を計算</span></span>
+<span id="cb20-7"><a href="#cb20-7" tabindex="-1"></a>beta_ols <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X)<span class="sc">%*%</span><span class="fu">t</span>(X)<span class="sc">%*%</span>y</span>
+<span id="cb20-8"><a href="#cb20-8" tabindex="-1"></a></span>
+<span id="cb20-9"><a href="#cb20-9" tabindex="-1"></a><span class="co"># 誤差項を計算</span></span>
+<span id="cb20-10"><a href="#cb20-10" tabindex="-1"></a>r_e <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta_ols</span>
+<span id="cb20-11"><a href="#cb20-11" tabindex="-1"></a>r_e1 <span class="ot">&lt;-</span> r_e[<span class="dv">1</span><span class="sc">:</span>n]</span>
+<span id="cb20-12"><a href="#cb20-12" tabindex="-1"></a>r_e2 <span class="ot">&lt;-</span> r_e[(n<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span>n)]</span>
+<span id="cb20-13"><a href="#cb20-13" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" tabindex="-1"></a><span class="co"># ∑を計算</span></span>
+<span id="cb20-15"><a href="#cb20-15" tabindex="-1"></a>df <span class="ot">&lt;-</span> n <span class="sc">-</span> <span class="dv">2</span> <span class="co"># 自由度は複数の方程式の最も小さい値になる</span></span>
+<span id="cb20-16"><a href="#cb20-16" tabindex="-1"></a>Sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">sum</span>(r_e1<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df, <span class="fu">sum</span>(r_e1<span class="sc">*</span>r_e2)<span class="sc">/</span>df, <span class="fu">sum</span>(r_e1<span class="sc">*</span>r_e2)<span class="sc">/</span>df, <span class="fu">sum</span>(r_e2<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a>Omega <span class="ot">&lt;-</span> <span class="fu">solve</span>(Sigma) <span class="sc">%x%</span> <span class="fu">diag</span>(n)</span>
+<span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a></span>
+<span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="co"># SUR推定量を計算</span></span>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a>beta_sur <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> y</span>
+<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a></span>
+<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="co"># 分散共分散行列を計算</span></span>
+<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a>(vcov_sur <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> X)) <span class="co"># Usual Variance Matrix (Wooldridge (2002) p.161)</span></span></code></pre></div>
+<pre><code>             Const.1            x1       Const.2            x2
+Const.1  0.188358645 -9.421814e-02  8.287258e-02  0.0036769042
+x1      -0.094218144  9.776368e-02  8.868483e-05 -0.0038152701
+Const.2  0.082872582  8.868483e-05  1.024398e-01 -0.0004940602
+x2       0.003676904 -3.815270e-03 -4.940602e-04  0.0212547431</code></pre>
+</div>
+<div id="systemfitで推定" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span>
+<code>systemfit</code>で推定</h2>
+<p>実践においてはパッケージを使う方が無難です。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">library</span>(systemfit)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co"># データセットをほどく（通常は不要）</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> y[<span class="dv">1</span><span class="sc">:</span>n]</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> y[(n<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span>n)]</span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> X[<span class="dv">1</span><span class="sc">:</span>n, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> X[(n<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span>n), <span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="co"># 連立方程式を書く</span></span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>eq1 <span class="ot">&lt;-</span> y1 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> X1</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>eq2 <span class="ot">&lt;-</span> y2 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> X2</span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>system <span class="ot">&lt;-</span> <span class="fu">list</span>(eq1, eq2)</span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>r_systemfit <span class="ot">&lt;-</span> <span class="fu">systemfit</span>(system, <span class="at">method =</span> <span class="st">&quot;SUR&quot;</span>) <span class="co"># 気づくと関数が統合されて使い方が微妙に変わっていた</span></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a><span class="fu">summary</span>(r_systemfit)</span></code></pre></div>
+<pre><code>
+systemfit results 
+method: SUR 
+
+         N DF     SSR detRCov   OLS-R2 McElroy-R2
+system 100 96 484.321 7.34881 0.418894   0.713533
+
+     N DF     SSR     MSE    RMSE       R2   Adj R2
+eq1 50 48 236.737 4.93203 2.22082 0.134333 0.116298
+eq2 50 48 247.584 5.15800 2.27112 0.557864 0.548653
+
+The covariance matrix of the residuals used for estimation
+        eq1     eq2
+eq1 4.87787 4.14790
+eq2 4.14790 5.12141
+
+The covariance matrix of the residuals
+        eq1    eq2
+eq1 4.93203 4.2533
+eq2 4.25330 5.1580
+
+The correlations of the residuals
+         eq1      eq2
+eq1 1.000000 0.843282
+eq2 0.843282 1.000000
+
+
+SUR estimates for &#39;eq1&#39; (equation 1)
+Model Formula: y1 ~ 0 + X1
+&lt;environment: 0x5ff125907f10&gt;
+
+          Estimate Std. Error t value   Pr(&gt;|t|)    
+X1Const.1 0.942839   0.434003 2.17242   0.034793 *  
+X1x1      1.993500   0.312672 6.37569 6.6711e-08 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.220817 on 48 degrees of freedom
+Number of observations: 50 Degrees of Freedom: 48 
+SSR: 236.73726 MSE: 4.932026 Root MSE: 2.220817 
+Multiple R-Squared: 0.134333 Adjusted R-Squared: 0.116298 
+
+
+SUR estimates for &#39;eq2&#39; (equation 2)
+Model Formula: y2 ~ 0 + X2
+&lt;environment: 0x5ff125907f10&gt;
+
+          Estimate Std. Error t value   Pr(&gt;|t|)    
+X2Const.2 3.068725   0.320062  9.5879  9.861e-13 ***
+X2x2      1.886858   0.145790 12.9423 &lt; 2.22e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.271124 on 48 degrees of freedom
+Number of observations: 50 Degrees of Freedom: 48 
+SSR: 247.584146 MSE: 5.158003 Root MSE: 2.271124 
+Multiple R-Squared: 0.557864 Adjusted R-Squared: 0.548653 </code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">vcov</span>(r_systemfit)</span></code></pre></div>
+<pre><code>              eq1_X1Const.1      eq1_X1x1 eq2_X2Const.2      eq2_X2x2
+eq1_X1Const.1   0.188358645 -9.421814e-02  8.287258e-02  0.0036769042
+eq1_X1x1       -0.094218144  9.776368e-02  8.868483e-05 -0.0038152701
+eq2_X2Const.2   0.082872582  8.868483e-05  1.024398e-01 -0.0004940602
+eq2_X2x2        0.003676904 -3.815270e-03 -4.940602e-04  0.0212547431</code></pre>
+</div>
+</div>
+<div id="計量経済学の変量効果モデル" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
+計量経済学の変量効果モデル</h1>
+<p>計量経済学で言う変量効果モデル<a href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>もFGLSに分類されます。観測値ごとの誤差<span
+class="math inline">\(u_{it}\)</span>に加えて、個体ごとの誤差<span
+class="math inline">\(c_{i}\)</span>がある線形回帰モデル<span
+class="math inline">\(y_{it} = X\beta + c_{i} +
+u_{it}\)</span>です。<span
+class="math inline">\(y\)</span>は被説明変数、<span
+class="math inline">\(X\)</span>は説明変数、<span
+class="math inline">\(\beta\)</span>は係数、<span
+class="math inline">\(i\)</span>は個体を示す添字、<span
+class="math inline">\(t\)</span>は時点を示す添字になります。観察できない偶発的な事象が、ある個体の観測値で同じように影響する一方、他の個体には影響しないことを表しています。</p>
+<p>例えば個体ごとに<span
+class="math inline">\(5\)</span>期間のデータがある場合、分散共分散<span
+class="math inline">\(\Sigma\)</span>は以下のように表されます。</p>
+<p><span class="math display">\[
+\Sigma = \begin{bmatrix}
+\sigma^2_u + \sigma^2_c &amp; \sigma^2_c &amp; \sigma^2_c &amp;
+\sigma^2_c &amp; \sigma^2_c \\
+\sigma^2_c &amp; \sigma^2_u + \sigma^2_c &amp; \sigma^2_c &amp;
+\sigma^2_c &amp; \sigma^2_c \\
+\sigma^2_c &amp; \sigma^2_c &amp; \sigma^2_u + \sigma^2_c &amp;
+\sigma^2_c &amp; \sigma^2_c \\
+\sigma^2_c &amp; \sigma^2_c &amp; \sigma^2_c &amp; \sigma^2_u +
+\sigma^2_c &amp; \sigma^2_c \\
+\sigma^2_c &amp; \sigma^2_c &amp; \sigma^2_c &amp; \sigma^2_c &amp;
+\sigma^2_u + \sigma^2_c \\
+\end{bmatrix}
+\]</span></p>
+<p>このとき、<span
+class="math inline">\(n\)</span>を個体の数として、<span
+class="math inline">\(\Omega = I_n \otimes
+\Sigma^{-1}\)</span>とすると、</p>
+<p><span class="math display">\[
+\hat{\beta}_{RE} = (^t\!X \Omega X)^{-1} {^t\!X} \Omega y
+\]</span></p>
+<p>と推定することができます。計量モデルと言うよりはデータの並びの問題で、クロネッカー積の左右がSURと逆なことに注意してください。</p>
+<div id="データセット-2" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> データセット</h2>
+<p>モデルに沿って不均一分散が入ったデータセットをつくります。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1303</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>mkdata <span class="ot">&lt;-</span> <span class="cf">function</span>(n_of_t, n_of_i){</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>    <span class="co"># n_of_t: 時点の数, n_of_i: 個体の数</span></span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>    <span class="co"># 個体番号をつくる</span></span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>    id <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_of_i, <span class="at">each =</span> n_of_t, <span class="at">min=</span><span class="sc">-</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">0.5</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>    <span class="co"># 時点変数をつくる</span></span>
+<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>    t <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_of_t, n_of_i)</span>
+<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>    <span class="co"># 説明変数x,zをつくる</span></span>
+<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
+<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <span class="fu">runif</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
+<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a></span>
+<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>    <span class="co"># 誤差項をつくる</span></span>
+<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>    e_ind <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(n_of_i, <span class="at">sd =</span> <span class="dv">2</span>), <span class="at">each =</span> n_of_t)</span>
+<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>    e_ids <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
+<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a>    e <span class="ot">&lt;-</span> e_ind <span class="sc">+</span> e_ids</span>
+<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a></span>
+<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>    <span class="co"># 従属変数yをつくる</span></span>
+<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>z <span class="sc">+</span> e</span>
+<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a></span>
+<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">as.factor</span>(id), <span class="at">t =</span> <span class="fu">as.factor</span>(t), y, x, z)</span>
+<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a>}</span>
+<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a></span>
+<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a>df03 <span class="ot">&lt;-</span> <span class="fu">mkdata</span>(<span class="dv">5</span>, <span class="dv">100</span>)</span></code></pre></div>
+</div>
+<div id="行列による推定-1" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> 行列による推定</h2>
+<p>定番テキストのWooldridgeのGSLとRandom Effect
+Modelの説明に沿って計算します。ただし、<span
+class="math inline">\(\Omega\)</span>の定義が異なるので注意してください。</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>frml <span class="ot">&lt;-</span> y <span class="sc">~</span> x <span class="sc">+</span> z</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(frml, <span class="at">data =</span> df03)</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(frml, <span class="at">data =</span> df03)</span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>beta_ols <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span>
+<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a>residuals <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta_ols <span class="sc">-</span> y</span>
+<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a>sigma2_ols <span class="ot">&lt;-</span> <span class="fu">sum</span>(residuals<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df</span>
+<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(df03<span class="sc">$</span>t))</span>
+<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(df03<span class="sc">$</span>id))</span>
+<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a><span class="co"># total error variance</span></span>
+<span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a>sigma2_v <span class="ot">&lt;-</span> <span class="fu">sum</span>(residuals<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df</span>
+<span id="cb27-14"><a href="#cb27-14" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" tabindex="-1"></a><span class="co"># individual error variance</span></span>
+<span id="cb27-16"><a href="#cb27-16" tabindex="-1"></a>sigma2_c <span class="ot">&lt;-</span> <span class="fu">with</span>(df03, {</span>
+<span id="cb27-17"><a href="#cb27-17" tabindex="-1"></a>    <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="fu">levels</span>(id), <span class="cf">function</span>(i){</span>
+<span id="cb27-18"><a href="#cb27-18" tabindex="-1"></a>        r <span class="ot">&lt;-</span> residuals[id <span class="sc">==</span> i]</span>
+<span id="cb27-19"><a href="#cb27-19" tabindex="-1"></a>        cp <span class="ot">&lt;-</span> <span class="fu">outer</span>(r, r)</span>
+<span id="cb27-20"><a href="#cb27-20" tabindex="-1"></a>        <span class="fu">sum</span>(cp[<span class="fu">upper.tri</span>(cp, <span class="at">diag =</span> <span class="cn">FALSE</span>)])</span>
+<span id="cb27-21"><a href="#cb27-21" tabindex="-1"></a>        <span class="co"># 以下と同じ結果</span></span>
+<span id="cb27-22"><a href="#cb27-22" tabindex="-1"></a>        <span class="co"># sum &lt;- 0</span></span>
+<span id="cb27-23"><a href="#cb27-23" tabindex="-1"></a>        <span class="co"># for(t in 1:(T-1)){</span></span>
+<span id="cb27-24"><a href="#cb27-24" tabindex="-1"></a>        <span class="co">#     for(k in (t+1):T){</span></span>
+<span id="cb27-25"><a href="#cb27-25" tabindex="-1"></a>        <span class="co">#         sum &lt;- sum + r[t]*r[k]</span></span>
+<span id="cb27-26"><a href="#cb27-26" tabindex="-1"></a>        <span class="co">#     }</span></span>
+<span id="cb27-27"><a href="#cb27-27" tabindex="-1"></a>        <span class="co"># }</span></span>
+<span id="cb27-28"><a href="#cb27-28" tabindex="-1"></a>        <span class="co"># sum</span></span>
+<span id="cb27-29"><a href="#cb27-29" tabindex="-1"></a>    }))<span class="sc">/</span>((n<span class="sc">*</span>T<span class="sc">*</span>(T<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="fu">ncol</span>(X))</span>
+<span id="cb27-30"><a href="#cb27-30" tabindex="-1"></a>})</span>
+<span id="cb27-31"><a href="#cb27-31" tabindex="-1"></a></span>
+<span id="cb27-32"><a href="#cb27-32" tabindex="-1"></a><span class="co"># idiosyncratic error variance</span></span>
+<span id="cb27-33"><a href="#cb27-33" tabindex="-1"></a>sigma2_u <span class="ot">&lt;-</span> sigma2_v <span class="sc">-</span> sigma2_c</span>
+<span id="cb27-34"><a href="#cb27-34" tabindex="-1"></a></span>
+<span id="cb27-35"><a href="#cb27-35" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(sigma2_c, T, T) <span class="sc">+</span> sigma2_u<span class="sc">*</span><span class="fu">diag</span>(T)</span>
+<span id="cb27-36"><a href="#cb27-36" tabindex="-1"></a>sigma_inv <span class="ot">&lt;-</span> <span class="fu">solve</span>(sigma)</span>
+<span id="cb27-37"><a href="#cb27-37" tabindex="-1"></a>omega <span class="ot">&lt;-</span> <span class="fu">diag</span>(n) <span class="sc">%x%</span> sigma_inv</span>
+<span id="cb27-38"><a href="#cb27-38" tabindex="-1"></a>beta_gls <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> y</span>
+<span id="cb27-39"><a href="#cb27-39" tabindex="-1"></a></span>
+<span id="cb27-40"><a href="#cb27-40" tabindex="-1"></a><span class="co"># Usual Variance Matrix Estimator</span></span>
+<span id="cb27-41"><a href="#cb27-41" tabindex="-1"></a>usual_vcov <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> X)</span>
+<span id="cb27-42"><a href="#cb27-42" tabindex="-1"></a></span>
+<span id="cb27-43"><a href="#cb27-43" tabindex="-1"></a><span class="co"># Robust Variance Matrix Estimator</span></span>
+<span id="cb27-44"><a href="#cb27-44" tabindex="-1"></a>rbst_vcov <span class="ot">&lt;-</span> <span class="fu">with</span>(df03, {</span>
+<span id="cb27-45"><a href="#cb27-45" tabindex="-1"></a>    dfs <span class="ot">&lt;-</span> <span class="fu">split</span>(df03, id)</span>
+<span id="cb27-46"><a href="#cb27-46" tabindex="-1"></a>    A <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X), <span class="fu">ncol</span>(X))</span>
+<span id="cb27-47"><a href="#cb27-47" tabindex="-1"></a>    B <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X), <span class="fu">ncol</span>(X))</span>
+<span id="cb27-48"><a href="#cb27-48" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">length</span>(dfs)</span>
+<span id="cb27-49"><a href="#cb27-49" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb27-50"><a href="#cb27-50" tabindex="-1"></a>        X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(frml, <span class="at">data =</span> dfs[[i]])</span>
+<span id="cb27-51"><a href="#cb27-51" tabindex="-1"></a>        y <span class="ot">&lt;-</span> dfs[[i]]<span class="sc">$</span>y</span>
+<span id="cb27-52"><a href="#cb27-52" tabindex="-1"></a>        u <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta_gls</span>
+<span id="cb27-53"><a href="#cb27-53" tabindex="-1"></a>        A <span class="ot">&lt;-</span> A <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
+<span id="cb27-54"><a href="#cb27-54" tabindex="-1"></a>        B <span class="ot">&lt;-</span> B <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> u <span class="sc">%*%</span> <span class="fu">t</span>(u) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
+<span id="cb27-55"><a href="#cb27-55" tabindex="-1"></a>    }</span>
+<span id="cb27-56"><a href="#cb27-56" tabindex="-1"></a>    <span class="fu">solve</span>(A) <span class="sc">%*%</span> B <span class="sc">%*%</span> <span class="fu">solve</span>(A)</span>
+<span id="cb27-57"><a href="#cb27-57" tabindex="-1"></a>})</span></code></pre></div>
+<p>自由度がややこしいですね。</p>
+</div>
+<div id="plmで推定" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span>
+<code>plm</code>で推定</h2>
+<p>比較のために、<code>plm</code>パッケージで推定します。ぐっと手間暇が減っていますね。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>pd01 <span class="ot">&lt;-</span> <span class="fu">pdata.frame</span>(df03, <span class="at">index=</span><span class="fu">c</span>(<span class="st">&quot;id&quot;</span>))</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>r_plm <span class="ot">&lt;-</span> <span class="fu">plm</span>(frml, <span class="at">model =</span> <span class="st">&quot;random&quot;</span>, <span class="at">data =</span> pd01)</span></code></pre></div>
+<p>パネルデータ分析に使えるパッケージは多数あり、<code>plm</code>にこだわる必要はありません。一方、<code>plm</code>のヴィネットはパネルデータ分析を行う前に一読を推奨します。</p>
+</div>
+<div id="推定結果を比較" class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> 推定結果を比較</h2>
+<p>係数の推定量と標準誤差を比較してみましょう。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>(beta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>    <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>, beta_ols, beta_gls, <span class="fu">coef</span>(<span class="fu">summary</span>(r_plm))[, <span class="dv">1</span>]),</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>    <span class="fu">ncol</span>(X), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(beta_gls), <span class="fu">c</span>(<span class="st">&quot;true&quot;</span>, <span class="st">&quot;OLS&quot;</span>, <span class="st">&quot;GLS&quot;</span>, <span class="st">&quot;plm/random&quot;</span>))))</span></code></pre></div>
+<pre><code>            true        OLS       GLS plm/random
+(Intercept)    1  0.7393101  1.145877   1.147142
+x              2  2.6266132  2.086162   2.084467
+z             -3 -2.7875092 -3.041145  -3.041919</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>(sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">sqrt</span>(sigma2_ols<span class="sc">*</span><span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X))), <span class="fu">sqrt</span>(<span class="fu">diag</span>(usual_vcov)), <span class="fu">sqrt</span>(<span class="fu">diag</span>(rbst_vcov)), <span class="fu">coef</span>(<span class="fu">summary</span>(r_plm))[, <span class="dv">2</span>]),</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="fu">ncol</span>(X), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(beta_gls), <span class="fu">c</span>(<span class="st">&quot;OLS&quot;</span>, <span class="st">&quot;GLS/Usual&quot;</span>, <span class="st">&quot;GLS/Robust&quot;</span>, <span class="st">&quot;plm/random&quot;</span>))))</span></code></pre></div>
+<pre><code>                  OLS GLS/Usual GLS/Robust plm/random
+(Intercept) 0.2877172 0.2514105  0.2571024  0.2508719
+x           0.3630824 0.1858884  0.2043492  0.1823705
+z           0.3511725 0.1754158  0.1586268  0.1720832</code></pre>
+<p>FGLSで推定した係数は、OLSよりも真の値に近くなっており、係数も標準誤差もplmパッケージとほとんど同じです。</p>
+<p>ほとんど同じと言うところに引っかかると思いますが、plmパッケージでは以下の連立方程式を解いて個体内変化と個体間相違を計算して、idiosyncratic
+error varianceとindividual error
+varianceにしており、分散分解の方法が教科書のものと異なっているためです。</p>
+<ul>
+<li><span class="math inline">\(\mbox{withinの残差平方和} =
+\mbox{個体内変化}((T-1)*N-K+1) + \mbox{個体間相違}*0\)</span></li>
+<li><span class="math inline">\(\mbox{betweenの残差平方和} =
+\mbox{個体内変化}*(N-K)/T + \mbox{個体間相違}*(N-K)\)</span></li>
+</ul>
+<p>なお、定番パッケージの作成者は研究動向に詳しい統計学者である事が多いので、実用面ではパッケージの手法を信じた方が無難です。</p>
+</div>
+</div>
+<div id="まとめ" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> まとめ</h1>
+<p>GLSの例として、WLS、SUR、計量経済学のランダム効果モデルをざっと説明してきましたが、一般化と言いつつ不均一分散の構造を特定してから話がはじまることが分かりました。誤差の構造と推定方法は他にも様々あり、もっと高度な手法も広く用いられています。</p>
+<p>実用では特殊ケースに応じたパッケージに頼る事になるので、もっと高度な手法でもコーディングの手間暇はほとんどありませんが、どういう構造を想定しているかを把握することが結果の解釈では重要になります。分かりやすい手法から、構造をしっかり把握していきましょう。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>個人の属性に帰着しない要因もあり、そんなに単純な事はまずないです。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p>統計学一般と計量経済学で変量効果モデルの意味が異なるので注意してください。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
