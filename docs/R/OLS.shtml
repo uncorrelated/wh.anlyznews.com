@@ -695,11 +695,9 @@ z^{\beta_2}\)</span>を推定したい場合は、</p>
 <p>モデル式は変数だけに足したり引いたりできます。</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>frml <span class="ot">&lt;-</span> y <span class="sc">~</span> x <span class="sc">+</span> z</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">update</span>(frml, . <span class="sc">~</span> . <span class="sc">+</span> <span class="fu">factor</span>(ans))</span></code></pre></div>
-<pre><code>y ~ x + z + factor(ans)
-&lt;environment: 0x5fd27324b6e8&gt;</code></pre>
+<pre><code>y ~ x + z + factor(ans)</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">update</span>(frml, . <span class="sc">~</span> . <span class="sc">-</span> z)</span></code></pre></div>
-<pre><code>y ~ x
-&lt;environment: 0x5fd27324b6e8&gt;</code></pre>
+<pre><code>y ~ x</code></pre>
 </div>
 </div>
 <div id="行列演算で推定" class="section level2" number="2.3">
@@ -989,7 +987,8 @@ y ~ x     120.68841 124.8920</code></pre>
 <li>梃子比（Leverage）と標準化残差の散布図とクック距離</li>
 </ul>
 <p>の4つのプロットが順番に表示されます。</p>
-<p>プロット領域を4分割し、<code>ask = FALSE</code>をつけて、一枚に納めて表示してみましょう。</p>
+<p>プロット領域を4分割し、<code>ask = FALSE</code>をつけて、一枚に納めて表示してみましょう<a
+href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
 <span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a><span class="fu">plot</span>(r_lm, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/ols_diagnosis-1.png" width="672" /></p>
@@ -1014,8 +1013,8 @@ D_i \equiv
 \]</span></p>
 <p>と定義されます。</p>
 <p>なお、不偏性のある一致推定量を得るという意味では、誤差項が正規分布する必要も、分散が均一である必要もなく、系列相関も原則として支障になりません<a
-href="#fn3" class="footnote-ref"
-id="fnref3"><sup>3</sup></a>。大標本のときは、梃子比を気にしましょう。</p>
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>。大標本のときは、梃子比を気にしましょう。</p>
 </div>
 <div id="予測値" class="section level2" number="6.2">
 <h2><span class="header-section-number">6.2</span> 予測値</h2>
@@ -1086,8 +1085,13 @@ class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>導出はテキストを参考にしてください。<a href="#fnref2"
 class="footnote-back">↩︎</a></p></li>
 <li
-id="fn3"><p>系列相関がある場合、時系列データであったり、欠落変数バイアスが反映されていたりする場合があります。<a
+id="fn3"><p>個別に表示したい場合は、<code>plot(r_lm, which = 1)</code>と言うように<code>1</code>,
+<code>2</code>, <code>3</code>,
+<code>5</code>の数字を指定します。<code>4</code>を指定するとクック距離だけを表示ます。詳しくは<code>? plot.lm</code>としてヘルプを参照してください。<a
 href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p>系列相関がある場合、時系列データであったり、欠落変数バイアスが反映されていたりする場合があります。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
