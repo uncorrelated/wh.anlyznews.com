@@ -464,8 +464,8 @@ href="#fn1" class="footnote-ref"
 id="fnref1"><sup>1</sup></a>を参照してください。</p>
 <p>以下のような線形モデルの最小二乗法による推定を、OLSと呼んでいます。</p>
 <p><span class="math display">\[
-y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_k
-x_{ik} + \epsilon_i
+y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \cdots + \beta_{k-1}
+x_{ik-1} + \epsilon_i
 \]</span></p>
 <p><span class="math inline">\(y\)</span>は被説明変数のベクトル、<span
 class="math inline">\(\beta\)</span>は係数、<span
@@ -474,7 +474,7 @@ class="math inline">\(\epsilon\)</span>は誤差項のベクトル、<span
 class="math inline">\(i\)</span>はどの観測値かを示す添字、<span
 class="math inline">\(j\)</span>はどの説明変数かを示す添字になります。観測値の数は<span
 class="math inline">\(n\)</span>、係数は<span
-class="math inline">\(k+1\)</span>種類です。各観測値の誤差<span
+class="math inline">\(k\)</span>種類です。各観測値の誤差<span
 class="math inline">\(\epsilon_i\)</span>は同一で独立の分布に従います。<span
 class="math inline">\(\text{COV}(x_j,
 \epsilon)=0\)</span>が仮定されていることには注意してください。</p>
@@ -493,15 +493,15 @@ y_2 \\
 \vdots \\
 y_n
 \end{bmatrix}, X = \begin{bmatrix}
-x_{11} &amp; x_{12} &amp; \cdots &amp; x_{1k} \\
-x_{21} &amp; x_{22} &amp; \cdots &amp; x_{2k} \\
+1 &amp; x_{11} &amp; \cdots &amp; x_{1k-1} \\
+1 &amp; x_{21} &amp; \cdots &amp; x_{2k-1} \\
 \vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-x_{n1} &amp; x_{n2} &amp; \cdots &amp; x_{nk}
+1 &amp; x_{n1} &amp; \cdots &amp; x_{nk-1}
 \end{bmatrix}, \beta = \begin{bmatrix}
+\beta_0 \\
 \beta_1 \\
-\beta_2 \\
 \vdots \\
-\beta_k
+\beta_{k-1}
 \end{bmatrix}, \epsilon = \begin{bmatrix}
 \epsilon_1 \\
 \epsilon_2 \\
