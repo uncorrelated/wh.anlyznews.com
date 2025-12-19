@@ -520,10 +520,10 @@ x_{n1} &amp; x_{n2} &amp; \cdots &amp; x_{nk}
 \epsilon_2 \\
 \vdots \\
 \epsilon_n
-\end{bmatrix} = ^t\!\epsilon \epsilon
+\end{bmatrix} = {}^t\!\epsilon \epsilon
 \]</span></p>
 <p><span class="math display">\[
-= ^t\!(y - X\beta)(y - X\beta)
+= {}^t\!(y - X\beta)(y - X\beta)
 \]</span></p>
 <p>となります。</p>
 <p>ここで、係数のベクトル<span
@@ -532,21 +532,21 @@ class="math inline">\(b\)</span>に、誤差項のベクトル<span
 class="math inline">\(\epsilon\)</span>を、残差のベクトル<span
 class="math inline">\(e\)</span>に置き換えます。</p>
 <p><span class="math display">\[
-^t\!e e = ^t\!(y - Xb)(y - Xb)
+{}^t\!e e = {}^t\!(y - Xb)(y - Xb)
 \]</span></p>
 <p>転置行列の性質に注意すると、</p>
 <p><span class="math display">\[
-^t\!e e = ^t\!y y - 2^t\!y X b + ^t\!b ^t\!X X b
+{}^t\!e e = {}^t\!y y - 2{}^t\!y X b + {}^t\!b {}^t\!X X b
 \]</span></p>
-<p>となります。<span class="math inline">\(^t\!X
+<p>となります。<span class="math inline">\({}^t\!X
 X\)</span>が対称行列であることに注意して、上式をベクトル<span
 class="math inline">\(b\)</span>の要素それぞれに関して微分してできたk本の式を合計し整理すると、誤差項の二乗和の最小化の一階条件は、</p>
 <p><span class="math display">\[
--2^t\!y X + 2 ^t\!X X b = 0
+-2{}^t\!y X + 2 {}^t\!X X b = 0
 \]</span></p>
 <p>になり、OLS推定量</p>
 <p><span class="math display">\[
-b = (^t\!XX)^{-1}{^t\!Xy}
+b = ({}^t\!XX)^{-1}{{}^t\!Xy}
 \]</span></p>
 <p>が得られます。</p>
 </div>
@@ -555,17 +555,19 @@ b = (^t\!XX)^{-1}{^t\!Xy}
 <p><span
 class="math inline">\(b\)</span>は推定量なので誤差があり、その分散は係数の推定量のt検定や信頼区間の計算に用いられます。多変量なので分散共分散行列を導出します。</p>
 <p><span class="math display">\[
-\text{VAR}[ b \mid X ] = E[^t\!(b - \beta)(b - \beta) \mid X]
+\text{VAR}[ b \mid X ] = E[{}^t\!(b - \beta)(b - \beta) \mid X]
 \]</span></p>
 <p><span class="math display">\[
-= E[(^t\!XX)^{-1}{^t\!X} \epsilon {^t\!\epsilon} X (^t\!XX)^{-1} \mid X]
+= E[({}^t\!XX)^{-1}{{}^t\!X} \epsilon {{}^t\!\epsilon} X ({}^t\!XX)^{-1}
+\mid X]
 \]</span></p>
 <p><span class="math display">\[
-=(^t\!XX)^{-1}{^t\!X} E[\epsilon {^t\!\epsilon} \mid X] X (^t\!XX)^{-1}
+=({}^t\!XX)^{-1}{{}^t\!X} E[\epsilon {{}^t\!\epsilon} \mid X] X
+({}^t\!XX)^{-1}
 \]</span></p>
 <p><span class="math display">\[
-= (^t\!XX)^{-1}{^t\!X} \sigma^2 I X (^t\!XX)^{-1} =\sigma^2
-(^t\!XX)^{-1}
+= ({}^t\!XX)^{-1}{{}^t\!X} \sigma^2 I X ({}^t\!XX)^{-1} =\sigma^2
+({}^t\!XX)^{-1}
 \]</span></p>
 <p><span class="math inline">\(I\)</span>は<span class="math inline">\(k
 \times k\)</span>の恒等行列です。</p>
@@ -579,7 +581,7 @@ class="math inline">\(\sigma^2\)</span>が必要なので、<span
 class="math inline">\(\sigma^2\)</span>の不偏推定量<span
 class="math inline">\(s^2\)</span>を考えます。residual maker</p>
 <p><span class="math display">\[
-M=I-X(^t\!XX)^{-1}(^t\!X)
+M=I-X({}^t\!XX)^{-1}({}^t\!X)
 \]</span></p>
 <p>を用いると、残差は</p>
 <p><span class="math display">\[
@@ -587,34 +589,34 @@ e = My = M(X\beta + \epsilon) = M\epsilon
 \]</span></p>
 <p>と書けます。<span
 class="math inline">\(MX=0\)</span>になるからです。さらに<span
-class="math inline">\(^t\!MM=M\)</span>である事に注意すると、</p>
+class="math inline">\({}^t\!MM=M\)</span>である事に注意すると、</p>
 <p><span class="math display">\[
-^t\!ee = ^t\!\epsilon M \epsilon
+^t\!ee = {}^t\!\epsilon M \epsilon
 \]</span></p>
 <p>となります。残差の二乗和の期待値は、</p>
 <p><span class="math display">\[
-E[^t\!ee \mid X] = E[ ^t\!\epsilon M \epsilon \mid X]
+E[{}^t\!ee \mid X] = E[ {}^t\!\epsilon M \epsilon \mid X]
 \]</span></p>
-<p>となります。<span class="math inline">\(^t\!\epsilon M
+<p>となります。<span class="math inline">\({}^t\!\epsilon M
 \epsilon\)</span>は<span class="math inline">\(1 \times
 1\)</span>行列になるのでトレースと等しくなり、<span
-class="math inline">\(^t\!\epsilon\)</span>と<span
+class="math inline">\({}^t\!\epsilon\)</span>と<span
 class="math inline">\(M\)</span>と<span
 class="math inline">\(\epsilon\)</span>は循環性を持つことが分かります。</p>
 <p><span class="math display">\[
-E[ ^t\!\epsilon M \epsilon \mid X] = E[ tr(^t\!\epsilon M \epsilon) \mid
-X] = E[ tr( M \epsilon ^t\!\epsilon )\mid X]
+E[ {}^t\!\epsilon M \epsilon \mid X] = E[ tr({}^t\!\epsilon M \epsilon)
+\mid X] = E[ tr( M \epsilon {}^t\!\epsilon )\mid X]
 \]</span></p>
 <p>さらに整理し、</p>
 <p><span class="math display">\[
-=tr( M E[ \epsilon ^t\!\epsilon \mid X]) = tr( M \sigma^2 I) = \sigma^2
-tr(M)
+=tr( M E[ \epsilon {}^t\!\epsilon \mid X]) = tr( M \sigma^2 I) =
+\sigma^2 tr(M)
 \]</span></p>
 <p><span class="math inline">\(M\)</span>の定義から、</p>
 <p><span
-class="math display">\[tr(M)=tr(I-X(^t\!XX)^{-1}(^t\!X))\]</span></p>
+class="math display">\[tr(M)=tr(I-X({}^t\!XX)^{-1}({}^t\!X))\]</span></p>
 <p><span
-class="math display">\[=tr(I_n)-tr(X(^t\!XX)^{-1}(^t\!X))\]</span></p>
+class="math display">\[=tr(I_n)-tr(X({}^t\!XX)^{-1}({}^t\!X))\]</span></p>
 <p><span class="math display">\[=tr(I_n)-tr(I_k)\]</span></p>
 <p><span class="math display">\[=n-k\]</span></p>
 <p>よって、</p>
@@ -895,8 +897,8 @@ class="math inline">\(\sigma^2I\)</span>になります。<span
 class="math inline">\(\hat{y}\)</span>の分散は、推定量のベクトル<span
 class="math inline">\(b\)</span>の分散と観測値の説明変数のベクトル<span
 class="math inline">\(\tilde{x}\)</span>から、<span
-class="math inline">\(\tilde{x} \sigma^2 (^t\!XX)^{-1}
-{^t}\!\tilde{x}\)</span>になります。期待値と分散が求まったので、t分布から区間推定を行ないます。</p>
+class="math inline">\(\tilde{x} \sigma^2 ({}^t\!XX)^{-1}
+{{}^t}\!\tilde{x}\)</span>になります。期待値と分散が求まったので、t分布から区間推定を行ないます。</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">predict</span>(r_lm, df02, <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span></code></pre></div>
 <pre><code>       fit      lwr      upr
 1 4.114472 1.865384 6.363559</code></pre>
