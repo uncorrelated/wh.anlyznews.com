@@ -957,7 +957,6 @@ eq2 0.843282 1.000000
 
 SUR estimates for &#39;eq1&#39; (equation 1)
 Model Formula: y1 ~ 0 + X1
-&lt;environment: 0x5ff125907f10&gt;
 
           Estimate Std. Error t value   Pr(&gt;|t|)    
 X1Const.1 0.942839   0.434003 2.17242   0.034793 *  
@@ -973,7 +972,6 @@ Multiple R-Squared: 0.134333 Adjusted R-Squared: 0.116298
 
 SUR estimates for &#39;eq2&#39; (equation 2)
 Model Formula: y2 ~ 0 + X2
-&lt;environment: 0x5ff125907f10&gt;
 
           Estimate Std. Error t value   Pr(&gt;|t|)    
 X2Const.2 3.068725   0.320062  9.5879  9.861e-13 ***
@@ -1116,14 +1114,15 @@ class="math inline">\(\Omega\)</span>の定義が異なるので注意してく�
 <span id="cb27-47"><a href="#cb27-47" tabindex="-1"></a>    B <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X), <span class="fu">ncol</span>(X))</span>
 <span id="cb27-48"><a href="#cb27-48" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">length</span>(dfs)</span>
 <span id="cb27-49"><a href="#cb27-49" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb27-50"><a href="#cb27-50" tabindex="-1"></a>        X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(frml, <span class="at">data =</span> dfs[[i]])</span>
-<span id="cb27-51"><a href="#cb27-51" tabindex="-1"></a>        y <span class="ot">&lt;-</span> dfs[[i]]<span class="sc">$</span>y</span>
-<span id="cb27-52"><a href="#cb27-52" tabindex="-1"></a>        u <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta_gls</span>
-<span id="cb27-53"><a href="#cb27-53" tabindex="-1"></a>        A <span class="ot">&lt;-</span> A <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
-<span id="cb27-54"><a href="#cb27-54" tabindex="-1"></a>        B <span class="ot">&lt;-</span> B <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> u <span class="sc">%*%</span> <span class="fu">t</span>(u) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
-<span id="cb27-55"><a href="#cb27-55" tabindex="-1"></a>    }</span>
-<span id="cb27-56"><a href="#cb27-56" tabindex="-1"></a>    <span class="fu">solve</span>(A) <span class="sc">%*%</span> B <span class="sc">%*%</span> <span class="fu">solve</span>(A)</span>
-<span id="cb27-57"><a href="#cb27-57" tabindex="-1"></a>})</span></code></pre></div>
+<span id="cb27-50"><a href="#cb27-50" tabindex="-1"></a>        mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(frml, <span class="at">data =</span> dfs[[i]])</span>
+<span id="cb27-51"><a href="#cb27-51" tabindex="-1"></a>        X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, mf)</span>
+<span id="cb27-52"><a href="#cb27-52" tabindex="-1"></a>        y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb27-53"><a href="#cb27-53" tabindex="-1"></a>        u <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta_gls</span>
+<span id="cb27-54"><a href="#cb27-54" tabindex="-1"></a>        A <span class="ot">&lt;-</span> A <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
+<span id="cb27-55"><a href="#cb27-55" tabindex="-1"></a>        B <span class="ot">&lt;-</span> B <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> u <span class="sc">%*%</span> <span class="fu">t</span>(u) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
+<span id="cb27-56"><a href="#cb27-56" tabindex="-1"></a>    }</span>
+<span id="cb27-57"><a href="#cb27-57" tabindex="-1"></a>    <span class="fu">solve</span>(A) <span class="sc">%*%</span> B <span class="sc">%*%</span> <span class="fu">solve</span>(A)</span>
+<span id="cb27-58"><a href="#cb27-58" tabindex="-1"></a>})</span></code></pre></div>
 <p>自由度がややこしいですね。</p>
 </div>
 <div id="plmで推定" class="section level2" number="4.3">
