@@ -13,7 +13,7 @@
 
 <title>Rの行列と配列の扱い方のざっとした説明</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -359,53 +366,55 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <div id="TOC">
 <ul>
 <li><a href="#行列の作成" id="toc-行列の作成"><span
-class="toc-section-number">1</span> 行列の作成</a>
+class="toc-section-number">1</span> 行列の作成</a></li>
+<li><a href="#行列をベクトルに変換" id="toc-行列をベクトルに変換"><span
+class="toc-section-number">2</span> 行列をベクトルに変換</a>
 <ul>
 <li><a href="#対角行列" id="toc-対角行列"><span
-class="toc-section-number">1.1</span> 対角行列</a></li>
+class="toc-section-number">2.1</span> 対角行列</a></li>
 <li><a href="#行と列の追加" id="toc-行と列の追加"><span
-class="toc-section-number">1.2</span> 行と列の追加</a></li>
+class="toc-section-number">2.2</span> 行と列の追加</a></li>
 <li><a href="#集計値の行列を追加" id="toc-集計値の行列を追加"><span
-class="toc-section-number">1.3</span> 集計値の行/列を追加</a></li>
+class="toc-section-number">2.3</span> 集計値の行/列を追加</a></li>
 </ul></li>
 <li><a href="#行列の情報" id="toc-行列の情報"><span
-class="toc-section-number">2</span> 行列の情報</a>
+class="toc-section-number">3</span> 行列の情報</a>
 <ul>
 <li><a href="#行列であるかの判別" id="toc-行列であるかの判別"><span
-class="toc-section-number">2.1</span> 行列であるかの判別</a></li>
+class="toc-section-number">3.1</span> 行列であるかの判別</a></li>
 <li><a href="#行名と列名の変更削除" id="toc-行名と列名の変更削除"><span
-class="toc-section-number">2.2</span> 行名と列名の変更・削除</a></li>
+class="toc-section-number">3.2</span> 行名と列名の変更・削除</a></li>
 </ul></li>
 <li><a href="#行列の要素の参照と代入"
 id="toc-行列の要素の参照と代入"><span
-class="toc-section-number">3</span> 行列の要素の参照と代入</a>
+class="toc-section-number">4</span> 行列の要素の参照と代入</a>
 <ul>
 <li><a href="#行と列の削除" id="toc-行と列の削除"><span
-class="toc-section-number">3.1</span> 行と列の削除</a></li>
+class="toc-section-number">4.1</span> 行と列の削除</a></li>
 </ul></li>
 <li><a href="#行列の演算" id="toc-行列の演算"><span
-class="toc-section-number">4</span> 行列の演算</a>
+class="toc-section-number">5</span> 行列の演算</a>
 <ul>
 <li><a href="#行列とベクトルの演算" id="toc-行列とベクトルの演算"><span
-class="toc-section-number">4.1</span> 行列とベクトルの演算</a></li>
+class="toc-section-number">5.1</span> 行列とベクトルの演算</a></li>
 <li><a href="#下三角と上三角" id="toc-下三角と上三角"><span
-class="toc-section-number">4.2</span> 下三角と上三角</a></li>
+class="toc-section-number">5.2</span> 下三角と上三角</a></li>
 <li><a href="#行列式" id="toc-行列式"><span
-class="toc-section-number">4.3</span> 行列式</a></li>
+class="toc-section-number">5.3</span> 行列式</a></li>
 <li><a href="#固有値と固有ベクトル" id="toc-固有値と固有ベクトル"><span
-class="toc-section-number">4.4</span> 固有値と固有ベクトル</a></li>
+class="toc-section-number">5.4</span> 固有値と固有ベクトル</a></li>
 </ul></li>
 <li><a href="#比率に変換" id="toc-比率に変換"><span
-class="toc-section-number">5</span> 比率に変換</a></li>
+class="toc-section-number">6</span> 比率に変換</a></li>
 <li><a href="#行列の中から指定した要素の位置を特定する"
 id="toc-行列の中から指定した要素の位置を特定する"><span
-class="toc-section-number">6</span>
+class="toc-section-number">7</span>
 行列の中から指定した要素の位置を特定する</a></li>
 <li><a href="#配列array" id="toc-配列array"><span
-class="toc-section-number">7</span> 配列（<code>array</code>）</a>
+class="toc-section-number">8</span> 配列（<code>array</code>）</a>
 <ul>
 <li><a href="#条件付き合計" id="toc-条件付き合計"><span
-class="toc-section-number">7.1</span> 条件付き合計</a></li>
+class="toc-section-number">8.1</span> 条件付き合計</a></li>
 </ul></li>
 </ul>
 </div>
@@ -439,64 +448,78 @@ b    2    4</code></pre>
 <pre><code>     A B
 [1,] 1 3
 [2,] 2 4</code></pre>
-<div id="対角行列" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> 対角行列</h2>
+</div>
+<div id="行列をベクトルに変換" class="section level1" number="2">
+<h1><span class="header-section-number">2</span>
+行列をベクトルに変換</h1>
+<p>行列に<code>as.vector</code>を用いるとベクトルに戻ります。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">as.vector</span>(m)</span></code></pre></div>
+<pre><code>[1] 1 2 3 4</code></pre>
+<p><code>drop</code>は1行n列の行列とn行1列の行列の場合はベクトルに戻し、そうでない場合は変化させない関数です。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">drop</span>(m) <span class="co"># 変化なし</span></span></code></pre></div>
+<pre><code>  A B
+a 1 3
+b 2 4</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">drop</span>(<span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">1</span>, <span class="dv">9</span>)) <span class="co"># ベクトルを返す</span></span></code></pre></div>
+<pre><code>[1] 1 2 3 4 5 6 7 8 9</code></pre>
+<div id="対角行列" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> 対角行列</h2>
 <p>対角行列の作成は<code>diag</code>と言う関数を使うと便利です。</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">diag</span>(<span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">diag</span>(<span class="dv">3</span>)</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3]
 [1,]    1    0    0
 [2,]    0    1    0
 [3,]    0    0    1</code></pre>
 <p>引数に数字ひとつを入れると、その大きさの単位行列になりますが、複数にすると対角成分として使います。</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="fu">diag</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">diag</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3]
 [1,]    1    0    0
 [2,]    0    2    0
 [3,]    0    0    3</code></pre>
 </div>
-<div id="行と列の追加" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> 行と列の追加</h2>
+<div id="行と列の追加" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> 行と列の追加</h2>
 <p>行の追加は<code>rbind</code>、列の追加は<code>cbind</code>で行います。</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">rbind</span>(m, <span class="sc">-</span><span class="dv">1</span><span class="sc">:-</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">rbind</span>(m, <span class="sc">-</span><span class="dv">1</span><span class="sc">:-</span><span class="dv">2</span>)</span></code></pre></div>
 <pre><code>   A  B
 a  1  3
 b  2  4
   -1 -2</code></pre>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">cbind</span>(m, <span class="sc">-</span><span class="dv">1</span><span class="sc">:-</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">cbind</span>(m, <span class="sc">-</span><span class="dv">1</span><span class="sc">:-</span><span class="dv">2</span>)</span></code></pre></div>
 <pre><code>  A B   
 a 1 3 -1
 b 2 4 -2</code></pre>
 </div>
-<div id="集計値の行列を追加" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span>
+<div id="集計値の行列を追加" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
 集計値の行/列を追加</h2>
 <p>合計値などの行もしくは列を追加することができます。</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">addmargins</span>(m, <span class="dv">1</span>) <span class="co"># 列の合計を追加</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">addmargins</span>(m, <span class="dv">1</span>) <span class="co"># 列の合計を追加</span></span></code></pre></div>
 <pre><code>    A B
 a   1 3
 b   2 4
 Sum 3 7</code></pre>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="fu">addmargins</span>(m, <span class="dv">2</span>) <span class="co"># 行の合計を追加</span></span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">addmargins</span>(m, <span class="dv">2</span>) <span class="co"># 行の合計を追加</span></span></code></pre></div>
 <pre><code>  A B Sum
 a 1 3   4
 b 2 4   6</code></pre>
 <p>引数<code>FUN</code>で任意の集計関数を使えます。</p>
 </div>
 </div>
-<div id="行列の情報" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> 行列の情報</h1>
+<div id="行列の情報" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 行列の情報</h1>
 <p>行列は、要素数、行数、列数、行名、列名の情報を取ることができます。</p>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">length</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">length</span>(m)</span></code></pre></div>
 <pre><code>[1] 4</code></pre>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="fu">nrow</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">nrow</span>(m)</span></code></pre></div>
 <pre><code>[1] 2</code></pre>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">ncol</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">ncol</span>(m)</span></code></pre></div>
 <pre><code>[1] 2</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a><span class="fu">rownames</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">rownames</span>(m)</span></code></pre></div>
 <pre><code>[1] &quot;a&quot; &quot;b&quot;</code></pre>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">colnames</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">colnames</span>(m)</span></code></pre></div>
 <pre><code>[1] &quot;A&quot; &quot;B&quot;</code></pre>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a><span class="fu">attributes</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="fu">attributes</span>(m)</span></code></pre></div>
 <pre><code>$dim
 [1] 2 2
 
@@ -506,165 +529,168 @@ $dimnames[[1]]
 
 $dimnames[[2]]
 [1] &quot;A&quot; &quot;B&quot;</code></pre>
-<div id="行列であるかの判別" class="section level2" number="2.1">
-<h2><span class="header-section-number">2.1</span>
+<div id="行列であるかの判別" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span>
 行列であるかの判別</h2>
 <p><code>is.*</code>が用意されています。</p>
-<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a><span class="fu">is.matrix</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">is.matrix</span>(m)</span></code></pre></div>
 <pre><code>[1] TRUE</code></pre>
-<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">is.matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="fu">is.matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)</span></code></pre></div>
 <pre><code>[1] FALSE</code></pre>
 <p>クラスも定義されています。</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a><span class="fu">class</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="fu">class</span>(m)</span></code></pre></div>
 <pre><code>[1] &quot;matrix&quot; &quot;array&quot; </code></pre>
 </div>
-<div id="行名と列名の変更削除" class="section level2" number="2.2">
-<h2><span class="header-section-number">2.2</span>
+<div id="行名と列名の変更削除" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span>
 行名と列名の変更・削除</h2>
 <p>行名と列名は変更できます。</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>(<span class="fu">rownames</span>(m) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;r1&quot;</span>, <span class="st">&quot;r2&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a>(<span class="fu">rownames</span>(m) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;r1&quot;</span>, <span class="st">&quot;r2&quot;</span>))</span></code></pre></div>
 <pre><code>[1] &quot;r1&quot; &quot;r2&quot;</code></pre>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>(<span class="fu">colnames</span>(m) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;c1&quot;</span>, <span class="st">&quot;c2&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a>(<span class="fu">colnames</span>(m) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;c1&quot;</span>, <span class="st">&quot;c2&quot;</span>))</span></code></pre></div>
 <pre><code>[1] &quot;c1&quot; &quot;c2&quot;</code></pre>
 <p><code>NULL</code>を代入したら削除できます。</p>
 </div>
 </div>
-<div id="行列の要素の参照と代入" class="section level1" number="3">
-<h1><span class="header-section-number">3</span>
+<div id="行列の要素の参照と代入" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
 行列の要素の参照と代入</h1>
 <p>行列の要素は行番号と列番号はもちろん、行名と列名でも参照可能です。</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="co"># 行列を作成</span></span>
-<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a><span class="co"># lettersはアルファベットが並んだビルトイン配列、toupperは大文字にする関数</span></span>
-<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a>(m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">3</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="fu">toupper</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]))))</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a><span class="co"># 行列を作成</span></span>
+<span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a><span class="co"># lettersはアルファベットが並んだビルトイン配列、toupperは大文字にする関数</span></span>
+<span id="cb53-3"><a href="#cb53-3" tabindex="-1"></a>(m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">3</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="fu">toupper</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>]))))</span></code></pre></div>
 <pre><code>  A B C
 a 1 4 7
 b 2 5 8
 c 3 6 9</code></pre>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a>m[<span class="dv">2</span>, <span class="dv">3</span>] <span class="co"># 2行3列を参照</span></span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a>m[<span class="dv">2</span>, <span class="dv">3</span>] <span class="co"># 2行3列を参照</span></span></code></pre></div>
 <pre><code>[1] 8</code></pre>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a>m[<span class="st">&quot;b&quot;</span>, <span class="st">&quot;C&quot;</span>] <span class="co"># 行名と列名でも参照可</span></span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a>m[<span class="st">&quot;b&quot;</span>, <span class="st">&quot;C&quot;</span>] <span class="co"># 行名と列名でも参照可</span></span></code></pre></div>
 <pre><code>[1] 8</code></pre>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a>m[<span class="dv">1</span>, ] <span class="co"># 1行目すべてをベクトルとして参照</span></span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a>m[<span class="dv">1</span>, ] <span class="co"># 1行目すべてをベクトルとして参照</span></span></code></pre></div>
 <pre><code>A B C 
 1 4 7 </code></pre>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a>m[<span class="st">&quot;a&quot;</span>, ] <span class="co"># 行名でも参照可能</span></span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a>m[<span class="st">&quot;a&quot;</span>, ] <span class="co"># 行名でも参照可能</span></span></code></pre></div>
 <pre><code>A B C 
 1 4 7 </code></pre>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a>m[, <span class="dv">3</span>] <span class="co"># 3列名すべてをベクトルとして参照 </span></span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>m[, <span class="dv">3</span>] <span class="co"># 3列名すべてをベクトルとして参照 </span></span></code></pre></div>
 <pre><code>a b c 
 7 8 9 </code></pre>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a>m[, <span class="st">&quot;C&quot;</span>] <span class="co"># 列名でも参照可能</span></span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>m[, <span class="st">&quot;C&quot;</span>] <span class="co"># 列名でも参照可能</span></span></code></pre></div>
 <pre><code>a b c 
 7 8 9 </code></pre>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a>m[<span class="dv">5</span>] <span class="co"># ベクトルとして5番目の要素を参照</span></span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" tabindex="-1"></a>m[<span class="dv">5</span>] <span class="co"># ベクトルとして5番目の要素を参照</span></span></code></pre></div>
 <pre><code>[1] 5</code></pre>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>m[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)] <span class="co"># 1行目と3行目、1列目と3列名に含まれる小行列</span></span></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a>m[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)] <span class="co"># 1行目と3行目、1列目と3列名に含まれる小行列</span></span></code></pre></div>
 <pre><code>  A C
 a 1 7
 c 3 9</code></pre>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="fu">c</span>(m) <span class="co"># 行列の成分をベクトルにする</span></span></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" tabindex="-1"></a><span class="fu">c</span>(m) <span class="co"># 行列の成分をベクトルにする</span></span></code></pre></div>
 <pre><code>[1] 1 2 3 4 5 6 7 8 9</code></pre>
 <p>参照と同様に代入することができます。</p>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" tabindex="-1"></a>m[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">8</span></span>
-<span id="cb67-2"><a href="#cb67-2" tabindex="-1"></a>m[<span class="dv">1</span>, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>)] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)</span>
-<span id="cb67-3"><a href="#cb67-3" tabindex="-1"></a>m[, <span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">9</span>, <span class="dv">6</span>)</span>
-<span id="cb67-4"><a href="#cb67-4" tabindex="-1"></a>m[<span class="dv">3</span>, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">1</span>)</span>
-<span id="cb67-5"><a href="#cb67-5" tabindex="-1"></a>m[<span class="st">&quot;b&quot;</span>, <span class="st">&quot;C&quot;</span>] <span class="ot">&lt;-</span> <span class="dv">7</span></span>
-<span id="cb67-6"><a href="#cb67-6" tabindex="-1"></a>m</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" tabindex="-1"></a>m[<span class="dv">1</span>, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb73-2"><a href="#cb73-2" tabindex="-1"></a>m[<span class="dv">1</span>, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>)] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb73-3"><a href="#cb73-3" tabindex="-1"></a>m[, <span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">9</span>, <span class="dv">6</span>)</span>
+<span id="cb73-4"><a href="#cb73-4" tabindex="-1"></a>m[<span class="dv">3</span>, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">1</span>)</span>
+<span id="cb73-5"><a href="#cb73-5" tabindex="-1"></a>m[<span class="st">&quot;b&quot;</span>, <span class="st">&quot;C&quot;</span>] <span class="ot">&lt;-</span> <span class="dv">7</span></span>
+<span id="cb73-6"><a href="#cb73-6" tabindex="-1"></a>m</span></code></pre></div>
 <pre><code>  A B C
 a 8 3 4
 b 2 9 7
 c 5 6 1</code></pre>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a>m[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb69-2"><a href="#cb69-2" tabindex="-1"></a>m</span></code></pre></div>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" tabindex="-1"></a>m[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb75-2"><a href="#cb75-2" tabindex="-1"></a>m</span></code></pre></div>
 <pre><code>  A B C
 a 0 3 0
 b 2 9 7
 c 0 6 0</code></pre>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" tabindex="-1"></a><span class="co"># ベクトルと見なして9番目の要素にNAを代入</span></span>
-<span id="cb71-2"><a href="#cb71-2" tabindex="-1"></a>m[<span class="dv">9</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span> </span>
-<span id="cb71-3"><a href="#cb71-3" tabindex="-1"></a>m</span></code></pre></div>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" tabindex="-1"></a><span class="co"># ベクトルと見なして9番目の要素にNAを代入</span></span>
+<span id="cb77-2"><a href="#cb77-2" tabindex="-1"></a>m[<span class="dv">9</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span> </span>
+<span id="cb77-3"><a href="#cb77-3" tabindex="-1"></a>m</span></code></pre></div>
 <pre><code>  A B  C
 a 0 3  0
 b 2 9  7
 c 0 6 NA</code></pre>
 <p><code>NA</code>を入れましたが、<code>Inf</code>なども入ります。</p>
 <p><code>diag</code>を使うと対角成分に代入もできます。</p>
-<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" tabindex="-1"></a><span class="fu">diag</span>(m) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.1</span>, <span class="fl">2.2</span>, <span class="fl">3.3</span>)</span>
-<span id="cb73-2"><a href="#cb73-2" tabindex="-1"></a>m</span></code></pre></div>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" tabindex="-1"></a><span class="fu">diag</span>(m) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.1</span>, <span class="fl">2.2</span>, <span class="fl">3.3</span>)</span>
+<span id="cb79-2"><a href="#cb79-2" tabindex="-1"></a>m</span></code></pre></div>
 <pre><code>    A   B   C
 a 1.1 3.0 0.0
 b 2.0 2.2 7.0
 c 0.0 6.0 3.3</code></pre>
-<div id="行と列の削除" class="section level2" number="3.1">
-<h2><span class="header-section-number">3.1</span> 行と列の削除</h2>
+<div id="行と列の削除" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> 行と列の削除</h2>
 <p>ベクトルと同様に行番号や列番号をマイナスにすると、その行や列を削除した行列になります。</p>
-<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" tabindex="-1"></a>m[<span class="sc">-</span><span class="dv">2</span>, ] <span class="co"># 2行目を除いた小行列</span></span></code></pre></div>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" tabindex="-1"></a>m[<span class="sc">-</span><span class="dv">2</span>, ] <span class="co"># 2行目を除いた小行列</span></span></code></pre></div>
 <pre><code>    A B   C
 a 1.1 3 0.0
 c 0.0 6 3.3</code></pre>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" tabindex="-1"></a>m[, <span class="sc">-</span><span class="dv">2</span>] <span class="co"># 2列目を除いた小行列</span></span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" tabindex="-1"></a>m[, <span class="sc">-</span><span class="dv">2</span>] <span class="co"># 2列目を除いた小行列</span></span></code></pre></div>
 <pre><code>    A   C
 a 1.1 0.0
 b 2.0 7.0
 c 0.0 3.3</code></pre>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" tabindex="-1"></a>m[<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">2</span>] <span class="co"># 2行目と2列目を除いた小行列</span></span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" tabindex="-1"></a>m[<span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">2</span>] <span class="co"># 2行目と2列目を除いた小行列</span></span></code></pre></div>
 <pre><code>    A   C
 a 1.1 0.0
 c 0.0 3.3</code></pre>
 <p>残す行と列のみを選択するのも方法です。</p>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" tabindex="-1"></a>m[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), ] <span class="co"># 1行目と3行目を残した小行列</span></span></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" tabindex="-1"></a>m[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), ] <span class="co"># 1行目と3行目を残した小行列</span></span></code></pre></div>
 <pre><code>    A B   C
 a 1.1 3 0.0
 c 0.0 6 3.3</code></pre>
-<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" tabindex="-1"></a>m[, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)] <span class="co"># 1列目と3列目を残した小行列</span></span></code></pre></div>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" tabindex="-1"></a>m[, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)] <span class="co"># 1列目と3列目を残した小行列</span></span></code></pre></div>
 <pre><code>    A   C
 a 1.1 0.0
 b 2.0 7.0
 c 0.0 3.3</code></pre>
-<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" tabindex="-1"></a>m[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)] <span class="co"># 1, 3行目と1, 3列目を残した小行列</span></span></code></pre></div>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" tabindex="-1"></a>m[<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>)] <span class="co"># 1, 3行目と1, 3列目を残した小行列</span></span></code></pre></div>
 <pre><code>    A   C
 a 1.1 0.0
 c 0.0 3.3</code></pre>
 </div>
 </div>
-<div id="行列の演算" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> 行列の演算</h1>
+<div id="行列の演算" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> 行列の演算</h1>
 <p>統計学の教科書で使うような演算ができます。</p>
-<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" tabindex="-1"></a><span class="co"># 同じ大きさの行列の四則演算</span></span>
-<span id="cb87-2"><a href="#cb87-2" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">3</span>, <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">diag</span>(<span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" tabindex="-1"></a><span class="co"># 同じ大きさの行列の四則演算</span></span>
+<span id="cb93-2"><a href="#cb93-2" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">3</span>, <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">diag</span>(<span class="dv">3</span>)</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3]
 [1,]    2    4    7
 [2,]    2    6    8
 [3,]    3    6   10</code></pre>
-<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" tabindex="-1"></a><span class="co"># 転置</span></span>
-<span id="cb89-2"><a href="#cb89-2" tabindex="-1"></a>(m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">2</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" tabindex="-1"></a><span class="co"># 転置</span></span>
+<span id="cb95-2"><a href="#cb95-2" tabindex="-1"></a>(m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">2</span>))</span></code></pre></div>
 <pre><code>     [,1] [,2]
 [1,]    1    3
 [2,]    2    4</code></pre>
-<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" tabindex="-1"></a><span class="fu">t</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" tabindex="-1"></a><span class="fu">t</span>(m)</span></code></pre></div>
 <pre><code>     [,1] [,2]
 [1,]    1    2
 [2,]    3    4</code></pre>
-<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" tabindex="-1"></a><span class="co"># 行列積</span></span>
-<span id="cb93-2"><a href="#cb93-2" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">2</span>) <span class="sc">%*%</span> <span class="fu">matrix</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">:-</span><span class="dv">6</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" tabindex="-1"></a><span class="co"># 行列積</span></span>
+<span id="cb99-2"><a href="#cb99-2" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>, <span class="dv">2</span>) <span class="sc">%*%</span> <span class="fu">matrix</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">:-</span><span class="dv">6</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>     [,1] [,2]
 [1,]  -22  -49
 [2,]  -28  -64</code></pre>
-<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" tabindex="-1"></a><span class="co"># 逆行列</span></span>
-<span id="cb95-2"><a href="#cb95-2" tabindex="-1"></a><span class="fu">solve</span>(m)</span></code></pre></div>
+<div class="sourceCode" id="cb101"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" tabindex="-1"></a><span class="co"># 逆行列</span></span>
+<span id="cb101-2"><a href="#cb101-2" tabindex="-1"></a><span class="fu">solve</span>(m)</span></code></pre></div>
 <pre><code>     [,1] [,2]
 [1,]   -2  1.5
 [2,]    1 -0.5</code></pre>
-<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" tabindex="-1"></a><span class="co"># クロネッカー積</span></span>
-<span id="cb97-2"><a href="#cb97-2" tabindex="-1"></a><span class="fu">diag</span>(<span class="dv">2</span>) <span class="sc">%x%</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb103"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" tabindex="-1"></a><span class="co"># クロネッカー積</span></span>
+<span id="cb103-2"><a href="#cb103-2" tabindex="-1"></a><span class="fu">diag</span>(<span class="dv">2</span>) <span class="sc">%x%</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">2</span>, <span class="dv">2</span>)</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3] [,4]
 [1,]    1    3    0    0
 [2,]    2    4    0    0
 [3,]    0    0    1    3
 [4,]    0    0    2    4</code></pre>
-<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" tabindex="-1"></a><span class="co"># 外積</span></span>
-<span id="cb99-2"><a href="#cb99-2" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>) <span class="sc">%o%</span> <span class="fu">matrix</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">:-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb105"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" tabindex="-1"></a><span class="co"># 外積</span></span>
+<span id="cb105-2"><a href="#cb105-2" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>) <span class="sc">%o%</span> <span class="fu">matrix</span>(<span class="sc">-</span><span class="dv">1</span><span class="sc">:-</span><span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>)</span></code></pre></div>
 <pre><code>, , 1, 1
 
      [,1]
@@ -678,24 +704,24 @@ c 0.0 3.3</code></pre>
 [2,]   -4</code></pre>
 <p>なお、<code>solve</code>は<code>X %*% beta = y</code>のとき、<code>solve(X, y)</code>としたら<code>beta</code>を出す連立方程式を計算する関数で、<code>y</code>のデフォルトが単位行列になっています。</p>
 <p>上三角を操作したい場合は、<code>upper.tri</code>を使います。</p>
-<div id="行列とベクトルの演算" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span>
+<div id="行列とベクトルの演算" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span>
 行列とベクトルの演算</h2>
 <p>行列をベクトルとして扱った後、行列に戻されます。</p>
-<div class="sourceCode" id="cb101"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" tabindex="-1"></a><span class="co"># 行列の各要素への演算</span></span>
-<span id="cb101-2"><a href="#cb101-2" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">3</span>, <span class="dv">3</span>) <span class="sc">%/%</span> <span class="dv">5</span> <span class="co"># 5で割って端数切捨て</span></span>
-<span id="cb101-3"><a href="#cb101-3" tabindex="-1"></a><span class="co"># ベクトルを足す</span></span>
-<span id="cb101-4"><a href="#cb101-4" tabindex="-1"></a><span class="co"># matrix(1:9 + c(1, 3, 2), 3)と同じ結果</span></span>
-<span id="cb101-5"><a href="#cb101-5" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb107"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" tabindex="-1"></a><span class="co"># 行列の各要素への演算</span></span>
+<span id="cb107-2"><a href="#cb107-2" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">3</span>, <span class="dv">3</span>) <span class="sc">%/%</span> <span class="dv">5</span> <span class="co"># 5で割って端数切捨て</span></span>
+<span id="cb107-3"><a href="#cb107-3" tabindex="-1"></a><span class="co"># ベクトルを足す</span></span>
+<span id="cb107-4"><a href="#cb107-4" tabindex="-1"></a><span class="co"># matrix(1:9 + c(1, 3, 2), 3)と同じ結果</span></span>
+<span id="cb107-5"><a href="#cb107-5" tabindex="-1"></a><span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>, <span class="dv">3</span>) <span class="sc">+</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span></code></pre></div>
 </div>
-<div id="下三角と上三角" class="section level2" number="4.2">
-<h2><span class="header-section-number">4.2</span> 下三角と上三角</h2>
+<div id="下三角と上三角" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> 下三角と上三角</h2>
 <p>まとめて操作するための関数があります。真偽値を戻し、<code>diag</code>で対角成分を含めるか否かを指定できます。</p>
-<div class="sourceCode" id="cb102"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>, <span class="dv">5</span>, <span class="dv">5</span>)</span>
-<span id="cb102-2"><a href="#cb102-2" tabindex="-1"></a>X[<span class="sc">!</span><span class="fu">lower.tri</span>(X, <span class="at">diag =</span> <span class="cn">TRUE</span>)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
-<span id="cb102-3"><a href="#cb102-3" tabindex="-1"></a>X</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">25</span>, <span class="dv">5</span>, <span class="dv">5</span>)</span>
+<span id="cb108-2"><a href="#cb108-2" tabindex="-1"></a>X[<span class="sc">!</span><span class="fu">lower.tri</span>(X, <span class="at">diag =</span> <span class="cn">TRUE</span>)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb108-3"><a href="#cb108-3" tabindex="-1"></a>X</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3] [,4] [,5]
 [1,]    1    0    0    0    0
 [2,]    2    7    0    0    0
@@ -703,96 +729,89 @@ class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb1
 [4,]    4    9   14   19    0
 [5,]    5   10   15   20   25</code></pre>
 </div>
-<div id="行列式" class="section level2" number="4.3">
-<h2><span class="header-section-number">4.3</span> 行列式</h2>
+<div id="行列式" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> 行列式</h2>
 <p>行列式を求める関数が用意されています。</p>
-<div class="sourceCode" id="cb104"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" tabindex="-1"></a>(X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">25</span>, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">9.5</span>)), <span class="dv">5</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" tabindex="-1"></a>(X <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">25</span>, <span class="at">min=</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">9.5</span>)), <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3] [,4] [,5]
-[1,]    2    9    7    9    8
-[2,]    3    1    9    2    5
-[3,]    6    7    6    9    4
-[4,]    3    7    1    9    4
-[5,]    3    7    3    9    8</code></pre>
-<div class="sourceCode" id="cb106"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" tabindex="-1"></a><span class="fu">det</span>(X)</span></code></pre></div>
-<pre><code>[1] 952</code></pre>
+[1,]    3    9    1    6    7
+[2,]    7    5    7    6    5
+[3,]    4    7    3    5    6
+[4,]    8    9    4    4    6
+[5,]    2    1    8    2    5</code></pre>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" tabindex="-1"></a><span class="fu">det</span>(X)</span></code></pre></div>
+<pre><code>[1] -90</code></pre>
 <p>もちろん正方行列にしか使えません。</p>
 </div>
-<div id="固有値と固有ベクトル" class="section level2" number="4.4">
-<h2><span class="header-section-number">4.4</span>
+<div id="固有値と固有ベクトル" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span>
 固有値と固有ベクトル</h2>
 <p>固有値と固有ベクトルの計算をする関数も用意されています。</p>
-<div class="sourceCode" id="cb108"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a>(e <span class="ot">&lt;-</span> <span class="fu">eigen</span>(X))</span></code></pre></div>
+<div class="sourceCode" id="cb114"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" tabindex="-1"></a>(e <span class="ot">&lt;-</span> <span class="fu">eigen</span>(X))</span></code></pre></div>
 <pre><code>eigen() decomposition
 $values
-[1] 27.1415660+0.000000i  3.8041610+0.000000i -2.9010408+1.533242i
-[4] -2.9010408-1.533242i  0.8563547+0.000000i
+[1] 25.84087434 -5.92425881  2.83133146 -2.67018466 -0.07776233
 
 $vectors
-              [,1]           [,2]                    [,3]
-[1,] -0.5376200+0i  0.09899042+0i -0.06718980-0.57317529i
-[2,] -0.3500066+0i  0.44604030+0i  0.66134167+0.00000000i
-[3,] -0.5050717+0i  0.53225033+0i -0.14014457+0.28403677i
-[4,] -0.3526038+0i -0.24537788+0i -0.34063206+0.07489185i
-[5,] -0.4572016+0i -0.66913992+0i -0.08715725+0.00548165i
-                        [,4]          [,5]
-[1,] -0.06718980+0.57317529i  0.3874092+0i
-[2,]  0.66134167+0.00000000i  0.5115881+0i
-[3,] -0.14014457-0.28403677i -0.1353872+0i
-[4,] -0.34063206-0.07489185i -0.7020817+0i
-[5,] -0.08715725-0.00548165i  0.2773867+0i</code></pre>
-<div class="sourceCode" id="cb110"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" tabindex="-1"></a><span class="fu">prod</span>(e<span class="sc">$</span>values) <span class="co"># 固有値をすべてかければ行列式になる</span></span></code></pre></div>
-<pre><code>[1] 952+0i</code></pre>
+          [,1]       [,2]        [,3]        [,4]         [,5]
+[1,] 0.4455040  0.7617609 -0.09753400 -0.18726609  0.378549441
+[2,] 0.5120414 -0.4780422 -0.39467630 -0.42116158 -0.562662479
+[3,] 0.4246223  0.3000689 -0.06031832 -0.06975974 -0.412567690
+[4,] 0.5291680 -0.1245552 -0.36817177  0.88306157  0.009094554
+[5,] 0.2810997 -0.2926442  0.83398380 -0.05376031  0.608125353</code></pre>
+<div class="sourceCode" id="cb116"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" tabindex="-1"></a><span class="fu">prod</span>(e<span class="sc">$</span>values) <span class="co"># 固有値をすべてかければ行列式になる</span></span></code></pre></div>
+<pre><code>[1] -90</code></pre>
 </div>
 </div>
-<div id="比率に変換" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> 比率に変換</h1>
+<div id="比率に変換" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> 比率に変換</h1>
 <p>比率に変換できます。</p>
-<div class="sourceCode" id="cb112"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" tabindex="-1"></a><span class="fu">proportions</span>(m) <span class="co"># すべてのセルの合計が1</span></span></code></pre></div>
+<div class="sourceCode" id="cb118"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" tabindex="-1"></a><span class="fu">proportions</span>(m) <span class="co"># すべてのセルの合計が1</span></span></code></pre></div>
 <pre><code>     [,1] [,2]
 [1,]  0.1  0.3
 [2,]  0.2  0.4</code></pre>
-<div class="sourceCode" id="cb114"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" tabindex="-1"></a><span class="fu">proportions</span>(m, <span class="dv">1</span>) <span class="co"># 行の合計が1</span></span></code></pre></div>
+<div class="sourceCode" id="cb120"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" tabindex="-1"></a><span class="fu">proportions</span>(m, <span class="dv">1</span>) <span class="co"># 行の合計が1</span></span></code></pre></div>
 <pre><code>          [,1]      [,2]
 [1,] 0.2500000 0.7500000
 [2,] 0.3333333 0.6666667</code></pre>
-<div class="sourceCode" id="cb116"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" tabindex="-1"></a><span class="fu">proportions</span>(m, <span class="dv">2</span>) <span class="co"># 列の合計が1</span></span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" tabindex="-1"></a><span class="fu">proportions</span>(m, <span class="dv">2</span>) <span class="co"># 列の合計が1</span></span></code></pre></div>
 <pre><code>          [,1]      [,2]
 [1,] 0.3333333 0.4285714
 [2,] 0.6666667 0.5714286</code></pre>
 </div>
 <div id="行列の中から指定した要素の位置を特定する"
-class="section level1" number="6">
-<h1><span class="header-section-number">6</span>
+class="section level1" number="7">
+<h1><span class="header-section-number">7</span>
 行列の中から指定した要素の位置を特定する</h1>
 <p>行列の場合は<code>arr.ind=TRUE</code>オプションをつけておくと、<code>which</code>で行番号と列番号をそれぞれ得られます。</p>
-<div class="sourceCode" id="cb118"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" tabindex="-1"></a>(w <span class="ot">&lt;-</span> <span class="fu">matrix</span>((<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)[<span class="fu">order</span>(<span class="fu">runif</span>(<span class="dv">12</span>))], <span class="dv">4</span>, <span class="dv">3</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb124"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" tabindex="-1"></a>(w <span class="ot">&lt;-</span> <span class="fu">matrix</span>((<span class="dv">1</span><span class="sc">:</span><span class="dv">12</span>)[<span class="fu">order</span>(<span class="fu">runif</span>(<span class="dv">12</span>))], <span class="dv">4</span>, <span class="dv">3</span>))</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3]
-[1,]   11    4   10
-[2,]    6    5    9
-[3,]    1    2    8
-[4,]    3   12    7</code></pre>
-<div class="sourceCode" id="cb120"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" tabindex="-1"></a>(i <span class="ot">&lt;-</span> <span class="fu">which</span>(w <span class="sc">==</span> <span class="dv">6</span>, <span class="at">arr.ind =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+[1,]    9    2    4
+[2,]    1   11   10
+[3,]    5    3    8
+[4,]    7   12    6</code></pre>
+<div class="sourceCode" id="cb126"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" tabindex="-1"></a>(i <span class="ot">&lt;-</span> <span class="fu">which</span>(w <span class="sc">==</span> <span class="dv">6</span>, <span class="at">arr.ind =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <pre><code>     row col
-[1,]   2   1</code></pre>
-<div class="sourceCode" id="cb122"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" tabindex="-1"></a>w[i]</span></code></pre></div>
+[1,]   4   3</code></pre>
+<div class="sourceCode" id="cb128"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" tabindex="-1"></a>w[i]</span></code></pre></div>
 <pre><code>[1] 6</code></pre>
 </div>
-<div id="配列array" class="section level1" number="7">
-<h1><span class="header-section-number">7</span>
+<div id="配列array" class="section level1" number="8">
+<h1><span class="header-section-number">8</span>
 配列（<code>array</code>）</h1>
 <p>行列はベクトルを2次元配列と見なすものでしたが、3次元以上の配列と見なす事もできます。</p>
-<div class="sourceCode" id="cb124"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" tabindex="-1"></a><span class="fu">array</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb130"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" tabindex="-1"></a><span class="fu">array</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>))</span></code></pre></div>
 <pre><code>, , 1
 
      [,1] [,2] [,3]
@@ -816,8 +835,8 @@ class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="#cb1
      [,1] [,2] [,3]
 [1,]   19   21   23
 [2,]   20   22   24</code></pre>
-<div class="sourceCode" id="cb126"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" tabindex="-1"></a>(a <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;alpha&quot;</span>, <span class="st">&quot;beta&quot;</span>, <span class="st">&quot;gamma&quot;</span>, <span class="st">&quot;delta&quot;</span>))))</span></code></pre></div>
+<div class="sourceCode" id="cb132"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" tabindex="-1"></a>(a <span class="ot">&lt;-</span> <span class="fu">array</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>, <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;C&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;alpha&quot;</span>, <span class="st">&quot;beta&quot;</span>, <span class="st">&quot;gamma&quot;</span>, <span class="st">&quot;delta&quot;</span>))))</span></code></pre></div>
 <pre><code>, , alpha
 
   A B C
@@ -842,11 +861,11 @@ b 14 16 18
 a 19 21 23
 b 20 22 24</code></pre>
 <p>行列と同様に参照と代入と演算ができます。<code>%*%</code>や<code>%x%</code>や<code>%o%</code>も定義されています。また、多次元配列のうち2次元を取り出すと、行列になります。</p>
-<div id="条件付き合計" class="section level2" number="7.1">
-<h2><span class="header-section-number">7.1</span> 条件付き合計</h2>
+<div id="条件付き合計" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> 条件付き合計</h2>
 <p>指定した次元を条件とした合計値を計算できます。</p>
-<div class="sourceCode" id="cb128"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" tabindex="-1"></a><span class="fu">margin.table</span>(a, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)) <span class="co"># 第2引数は次元を指定</span></span></code></pre></div>
+<div class="sourceCode" id="cb134"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" tabindex="-1"></a><span class="fu">margin.table</span>(a, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)) <span class="co"># 第2引数は次元を指定</span></span></code></pre></div>
 <pre><code>   A  B  C
 a 40 48 56
 b 44 52 60</code></pre>
