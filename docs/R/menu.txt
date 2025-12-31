@@ -54,6 +54,7 @@ div.right h2.menu {
     <dt><a href="OLS.shtml">Rで簡単にOLS</a></dt>
     <dt><a href="GLS.shtml">一般化最小二乗法（GLS）のやさしい応用例</a></dt>
     <dt><a href="ivm.shtml">操作変数法を学んで、計量経済学に踏み出そう</a></dt>
+    <dt><a href="FE.shtml">パネルデータ分析の定番手法、固定効果モデルを学ぼう</a></dt>
     <dt><a href="MLE.shtml">Rでべたべたと最尤法</a></dt>
     <dt><a href="logit.shtml">みんな大好きロジットモデル</a></dt>
     <dt><a href="countdata.shtml">カチカチ数えるカウントデータの推定</a></dt>
