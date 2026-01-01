@@ -384,8 +384,18 @@ class="toc-section-number">3.2</span> 実際に計算するコード</a></li>
 id="toc-パラメーターの標準誤差"><span
 class="toc-section-number">4</span> パラメーターの標準誤差</a>
 <ul>
-<li><a href="#統計学的な意味" id="toc-統計学的な意味"><span
-class="toc-section-number">4.1</span> 統計学的な意味</a></li>
+<li><a href="#導出" id="toc-導出"><span
+class="toc-section-number">4.1</span> 導出</a>
+<ul>
+<li><a href="#対数尤度関数のモーメントの性質"
+id="toc-対数尤度関数のモーメントの性質"><span
+class="toc-section-number">4.1.1</span>
+対数尤度関数のモーメントの性質</a></li>
+<li><a href="#パラメーターの分散共分散行列"
+id="toc-パラメーターの分散共分散行列"><span
+class="toc-section-number">4.1.2</span>
+パラメーターの分散共分散行列</a></li>
+</ul></li>
 <li><a href="#実際に計算するコード-1"
 id="toc-実際に計算するコード-1"><span
 class="toc-section-number">4.2</span> 実際に計算するコード</a>
@@ -461,10 +471,10 @@ class="math inline">\(\sigma^2\)</span>の最大化の一階条件を整理し�
 <p><span class="math display">\[
 \begin{aligned}
 \frac{ \partial \log{ \mathfrak{L}(\mu, \sigma^2)} }{ \partial \mu }
-&amp;= (-1) \cdot 2 \cdot \frac{1}{2\sigma^2} \sum^n_{i=1} (y_i - \mu) =
-- \frac{1}{\sigma^2} \sum^n_{i=1} (y_i - \mu) = 0 \\
+&amp;= - (-1) \cdot 2 \cdot \frac{1}{2\sigma^2} \sum^n_{i=1} (y_i - \mu)
+= \frac{1}{\sigma^2} \sum^n_{i=1} (y_i - \mu) = 0 \\
 \frac{ \partial \log{ \mathfrak{L}(\mu, \sigma^2)} }{ \partial \sigma^2
-} &amp;= \frac{n}{2\sigma^2} + \frac{1}{2 ( \sigma^2 )^2 } \sum^n_{i=1}
+} &amp;= -\frac{n}{2\sigma^2} + \frac{1}{2 ( \sigma^2 )^2 } \sum^n_{i=1}
 (y_i - \mu)^2 = 0
 \end{aligned}
 \]</span></p>
@@ -478,12 +488,12 @@ class="math inline">\(\sigma^2\)</span>の最大化の一階条件を整理し�
 <h2><span class="header-section-number">3.1</span> 解析学的な意味</h2>
 <p><span class="math inline">\(\mu\)</span>と<span
 class="math inline">\(\sigma^2\)</span>の2元の連立方程式をベクトル値関数<span
-class="math inline">\(f(\mu, \sigma^2)\)</span>にまとめます。</p>
+class="math inline">\(g(\mu, \sigma^2)\)</span>にまとめます。</p>
 <p><span class="math display">\[
 \begin{aligned}
-f(\mu, \sigma^2) &amp;= \begin{bmatrix} \frac{1}{\sigma^2} \sum^n_{i=1}
+g(\mu, \sigma^2) &amp;= \begin{bmatrix} \frac{1}{\sigma^2} \sum^n_{i=1}
 (y_i - \mu) \\
-\frac{n}{2\sigma^2} + \frac{1}{2 ( \sigma^2 )^2 } \sum^n_{i=1} (y_i -
+-\frac{n}{2\sigma^2} + \frac{1}{2 ( \sigma^2 )^2 } \sum^n_{i=1} (y_i -
 \mu)^2
 \end{bmatrix} = 0
 \end{aligned}
@@ -492,8 +502,8 @@ f(\mu, \sigma^2) &amp;= \begin{bmatrix} \frac{1}{\sigma^2} \sum^n_{i=1}
 \sigma^2)\)</span>の一次近似式をつくると</p>
 <p><span class="math display">\[
 \begin{aligned}
-f(\mu, \sigma^2) = f(\mu_0, \sigma_0^2) + \frac{\partial
-f}{\partial(\mu_0, \sigma_0^2)} \begin{bmatrix} \mu_0 - \mu \\
+g(\mu, \sigma^2) = g(\mu_0, \sigma_0^2) + \frac{\partial
+g}{\partial(\mu_0, \sigma_0^2)} \begin{bmatrix} \mu_0 - \mu \\
 \sigma_0^2 - \sigma^2 \end{bmatrix}
 \end{aligned}
 \]</span></p>
@@ -502,14 +512,14 @@ f}{\partial(\mu_0, \sigma_0^2)} \begin{bmatrix} \mu_0 - \mu \\
 \begin{aligned}
 \begin{bmatrix} \mu \\
 \sigma^2 \end{bmatrix}  = \begin{bmatrix} \mu_0 \\
-\sigma_0^2 \end{bmatrix} - \frac{\partial f}{\partial(\mu_0,
-\sigma_0^2)}^{-1} f(\mu_0, \sigma_0^2)
+\sigma_0^2 \end{bmatrix} - \frac{\partial g}{\partial(\mu_0,
+\sigma_0^2)}^{-1} g(\mu_0, \sigma_0^2)
 \end{aligned}
 \]</span></p>
 <p><span
-class="math inline">\(f\)</span>が凸関数であれば、右辺の値は<span
-class="math inline">\(f(\mu_0, \sigma_0^2)\)</span>よりも<span
-class="math inline">\(f(\mu,
+class="math inline">\(g\)</span>が凸関数であれば、右辺の値は<span
+class="math inline">\(g(\mu_0, \sigma_0^2)\)</span>よりも<span
+class="math inline">\(g(\mu,
 \sigma^2)\)</span>に近づくので、右辺の計算を繰り返し行なえば解になる不動点に辿り着けます。</p>
 </div>
 <div id="実際に計算するコード" class="section level2" number="3.2">
@@ -521,13 +531,13 @@ class="math inline">\(f(\mu,
 <span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">30</span>, <span class="at">mean=</span><span class="dv">12</span>, <span class="at">sd=</span><span class="dv">7</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
 <span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co"># 連立方程式を設定</span></span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="sc">-</span><span class="fu">sum</span>(y<span class="sc">-</span>mu)<span class="sc">/</span>s2)</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="sc">-</span>n<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>s2) <span class="sc">+</span> <span class="fu">sum</span>((y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>(s2<span class="sc">^</span><span class="dv">2</span>)))</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>g1 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="fu">sum</span>(y<span class="sc">-</span>mu)<span class="sc">/</span>s2)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>g2 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="sc">-</span>n<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>s2) <span class="sc">+</span> <span class="fu">sum</span>((y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>(s2<span class="sc">^</span><span class="dv">2</span>)))</span>
 <span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co"># muとs2で一階微分を作っておく</span></span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>g11 <span class="ot">&lt;-</span> <span class="fu">expression</span>(n<span class="sc">/</span>s2)</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>g12 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="fu">sum</span>(y <span class="sc">-</span> mu)<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>g21 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="fu">sum</span>(mu <span class="sc">-</span> y)<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">2</span>))</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>g22 <span class="ot">&lt;-</span> <span class="fu">expression</span>(n<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>(s2<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">-</span> <span class="fu">sum</span>( (y <span class="sc">-</span> mu)<span class="sc">^</span><span class="dv">2</span> )<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">3</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>h11 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="sc">-</span>n<span class="sc">/</span>s2)</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>h12 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="sc">-</span><span class="fu">sum</span>(y <span class="sc">-</span> mu)<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>h21 <span class="ot">&lt;-</span> <span class="fu">expression</span>(<span class="sc">-</span><span class="fu">sum</span>(y <span class="sc">-</span> mu)<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>h22 <span class="ot">&lt;-</span> <span class="fu">expression</span>(n<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>(s2<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">-</span> <span class="fu">sum</span>( (y <span class="sc">-</span> mu)<span class="sc">^</span><span class="dv">2</span> )<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">3</span>))</span>
 <span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
 <span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a><span class="co"># 初期値を設定</span></span>
 <span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="dv">11</span> <span class="co"># 正規分布の平均値</span></span>
@@ -535,12 +545,12 @@ class="math inline">\(f(\mu,
 <span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>){</span>
 <span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>    <span class="co"># (mu, s2)を2x1行列にする</span></span>
 <span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(mu, s2), <span class="dv">2</span>, <span class="dv">1</span>)</span>
-<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    <span class="co"># (mu, s2)で評価したf1とf2の値を2x1行列にする</span></span>
-<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>    f <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">eval</span>(f1), <span class="fu">eval</span>(f2)), <span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>    <span class="co"># (mu, s2)で評価したg1とg2の値を2x1行列にする</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>    g <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">eval</span>(g1), <span class="fu">eval</span>(g2)), <span class="dv">2</span>, <span class="dv">1</span>)</span>
 <span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>    <span class="co"># ヤコビアンに(mu, s2)を代入した行列を作る</span></span>
-<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>    j <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">eval</span>(g11), <span class="fu">eval</span>(g21), <span class="fu">eval</span>(g12), <span class="fu">eval</span>(g22)), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>    j <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">eval</span>(h11), <span class="fu">eval</span>(h21), <span class="fu">eval</span>(h12), <span class="fu">eval</span>(h22)), <span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>    <span class="co"># 行列mから、ヤコビアンの逆行列と評価式を乗じたものを引く</span></span>
-<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>    m <span class="ot">&lt;-</span> m <span class="sc">-</span> <span class="fu">solve</span>(j)<span class="sc">%*%</span>f</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>    m <span class="ot">&lt;-</span> m <span class="sc">-</span> <span class="fu">solve</span>(j) <span class="sc">%*%</span> g</span>
 <span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>    <span class="co"># 行列mを(x, y)に展開しておく</span></span>
 <span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> m[<span class="dv">1</span>]; s2 <span class="ot">&lt;-</span> m[<span class="dv">2</span>]</span>
 <span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">sprintf</span>(<span class="st">&quot;[%d] (mu,s2)=(%f,%f)&quot;</span>, i, mu, s2))</span>
@@ -565,34 +575,123 @@ class="math inline">\(\sigma\)</span>なのに注意してください。</p>
 <h1><span class="header-section-number">4</span>
 パラメーターの標準誤差</h1>
 <p>実際のところ分析では色々と検定する事になるので、パラメーターの標準誤差の算出方法を確認しましょう。</p>
-<div id="統計学的な意味" class="section level2" number="4.1">
-<h2><span class="header-section-number">4.1</span> 統計学的な意味</h2>
-<p>パラメーターの値の次は、標準誤差を求ます。
-まず、2つのパラメーター<span class="math inline">\(\mu,
+<div id="導出" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> 導出</h2>
+<p>テキストに沿い<a href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>、対数尤度関数のモーメントの性質を用いて、パラメーターの推定量が漸近的に正規分布に従うことと、その分散共分散行列を導出します。</p>
+<div id="対数尤度関数のモーメントの性質" class="section level3"
+number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span>
+対数尤度関数のモーメントの性質</h3>
+<p>まず、2つのパラメーター<span class="math inline">\(\mu,
 \sigma\)</span>をベクトル<span
 class="math inline">\(\theta\)</span>に置きなおします。</p>
 <p><span class="math display">\[
 \theta = \begin{bmatrix} \mu \\
 \sigma^2 \end{bmatrix}
 \]</span></p>
-<p>上の例のヤコビアン<span class="math inline">\(\partial f/\partial
-\theta\)</span>は、対数尤度関数を2階偏微分した行列なので、対数尤度関数のヘッシアン<span
+<p>対数尤度関数を微分した式であるグラディエントを以下のように置きます。グラディエントはベクトルです。</p>
+<p><span class="math display">\[
+g_i = \frac{\partial}{\partial \theta} \ln f(y_i|\theta)
+\]</span></p>
+<p>グラディエントの式をそれぞれ微分したヘッシアンを以下のように置きます。ヘッシアンは行列です。</p>
+<p><span class="math display">\[
+H_i = \frac{\partial^2}{\partial \theta \partial {}^t\!\theta} \ln
+f(y_i|\theta)
+\]</span></p>
+<p>観察できない真のパラメーターを<span
+class="math inline">\(\theta_0\)</span>と置きます。</p>
+<p>次に、ルベーグの収束定理から明らかな気もちょっとするのですが、積分と微分の順序が交換できることを確認します。観測値の下限を<span
+class="math inline">\(A(\theta_0)\)</span>、上限を<span
+class="math inline">\(B(\theta_0)\)</span>と便宜的に置きます。尤度関数は確率密度関数なので、</p>
+<p><span class="math display">\[
+\int_{A(\theta_0)}^{B(\theta_0)} f(y_i|\theta) dy_i = 1
+\]</span></p>
+<p>となります。これをLeibniz integral ruleを用いて微分します。</p>
+<p><span class="math display">\[\begin{align}
+&amp;\frac{\partial}{\partial \theta_0} \int_{A(\theta_0)}^{B(\theta_0)}
+f(y_i|\theta)  dy_i = 0\\
+&amp;= \int_{A(\theta_0)}^{B(\theta_0)} \frac{\partial}{\partial
+\theta_0} f(y_i|\theta) dy_i \\
+&amp;+ f(B(\theta_0)|\theta_0) \frac{\partial B(\theta_0)}{\partial
+\theta_0} - f(A(\theta_0)|\theta_0) \frac{\partial A(\theta_0)}{\partial
+\theta_0}
+\end{align}\]</span></p>
+<p>パラメーターに観測値の上限と下限が影響されない場合は、第2項と第3項はゼロになります。一様分布は非ゼロですが、よく用いられる尤度関数はゼロになります。正則条件と呼ばれます。これで、微分と積分の順番が入れ替え可能だとわかります。</p>
+<p>条件を満たすとき積分の上限と下限は気にしなくてよくなるので、<span
+class="math inline">\(A(\theta_0)\)</span>と<span
+class="math inline">\(B(\theta_0)\)</span>は省略します。</p>
+<p><span class="math display">\[\begin{align}
+&amp;\int \frac{\partial}{\partial \theta_0} f(y_i|\theta_0) dy_i \\
+&amp;= \int \bigg( \frac{\partial}{\partial \theta_0} \ln
+f(y_i|\theta_0) \bigg) f(y_i|\theta_0) dy_i \\
+&amp;= E\bigg[ \frac{\partial}{\partial \theta_0} \ln f(y_i|\theta_0)
+\bigg] = 0
+\end{align}\]</span></p>
+<p>対数微分の性質と、期待値の定義を使いました。</p>
+<p>二階微分も微分と積分の順番が入れ替え可能なので、整理整頓ができます。</p>
+<p><span class="math display">\[\begin{align}
+&amp;\frac{\partial^2}{\partial \theta_0 \partial {}^t\!\theta_0} \int
+f(y_i|\theta_0) dy_i\\
+&amp;= \int \bigg[ \frac{\partial^2}{\partial \theta_0 \partial
+{}^t\!\theta_0} f(y_i|\theta_0) \bigg] dy_i \\
+&amp;= \int \bigg( \frac{\partial}{\partial {}^t\!\theta_0} \bigg[
+\bigg( \frac{\partial}{\partial \theta_0} \ln f(y_i|\theta_0) \bigg)
+f(y_i|\theta_0) \bigg] dy_i \\
+&amp;= \int \bigg[ \bigg( \frac{\partial^2}{\partial \theta_0 \partial
+{}^t\! \theta_0} \ln f(y_i|\theta_0) \bigg) f(y_i|\theta_0) +
+\frac{\partial}{\partial \theta_0} \ln f(y_i|\theta_0)
+\frac{\partial}{\partial \theta_0} f(y_i|\theta_0) \bigg]  dy_i \\
+&amp;= \int \bigg[ \bigg( \frac{\partial^2}{\partial \theta_0 \partial
+{}^t\! \theta_0} \ln f(y_i|\theta_0) \bigg) f(y_i|\theta_0) +
+\frac{\partial}{\partial \theta_0} \ln f(y_i|\theta_0)
+\frac{\partial}{\partial \theta_0} f(y_i|\theta_0) \bigg]  dy_i \\
+&amp;= 0
+\end{align}\]</span></p>
+<p>積分の中の第一項の積分と、第二項の積分は等しいので、統合で結びます。</p>
+<p><span class="math display">\[\begin{align}
+-\int \bigg( \frac{\partial^2}{\partial \theta_0 \partial {}^t\!
+\theta_0} \ln f(y_i|\theta_0) \bigg) f(y_i|\theta_0) dy_i &amp;= \int
+\frac{\partial}{\partial \theta_0} \ln f(y_i|\theta_0)
+\frac{\partial}{\partial \theta_0} f(y_i|\theta_0) dy_i \\
+-\int \bigg( \frac{\partial^2}{\partial \theta_0 \partial {}^t\!
+\theta_0} \ln f(y_i|\theta_0) \bigg) f(y_i|\theta_0) dy_i &amp;= \int
+\frac{\partial}{\partial \theta_0} \ln f(y_i|\theta_0) \bigg(
+\frac{\partial}{\partial \theta_0} \ln f(y_i|\theta_0) \bigg)
+f(y_i|\theta_0) dy_i\\
+-E\bigg[ \frac{\partial^2}{\partial \theta_0 \partial {}^t\! \theta_0}
+\ln f(y_i|\theta_0) \bigg] &amp;= E\bigg[\frac{\partial}{\partial
+\theta_0} \ln f(y_i|\theta_0) \frac{\partial}{\partial \theta_0} \ln
+f(y_i|\theta_0) \bigg]
+\end{align}\]</span></p>
+<p>もう一度、対数微分の性質と、期待値の定義を使いました。左辺は対数尤度関数のヘッシアンの符号を変えたものの期待値、右辺はグラディエントの分散になり、この二つは等しくなります。</p>
+<p><span class="math display">\[
+-E[H(y_i|\theta_0)] = VAR[g(y_i|\theta_0)]
+\]</span></p>
+</div>
+<div id="パラメーターの分散共分散行列" class="section level3"
+number="4.1.2">
+<h3><span class="header-section-number">4.1.2</span>
+パラメーターの分散共分散行列</h3>
+<p>上のコード例でのヤコビアン<span class="math inline">\(\partial
+g/\partial
+\theta\)</span>は対数尤度関数を2階偏微分した行列で、対数尤度関数のヘッシアン<span
 class="math inline">\(H(\theta)\)</span>になるのに注意して、真のパラメーター<span
 class="math inline">\(\theta_p\)</span>の周りで、テイラーの定理を用います。2階微分の引数<span
 class="math inline">\(\bar{\theta}\)</span>は、平均値の定理から存在することが分かる、<span
 class="math inline">\(\hat{\theta}\)</span>と<span
 class="math inline">\(\theta_p\)</span>の間にある値です。</p>
 <p><span class="math display">\[
-f(\hat{\theta}) = f(\theta_p) + H(\bar{\theta})(\hat{\theta} - \theta_p)
+g(\hat{\theta}) = g(\theta_p) + H(\bar{\theta})(\hat{\theta} - \theta_p)
 = 0
 \]</span></p>
 <p><span class="math display">\[
-\hat{\theta} - \theta_p = - H(\bar{\theta})^{-1} f(\theta_p)
+\hat{\theta} - \theta_p = - H(\bar{\theta})^{-1} g(\theta_p)
 \]</span></p>
 <p>両辺に<span class="math inline">\(\sqrt{n}\)</span>を乗じます。</p>
 <p><span class="math display">\[
 \sqrt{n} (\hat{\theta} - \theta_p) = - H(\bar{\theta})^{-1} \sqrt{n}
-f(\theta_p)
+g(\theta_p)
 \DeclareMathOperator{\plim}{plim}
 \]</span></p>
 <p><span class="math inline">\(\plim \hat{\theta} - \theta_p =
@@ -603,33 +702,34 @@ class="math inline">\(\bar{\theta}\)</span>も<span
 class="math inline">\(\theta_p\)</span>に確率収束するので、<span
 class="math inline">\(\sqrt{n} (\hat{\theta} - \theta_p)\)</span>が<span
 class="math inline">\(- H(\theta_p)^{-1} \sqrt{n}
-f(\theta_p)\)</span>に分布収束することが分かります。</p>
+g(\theta_p)\)</span>に分布収束することが分かります。</p>
 <p><span class="math display">\[
 \sqrt{n} (\hat{\theta} - \theta_p) \xrightarrow{d} - H(\theta_p)^{-1}
-\sqrt{n} f(\theta_p)
+\sqrt{n} g(\theta_p)
 \]</span></p>
-<p><span class="math inline">\(f(\theta_p)\)</span>に<span
+<p><span class="math inline">\(g(\theta_p)\)</span>を<span
 class="math inline">\(n\)</span>で割り、<span
 class="math inline">\(H(\theta_p)^{-1}\)</span>に<span
 class="math inline">\(n\)</span>を乗じます。<span
-class="math inline">\(\bar{f}(\theta_p)=f(\theta_p)/n\)</span>に注意すると、</p>
+class="math inline">\(\bar{g}(\theta_p)=g(\theta_p)/n\)</span>に注意すると、</p>
 <p><span class="math display">\[
 \sqrt{n} (\hat{\theta} - \theta_p) \xrightarrow{d} - \big[ \frac{1}{n}
-H(\theta_p) \big]^{-1} \sqrt{n} \bar{f}(\theta_p)
+H(\theta_p) \big]^{-1} \sqrt{n} \bar{g}(\theta_p)
 \]</span></p>
 <p>と書けます。</p>
 <p><span
-class="math inline">\(\sqrt{n}\bar{f}(\theta_p)\)</span>は乱数の平均値になるので、Lindberg–Lévy中心極限定理を用いることができ、</p>
+class="math inline">\(\sqrt{n}\bar{g}(\theta_p)\)</span>は乱数の平均値になるので、Lindberg–Lévy中心極限定理を用いることができ、</p>
 <p><span class="math display">\[
-\sqrt{n} \bar{f}(\theta_p) \xrightarrow{d} \mathcal{N} \bigg \{ 0, -E
+\sqrt{n} \bar{g}(\theta_p) \xrightarrow{d} \mathcal{N} \bigg \{ 0, -E
 \big[ \frac{1}{n} H(\theta_p) \big] \bigg \}
 \]</span></p>
-<p>と書けます。大数の弱法則から<span class="math inline">\(\plim
-(-1/n)H(\theta_p) = - E [ (-1/n)H(\theta_p) ]\)</span>なので、</p>
+<p>と書けます。ヘッシアンの期待値の負の値がグラディエントの分散になる、対数尤度関数のモーメントの性質を用いました。</p>
+<p>大数の弱法則から<span class="math inline">\(\plim (-1/n)H(\theta_p) =
+- E [ (-1/n)H(\theta_p) ]\)</span>なので、</p>
 <p><span class="math display">\[
 \begin{aligned}
 &amp;- \big[ \frac{1}{n} H(\theta_p) \big]^{-1} \sqrt{n}
-\bar{f}(\theta_p) \xrightarrow{d} \\
+\bar{g}(\theta_p) \xrightarrow{d} \\
 &amp;\mathcal{N} \bigg \{ 0,  \bigg [ -E \big[ \frac{1}{n} H(\theta_p)
 \big] \bigg ]^{-1} \bigg [ -E \big[ \frac{1}{n} H(\theta_p) \big] \bigg
 ] \bigg [ -E \big[ \frac{1}{n} H(\theta_p) \big ] \bigg ]^{-1} \bigg \}
@@ -640,7 +740,8 @@ class="math inline">\(\sqrt{n}\bar{f}(\theta_p)\)</span>は乱数の平均値に
 \sqrt{n} (\hat{\theta} - \theta_p) \xrightarrow{d} \mathcal{N} \bigg \{
 0,  -E \big[ \frac{1}{n} H(\theta_p) \big]^{-1} \bigg \}
 \]</span></p>
-<p>パラメーターの真の値と推定量の差の分散が、ヘッセ行列の逆行列の対角成分に漸近することが分かります。</p>
+<p>パラメーターの真の値と推定量の差の分散が、ヘッシアンの逆行列の対角成分に漸近することが分かります。</p>
+</div>
 </div>
 <div id="実際に計算するコード-1" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span>
@@ -648,11 +749,11 @@ class="math inline">\(\sqrt{n}\bar{f}(\theta_p)\)</span>は乱数の平均値に
 <p>説明は長いわけですが、計算は簡単です。上のコードのヤコビアン<code>j</code>がヘッシアンになるので、分散共分散行列は以下のように計算できます。</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>vcov <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">solve</span>(j)</span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>vcov</span></code></pre></div>
-<pre><code>              [,1]         [,2]
-[1,] -1.316277e+00 3.117570e-16
-[2,] -3.117570e-16 1.039551e+02</code></pre>
+<pre><code>             [,1]         [,2]
+[1,] 1.316277e+00 3.117570e-16
+[2,] 3.117570e-16 1.039551e+02</code></pre>
 <p>標準誤差は分散共分散行列の平方根なので、</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>SEs <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">abs</span>(<span class="fu">diag</span>(vcov)))</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a>SEs <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(vcov))</span></code></pre></div>
 <div id="z値" class="section level3" number="4.2.1">
 <h3><span class="header-section-number">4.2.1</span> z値</h3>
 <p>それぞれの係数<code>m</code>を、それぞれの標準誤差<code>SEs</code>で割ると、帰無仮説（<span
@@ -687,7 +788,7 @@ class="math inline">\(0\)</span>のz値が出て来ます。</p>
 <span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co"># χ二乗検定の自由度は制約の行列の行数</span></span>
 <span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(<span class="fu">abs</span>(ws), <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
 <pre><code>     [,1]       
-[1,] &quot;0.0088456&quot;</code></pre>
+[1,] &quot;0.0097372&quot;</code></pre>
 <p><a
 href="https://wh.anlyznews.com/R/Wilks.shtml#%E4%BA%8C%E6%AC%A1%E5%BD%A2%E5%BC%8Ftxi---exi-sigma-1-xi---exi%E3%81%AFchi2%E5%88%86%E5%B8%83%E3%81%AB%E5%BE%93%E3%81%86">二次形式が<span
 class="math inline">\(\chi^2\)</span>分布に従う</a>ことから、数理的に正当化されます。</p>
@@ -700,8 +801,8 @@ class="math inline">\(\sigma^2 =
 <span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co"># 仮説</span></span>
 <span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a>ws <span class="ot">&lt;-</span> <span class="fu">t</span>(C <span class="sc">%*%</span> b <span class="sc">-</span> R) <span class="sc">%*%</span> <span class="fu">solve</span>(C <span class="sc">%*%</span> vcov <span class="sc">%*%</span> <span class="fu">t</span>(C)) <span class="sc">%*%</span> (C <span class="sc">%*%</span> b <span class="sc">-</span> R)</span>
 <span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(<span class="fu">abs</span>(ws), <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
-<pre><code>     [,1]     
-[1,] &quot;0.42987&quot;</code></pre>
+<pre><code>     [,1]       
+[1,] &quot;0.0021305&quot;</code></pre>
 <p>なお、<code>vcov</code>はクラスター頑強分散共分散行列であることが求められるので、パネルデータのときは注意してください。</p>
 </div>
 </div>
@@ -778,8 +879,8 @@ class="math inline">\(\mu=10\)</span>を置いて、尤度比検定をかけて�
 <span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;numDeriv&quot;</span>)</span>
 <span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a><span class="co"># 制約付きモデルの推定結果から、制約付きパラメーターをつくる</span></span>
 <span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a><span class="co"># 今回の例は数学的にグラディエントとヘッシアンが導出してあるので、</span></span>
-<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co"># g &lt;- matrix(c(eval(f1), eval(f2)), 2, 1)</span></span>
-<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co"># h &lt;- matrix(c(eval(g11), eval(g21), eval(g12), eval(g22)), 2, 2)</span></span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a><span class="co"># g &lt;- matrix(c(eval(g1), eval(g2)), 2, 1)</span></span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a><span class="co"># h &lt;- matrix(c(eval(h11), eval(h21), eval(h12), eval(h22)), 2, 2)</span></span>
 <span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co"># としても良いが、一般的には数値微分してしまうほうが手っ取り早いし、間違いが少ない</span></span>
 <span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>param_restricted <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, r_optim_restricted<span class="sc">$</span>par)</span>
 <span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a><span class="co"># 制約なしモデルに、制約付きパラメーターを入れて、グラディエントをつくる</span></span>
@@ -806,6 +907,8 @@ Wald検定，LM検定，LR検定の使い分け</h2>
 <li
 id="fn1"><p>指数分布族で制約が線形など典型的な場合はGLMを用いることで、収束しやすくなり、標準誤差が小さくなります。<a
 href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Greene (2003) “Econometric Analysis,” 5th Edition<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
