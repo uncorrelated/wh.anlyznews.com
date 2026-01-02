@@ -550,9 +550,9 @@ z           -4.021931 -2.494218</code></pre>
 <p><code>fix(wild.boot)</code>でソースコードを読めますが、残差に乱数で変化をつけてベクトル<span
 class="math inline">\(e_{bootstrapping}\)</span>をつくり、説明変数の行列を<span
 class="math inline">\(X\)</span>として、<span
-class="math inline">\(\hat{\beta}_{OLS} +
+class="math inline">\(\beta_{OLS} +
 ({}^t\!XX)^{-1}{}^t\!Xe_{bootstrapping}\)</span>のサンプルをつくる作業を<code>B</code>回繰り返しています。</p>
-<p>上のようにパーセンタイル法を使うのが簡便ですが、Bootstrappingに入るバイアスを減らした<abbr title="Bias Corrected and acceralated">BCa</abbr>法をつかいたい場合は<code>bayestestR</code>パッケージの助けを借りると楽です。</p>
+<p>サンプルから信頼区間を計算するのには、上のようにパーセンタイル法を使うのが簡便ですが、Bootstrappingに入るバイアスを減らした<abbr title="Bias Corrected and acceralated">BCa</abbr>法をつかいたい場合は<code>bayestestR</code>パッケージの助けを借りると楽です。</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>confint.wild.boot <span class="ot">&lt;-</span> <span class="cf">function</span>(object, parm, <span class="at">level =</span> <span class="fl">0.95</span>, ...){</span>
 <span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>    index <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(object<span class="sc">$</span>bootEstParam)</span>
 <span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">missing</span>(parm)) index <span class="ot">&lt;-</span> index[<span class="fu">names</span>(beta) <span class="sc">%in%</span> parm]</span>
