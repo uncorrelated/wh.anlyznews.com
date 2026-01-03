@@ -13,7 +13,7 @@
 
 <title>Rのベクトルの扱い方のざっとした説明</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -377,8 +384,10 @@ class="toc-section-number">5.1</span>
 class="toc-section-number">5.2</span> 集合演算</a></li>
 <li><a href="#比較演算" id="toc-比較演算"><span
 class="toc-section-number">5.3</span> 比較演算</a></li>
+<li><a href="#最大値と最小値" id="toc-最大値と最小値"><span
+class="toc-section-number">5.4</span> 最大値と最小値</a></li>
 <li><a href="#行列として計算する" id="toc-行列として計算する"><span
-class="toc-section-number">5.4</span> 行列として計算する</a></li>
+class="toc-section-number">5.5</span> 行列として計算する</a></li>
 </ul></li>
 <li><a href="#重複の処理" id="toc-重複の処理"><span
 class="toc-section-number">6</span> 重複の処理</a>
@@ -545,14 +554,27 @@ class="math inline">\(1\)</span>以上の整数倍のときのみ、短い方が
 <pre><code>[1] TRUE</code></pre>
 <p>と同じ計算結果になります。この長さの自動拡張は便利なのですが、混乱を招くので注意しましょう。</p>
 </div>
-<div id="行列として計算する" class="section level2" number="5.4">
-<h2><span class="header-section-number">5.4</span>
+<div id="最大値と最小値" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> 最大値と最小値</h2>
+<p><code>max</code>は引数のベクトルの中で最大の値を、<code>min</code>は最小の値を返します。複数のベクトルが与えられたときは、すべてのベクトルの要素の中で最大もしくは最小の値を返します。</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" tabindex="-1"></a><span class="fu">max</span>(x)</span></code></pre></div>
+<pre><code>[1] 3</code></pre>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" tabindex="-1"></a><span class="fu">max</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>)</span></code></pre></div>
+<pre><code>[1] 4</code></pre>
+<p><code>pmax</code>は引数の複数のベクトルの同じ位置の要素を比較し、最大の値を戻します。<code>pmin</code>は最小の値です。</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" tabindex="-1"></a><span class="fu">pmax</span>(x, y)</span></code></pre></div>
+<pre><code>[1] 1 3 3</code></pre>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" tabindex="-1"></a><span class="fu">pmin</span>(x, y)</span></code></pre></div>
+<pre><code>[1] 1 2 2</code></pre>
+</div>
+<div id="行列として計算する" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span>
 行列として計算する</h2>
 <p>実は、行列積<code>%*%</code>などでは、ベクトルはn行1列（n∈ℕ）の縦行列として計算されます。<code>t</code>で転置すると1行n列の横行列です。</p>
-<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" tabindex="-1"></a><span class="fu">t</span>(v2) <span class="sc">%*%</span> v1 <span class="co"># 内積になる</span></span></code></pre></div>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" tabindex="-1"></a><span class="fu">t</span>(v2) <span class="sc">%*%</span> v1 <span class="co"># 内積になる</span></span></code></pre></div>
 <pre><code>     [,1]
 [1,]   11</code></pre>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" tabindex="-1"></a>v2 <span class="sc">%*%</span> <span class="fu">t</span>(v1)</span></code></pre></div>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" tabindex="-1"></a>v2 <span class="sc">%*%</span> <span class="fu">t</span>(v1)</span></code></pre></div>
 <pre><code>     [,1] [,2] [,3]
 [1,]    4    2    1
 [2,]    8    4    2
@@ -566,62 +588,66 @@ class="math inline">\(1\)</span>以上の整数倍のときのみ、短い方が
 number="6.1">
 <h2><span class="header-section-number">6.1</span>
 重複になっている要素を見つける</h2>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" tabindex="-1"></a>vc</span></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" tabindex="-1"></a>vc</span></code></pre></div>
 <pre><code> [1] &quot;s&quot; &quot;t&quot; &quot;a&quot; &quot;t&quot; &quot;i&quot; &quot;s&quot; &quot;t&quot; &quot;i&quot; &quot;c&quot; &quot;s&quot;</code></pre>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" tabindex="-1"></a><span class="fu">duplicated</span>(vc)</span></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" tabindex="-1"></a><span class="fu">duplicated</span>(vc)</span></code></pre></div>
 <pre><code> [1] FALSE FALSE FALSE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE</code></pre>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" tabindex="-1"></a>vc[<span class="fu">duplicated</span>(vc)]</span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" tabindex="-1"></a>vc[<span class="fu">duplicated</span>(vc)]</span></code></pre></div>
 <pre><code>[1] &quot;t&quot; &quot;s&quot; &quot;t&quot; &quot;i&quot; &quot;s&quot;</code></pre>
 </div>
 <div id="重複の無いベクトルをつくる" class="section level2"
 number="6.2">
 <h2><span class="header-section-number">6.2</span>
 重複の無いベクトルをつくる</h2>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" tabindex="-1"></a><span class="fu">unique</span>(vc)</span></code></pre></div>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" tabindex="-1"></a><span class="fu">unique</span>(vc)</span></code></pre></div>
 <pre><code>[1] &quot;s&quot; &quot;t&quot; &quot;a&quot; &quot;i&quot; &quot;c&quot;</code></pre>
 </div>
 </div>
 <div id="ベクトルの並び替え" class="section level1" number="7">
 <h1><span class="header-section-number">7</span> ベクトルの並び替え</h1>
 <p>ベクトルの要素の参照で、ベクトルを並び替えることができます。</p>
-<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" tabindex="-1"></a><span class="fu">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>, <span class="st">&quot;c&quot;</span>)[<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>)]</span></code></pre></div>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" tabindex="-1"></a><span class="fu">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;a&quot;</span>, <span class="st">&quot;c&quot;</span>)[<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>)]</span></code></pre></div>
 <pre><code>[1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
 <p>2番目の<code>a</code>、1番目の<code>b</code>、3番目の<code>c</code>の並びになりました。
 ベクトルの要素の順番を<code>order</code>関数で調べることができます。</p>
-<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" tabindex="-1"></a>v6 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">6.075</span>,<span class="fl">1.181</span>,<span class="fl">7.717</span>,<span class="fl">1.433</span>,<span class="fl">4.301</span>,<span class="fl">9.158</span>,<span class="fl">5.997</span>,<span class="fl">3.991</span>,<span class="fl">0.806</span>,<span class="fl">6.86</span>)</span>
-<span id="cb86-2"><a href="#cb86-2" tabindex="-1"></a><span class="fu">order</span>(v6) <span class="co"># 小さい方から要素の位置を列挙</span></span></code></pre></div>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" tabindex="-1"></a>v6 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">6.075</span>,<span class="fl">1.181</span>,<span class="fl">7.717</span>,<span class="fl">1.433</span>,<span class="fl">4.301</span>,<span class="fl">9.158</span>,<span class="fl">5.997</span>,<span class="fl">3.991</span>,<span class="fl">0.806</span>,<span class="fl">6.86</span>)</span>
+<span id="cb94-2"><a href="#cb94-2" tabindex="-1"></a><span class="fu">order</span>(v6) <span class="co"># 小さい方から要素の位置を列挙</span></span></code></pre></div>
 <pre><code> [1]  9  2  4  8  5  7  1 10  3  6</code></pre>
-<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" tabindex="-1"></a><span class="fu">order</span>(v6, <span class="at">decreasing =</span> <span class="cn">TRUE</span>) <span class="co"># 大きい方から要素の位置を列挙</span></span></code></pre></div>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" tabindex="-1"></a><span class="fu">order</span>(v6, <span class="at">decreasing =</span> <span class="cn">TRUE</span>) <span class="co"># 大きい方から要素の位置を列挙</span></span></code></pre></div>
 <pre><code> [1]  6  3 10  1  7  5  8  4  2  9</code></pre>
 <div id="逆順" class="section level2" number="7.1">
 <h2><span class="header-section-number">7.1</span> 逆順</h2>
 <p><code>rev</code>でベクトルの順序を逆にできます。</p>
-<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" tabindex="-1"></a><span class="fu">rev</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" tabindex="-1"></a><span class="fu">rev</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span></code></pre></div>
 <pre><code> [1] 10  9  8  7  6  5  4  3  2  1</code></pre>
 </div>
 <div id="ソート" class="section level2" number="7.2">
 <h2><span class="header-section-number">7.2</span> ソート</h2>
 <p><code>order</code>の結果で整列することができます。</p>
-<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" tabindex="-1"></a>v6[<span class="fu">order</span>(v6)]</span></code></pre></div>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" tabindex="-1"></a>v6[<span class="fu">order</span>(v6)]</span></code></pre></div>
 <pre><code> [1] 0.806 1.181 1.433 3.991 4.301 5.997 6.075 6.860 7.717 9.158</code></pre>
 <p><code>sort</code>を使うと、この手順をまとめて処理できます。</p>
-<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" tabindex="-1"></a><span class="fu">sort</span>(v6)</span></code></pre></div>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" tabindex="-1"></a><span class="fu">sort</span>(v6)</span></code></pre></div>
 <pre><code> [1] 0.806 1.181 1.433 3.991 4.301 5.997 6.075 6.860 7.717 9.158</code></pre>
-<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" tabindex="-1"></a><span class="fu">sort</span>(v6, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" tabindex="-1"></a><span class="fu">sort</span>(v6, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <pre><code> [1] 9.158 7.717 6.860 6.075 5.997 4.301 3.991 1.433 1.181 0.806</code></pre>
 </div>
 </div>
 <div id="ベクトルを分割" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> ベクトルを分割</h1>
 <p>男女など属性ごとにベクトルを分けたいときに便利です。</p>
-<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">9</span>)</span></code></pre></div>
 <pre><code>[1] 1 2 3 4 5 6 7 8 9</code></pre>
-<div class="sourceCode" id="cb100"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" tabindex="-1"></a>(g <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="dv">3</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a>(g <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">rep</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="dv">3</span>)))</span></code></pre></div>
 <pre><code>[1] a b c a b c a b c
 Levels: a b c</code></pre>
-<div class="sourceCode" id="cb102"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" tabindex="-1"></a><span class="fu">split</span>(x, g)</span></code></pre></div>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" tabindex="-1"></a><span class="fu">split</span>(x, g)</span></code></pre></div>
 <pre><code>$a
 [1] 1 4 7
 
@@ -634,66 +660,66 @@ $c
 <div id="ランクを計算" class="section level1" number="9">
 <h1><span class="header-section-number">9</span> ランクを計算</h1>
 <p>ベクトル内での昇順の順位を示します。同順の場合の処理は<code>ties.method</code>で指定です。</p>
-<div class="sourceCode" id="cb104"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">10</span>, <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="dv">10</span>)))</span></code></pre></div>
-<pre><code> [1] 1 5 9 3 8 6 1 5 4 5</code></pre>
-<div class="sourceCode" id="cb106"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" tabindex="-1"></a><span class="fu">rank</span>(x)</span></code></pre></div>
-<pre><code> [1]  1.5  6.0 10.0  3.0  9.0  8.0  1.5  6.0  4.0  6.0</code></pre>
-<div class="sourceCode" id="cb108"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" tabindex="-1"></a><span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">&quot;min&quot;</span>)</span></code></pre></div>
-<pre><code> [1]  1  5 10  3  9  8  1  5  4  5</code></pre>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" tabindex="-1"></a>(x <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">10</span>, <span class="at">min =</span> <span class="dv">1</span>, <span class="at">max =</span> <span class="dv">10</span>)))</span></code></pre></div>
+<pre><code> [1] 8 5 2 8 8 5 4 4 6 5</code></pre>
+<div class="sourceCode" id="cb114"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" tabindex="-1"></a><span class="fu">rank</span>(x)</span></code></pre></div>
+<pre><code> [1] 9.0 5.0 1.0 9.0 9.0 5.0 2.5 2.5 7.0 5.0</code></pre>
+<div class="sourceCode" id="cb116"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" tabindex="-1"></a><span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">&quot;min&quot;</span>)</span></code></pre></div>
+<pre><code> [1] 8 4 1 8 8 4 2 2 7 4</code></pre>
 <p>ゴルフの順位のようにn位タイを計算するのはちょっと手間かもです。</p>
-<div class="sourceCode" id="cb110"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" tabindex="-1"></a>ties <span class="ot">&lt;-</span> <span class="fu">unique</span>(x[<span class="fu">duplicated</span>(x)])</span>
-<span id="cb110-2"><a href="#cb110-2" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%d位%s&quot;</span>, <span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">&quot;min&quot;</span>), <span class="fu">ifelse</span>(x <span class="sc">%in%</span> ties, <span class="st">&quot;タイ&quot;</span>, <span class="st">&quot;&quot;</span>))</span></code></pre></div>
-<pre><code> [1] &quot;1位タイ&quot; &quot;5位タイ&quot; &quot;10位&quot;    &quot;3位&quot;     &quot;9位&quot;     &quot;8位&quot;     &quot;1位タイ&quot;
- [8] &quot;5位タイ&quot; &quot;4位&quot;     &quot;5位タイ&quot;</code></pre>
+<div class="sourceCode" id="cb118"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" tabindex="-1"></a>ties <span class="ot">&lt;-</span> <span class="fu">unique</span>(x[<span class="fu">duplicated</span>(x)])</span>
+<span id="cb118-2"><a href="#cb118-2" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%d位%s&quot;</span>, <span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">&quot;min&quot;</span>), <span class="fu">ifelse</span>(x <span class="sc">%in%</span> ties, <span class="st">&quot;タイ&quot;</span>, <span class="st">&quot;&quot;</span>))</span></code></pre></div>
+<pre><code> [1] &quot;8位タイ&quot; &quot;4位タイ&quot; &quot;1位&quot;     &quot;8位タイ&quot; &quot;8位タイ&quot; &quot;4位タイ&quot; &quot;2位タイ&quot;
+ [8] &quot;2位タイ&quot; &quot;7位&quot;     &quot;4位タイ&quot;</code></pre>
 </div>
 <div id="ベクトルの中から指定した要素の位置を特定する"
 class="section level1" number="10">
 <h1><span class="header-section-number">10</span>
 ベクトルの中から指定した要素の位置を特定する</h1>
 <p><code>which</code>関数で簡単にできます。試しに1から10までの並びがランダムなベクトルを作って使ってみましょう。</p>
-<div class="sourceCode" id="cb112"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" tabindex="-1"></a>(v <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)[<span class="fu">order</span>(<span class="fu">runif</span>(<span class="dv">10</span>))])</span></code></pre></div>
-<pre><code> [1]  8  2  7 10  9  1  6  4  5  3</code></pre>
+<div class="sourceCode" id="cb120"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" tabindex="-1"></a>(v <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)[<span class="fu">order</span>(<span class="fu">runif</span>(<span class="dv">10</span>))])</span></code></pre></div>
+<pre><code> [1]  7  3  5  6  1 10  4  2  8  9</code></pre>
 <p><code>6</code>の位置を探します。</p>
-<div class="sourceCode" id="cb114"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" tabindex="-1"></a>(i <span class="ot">&lt;-</span> <span class="fu">which</span>(v <span class="sc">==</span> <span class="dv">6</span>))</span></code></pre></div>
-<pre><code>[1] 7</code></pre>
-<div class="sourceCode" id="cb116"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" tabindex="-1"></a>v[i]</span></code></pre></div>
+<div class="sourceCode" id="cb122"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" tabindex="-1"></a>(i <span class="ot">&lt;-</span> <span class="fu">which</span>(v <span class="sc">==</span> <span class="dv">6</span>))</span></code></pre></div>
+<pre><code>[1] 4</code></pre>
+<div class="sourceCode" id="cb124"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" tabindex="-1"></a>v[i]</span></code></pre></div>
 <pre><code>[1] 6</code></pre>
 </div>
 <div id="ベクトルの要素の名前" class="section level1" number="11">
 <h1><span class="header-section-number">11</span>
 ベクトルの要素の名前</h1>
 <p>ベクトルの要素には名前をつけて、ラベルとして扱うことができます。他のプログラミング言語では、見かけない仕様です。</p>
-<div class="sourceCode" id="cb118"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)</span>
-<span id="cb118-2"><a href="#cb118-2" tabindex="-1"></a>v1</span></code></pre></div>
+<div class="sourceCode" id="cb126"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)</span>
+<span id="cb126-2"><a href="#cb126-2" tabindex="-1"></a>v1</span></code></pre></div>
 <pre><code>a b c 
 4 2 1 </code></pre>
 <p>ちょっと気味の悪い代入演算に思えるかも知れませんが、<code>names&lt;-</code>と言う関数を呼び出しています。
 つけた名前を使ってアクセスできます。</p>
-<div class="sourceCode" id="cb120"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" tabindex="-1"></a>v1[<span class="st">&quot;a&quot;</span>]</span></code></pre></div>
+<div class="sourceCode" id="cb128"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" tabindex="-1"></a>v1[<span class="st">&quot;a&quot;</span>]</span></code></pre></div>
 <pre><code>a 
 4 </code></pre>
 <p>計算結果のベクトルや行列に名前をつけておいたほうが分かりやすくなりますし、関数の戻り値のオブジェクトの一部がベクトルや行列になっているとき、数字で位置を指定するよりも、名前でアクセスした方がコードの見通しが良くなります。</p>
 <div id="名前の消し方" class="section level2" number="11.1">
 <h2><span class="header-section-number">11.1</span> 名前の消し方</h2>
 <p>名前が邪魔な場合は剥がしましょう。</p>
-<div class="sourceCode" id="cb122"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" tabindex="-1"></a>v1[[<span class="st">&quot;a&quot;</span>]] <span class="co"># 参照時は[[で剥がせる</span></span></code></pre></div>
+<div class="sourceCode" id="cb130"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" tabindex="-1"></a>v1[[<span class="st">&quot;a&quot;</span>]] <span class="co"># 参照時は[[で剥がせる</span></span></code></pre></div>
 <pre><code>[1] 4</code></pre>
-<div class="sourceCode" id="cb124"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" tabindex="-1"></a><span class="fu">c</span>(v1, v2, <span class="at">use.names =</span> <span class="cn">FALSE</span>) <span class="co"># 結合時はuse.names=FALSEで剥がせる</span></span></code></pre></div>
+<div class="sourceCode" id="cb132"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" tabindex="-1"></a><span class="fu">c</span>(v1, v2, <span class="at">use.names =</span> <span class="cn">FALSE</span>) <span class="co"># 結合時はuse.names=FALSEで剥がせる</span></span></code></pre></div>
 <pre><code>[1] 4 2 1 1 2 3</code></pre>
-<div class="sourceCode" id="cb126"><pre
-class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">=</span> <span class="cn">NULL</span> <span class="co"># NULLを代入すれば消せる</span></span>
-<span id="cb126-2"><a href="#cb126-2" tabindex="-1"></a>v1</span></code></pre></div>
+<div class="sourceCode" id="cb134"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" tabindex="-1"></a><span class="fu">names</span>(v1) <span class="ot">=</span> <span class="cn">NULL</span> <span class="co"># NULLを代入すれば消せる</span></span>
+<span id="cb134-2"><a href="#cb134-2" tabindex="-1"></a>v1</span></code></pre></div>
 <pre><code>[1] 4 2 1</code></pre>
 </div>
 </div>
