@@ -422,6 +422,15 @@ id="toc-wald検定lm検定lr検定の使い分け"><span
 class="toc-section-number">5.3</span>
 Wald検定，LM検定，LR検定の使い分け</a></li>
 </ul></li>
+<li><a href="#信頼区間" id="toc-信頼区間"><span
+class="toc-section-number">6</span> 信頼区間</a>
+<ul>
+<li><a href="#ワルド信頼区間" id="toc-ワルド信頼区間"><span
+class="toc-section-number">6.1</span> ワルド信頼区間</a></li>
+<li><a href="#プロファイル尤度信頼区間"
+id="toc-プロファイル尤度信頼区間"><span
+class="toc-section-number">6.2</span> プロファイル尤度信頼区間</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -901,6 +910,96 @@ Wald検定，LM検定，LR検定の使い分け</h2>
 <p>この3つは本質的には同一の検定である事が示されているわけですが、Wald検定は制約無しモデルを推定すれば利用でき、LM検定は制約付きモデルを推定すれば利用でき、LR検定は2つのモデルをそれぞれ推定しないと利用できないです。計算量から言えばWald検定が優れているような気がしますが、現在の計算機の速度から言えば誤差ですし、コーディング量はLR検定が少ないです。Breusch-Pagan検定のような定番の手法で使っている場合でなければ、説明がしやすい手法を選びましょう。計量経済学を履修していれば、全部、試験範囲だと思いますが。</p>
 </div>
 </div>
+<div id="信頼区間" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> 信頼区間</h1>
+<p>最尤法はヘッシアンから計算した標準誤差を元にしたワルド信頼区間と、尤度比検定の棄却域に境界が対応するプロファイル尤度信頼区間の二つが主に使われています。</p>
+<div id="ワルド信頼区間" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> ワルド信頼区間</h2>
+<p>漸近正規性を前提としている推定量です。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">0.05</span> <span class="co"># 有意水準</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>lwrupr <span class="ot">&lt;-</span> <span class="fu">c</span>(a<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span> <span class="sc">-</span> a<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>estimated <span class="ot">&lt;-</span> r_nlm<span class="sc">$</span>estimate</span>
+<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a><span class="co"># Wald型信頼区間（左右対象）</span></span>
+<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>confint.wald <span class="ot">&lt;-</span> <span class="fu">t</span>(<span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(estimated), \(i) <span class="fu">qnorm</span>(lwrupr, <span class="at">mean =</span> estimated[i], <span class="at">sd =</span> SEs[i])))</span>
+<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a><span class="fu">rownames</span>(confint.wald) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;μ&quot;</span>, <span class="st">&quot;σ²&quot;</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a><span class="fu">colnames</span>(confint.wald) <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.1f%%&quot;</span>, lwrupr<span class="sc">*</span><span class="dv">100</span>)</span>
+<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a><span class="fu">print</span>(confint.wald)</span></code></pre></div>
+<pre><code>         2.5%    97.5%
+μ   9.785854 14.28315
+σ² 19.504913 59.47186</code></pre>
+</div>
+<div id="プロファイル尤度信頼区間" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span>
+プロファイル尤度信頼区間</h2>
+<p>プロファイル尤度信頼区間は、計算に手間暇がかかるためか21世紀になってから一般化した信頼区間<a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>で、今ではデフォルト出力になっていたりします。</p>
+<p>尤度関数の複数の説明変数を、ひとつを残して陰関数として扱うことで、尤度関数を一変数関数にしたものがプロファイル尤度関数です。ある変数以外の変数は、ある変数にあわせて最適な値がとられるときの尤度が得られます。</p>
+<p>計算には尤度比検定に用いる制約付き最尤法に使う関数が必要になります。グラディエント、ヘッシアン、制約付き対数尤度関数、制約付きグラディエントを用意しましょう。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># グラディエント</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>llfg <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> p[<span class="dv">1</span>]</span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>  s2 <span class="ot">&lt;-</span> p[<span class="dv">2</span>]</span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fu">sum</span>(y<span class="sc">-</span>mu)<span class="sc">/</span>s2, <span class="sc">-</span>n<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>s2) <span class="sc">+</span> <span class="fu">sum</span>((y<span class="sc">-</span>mu)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>(s2<span class="sc">^</span><span class="dv">2</span>)))</span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a>}</span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a><span class="co"># ヘッシアン</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>hessian <span class="ot">&lt;-</span> <span class="cf">function</span>(p){</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>  mu <span class="ot">&lt;-</span> p[<span class="dv">1</span>]</span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>  s2 <span class="ot">&lt;-</span> p[<span class="dv">2</span>]</span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a>  <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span>n<span class="sc">/</span>s2, <span class="sc">-</span><span class="fu">sum</span>(y <span class="sc">-</span> mu)<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">2</span>), <span class="sc">-</span><span class="fu">sum</span>(y <span class="sc">-</span> mu)<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">2</span>), n<span class="sc">/</span>(<span class="dv">2</span><span class="sc">*</span>(s2<span class="sc">^</span><span class="dv">2</span>)) <span class="sc">-</span> <span class="fu">sum</span>( (y <span class="sc">-</span> mu)<span class="sc">^</span><span class="dv">2</span> )<span class="sc">/</span>(s2<span class="sc">^</span><span class="dv">3</span>)), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a>}</span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>pparam <span class="ot">&lt;-</span> <span class="cf">function</span>(cp, i, v){</span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a>    <span class="co"># パラメーターのi番目をvとし、i番目以外はcpの値をcpの並びで使う</span></span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">length</span>(cp) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a>    <span class="cf">if</span>(<span class="dv">1</span> <span class="sc">&lt;</span> i) p[<span class="dv">1</span><span class="sc">:</span>(i<span class="dv">-1</span>)] <span class="ot">&lt;-</span> cp[<span class="dv">1</span><span class="sc">:</span>(i<span class="dv">-1</span>)]</span>
+<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a>    p[i] <span class="ot">&lt;-</span> v</span>
+<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a>    <span class="cf">if</span>(i <span class="sc">&lt;</span> <span class="fu">length</span>(p)) p[(i <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span><span class="fu">length</span>(p)] <span class="ot">&lt;-</span> cp[i<span class="sc">:</span><span class="fu">length</span>(cp)]</span>
+<span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a>    p</span>
+<span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a>}</span>
+<span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a>pllf <span class="ot">&lt;-</span> <span class="cf">function</span>(cp, i, v){</span>
+<span id="cb28-24"><a href="#cb28-24" tabindex="-1"></a>    <span class="co"># 制約をパラメーターに加えて対数尤度関数を呼ぶ</span></span>
+<span id="cb28-25"><a href="#cb28-25" tabindex="-1"></a>    <span class="fu">llf</span>(<span class="fu">pparam</span>(cp, i, v))</span>
+<span id="cb28-26"><a href="#cb28-26" tabindex="-1"></a>}</span>
+<span id="cb28-27"><a href="#cb28-27" tabindex="-1"></a>pllfg <span class="ot">&lt;-</span> <span class="cf">function</span>(cp, i, v){</span>
+<span id="cb28-28"><a href="#cb28-28" tabindex="-1"></a>    <span class="co"># 制約をパラメーターに加えてグラディエントを計算し、制約部分以外に対応する要素を戻す</span></span>
+<span id="cb28-29"><a href="#cb28-29" tabindex="-1"></a>    <span class="fu">llfg</span>(<span class="fu">pparam</span>(cp, i, v))[<span class="sc">-</span>i]</span>
+<span id="cb28-30"><a href="#cb28-30" tabindex="-1"></a>}</span></code></pre></div>
+<p>まず、最尤法の結果から、その条件となるプロファイル尤度信頼区間の端点における対数尤度を求めます。</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>lwrupr_q <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="dv">1</span> <span class="sc">-</span> a, <span class="at">df =</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a><span class="co"># 対数尤度がこの値の係数は、信頼区間の端点</span></span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>lwrupr_llf <span class="ot">&lt;-</span> <span class="sc">-</span>r_nlm<span class="sc">$</span>minimum <span class="sc">-</span> lwrupr_q<span class="sc">/</span><span class="dv">2</span> <span class="co"># r_nlm$minimumは対数尤度関数の符号が逆の値</span></span></code></pre></div>
+<p>プロファイル尤度信頼区間の端点にはもう一つ条件があり、信頼区間を計算するパラメーター以外のパラメーターのグラディエントはゼロです。</p>
+<p>パラメーターを、対数尤度と信頼区間を計算する変数以外の変数のグラディエントに移すベクトル値関数を考え、これをニュートン・ラフソン法で推定することになります。信頼区間の上限と下限だけに解は二つあるのですが、最尤推定量のグラディエントはゼロで領域が分割されるため、初期値を最尤推定量の左側にするか右側にするかで、上限と下限をそれぞれ推定できます。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>lsearch <span class="ot">&lt;-</span> <span class="cf">function</span>(i, init.p){</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>    r_optim <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(estimated) <span class="sc">-</span> <span class="dv">1</span>), pllf, pllfg, <span class="at">i =</span> i, <span class="at">v =</span> init.p, <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>, <span class="at">control =</span> <span class="fu">list</span>(<span class="at">fnscale =</span> <span class="sc">-</span><span class="dv">1</span>)) <span class="co"># methodをBFGSにすると収束しない</span></span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>    b <span class="ot">&lt;-</span> <span class="fu">pparam</span>(r_optim<span class="sc">$</span>par, i, init.p)</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>){</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>        b0 <span class="ot">&lt;-</span> b</span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>        <span class="co"># グラディエントを一行変えて、ベクトル値関数の値にする</span></span>
+<span id="cb30-7"><a href="#cb30-7" tabindex="-1"></a>        f <span class="ot">&lt;-</span> <span class="fu">llfg</span>(b)</span>
+<span id="cb30-8"><a href="#cb30-8" tabindex="-1"></a>        f[i] <span class="ot">&lt;-</span> <span class="fu">llf</span>(b) <span class="sc">-</span> lwrupr_llf</span>
+<span id="cb30-9"><a href="#cb30-9" tabindex="-1"></a>        <span class="co"># ヘッシアンを一行変えて、ベクトル値関数のヤコビアンにする</span></span>
+<span id="cb30-10"><a href="#cb30-10" tabindex="-1"></a>        J <span class="ot">&lt;-</span> <span class="fu">hessian</span>(b)</span>
+<span id="cb30-11"><a href="#cb30-11" tabindex="-1"></a>        J[i, ] <span class="ot">&lt;-</span> <span class="fu">llfg</span>(b)</span>
+<span id="cb30-12"><a href="#cb30-12" tabindex="-1"></a>        b <span class="ot">&lt;-</span> b <span class="sc">-</span> <span class="fu">solve</span>(J, f) <span class="co"># = solve(J) %*% f</span></span>
+<span id="cb30-13"><a href="#cb30-13" tabindex="-1"></a>        <span class="cf">if</span>(<span class="fu">all</span>(b <span class="sc">-</span> b0 <span class="sc">&lt;</span> <span class="fl">1e-6</span>)) <span class="cf">break</span></span>
+<span id="cb30-14"><a href="#cb30-14" tabindex="-1"></a>    }</span>
+<span id="cb30-15"><a href="#cb30-15" tabindex="-1"></a>    b[i]</span>
+<span id="cb30-16"><a href="#cb30-16" tabindex="-1"></a>}</span>
+<span id="cb30-17"><a href="#cb30-17" tabindex="-1"></a>confint.lr <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">length</span>(estimated), <span class="dv">2</span>)</span>
+<span id="cb30-18"><a href="#cb30-18" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(estimated)){</span>
+<span id="cb30-19"><a href="#cb30-19" tabindex="-1"></a>    confint.lr[i, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">lsearch</span>(i, estimated[i] <span class="sc">-</span> <span class="dv">2</span><span class="sc">*</span>SEs[i]), <span class="fu">lsearch</span>(i, estimated[i] <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>SEs[i]))</span>
+<span id="cb30-20"><a href="#cb30-20" tabindex="-1"></a>}</span>
+<span id="cb30-21"><a href="#cb30-21" tabindex="-1"></a><span class="fu">rownames</span>(confint.lr) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;μ&quot;</span>, <span class="st">&quot;σ²&quot;</span>)</span>
+<span id="cb30-22"><a href="#cb30-22" tabindex="-1"></a><span class="fu">colnames</span>(confint.lr) <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.1f%%&quot;</span>, lwrupr<span class="sc">*</span><span class="dv">100</span>)</span>
+<span id="cb30-23"><a href="#cb30-23" tabindex="-1"></a>(confint.lr)</span></code></pre></div>
+<pre><code>         2.5%    97.5%
+μ   9.711917 14.35710
+σ² 24.760790 68.62141</code></pre>
+</div>
+</div>
 <div class="footnotes footnotes-end-of-document">
 <hr />
 <ol>
@@ -909,6 +1008,10 @@ id="fn1"><p>指数分布族で制約が線形など典型的な場合はGLMを�
 href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>Greene (2003) “Econometric Analysis,” 5th Edition<a
 href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a
+href="https://www.researchgate.net/publication/341702223_purofairuyouduxinlaiqujian_Profile_likelihood_confidence_interval_yitengyaoer_muyaotanhuahui_2019nian3yue14ri">伊藤
+(2019)</a>に詳しい説明があります。<a href="#fnref3"
+class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
