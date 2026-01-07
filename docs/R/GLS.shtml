@@ -902,10 +902,14 @@ class="math inline">\(\Omega\)</span>は対称行列であることに注意す�
 <span id="cb20-17"><a href="#cb20-17" tabindex="-1"></a>Omega <span class="ot">&lt;-</span> <span class="fu">solve</span>(Sigma) <span class="sc">%x%</span> <span class="fu">diag</span>(n)</span>
 <span id="cb20-18"><a href="#cb20-18" tabindex="-1"></a></span>
 <span id="cb20-19"><a href="#cb20-19" tabindex="-1"></a><span class="co"># SUR推定量を計算</span></span>
-<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a>beta_sur <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> y</span>
-<span id="cb20-21"><a href="#cb20-21" tabindex="-1"></a></span>
-<span id="cb20-22"><a href="#cb20-22" tabindex="-1"></a><span class="co"># 分散共分散行列を計算</span></span>
-<span id="cb20-23"><a href="#cb20-23" tabindex="-1"></a>(vcov_sur <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> X)) <span class="co"># Usual Variance Matrix (Wooldridge (2002) p.161)</span></span></code></pre></div>
+<span id="cb20-20"><a href="#cb20-20" tabindex="-1"></a>(beta_sur <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> y)</span></code></pre></div>
+<pre><code>            [,1]
+Const.1 0.942839
+x1      1.993500
+Const.2 3.068725
+x2      1.886858</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="co"># 分散共分散行列を計算</span></span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>(vcov_sur <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> Omega <span class="sc">%*%</span> X)) <span class="co"># Usual Variance Matrix (Wooldridge (2002) p.161)</span></span></code></pre></div>
 <pre><code>             Const.1            x1       Const.2            x2
 Const.1  0.188358645 -9.421814e-02  8.287258e-02  0.0036769042
 x1      -0.094218144  9.776368e-02  8.868483e-05 -0.0038152701
@@ -916,18 +920,18 @@ x2       0.003676904 -3.815270e-03 -4.940602e-04  0.0212547431</code></pre>
 <h2><span class="header-section-number">3.3</span>
 <code>systemfit</code>で推定</h2>
 <p>実践においてはパッケージを使う方が無難です。</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">library</span>(systemfit)</span>
-<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co"># データセットをほどく（通常は不要）</span></span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> y[<span class="dv">1</span><span class="sc">:</span>n]</span>
-<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> y[(n<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span>n)]</span>
-<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> X[<span class="dv">1</span><span class="sc">:</span>n, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
-<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> X[(n<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span>n), <span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>]</span>
-<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a><span class="co"># 連立方程式を書く</span></span>
-<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>eq1 <span class="ot">&lt;-</span> y1 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> X1</span>
-<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a>eq2 <span class="ot">&lt;-</span> y2 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> X2</span>
-<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a>system <span class="ot">&lt;-</span> <span class="fu">list</span>(eq1, eq2)</span>
-<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a>r_systemfit <span class="ot">&lt;-</span> <span class="fu">systemfit</span>(system, <span class="at">method =</span> <span class="st">&quot;SUR&quot;</span>) <span class="co"># 気づくと関数が統合されて使い方が微妙に変わっていた</span></span>
-<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a><span class="fu">summary</span>(r_systemfit)</span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">library</span>(systemfit)</span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="co"># データセットをほどく（通常は不要）</span></span>
+<span id="cb24-3"><a href="#cb24-3" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> y[<span class="dv">1</span><span class="sc">:</span>n]</span>
+<span id="cb24-4"><a href="#cb24-4" tabindex="-1"></a>y2 <span class="ot">&lt;-</span> y[(n<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span>n)]</span>
+<span id="cb24-5"><a href="#cb24-5" tabindex="-1"></a>X1 <span class="ot">&lt;-</span> X[<span class="dv">1</span><span class="sc">:</span>n, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb24-6"><a href="#cb24-6" tabindex="-1"></a>X2 <span class="ot">&lt;-</span> X[(n<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(<span class="dv">2</span><span class="sc">*</span>n), <span class="dv">3</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb24-7"><a href="#cb24-7" tabindex="-1"></a><span class="co"># 連立方程式を書く</span></span>
+<span id="cb24-8"><a href="#cb24-8" tabindex="-1"></a>eq1 <span class="ot">&lt;-</span> y1 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> X1</span>
+<span id="cb24-9"><a href="#cb24-9" tabindex="-1"></a>eq2 <span class="ot">&lt;-</span> y2 <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> X2</span>
+<span id="cb24-10"><a href="#cb24-10" tabindex="-1"></a>system <span class="ot">&lt;-</span> <span class="fu">list</span>(eq1, eq2)</span>
+<span id="cb24-11"><a href="#cb24-11" tabindex="-1"></a>r_systemfit <span class="ot">&lt;-</span> <span class="fu">systemfit</span>(system, <span class="at">method =</span> <span class="st">&quot;SUR&quot;</span>) <span class="co"># 気づくと関数が統合されて使い方が微妙に変わっていた</span></span>
+<span id="cb24-12"><a href="#cb24-12" tabindex="-1"></a><span class="fu">summary</span>(r_systemfit)</span></code></pre></div>
 <pre><code>
 systemfit results 
 method: SUR 
@@ -983,7 +987,7 @@ Residual standard error: 2.271124 on 48 degrees of freedom
 Number of observations: 50 Degrees of Freedom: 48 
 SSR: 247.584146 MSE: 5.158003 Root MSE: 2.271124 
 Multiple R-Squared: 0.557864 Adjusted R-Squared: 0.548653 </code></pre>
-<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="fu">vcov</span>(r_systemfit)</span></code></pre></div>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">vcov</span>(r_systemfit)</span></code></pre></div>
 <pre><code>              eq1_X1Const.1      eq1_X1x1 eq2_X2Const.2      eq2_X2x2
 eq1_X1Const.1   0.188358645 -9.421814e-02  8.287258e-02  0.0036769042
 eq1_X1x1       -0.094218144  9.776368e-02  8.868483e-05 -0.0038152701
@@ -1033,120 +1037,120 @@ class="math inline">\(\Omega = I_n \otimes
 <div id="データセット-2" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> データセット</h2>
 <p>モデルに沿って不均一分散が入ったデータセットをつくります。</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1303</span>)</span>
-<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>mkdata <span class="ot">&lt;-</span> <span class="cf">function</span>(n_of_t, n_of_i){</span>
-<span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>    <span class="co"># n_of_t: 時点の数, n_of_i: 個体の数</span></span>
-<span id="cb26-4"><a href="#cb26-4" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" tabindex="-1"></a>    <span class="co"># 個体番号をつくる</span></span>
-<span id="cb26-6"><a href="#cb26-6" tabindex="-1"></a>    id <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_of_i, <span class="at">each =</span> n_of_t, <span class="at">min=</span><span class="sc">-</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">0.5</span>)</span>
-<span id="cb26-7"><a href="#cb26-7" tabindex="-1"></a></span>
-<span id="cb26-8"><a href="#cb26-8" tabindex="-1"></a>    <span class="co"># 時点変数をつくる</span></span>
-<span id="cb26-9"><a href="#cb26-9" tabindex="-1"></a>    t <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_of_t, n_of_i)</span>
-<span id="cb26-10"><a href="#cb26-10" tabindex="-1"></a></span>
-<span id="cb26-11"><a href="#cb26-11" tabindex="-1"></a>    <span class="co"># 説明変数x,zをつくる</span></span>
-<span id="cb26-12"><a href="#cb26-12" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
-<span id="cb26-13"><a href="#cb26-13" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <span class="fu">runif</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
-<span id="cb26-14"><a href="#cb26-14" tabindex="-1"></a></span>
-<span id="cb26-15"><a href="#cb26-15" tabindex="-1"></a>    <span class="co"># 誤差項をつくる</span></span>
-<span id="cb26-16"><a href="#cb26-16" tabindex="-1"></a>    e_ind <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(n_of_i, <span class="at">sd =</span> <span class="dv">2</span>), <span class="at">each =</span> n_of_t)</span>
-<span id="cb26-17"><a href="#cb26-17" tabindex="-1"></a>    e_ids <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
-<span id="cb26-18"><a href="#cb26-18" tabindex="-1"></a>    e <span class="ot">&lt;-</span> e_ind <span class="sc">+</span> e_ids</span>
-<span id="cb26-19"><a href="#cb26-19" tabindex="-1"></a></span>
-<span id="cb26-20"><a href="#cb26-20" tabindex="-1"></a>    <span class="co"># 従属変数yをつくる</span></span>
-<span id="cb26-21"><a href="#cb26-21" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>z <span class="sc">+</span> e</span>
-<span id="cb26-22"><a href="#cb26-22" tabindex="-1"></a></span>
-<span id="cb26-23"><a href="#cb26-23" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">as.factor</span>(id), <span class="at">t =</span> <span class="fu">as.factor</span>(t), y, x, z)</span>
-<span id="cb26-24"><a href="#cb26-24" tabindex="-1"></a>}</span>
-<span id="cb26-25"><a href="#cb26-25" tabindex="-1"></a></span>
-<span id="cb26-26"><a href="#cb26-26" tabindex="-1"></a>df03 <span class="ot">&lt;-</span> <span class="fu">mkdata</span>(<span class="dv">5</span>, <span class="dv">100</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1303</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>mkdata <span class="ot">&lt;-</span> <span class="cf">function</span>(n_of_t, n_of_i){</span>
+<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>    <span class="co"># n_of_t: 時点の数, n_of_i: 個体の数</span></span>
+<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" tabindex="-1"></a>    <span class="co"># 個体番号をつくる</span></span>
+<span id="cb28-6"><a href="#cb28-6" tabindex="-1"></a>    id <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_of_i, <span class="at">each =</span> n_of_t, <span class="at">min=</span><span class="sc">-</span><span class="fl">0.5</span>, <span class="at">max=</span><span class="fl">0.5</span>)</span>
+<span id="cb28-7"><a href="#cb28-7" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" tabindex="-1"></a>    <span class="co"># 時点変数をつくる</span></span>
+<span id="cb28-9"><a href="#cb28-9" tabindex="-1"></a>    t <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span>n_of_t, n_of_i)</span>
+<span id="cb28-10"><a href="#cb28-10" tabindex="-1"></a></span>
+<span id="cb28-11"><a href="#cb28-11" tabindex="-1"></a>    <span class="co"># 説明変数x,zをつくる</span></span>
+<span id="cb28-12"><a href="#cb28-12" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="fu">runif</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
+<span id="cb28-13"><a href="#cb28-13" tabindex="-1"></a>    z <span class="ot">&lt;-</span> <span class="fu">runif</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
+<span id="cb28-14"><a href="#cb28-14" tabindex="-1"></a></span>
+<span id="cb28-15"><a href="#cb28-15" tabindex="-1"></a>    <span class="co"># 誤差項をつくる</span></span>
+<span id="cb28-16"><a href="#cb28-16" tabindex="-1"></a>    e_ind <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">rnorm</span>(n_of_i, <span class="at">sd =</span> <span class="dv">2</span>), <span class="at">each =</span> n_of_t)</span>
+<span id="cb28-17"><a href="#cb28-17" tabindex="-1"></a>    e_ids <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n_of_i<span class="sc">*</span>n_of_t)</span>
+<span id="cb28-18"><a href="#cb28-18" tabindex="-1"></a>    e <span class="ot">&lt;-</span> e_ind <span class="sc">+</span> e_ids</span>
+<span id="cb28-19"><a href="#cb28-19" tabindex="-1"></a></span>
+<span id="cb28-20"><a href="#cb28-20" tabindex="-1"></a>    <span class="co"># 従属変数yをつくる</span></span>
+<span id="cb28-21"><a href="#cb28-21" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>z <span class="sc">+</span> e</span>
+<span id="cb28-22"><a href="#cb28-22" tabindex="-1"></a></span>
+<span id="cb28-23"><a href="#cb28-23" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">id =</span> <span class="fu">as.factor</span>(id), <span class="at">t =</span> <span class="fu">as.factor</span>(t), y, x, z)</span>
+<span id="cb28-24"><a href="#cb28-24" tabindex="-1"></a>}</span>
+<span id="cb28-25"><a href="#cb28-25" tabindex="-1"></a></span>
+<span id="cb28-26"><a href="#cb28-26" tabindex="-1"></a>df03 <span class="ot">&lt;-</span> <span class="fu">mkdata</span>(<span class="dv">5</span>, <span class="dv">100</span>)</span></code></pre></div>
 </div>
 <div id="行列による推定-1" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> 行列による推定</h2>
 <p>定番テキストのWooldridgeのGSLとRandom Effect
 Modelの説明に沿って計算します。ただし、<span
 class="math inline">\(\Omega\)</span>の定義が異なるので注意してください。</p>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>frml <span class="ot">&lt;-</span> y <span class="sc">~</span> x <span class="sc">+</span> z</span>
-<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(frml, <span class="at">data =</span> df03)</span>
-<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(frml, <span class="at">data =</span> df03)</span>
-<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
-<span id="cb27-5"><a href="#cb27-5" tabindex="-1"></a>beta_ols <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span>
-<span id="cb27-6"><a href="#cb27-6" tabindex="-1"></a>residuals <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta_ols <span class="sc">-</span> y</span>
-<span id="cb27-7"><a href="#cb27-7" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
-<span id="cb27-8"><a href="#cb27-8" tabindex="-1"></a>sigma2_ols <span class="ot">&lt;-</span> <span class="fu">sum</span>(residuals<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df</span>
-<span id="cb27-9"><a href="#cb27-9" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(df03<span class="sc">$</span>t))</span>
-<span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(df03<span class="sc">$</span>id))</span>
-<span id="cb27-11"><a href="#cb27-11" tabindex="-1"></a></span>
-<span id="cb27-12"><a href="#cb27-12" tabindex="-1"></a><span class="co"># total error variance</span></span>
-<span id="cb27-13"><a href="#cb27-13" tabindex="-1"></a>sigma2_v <span class="ot">&lt;-</span> <span class="fu">sum</span>(residuals<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df</span>
-<span id="cb27-14"><a href="#cb27-14" tabindex="-1"></a></span>
-<span id="cb27-15"><a href="#cb27-15" tabindex="-1"></a><span class="co"># individual error variance</span></span>
-<span id="cb27-16"><a href="#cb27-16" tabindex="-1"></a>sigma2_c <span class="ot">&lt;-</span> <span class="fu">with</span>(df03, {</span>
-<span id="cb27-17"><a href="#cb27-17" tabindex="-1"></a>    <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="fu">levels</span>(id), <span class="cf">function</span>(i){</span>
-<span id="cb27-18"><a href="#cb27-18" tabindex="-1"></a>        r <span class="ot">&lt;-</span> residuals[id <span class="sc">==</span> i]</span>
-<span id="cb27-19"><a href="#cb27-19" tabindex="-1"></a>        cp <span class="ot">&lt;-</span> <span class="fu">outer</span>(r, r)</span>
-<span id="cb27-20"><a href="#cb27-20" tabindex="-1"></a>        <span class="fu">sum</span>(cp[<span class="fu">upper.tri</span>(cp, <span class="at">diag =</span> <span class="cn">FALSE</span>)])</span>
-<span id="cb27-21"><a href="#cb27-21" tabindex="-1"></a>        <span class="co"># 以下と同じ結果</span></span>
-<span id="cb27-22"><a href="#cb27-22" tabindex="-1"></a>        <span class="co"># sum &lt;- 0</span></span>
-<span id="cb27-23"><a href="#cb27-23" tabindex="-1"></a>        <span class="co"># for(t in 1:(T-1)){</span></span>
-<span id="cb27-24"><a href="#cb27-24" tabindex="-1"></a>        <span class="co">#     for(k in (t+1):T){</span></span>
-<span id="cb27-25"><a href="#cb27-25" tabindex="-1"></a>        <span class="co">#         sum &lt;- sum + r[t]*r[k]</span></span>
-<span id="cb27-26"><a href="#cb27-26" tabindex="-1"></a>        <span class="co">#     }</span></span>
-<span id="cb27-27"><a href="#cb27-27" tabindex="-1"></a>        <span class="co"># }</span></span>
-<span id="cb27-28"><a href="#cb27-28" tabindex="-1"></a>        <span class="co"># sum</span></span>
-<span id="cb27-29"><a href="#cb27-29" tabindex="-1"></a>    }))<span class="sc">/</span>((n<span class="sc">*</span>T<span class="sc">*</span>(T<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="fu">ncol</span>(X))</span>
-<span id="cb27-30"><a href="#cb27-30" tabindex="-1"></a>})</span>
-<span id="cb27-31"><a href="#cb27-31" tabindex="-1"></a></span>
-<span id="cb27-32"><a href="#cb27-32" tabindex="-1"></a><span class="co"># idiosyncratic error variance</span></span>
-<span id="cb27-33"><a href="#cb27-33" tabindex="-1"></a>sigma2_u <span class="ot">&lt;-</span> sigma2_v <span class="sc">-</span> sigma2_c</span>
-<span id="cb27-34"><a href="#cb27-34" tabindex="-1"></a></span>
-<span id="cb27-35"><a href="#cb27-35" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(sigma2_c, T, T) <span class="sc">+</span> sigma2_u<span class="sc">*</span><span class="fu">diag</span>(T)</span>
-<span id="cb27-36"><a href="#cb27-36" tabindex="-1"></a>sigma_inv <span class="ot">&lt;-</span> <span class="fu">solve</span>(sigma)</span>
-<span id="cb27-37"><a href="#cb27-37" tabindex="-1"></a>omega <span class="ot">&lt;-</span> <span class="fu">diag</span>(n) <span class="sc">%x%</span> sigma_inv</span>
-<span id="cb27-38"><a href="#cb27-38" tabindex="-1"></a>beta_gls <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> y</span>
-<span id="cb27-39"><a href="#cb27-39" tabindex="-1"></a></span>
-<span id="cb27-40"><a href="#cb27-40" tabindex="-1"></a><span class="co"># Usual Variance Matrix Estimator</span></span>
-<span id="cb27-41"><a href="#cb27-41" tabindex="-1"></a>usual_vcov <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> X)</span>
-<span id="cb27-42"><a href="#cb27-42" tabindex="-1"></a></span>
-<span id="cb27-43"><a href="#cb27-43" tabindex="-1"></a><span class="co"># Robust Variance Matrix Estimator</span></span>
-<span id="cb27-44"><a href="#cb27-44" tabindex="-1"></a>rbst_vcov <span class="ot">&lt;-</span> <span class="fu">with</span>(df03, {</span>
-<span id="cb27-45"><a href="#cb27-45" tabindex="-1"></a>    dfs <span class="ot">&lt;-</span> <span class="fu">split</span>(df03, id)</span>
-<span id="cb27-46"><a href="#cb27-46" tabindex="-1"></a>    A <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X), <span class="fu">ncol</span>(X))</span>
-<span id="cb27-47"><a href="#cb27-47" tabindex="-1"></a>    B <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X), <span class="fu">ncol</span>(X))</span>
-<span id="cb27-48"><a href="#cb27-48" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">length</span>(dfs)</span>
-<span id="cb27-49"><a href="#cb27-49" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb27-50"><a href="#cb27-50" tabindex="-1"></a>        mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(frml, <span class="at">data =</span> dfs[[i]])</span>
-<span id="cb27-51"><a href="#cb27-51" tabindex="-1"></a>        X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, mf)</span>
-<span id="cb27-52"><a href="#cb27-52" tabindex="-1"></a>        y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
-<span id="cb27-53"><a href="#cb27-53" tabindex="-1"></a>        u <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta_gls</span>
-<span id="cb27-54"><a href="#cb27-54" tabindex="-1"></a>        A <span class="ot">&lt;-</span> A <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
-<span id="cb27-55"><a href="#cb27-55" tabindex="-1"></a>        B <span class="ot">&lt;-</span> B <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> u <span class="sc">%*%</span> <span class="fu">t</span>(u) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
-<span id="cb27-56"><a href="#cb27-56" tabindex="-1"></a>    }</span>
-<span id="cb27-57"><a href="#cb27-57" tabindex="-1"></a>    <span class="fu">solve</span>(A) <span class="sc">%*%</span> B <span class="sc">%*%</span> <span class="fu">solve</span>(A)</span>
-<span id="cb27-58"><a href="#cb27-58" tabindex="-1"></a>})</span></code></pre></div>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>frml <span class="ot">&lt;-</span> y <span class="sc">~</span> x <span class="sc">+</span> z</span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(frml, <span class="at">data =</span> df03)</span>
+<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(frml, <span class="at">data =</span> df03)</span>
+<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>beta_ols <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X)<span class="sc">%*%</span>X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> y</span>
+<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>residuals <span class="ot">&lt;-</span> X <span class="sc">%*%</span> beta_ols <span class="sc">-</span> y</span>
+<span id="cb29-7"><a href="#cb29-7" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X) <span class="sc">-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb29-8"><a href="#cb29-8" tabindex="-1"></a>sigma2_ols <span class="ot">&lt;-</span> <span class="fu">sum</span>(residuals<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df</span>
+<span id="cb29-9"><a href="#cb29-9" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(df03<span class="sc">$</span>t))</span>
+<span id="cb29-10"><a href="#cb29-10" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">levels</span>(df03<span class="sc">$</span>id))</span>
+<span id="cb29-11"><a href="#cb29-11" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" tabindex="-1"></a><span class="co"># total error variance</span></span>
+<span id="cb29-13"><a href="#cb29-13" tabindex="-1"></a>sigma2_v <span class="ot">&lt;-</span> <span class="fu">sum</span>(residuals<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span>df</span>
+<span id="cb29-14"><a href="#cb29-14" tabindex="-1"></a></span>
+<span id="cb29-15"><a href="#cb29-15" tabindex="-1"></a><span class="co"># individual error variance</span></span>
+<span id="cb29-16"><a href="#cb29-16" tabindex="-1"></a>sigma2_c <span class="ot">&lt;-</span> <span class="fu">with</span>(df03, {</span>
+<span id="cb29-17"><a href="#cb29-17" tabindex="-1"></a>    <span class="fu">sum</span>(<span class="fu">sapply</span>(<span class="fu">levels</span>(id), <span class="cf">function</span>(i){</span>
+<span id="cb29-18"><a href="#cb29-18" tabindex="-1"></a>        r <span class="ot">&lt;-</span> residuals[id <span class="sc">==</span> i]</span>
+<span id="cb29-19"><a href="#cb29-19" tabindex="-1"></a>        cp <span class="ot">&lt;-</span> <span class="fu">outer</span>(r, r)</span>
+<span id="cb29-20"><a href="#cb29-20" tabindex="-1"></a>        <span class="fu">sum</span>(cp[<span class="fu">upper.tri</span>(cp, <span class="at">diag =</span> <span class="cn">FALSE</span>)])</span>
+<span id="cb29-21"><a href="#cb29-21" tabindex="-1"></a>        <span class="co"># 以下と同じ結果</span></span>
+<span id="cb29-22"><a href="#cb29-22" tabindex="-1"></a>        <span class="co"># sum &lt;- 0</span></span>
+<span id="cb29-23"><a href="#cb29-23" tabindex="-1"></a>        <span class="co"># for(t in 1:(T-1)){</span></span>
+<span id="cb29-24"><a href="#cb29-24" tabindex="-1"></a>        <span class="co">#     for(k in (t+1):T){</span></span>
+<span id="cb29-25"><a href="#cb29-25" tabindex="-1"></a>        <span class="co">#         sum &lt;- sum + r[t]*r[k]</span></span>
+<span id="cb29-26"><a href="#cb29-26" tabindex="-1"></a>        <span class="co">#     }</span></span>
+<span id="cb29-27"><a href="#cb29-27" tabindex="-1"></a>        <span class="co"># }</span></span>
+<span id="cb29-28"><a href="#cb29-28" tabindex="-1"></a>        <span class="co"># sum</span></span>
+<span id="cb29-29"><a href="#cb29-29" tabindex="-1"></a>    }))<span class="sc">/</span>((n<span class="sc">*</span>T<span class="sc">*</span>(T<span class="dv">-1</span>)<span class="sc">/</span><span class="dv">2</span>) <span class="sc">-</span> <span class="fu">ncol</span>(X))</span>
+<span id="cb29-30"><a href="#cb29-30" tabindex="-1"></a>})</span>
+<span id="cb29-31"><a href="#cb29-31" tabindex="-1"></a></span>
+<span id="cb29-32"><a href="#cb29-32" tabindex="-1"></a><span class="co"># idiosyncratic error variance</span></span>
+<span id="cb29-33"><a href="#cb29-33" tabindex="-1"></a>sigma2_u <span class="ot">&lt;-</span> sigma2_v <span class="sc">-</span> sigma2_c</span>
+<span id="cb29-34"><a href="#cb29-34" tabindex="-1"></a></span>
+<span id="cb29-35"><a href="#cb29-35" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(sigma2_c, T, T) <span class="sc">+</span> sigma2_u<span class="sc">*</span><span class="fu">diag</span>(T)</span>
+<span id="cb29-36"><a href="#cb29-36" tabindex="-1"></a>sigma_inv <span class="ot">&lt;-</span> <span class="fu">solve</span>(sigma)</span>
+<span id="cb29-37"><a href="#cb29-37" tabindex="-1"></a>omega <span class="ot">&lt;-</span> <span class="fu">diag</span>(n) <span class="sc">%x%</span> sigma_inv</span>
+<span id="cb29-38"><a href="#cb29-38" tabindex="-1"></a>beta_gls <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> X) <span class="sc">%*%</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> y</span>
+<span id="cb29-39"><a href="#cb29-39" tabindex="-1"></a></span>
+<span id="cb29-40"><a href="#cb29-40" tabindex="-1"></a><span class="co"># Usual Variance Matrix Estimator</span></span>
+<span id="cb29-41"><a href="#cb29-41" tabindex="-1"></a>usual_vcov <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> omega <span class="sc">%*%</span> X)</span>
+<span id="cb29-42"><a href="#cb29-42" tabindex="-1"></a></span>
+<span id="cb29-43"><a href="#cb29-43" tabindex="-1"></a><span class="co"># Robust Variance Matrix Estimator</span></span>
+<span id="cb29-44"><a href="#cb29-44" tabindex="-1"></a>rbst_vcov <span class="ot">&lt;-</span> <span class="fu">with</span>(df03, {</span>
+<span id="cb29-45"><a href="#cb29-45" tabindex="-1"></a>    dfs <span class="ot">&lt;-</span> <span class="fu">split</span>(df03, id)</span>
+<span id="cb29-46"><a href="#cb29-46" tabindex="-1"></a>    A <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X), <span class="fu">ncol</span>(X))</span>
+<span id="cb29-47"><a href="#cb29-47" tabindex="-1"></a>    B <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="fu">ncol</span>(X), <span class="fu">ncol</span>(X))</span>
+<span id="cb29-48"><a href="#cb29-48" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="fu">length</span>(dfs)</span>
+<span id="cb29-49"><a href="#cb29-49" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb29-50"><a href="#cb29-50" tabindex="-1"></a>        mf <span class="ot">&lt;-</span> <span class="fu">model.frame</span>(frml, <span class="at">data =</span> dfs[[i]])</span>
+<span id="cb29-51"><a href="#cb29-51" tabindex="-1"></a>        X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(mf, mf)</span>
+<span id="cb29-52"><a href="#cb29-52" tabindex="-1"></a>        y <span class="ot">&lt;-</span> <span class="fu">model.response</span>(mf)</span>
+<span id="cb29-53"><a href="#cb29-53" tabindex="-1"></a>        u <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> beta_gls</span>
+<span id="cb29-54"><a href="#cb29-54" tabindex="-1"></a>        A <span class="ot">&lt;-</span> A <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
+<span id="cb29-55"><a href="#cb29-55" tabindex="-1"></a>        B <span class="ot">&lt;-</span> B <span class="sc">+</span> <span class="fu">t</span>(X) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> u <span class="sc">%*%</span> <span class="fu">t</span>(u) <span class="sc">%*%</span> sigma_inv <span class="sc">%*%</span> X</span>
+<span id="cb29-56"><a href="#cb29-56" tabindex="-1"></a>    }</span>
+<span id="cb29-57"><a href="#cb29-57" tabindex="-1"></a>    <span class="fu">solve</span>(A) <span class="sc">%*%</span> B <span class="sc">%*%</span> <span class="fu">solve</span>(A)</span>
+<span id="cb29-58"><a href="#cb29-58" tabindex="-1"></a>})</span></code></pre></div>
 <p>自由度がややこしいですね。</p>
 </div>
 <div id="plmで推定" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span>
 <code>plm</code>で推定</h2>
 <p>比較のために、<code>plm</code>パッケージで推定します。ぐっと手間暇が減っていますね。</p>
-<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
-<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>pd01 <span class="ot">&lt;-</span> <span class="fu">pdata.frame</span>(df03, <span class="at">index=</span><span class="fu">c</span>(<span class="st">&quot;id&quot;</span>))</span>
-<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a>r_plm <span class="ot">&lt;-</span> <span class="fu">plm</span>(frml, <span class="at">model =</span> <span class="st">&quot;random&quot;</span>, <span class="at">data =</span> pd01)</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>pd01 <span class="ot">&lt;-</span> <span class="fu">pdata.frame</span>(df03, <span class="at">index=</span><span class="fu">c</span>(<span class="st">&quot;id&quot;</span>))</span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>r_plm <span class="ot">&lt;-</span> <span class="fu">plm</span>(frml, <span class="at">model =</span> <span class="st">&quot;random&quot;</span>, <span class="at">data =</span> pd01)</span></code></pre></div>
 <p>パネルデータ分析に使えるパッケージは多数あり、<code>plm</code>にこだわる必要はありません。一方、<code>plm</code>のヴィネットはパネルデータ分析を行う前に一読を推奨します。</p>
 </div>
 <div id="推定結果を比較" class="section level2" number="4.4">
 <h2><span class="header-section-number">4.4</span> 推定結果を比較</h2>
 <p>係数の推定量と標準誤差を比較してみましょう。</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>(beta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>    <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>, beta_ols, beta_gls, <span class="fu">coef</span>(<span class="fu">summary</span>(r_plm))[, <span class="dv">1</span>]),</span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>    <span class="fu">ncol</span>(X), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(beta_gls), <span class="fu">c</span>(<span class="st">&quot;true&quot;</span>, <span class="st">&quot;OLS&quot;</span>, <span class="st">&quot;GLS&quot;</span>, <span class="st">&quot;plm/random&quot;</span>))))</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>(beta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>    <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>, beta_ols, beta_gls, <span class="fu">coef</span>(<span class="fu">summary</span>(r_plm))[, <span class="dv">1</span>]),</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="fu">ncol</span>(X), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(beta_gls), <span class="fu">c</span>(<span class="st">&quot;true&quot;</span>, <span class="st">&quot;OLS&quot;</span>, <span class="st">&quot;GLS&quot;</span>, <span class="st">&quot;plm/random&quot;</span>))))</span></code></pre></div>
 <pre><code>            true        OLS       GLS plm/random
 (Intercept)    1  0.7393101  1.145877   1.147142
 x              2  2.6266132  2.086162   2.084467
 z             -3 -2.7875092 -3.041145  -3.041919</code></pre>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>(sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">sqrt</span>(sigma2_ols<span class="sc">*</span><span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X))), <span class="fu">sqrt</span>(<span class="fu">diag</span>(usual_vcov)), <span class="fu">sqrt</span>(<span class="fu">diag</span>(rbst_vcov)), <span class="fu">coef</span>(<span class="fu">summary</span>(r_plm))[, <span class="dv">2</span>]),</span>
-<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    <span class="fu">ncol</span>(X), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(beta_gls), <span class="fu">c</span>(<span class="st">&quot;OLS&quot;</span>, <span class="st">&quot;GLS/Usual&quot;</span>, <span class="st">&quot;GLS/Robust&quot;</span>, <span class="st">&quot;plm/random&quot;</span>))))</span></code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>(sigma <span class="ot">&lt;-</span> <span class="fu">matrix</span>(</span>
+<span id="cb33-2"><a href="#cb33-2" tabindex="-1"></a>    <span class="fu">c</span>(<span class="fu">sqrt</span>(sigma2_ols<span class="sc">*</span><span class="fu">diag</span>(<span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X))), <span class="fu">sqrt</span>(<span class="fu">diag</span>(usual_vcov)), <span class="fu">sqrt</span>(<span class="fu">diag</span>(rbst_vcov)), <span class="fu">coef</span>(<span class="fu">summary</span>(r_plm))[, <span class="dv">2</span>]),</span>
+<span id="cb33-3"><a href="#cb33-3" tabindex="-1"></a>    <span class="fu">ncol</span>(X), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">rownames</span>(beta_gls), <span class="fu">c</span>(<span class="st">&quot;OLS&quot;</span>, <span class="st">&quot;GLS/Usual&quot;</span>, <span class="st">&quot;GLS/Robust&quot;</span>, <span class="st">&quot;plm/random&quot;</span>))))</span></code></pre></div>
 <pre><code>                  OLS GLS/Usual GLS/Robust plm/random
 (Intercept) 0.2877172 0.2514105  0.2571024  0.2508719
 x           0.3630824 0.1858884  0.2043492  0.1823705
