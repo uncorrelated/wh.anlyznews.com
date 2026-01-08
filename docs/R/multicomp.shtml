@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>手当り次第に効果を探すあなたのための多重比較補正</title>
+
+<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">手当り次第に効果を探すあなたのための多重比較補正</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>調査・研究は泥縄式になりがちですが、安易に統計的仮説検定で偽陽性が入り込みやすくなります。多重比較補正で、まやかしの統計的有意性を抑制しましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#p値を補正する手法" id="toc-p値を補正する手法"><span
+class="toc-section-number">1</span> p値を補正する手法</a>
+<ul>
+<li><a href="#bonferroni補正" id="toc-bonferroni補正"><span
+class="toc-section-number">1.1</span> Bonferroni補正</a></li>
+<li><a href="#holm-bonferroni補正" id="toc-holm-bonferroni補正"><span
+class="toc-section-number">1.2</span> Holm-Bonferroni補正</a></li>
+<li><a href="#benjamini-hochberg補正"
+id="toc-benjamini-hochberg補正"><span
+class="toc-section-number">1.3</span> Benjamini-Hochberg補正</a></li>
+<li><a href="#benjamini-yekutieli" id="toc-benjamini-yekutieli"><span
+class="toc-section-number">1.4</span> Benjamini-Yekutieli</a></li>
+<li><a href="#hochberg補正とhommel補正"
+id="toc-hochberg補正とhommel補正"><span
+class="toc-section-number">1.5</span> Hochberg補正とHommel補正</a></li>
+<li><a href="#p.adjustではサポートされない手法"
+id="toc-p.adjustではサポートされない手法"><span
+class="toc-section-number">1.6</span>
+<code>p.adjust</code>ではサポートされない手法</a></li>
+</ul></li>
+<li><a href="#検定統計量から補正p値を計算する手法"
+id="toc-検定統計量から補正p値を計算する手法"><span
+class="toc-section-number">2</span>
+検定統計量から補正p値を計算する手法</a>
+<ul>
+<li><a href="#tukey-honestly-significant-difference"
+id="toc-tukey-honestly-significant-difference"><span
+class="toc-section-number">2.1</span> Tukey Honestly Significant
+Difference</a></li>
+<li><a href="#ガブリエル比較区間" id="toc-ガブリエル比較区間"><span
+class="toc-section-number">2.2</span> ガブリエル比較区間</a></li>
+<li><a href="#dunnett補正" id="toc-dunnett補正"><span
+class="toc-section-number">2.3</span> Dunnett補正</a>
+<ul>
+<li><a href="#コントロールの指定" id="toc-コントロールの指定"><span
+class="toc-section-number">2.3.1</span> コントロールの指定</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#利用上の注意" id="toc-利用上の注意"><span
+class="toc-section-number">3</span> 利用上の注意</a></li>
+</ul>
+</div>
+
+<p>手当り次第に効果を探す研究はぼちぼちあります。例えば薬害には吐き気や蕁麻疹など多岐に渡る症状がありますが、どれか一つだけ現れても薬害です。</p>
+<p>有意水準が<span
+class="math inline">\(\alpha\)</span>の統計的仮説検定を<span
+class="math inline">\(n\)</span>個の正しい帰無仮説に対して行ったとき、それぞれのp値が独立として、ひとつ以上の仮説が統計的に有意になる確率ファミリーワイズエラー率（<abbr title="Family-Wise Error Rate">FWER</abbr>）は</p>
+<p><span class="math display">\[\begin{align}
+1-(1-\alpha)^n &amp;= 1 - (1 - {}_n\!C_1 \alpha + {}_n\!C_2 \alpha^2 -
+\cdots + (-1)^n {}_n\!C_n \alpha^n )\\
+&amp;\approx {}_n\!C_1 \alpha = n\alpha
+\end{align}\]</span></p>
+<p>となります。慣習的に<span
+class="math inline">\(\alpha\)</span>は<span
+class="math inline">\(0.1\)</span>以下の小さい値になり、二乗以上の項は微々たるものなので無視しました。有意水準<span
+class="math inline">\(\alpha\)</span>で検定しているのに、実際はその<span
+class="math inline">\(n\)</span>倍ぐらい緩く評価することになります。これを補正するのが多重比較補正です。</p>
+<p>もっとも基本的な多重比較補正の<ruby>Bonferroni<rp>（</rp><rt>ボンフェローニ</rt><rp>）</rp></ruby>補正は<span
+class="math inline">\(\alpha\)</span>を<span
+class="math inline">\(n\)</span>で割って、個々の検定の棄却域にします。単純ですが理に適っているように思えますね。個々の検定の有意水準を<span
+class="math inline">\(\alpha/n\)</span>にすれば、どれかが棄却されれば有意という検定全体の有意水準はおおよそ<span
+class="math inline">\(\alpha\)</span>にできそうです。しかし、そうは簡単に行きません。検出力が低く、偽陰性が出やすいことが知られています。</p>
+<p>Bonferroni補正は、ある仮説が棄却されるとき他の仮説は棄却されない無い場合のみ全体の有意水準が<span
+class="math inline">\(\alpha\)</span>になり、そうでない場合はもっと低くなります<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。極端な場合で、n個のp値がそれぞれ<span
+class="math inline">\(\alpha/n\)</span>より大きく、<span
+class="math inline">\(\alpha\)</span>より小さいとしましょう。発熱と倦怠感のように相関がある現象をそれぞれ分析していれば、そういう事もありえます。補正なしでもすべてが有意であれば、全体でも有意と見做すのが直観的です。しかし、多重比較補正をかけると帰無仮説をどれも棄却できないことになります。Bonferroni補正はまた、一番低いp値の分布にあわせた補正です。二番目、三番目に低いp値は異なる分布に従うので、Bonferroni補正では偽陰性の確率が高くなります。</p>
+<p>検出力の低さ（偽陰性の多さ）をどう減らすかが問題になり、多重比較補正は多様な手法が提案されています。また、p値と比較する有意水準を補正する他に、検定統計量の最大値の分布から全体のp値を計算する方法もあります。</p>
+<div id="p値を補正する手法" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> p値を補正する手法</h1>
+<p>Rの<code>p.adjust</code>でサポートしている手法を俯瞰します。大別すると、p値をFWERを保証する値に変換する手法と、偽陽性率（<abbr title="False Discovery Rate">FDR</abbr><a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>）を保証する値に変換する手法に分かれます。検証型の研究ではFWERが問題になり、発見的研究の場合はFDRが問題にされることが多いようです。</p>
+<div id="bonferroni補正" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> Bonferroni補正</h2>
+<p>既に説明した有意水準<span
+class="math inline">\(\alpha\)</span>を仮説の数<span
+class="math inline">\(n\)</span>で割る補正です。ブールの不等式（確率測度の劣加法性）から、p値が独立であればFWERは<span
+class="math inline">\(\alpha\)</span>になり、相関があれば<span
+class="math inline">\(\alpha\)</span>未満になることが言えます。<span
+class="math inline">\(\mbox{FWER} \le
+\alpha\)</span>が数理的に保証されています。</p>
+<p>Bonferroni補正をかけたあとのFWERは以下のようになります。</p>
+<p><span class="math display">\[\begin{align}
+\mbox{FWER} &amp;= P \bigg ( \bigcup^{n_0}_{j=1} \bigg \{ p_j \leq
+\frac{\alpha}{n} \bigg\} \bigg )
+\end{align}\]</span></p>
+<p>ここで<span
+class="math inline">\(n_0\)</span>は、正しい帰無仮説（対立仮説が間違っている場合）の数で、<span
+class="math inline">\(n_0 \leq n\)</span>です。<span
+class="math inline">\(j\)</span>はどの帰無仮説かをあらわす添字、<span
+class="math inline">\(p_j\)</span>は仮説<span
+class="math inline">\(j\)</span>のp値です。<span
+class="math inline">\(1\)</span>から<span
+class="math inline">\(n_0\)</span>までの正しい帰無仮説のp値が<span
+class="math inline">\(\alpha/n\)</span>以下となる事象の和集合となる事象が起きる確率となります。</p>
+<p><span class="math display">\[\begin{align}
+P \bigg ( \bigcup^{n_0}_{j=1} \bigg \{ p_j \leq \frac{\alpha}{n} \bigg\}
+\bigg ) &amp;\leq \sum^{n_0}_{j=1} P\bigg( \bigg \{ p_j \leq
+\frac{\alpha}{n} \bigg \} \bigg)
+\end{align}\]</span></p>
+<p>確率測度の劣加法性から、和集合の確率は、和集合の要素の事象の確率の和よりも小さくなります。複数の事象が同時に発生する確率があれば、どれか一つ以上の事象が生じる本当の確率は、同時発生を考慮しない個々の事象の発生確率を足した値よりも小さくなるということです。</p>
+<p><span class="math display">\[\begin{align}
+\sum^{n_0}_{j=1} P\bigg( \bigg \{ p_j \leq \frac{\alpha}{n} \bigg \}
+\bigg) &amp;= \sum^{n_0}_{j=1} \frac{\alpha}{n} = n_0 \frac{\alpha}{n}
+\leq n \frac{\alpha}{n} = \alpha
+\end{align}\]</span></p>
+<p>事象<span class="math inline">\(p_j \leq
+\alpha/n\)</span>が生じる確率は、p値が有意水準<span
+class="math inline">\(\alpha/n\)</span>以下になる確率なので、有意水準の定義から<span
+class="math inline">\(\alpha/n\)</span>です。あとは<span
+class="math inline">\(n_0 \leq n\)</span>に注意すると、<span
+class="math inline">\(\mbox{FWER} \leq
+\alpha\)</span>が導出できます。</p>
+<p>RでBonferroni補正を使うのは簡単です。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># 同時に行った複数の検定結果のp値を並べる</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.012</span>, <span class="fl">0.015</span>, <span class="fl">0.026</span>, <span class="fl">0.038</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">p.adjust</span>(p, <span class="at">method =</span> <span class="st">&quot;bonferroni&quot;</span>)</span></code></pre></div>
+<pre><code>[1] 0.048 0.060 0.104 0.152</code></pre>
+<p>p値を<span
+class="math inline">\(5\)</span>倍にしてくれていますね。このp値の集合では、5%有意1つ、10%有意1つです。</p>
+<p>しかし、現在では積極的に使うべきではありません。</p>
+</div>
+<div id="holm-bonferroni補正" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span>
+Holm-Bonferroni補正</h2>
+<p><ruby>Holm<rp>（</rp><rt>ホルム</rt><rp>）</rp></ruby>補正とも呼びます。小ささで並べたp値の順番ごとに棄却域を変える手法です。p値の集合の要素を小さい方から検定していきます。<span
+class="math inline">\(j\)</span>番目のp値の棄却域は<span
+class="math inline">\(\alpha/j\)</span>とします。だんだんと棄却域が大きくなり、有意になりやすくなります。一度でも帰無仮説が棄却されなければ、終了です。残りのp値は検定しません。棄却され、かつ未検定のp値が残っていれば、次に小さいp値の検定を行います。</p>
+<p>Bonferroni補正よりも一様に（2番目以降の）検出力が高いです。また、二番目以降の棄却域は広くなりますが、どのp値の検定においても<span
+class="math inline">\(\mbox{FWER} \le
+\alpha\)</span>が数理的に保証されます<a href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">p.adjust</span>(p, <span class="at">method =</span> <span class="st">&quot;holm&quot;</span>)</span></code></pre></div>
+<pre><code>[1] 0.048 0.048 0.052 0.052</code></pre>
+<p>このp値の集合では、5%有意2つ、10%有意2つになっています。</p>
+</div>
+<div id="benjamini-hochberg補正" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span>
+Benjamini-Hochberg補正</h2>
+<p><ruby>Benjamini<rp>（</rp><rt>ベンジャミン</rt><rp>）</rp></ruby>-<ruby>Hochberg<rp>（</rp><rt>ホックバーグ</rt><rp>）</rp></ruby>補正は、BH法と略されることもあります。小ささで並べたp値の順番ごとに棄却域を変える手法です。p値の集合の要素を大きい方から検定していきます。<span
+class="math inline">\(j\)</span>番目のp値の棄却域は<span
+class="math inline">\(\alpha/j\)</span>とします。だんだんと棄却域が小さくなり、有意になりづらくなります。一度でも帰無仮説が棄却されれば、終了です。残りのp値に対応する帰無仮説も棄却されたものとします。棄却されず、かつ未検定のp値が残っていれば、次に小さいp値の検定を行います。</p>
+<p>BH法はFWERではありません。BH補正された値はFDRがそれ以下の値であることが数理的に保証されています。多数の症状を調べて薬害があるか否か断定するような、研究仮説の検証には向かない手法になります。一方、検出力が高く、すべてのp値が<span
+class="math inline">\(\alpha/2\)</span>より大きく<span
+class="math inline">\(\alpha\)</span>よりも小さいような場合でも、有意になります。薬害の可能性がないか探していく発見的な研究においては、有用な方法です。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">p.adjust</span>(p, <span class="at">method =</span> <span class="st">&quot;BH&quot;</span>)</span></code></pre></div>
+<pre><code>[1] 0.03000000 0.03000000 0.03466667 0.03800000</code></pre>
+<p>すべて5%有意になりました。</p>
+</div>
+<div id="benjamini-yekutieli" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span>
+Benjamini-Yekutieli</h2>
+<p>Benjamini-<ruby>Yekutieli<rp>（</rp><rt>イェクティエリ</rt><rp>）</rp></ruby>はBY法とも記述されます。BH補正を改良したものと説明されています（<a
+href="https://doi.org/10.5691/jjb.29.125">松田
+(2008)</a>）が、保守的になるようです。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">p.adjust</span>(p, <span class="at">method =</span> <span class="st">&quot;BY&quot;</span>)</span></code></pre></div>
+<pre><code>[1] 0.06250000 0.06250000 0.07222222 0.07916667</code></pre>
+<p>すべて10%有意になりました。</p>
+</div>
+<div id="hochberg補正とhommel補正" class="section level2" number="1.5">
+<h2><span class="header-section-number">1.5</span>
+Hochberg補正とHommel補正</h2>
+<p><code>p.adjust</code>では<a
+href="https://doi.org/10.1093/biomet/75.4.800">Hochberg (1988)</a>と<a
+href="https://doi.org/10.1093/biomet/75.2.383">Hommel
+(1988)</a>で提案された補正方法も、<code>method</code>に<code>hochberg</code>もしくは<code>hommel</code>を指定することで使う事ができます。これらは「検定統計量間に独立ないし正の相関が仮定できる場合にしか
+FWER を制御することができない」（<a
+href="https://doi.org/10.5691/jjb.38.41">杉谷・森川
+(2017)</a>）そうですが、条件を満たしているときは検出力が高いようです。</p>
+</div>
+<div id="p.adjustではサポートされない手法" class="section level2"
+number="1.6">
+<h2><span class="header-section-number">1.6</span>
+<code>p.adjust</code>ではサポートされない手法</h2>
+<p>多重比較補正の手法は多様で、<code>p.adjust</code>でサポートされていない<ruby>Šidák<rp>（</rp><rt>シダック</rt><rp>）</rp></ruby>補正なども、分野によってはよく使われるようです。サポートしているパッケージが見つからない場合もあるかも知れませんが、計算手順はそう複雑ではないことが多いです。</p>
+<p>またゲートキーピング戦略といって、重要性に応じて帰無仮説に順番をつけ、多重比較補正なしに検定を行っていき、棄却できない帰無仮説が出たらそこで終了して、残りの帰無仮説は棄却できないと見做す方法もあります。この戦略では、FWERが個々の有意水準以下に保証され、かつ検出力も高くなりますが、帰無仮説の重要性に順番をつける学術的な理屈が必要になります。</p>
+</div>
+</div>
+<div id="検定統計量から補正p値を計算する手法" class="section level1"
+number="2">
+<h1><span class="header-section-number">2</span>
+検定統計量から補正p値を計算する手法</h1>
+<p>p値からFWERもしくはFDRを保証する値を計算する手法を見てきましたが、FWERとなる検定統計量の最大値の分布のp値を計算する手法もあります。サブサンプルとサブサンプルの違いを探す多群比較でよく使われています。</p>
+<div id="tukey-honestly-significant-difference" class="section level2"
+number="2.1">
+<h2><span class="header-section-number">2.1</span> Tukey Honestly
+Significant Difference</h2>
+<p><ruby>Tukey<rp>（</rp><rt>チューキー</rt><rp>）</rp></ruby>の範囲検定、Tukey法とも呼ばれます。サブサンプルとサブサンプルの全組み合わせ（many-to-many）の二群比較のt統計量の最大値の分布から、p値を計算する方法です。サブサンプルごとに要素数が異なる場合は、自由度で補正したTukey-<ruby>Kramer<rp>（</rp><rt>クレマー</rt><rp>）</rp></ruby>法を用います。</p>
+<p>慣習的に<a
+href="./F-test.shtml#分散分析anova">ANOVA</a>と併用されることが多いですが、RではANOVAの後処理のようなコマンド体系になっていますが、多群比較が目的であれば前段でANOVAを参照する必要はありません。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># `aov`の結果オブジェクトを渡す</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">TukeyHSD</span>(<span class="fu">aov</span>(Sepal.Width <span class="sc">~</span> Species, iris), <span class="st">&quot;Species&quot;</span>)</span></code></pre></div>
+<p><code>Species</code>は<code>iris</code>データフレーム中の群をあらわす<code>factor</code>型の列名です。</p>
+<p>ヘルプに明記は無いですが、Tukey-Kramer法になっているそうで、サンプルサイズの不均一性は気にしなくても大丈夫です。</p>
+</div>
+<div id="ガブリエル比較区間" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+ガブリエル比較区間</h2>
+<p>信頼区間は多群比較に使えないので、プロットで群間比較を一望したい場合はt検定に対応した<a
+href="./dotchart.shtml#%E3%82%AC%E3%83%96%E3%83%AA%E3%82%A8%E3%83%AB%E6%AF%94%E8%BC%83%E5%8C%BA%E9%96%93">ガブリエル比較区間</a>が便利です。また、ガブリエル比較区間はTurkey
+HSDにあわせて区間調整をしてくれます。</p>
+</div>
+<div id="dunnett補正" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Dunnett補正</h2>
+<p>サブサンプルの数をnとして、Tukey
+HSDはn対n比較になります。しかし、薬剤の効果の検証などでは統制群と介入群A、統制群と介入群B、統制群と介入群C…と言うようにmany-to-one比較になることが通例で、Tukey
+HSDは過度の補正になります。many-to-oneに対応するのが<ruby>Dunnett<rp>（</rp><rt>ダネット</rt><rp>）</rp></ruby>補正です。</p>
+<p>Rでは<code>multcomp</code>パッケージでサポートされています。<code>iris</code>データセットで試してみましょう。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">glht</span>(<span class="fu">aov</span>(Sepal.Width <span class="sc">~</span> Species, iris),</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>    <span class="at">linfct =</span> <span class="fu">mcp</span>(<span class="at">Species =</span> <span class="st">&quot;Dunnett&quot;</span>)))</span></code></pre></div>
+<pre><code>
+     Simultaneous Tests for General Linear Hypotheses
+
+Multiple Comparisons of Means: Dunnett Contrasts
+
+
+Fit: aov(formula = Sepal.Width ~ Species, data = iris)
+
+Linear Hypotheses:
+                         Estimate Std. Error t value Pr(&gt;|t|)    
+versicolor - setosa == 0 -0.65800    0.06794  -9.685  &lt; 1e-10 ***
+virginica - setosa == 0  -0.45400    0.06794  -6.683 9.07e-10 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+(Adjusted p values reported -- single-step method)</code></pre>
+<p><code>Species</code>は<code>iris</code>データフレーム中の群をあらわす<code>factor</code>型の列名です。</p>
+<div id="コントロールの指定" class="section level3" number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span>
+コントロールの指定</h3>
+<p>統制群の指定をしたい事があると思いますが、なぜか<code>multcomp</code>ではその指定をサポートしておらず、最初の要素が使われます。そこで、群をあらわす<code>factor</code>型の変数をつくりなおします。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a><span class="co"># 元の1:setosa, 2:versicolor, 3:virginicaという並びを、</span></span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a><span class="co"># 1:versicolor, 2:virginica, 3:setosaに入れ替える</span></span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>sorted_gn <span class="ot">&lt;-</span> <span class="fu">factor</span>(</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>    <span class="fu">as.character</span>(iris<span class="sc">$</span>Species),</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>    <span class="at">levels =</span> <span class="fu">levels</span>(iris<span class="sc">$</span>Species)[<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>)])</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="fu">summary</span>(r_glht_sorted <span class="ot">&lt;-</span> <span class="fu">glht</span>(<span class="fu">aov</span>(Sepal.Width <span class="sc">~</span> sorted_gn, iris),</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a>    <span class="at">linfct =</span> <span class="fu">mcp</span>(<span class="at">sorted_gn =</span> <span class="st">&quot;Dunnett&quot;</span>)))</span></code></pre></div>
+<pre><code>
+     Simultaneous Tests for General Linear Hypotheses
+
+Multiple Comparisons of Means: Dunnett Contrasts
+
+
+Fit: aov(formula = Sepal.Width ~ sorted_gn, data = iris)
+
+Linear Hypotheses:
+                            Estimate Std. Error t value Pr(&gt;|t|)    
+setosa - virginica == 0      0.45400    0.06794   6.683 9.07e-10 ***
+versicolor - virginica == 0 -0.20400    0.06794  -3.003  0.00607 ** 
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+(Adjusted p values reported -- single-step method)</code></pre>
+</div>
+</div>
+</div>
+<div id="利用上の注意" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 利用上の注意</h1>
+<p>多重比較補正は、複数の統計的仮説検定のどれかが有意になれば主張（研究仮説）が示されるようなとき、発見的に手当り次第に効果を探したときには偽要請を抑制する有用な手法です。ただし、盲目的に利用すると弊害が出ます。</p>
+<p>頑強性のテストなどで、説明変数が異なる計量モデルを試した場合を考えます。建前として検証に用いる計量モデルは一つです。統制変数の有無があっても、異なるモデルの同じ説明変数の係数のp値には往々にして強い相関があるので、Bonferroni型の補正は強すぎます。実際、複数のモデルで推定して、すべてのモデルで統計的有意になった、主要なモデルで有意になり頑強性テストでも大きくは変化しなかったと言うような記述で済ます事が多く、暗に緩くFDRで検証するようなことが多いです。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>ブールの不等式（もしくは確率の劣加法性）から示せます。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>真陽性と偽陽性の中の偽陽性の割合<a href="#fnref2"
+class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a
+href="https://www.dropbox.com/scl/fi/53ox0v54km845e4mvjple/holm.pdf?rlkey=aq2qfgdsm0r2t17jlycdpouo4&amp;e=2&amp;st=mgmxezhk&amp;dl=0">丸山
+(2025)</a>の証明を参照しました。<a href="#fnref3"
+class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
