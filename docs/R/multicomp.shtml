@@ -492,7 +492,7 @@ class="math inline">\(5\)</span>倍にしてくれていますね。このp値�
 <div id="holm-bonferroni補正" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span>
 Holm-Bonferroni補正</h2>
-<p><ruby>Holm<rp>（</rp><rt>ホルム</rt><rp>）</rp></ruby>補正とも呼びます。小ささで並べたp値の順番ごとに棄却域を変える手法です。p値の集合の要素を小さい方から検定していきます。<span
+<p><ruby>Holm<rp>（</rp><rt>ホルム</rt><rp>）</rp></ruby>補正とも呼びます。昇順で並べたp値の順番ごとに棄却域を変える手法です。p値の集合の要素を値の小さい方から検定していきます。<span
 class="math inline">\(j\)</span>番目のp値の棄却域は<span
 class="math inline">\(\alpha/j\)</span>とします。だんだんと棄却域が大きくなり、有意になりやすくなります。一度でも帰無仮説が棄却されなければ、終了です。残りのp値は検定しません。棄却され、かつ未検定のp値が残っていれば、次に小さいp値の検定を行います。</p>
 <p>Bonferroni補正よりも一様に（2番目以降の）検出力が高いです。また、二番目以降の棄却域は広くなりますが、どのp値の検定においても<span
@@ -506,10 +506,94 @@ id="fnref3"><sup>3</sup></a>。</p>
 <div id="benjamini-hochberg補正" class="section level2" number="1.3">
 <h2><span class="header-section-number">1.3</span>
 Benjamini-Hochberg補正</h2>
-<p><ruby>Benjamini<rp>（</rp><rt>ベンジャミン</rt><rp>）</rp></ruby>-<ruby>Hochberg<rp>（</rp><rt>ホックバーグ</rt><rp>）</rp></ruby>補正は、BH法と略されることもあります。小ささで並べたp値の順番ごとに棄却域を変える手法です。p値の集合の要素を大きい方から検定していきます。<span
+<p><ruby>Benjamini<rp>（</rp><rt>ベンジャミン</rt><rp>）</rp></ruby>-<ruby>Hochberg<rp>（</rp><rt>ホックバーグ</rt><rp>）</rp></ruby>補正は、BH法と略されることもあります。降順で並べたp値の順番ごとに棄却域を変える手法です。p値の集合の要素を値が大きい方から検定していきます。<span
 class="math inline">\(j\)</span>番目のp値の棄却域は<span
 class="math inline">\(\alpha/j\)</span>とします。だんだんと棄却域が小さくなり、有意になりづらくなります。一度でも帰無仮説が棄却されれば、終了です。残りのp値に対応する帰無仮説も棄却されたものとします。棄却されず、かつ未検定のp値が残っていれば、次に小さいp値の検定を行います。</p>
-<p>BH法はFWERではありません。BH補正された値はFDRがそれ以下の値であることが数理的に保証されています。多数の症状を調べて薬害があるか否か断定するような、研究仮説の検証には向かない手法になります。一方、検出力が高く、すべてのp値が<span
+<p>BH法は補正前の数字がFWERになることを保証しません。ただし、FDR以下の値になることが数理的に保証されています。<span
+class="math inline">\(n\)</span>を帰無仮説の数、<span
+class="math inline">\(n_0\)</span>はを真である帰無仮説の数とします。<span
+class="math inline">\(R\)</span>を棄却された帰無仮説の数、<span
+class="math inline">\(V\)</span>を棄却された帰無仮説で真であった数とします。<abbr title="False Discovery Proportion">FDP</abbr>を<span
+class="math inline">\(V/\max(1, R)\)</span>と、FDRを<span
+class="math inline">\(E[\mbox{FDP}]\)</span>と定義します。FDPが観測値、FDRはその期待値になります。<span
+class="math inline">\(R\)</span>は<span
+class="math inline">\(0\)</span>になりうるので、分母が変則的に定義しています。<span
+class="math inline">\(R \geq V\)</span>なので、<span
+class="math inline">\(R=0\)</span>ならば<span
+class="math inline">\(V=0\)</span>となり、棄却された帰無仮説がなければFDPは<span
+class="math inline">\(0\)</span>です。FDPは帰無仮説ごとに分解できます。
+<span class="math display">\[
+\mbox{FDP} = \sum_{j=1}^{n_0} \frac{V_j}{\max(1, R)}
+\]</span> <span
+class="math inline">\(j\)</span>は帰無仮説を表す添字で、<span
+class="math inline">\(V_j\)</span>は帰無仮説ごとの棄却数です。<span
+class="math inline">\(0\)</span>か<span
+class="math inline">\(1\)</span>になります。級数の内側の項を書き直します。
+<span class="math display">\[\begin{align}
+&amp;= \sum_{j=1}^{n_0} \sum_{k=0}^{n} \frac{V_j}{\max(1, R)}I_{R=k}
+\end{align}\]</span> <span class="math inline">\(I_{R=k}\)</span>は<span
+class="math inline">\(R\)</span>と<span
+class="math inline">\(k\)</span>が等しいときは<span
+class="math inline">\(1\)</span>、異なるときは<span
+class="math inline">\(0\)</span>になる指示関数です。級数の内側に級数を考えてややこしいわけですが、棄却される帰無仮説の数ごとに<span
+class="math inline">\(1\)</span>か<span
+class="math inline">\(0\)</span>かを計算し、合計します。合算しても<span
+class="math inline">\(1\)</span>か<span
+class="math inline">\(0\)</span>にしかなりませんが。 <span
+class="math display">\[\begin{align}
+&amp;= \sum_{j=1}^{n_0} \sum_{k=1}^{n} \frac{V_j}{\max(1, R)}I_{R=k} \\
+\end{align}\]</span> <span
+class="math inline">\(k=0\)</span>のときは<span
+class="math inline">\(V_j=0\)</span>なので、<span
+class="math inline">\(k=1\)</span>から級数の計算をしても同じ値になります。
+<span class="math display">\[\begin{align}
+&amp;= \sum_{j=1}^{n_0} \sum_{k=1}^{n} \frac{V_j}{k}I_{R=k}
+\end{align}\]</span> <span class="math inline">\(R \ne
+k\)</span>のときは<span
+class="math inline">\(I_{R=k}=0\)</span>なので、<span
+class="math inline">\(\max(1, R)\)</span>は<span
+class="math inline">\(k\)</span>に置き換えても同じです。 <span
+class="math display">\[\begin{align}
+&amp;= \sum_{j=1}^{n_0} \sum_{k=1}^{n} \frac{I_{p_j &lt;
+\frac{k}{n}\alpha}}{k}I_{R=k}
+\end{align}\]</span> <span class="math inline">\(V_j\)</span>は<span
+class="math inline">\(1\)</span>か<span
+class="math inline">\(0\)</span>かの棄却された帰無仮説の中で真である数ですから、棄却される条件が満たされているか否かの指示関数と等しくなります。<span
+class="math inline">\(p_j\)</span>は帰無仮説<span
+class="math inline">\(j\)</span>のp値です。BH法では、ひとつの帰無仮説が棄却されると、残り全部の帰無仮説も棄却して終了となります。<span
+class="math inline">\(k\)</span>は、帰無仮説<span
+class="math inline">\(j\)</span>を含めた残っている帰無仮説の数になります。BH法の有意水準は、検定せずに残っている帰無仮説が多ければ多いほど有意水準が高くなるため、<span
+class="math inline">\(p_j &lt;
+k\alpha/n\)</span>と言う条件のついた指示関数になります。
+FDRを計算しましょう。 <span class="math display">\[\begin{align}
+\mbox{FDR} &amp;= E[\mbox{FDP}] = E\bigg[ \sum_{j=1}^{n} \sum_{k=1}^{n}
+\frac{I_{p_j &lt; \frac{k}{n}\alpha}}{k}I_{R=k} \bigg] \\
+&amp;=\sum_{j=1}^{n_0} \sum_{k=1}^{n} \frac{ E[ I_{p_j &lt;
+\frac{k}{n}\alpha} ] }{k}I_{R=k}
+\end{align}\]</span> 確率変数は<span
+class="math inline">\(p_j\)</span>だけです。<span
+class="math inline">\(R\)</span>が確率変数ではないことに注意しましょう。
+<span class="math display">\[\begin{align}
+&amp;=\sum_{j=1}^{n_0} \sum_{k=1}^{n} \frac{ P({p_j &lt;
+\frac{k}{n}\alpha}) }{k}I_{R=k} \\
+&amp;=\sum_{j=1}^{n_0} \sum_{k=1}^{n} \frac{ \frac{k}{n}\alpha
+}{k}I_{R=k}
+\end{align}\]</span> p値が有意水準未満の確率は、有意水準です。 <span
+class="math display">\[\begin{align}
+&amp;=\sum_{j=1}^{n_0} \sum_{k=1}^{n} \frac{\alpha}{n} I_{R=k} \\
+&amp;=\sum_{j=1}^{n_0} \frac{\alpha}{n} = \frac{n_0}{n} \alpha \leq
+\alpha
+\end{align}\]</span> <span
+class="math inline">\(\sum_{k=1}^{n}\)</span>の中で<span
+class="math inline">\(I_{R=k}\)</span>が<span
+class="math inline">\(1\)</span>の項は一つ、かつ<span
+class="math inline">\(I_{R=k}\)</span>以外に<span
+class="math inline">\(k\)</span>が使われていないので、<span
+class="math inline">\(\sum_{k=1}^{n}\)</span>と<span
+class="math inline">\(I_{R=k}\)</span>は消せます。</p>
+<p>これで、<span class="math inline">\(\mbox{FDR} \leq
+\alpha\)</span>が示せました。なお、偽陽性率が100%だとFDRはLWERに一致し、そうでない場合はFDRはLWERよりも小さくなります</p>
+<p>多数の症状を調べて薬害があるか否か断定するような、研究仮説の検証には向かない手法になります。一方、検出力が高く、すべてのp値が<span
 class="math inline">\(\alpha/2\)</span>より大きく<span
 class="math inline">\(\alpha\)</span>よりも小さいような場合でも、有意になります。薬害の可能性がないか探していく発見的な研究においては、有用な方法です。</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">p.adjust</span>(p, <span class="at">method =</span> <span class="st">&quot;BH&quot;</span>)</span></code></pre></div>
