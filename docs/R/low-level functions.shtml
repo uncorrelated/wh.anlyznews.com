@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -382,25 +389,34 @@ class="toc-section-number">4</span> 描画関数のオプション</a>
 <ul>
 <li><a href="#点キャラクターpch" id="toc-点キャラクターpch"><span
 class="toc-section-number">4.1</span>
-点キャラクター（<code>pch</code>）</a></li>
+点キャラクター（<code>pch</code>）</a>
+<ul>
+<li><a href="#点キャラクターの大きさcex"
+id="toc-点キャラクターの大きさcex"><span
+class="toc-section-number">4.1.1</span>
+点キャラクターの大きさ（<code>cex</code>）</a></li>
+</ul></li>
+<li><a href="#線の太さlwd" id="toc-線の太さlwd"><span
+class="toc-section-number">4.2</span>
+線の太さ（<code>lwd</code>）</a></li>
 <li><a href="#線種lty" id="toc-線種lty"><span
-class="toc-section-number">4.2</span> 線種（<code>lty</code>）</a></li>
+class="toc-section-number">4.3</span> 線種（<code>lty</code>）</a></li>
 <li><a href="#矢印の向きcodeと鏃の角度angle"
 id="toc-矢印の向きcodeと鏃の角度angle"><span
-class="toc-section-number">4.3</span>
+class="toc-section-number">4.4</span>
 矢印の向き（<code>code</code>）と鏃の角度（<code>angle</code>）</a></li>
 <li><a href="#プロットのタイプtype" id="toc-プロットのタイプtype"><span
-class="toc-section-number">4.4</span>
+class="toc-section-number">4.5</span>
 プロットのタイプ（<code>type</code>）</a></li>
 <li><a href="#色colbg" id="toc-色colbg"><span
-class="toc-section-number">4.5</span>
+class="toc-section-number">4.6</span>
 色（<code>col</code>,<code>bg</code>）</a>
 <ul>
 <li><a href="#グラデーション" id="toc-グラデーション"><span
-class="toc-section-number">4.5.1</span> グラデーション</a></li>
+class="toc-section-number">4.6.1</span> グラデーション</a></li>
 </ul></li>
 <li><a href="#フォントサイズ" id="toc-フォントサイズ"><span
-class="toc-section-number">4.6</span> フォントサイズ</a></li>
+class="toc-section-number">4.7</span> フォントサイズ</a></li>
 </ul></li>
 <li><a href="#余白の調整" id="toc-余白の調整"><span
 class="toc-section-number">5</span> 余白の調整</a>
@@ -580,23 +596,36 @@ number="2">
 <p><code>points</code>や<code>lines</code>で指定できる<code>pch</code>パラメーターは以下の値を取れます。<code>pch=21</code>から<code>pch=25</code>では内側に色がつき、引数<code>bg</code>で指定できます。</p>
 <p><img src="common_files/figure-html/plot_pch-1.png" width="672" /></p>
 <p>上述の数値指定以外もでき、<code>pch="."</code>とすると一点で、その他の文字を指定（e.g. <code>pch="p"</code>）すると指定した文字でプロットします。</p>
+<div id="点キャラクターの大きさcex" class="section level3"
+number="4.1.1">
+<h3><span class="header-section-number">4.1.1</span>
+点キャラクターの大きさ（<code>cex</code>）</h3>
+<p>点キャラクターの大きさは<code>cex</code>で指定します。後述しますが、フォントサイズも同様です。</p>
+<p><img src="common_files/figure-html/plot_cex-1.png" width="672" /></p>
 </div>
-<div id="線種lty" class="section level2" number="4.2">
+</div>
+<div id="線の太さlwd" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span>
+線の太さ（<code>lwd</code>）</h2>
+<p>線の太さは<code>lwd</code>で指定します。</p>
+<p><img src="common_files/figure-html/plot_lwd-1.png" width="672" /></p>
+</div>
+<div id="線種lty" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span>
 線種（<code>lty</code>）</h2>
 <p><code>lines</code>や<code>arrows</code>で指定できる<code>lty</code>パラメーターは以下の値をとれます。</p>
 <p><img src="common_files/figure-html/plot_lty-1.png" width="672" /></p>
 </div>
 <div id="矢印の向きcodeと鏃の角度angle" class="section level2"
-number="4.3">
-<h2><span class="header-section-number">4.3</span>
+number="4.4">
+<h2><span class="header-section-number">4.4</span>
 矢印の向き（<code>code</code>）と鏃の角度（<code>angle</code>）</h2>
 <p>説明のために矢印を描くときは<code>arrows</code>を使いますが、線の始点<code>(x0, y0)</code>と終点<code>(x1, y1)</code>に<ruby>鏃<rp>（</rp><rt>やじり</rt><rp>）</rp></ruby>をつけるかいなか、鏃の角度や長さをどうするか指定できます。</p>
 <p><img src="common_files/figure-html/plot_code_angle-1.png" width="672" /></p>
 <p>デフォルトは<code>code = 2</code>です。<code>code = 0</code>に意味がないように思われるかも知れませんが、<code>lines</code>と座標の指定方法が異なるので、有用なときもあります。</p>
 </div>
-<div id="プロットのタイプtype" class="section level2" number="4.4">
-<h2><span class="header-section-number">4.4</span>
+<div id="プロットのタイプtype" class="section level2" number="4.5">
+<h2><span class="header-section-number">4.5</span>
 プロットのタイプ（<code>type</code>）</h2>
 <p>点だけ、線だけ、点と線の組み合わせるなどのプロットの種類を指定する<code>type</code>パラメーターは、<code>"p", "l", "o", "b", "c", "n", "h", "s", "S"</code>の値を取れます。</p>
 <p>以下は<code>pch=21</code>で描画した例です。</p>
@@ -611,8 +640,8 @@ number="4.3">
 <code>x+1</code>のときは<code>x+1</code>の値と<code>x+2</code>の値が垂直な線で結ばれ、下図では<code>x=1</code>のとき、<code>(1, 0.64)</code>と<code>(1, 0.98)</code>が結ばれています。</p>
 <p><img src="common_files/figure-html/plot_type4-1.png" width="672" /></p>
 </div>
-<div id="色colbg" class="section level2" number="4.5">
-<h2><span class="header-section-number">4.5</span>
+<div id="色colbg" class="section level2" number="4.6">
+<h2><span class="header-section-number">4.6</span>
 色（<code>col</code>,<code>bg</code>）</h2>
 <p>グラフィックス関数の引数<code>col</code>と<code>bg</code>には、<code>colors</code>関数でリストされる色の名前を指定するか、<code>rgb</code>関数の戻り値を指定することができます。</p>
 <p><code>colors</code>関数は戻り値の数が多いので、以下のように<code>grep</code>で絞って選びましょう。</p>
@@ -622,8 +651,8 @@ number="4.3">
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar=</span><span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">curve</span>(<span class="fu">dgamma</span>(x, <span class="dv">2</span>), <span class="dv">0</span>, <span class="dv">10</span>, <span class="at">lwd=</span><span class="dv">10</span>, <span class="at">col=</span><span class="fu">rgb</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="dv">0</span>))</span></code></pre></div>
 <p><img src="common_files/figure-html/plot_rgb-1.png" width="672" /></p>
-<div id="グラデーション" class="section level3" number="4.5.1">
-<h3><span class="header-section-number">4.5.1</span> グラデーション</h3>
+<div id="グラデーション" class="section level3" number="4.6.1">
+<h3><span class="header-section-number">4.6.1</span> グラデーション</h3>
 <p><code>rainbow</code>関数でグラデーションが得られるわけですが、実践的には<code>colorRampPalette</code>関数でグラデーション作成関数を作ることになると思います。</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>crp <span class="ot">&lt;-</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;red&quot;</span>, <span class="st">&quot;darkred&quot;</span>))</span>
 <span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="fu">crp</span>(<span class="dv">10</span>)</span></code></pre></div>
@@ -631,8 +660,8 @@ number="4.3">
  [8] &quot;#A40000&quot; &quot;#970000&quot; &quot;#8B0000&quot;</code></pre>
 </div>
 </div>
-<div id="フォントサイズ" class="section level2" number="4.6">
-<h2><span class="header-section-number">4.6</span> フォントサイズ</h2>
+<div id="フォントサイズ" class="section level2" number="4.7">
+<h2><span class="header-section-number">4.7</span> フォントサイズ</h2>
 <p>個々の描画関数で<code>cex</code>などの引数を用いて相対サイズを指摘できますが、<code>par</code>で一括指定することもできます。</p>
 <table>
 <thead>
