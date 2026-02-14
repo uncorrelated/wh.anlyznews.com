@@ -29,7 +29,7 @@
 <li>環境変数CLASSPATH</li>
 <li>java、javacコマンドの-cpオプション</li>
 <li>$JAVA_HOME/jre/lib/ext/</li>
-<li>java、javacコマンドの-extdirsオプション</li>
+<li>javacコマンドの-extdirsオプション</li>
 </ol>
 <p>$JAVA_HOMEは、Javaのインストール・フォルダーをあらわす環境変数で、MS-Windows上のコマンド・プロンプトでは%CLASSPATH%で表されます。</p>
 
@@ -39,13 +39,14 @@
 CLASSPATH=.:/var/tomcat/common/lib/servlet.jar
 </div>
 <p>以上は実際のクラスパスの例ですが、ディレクトリーかjarファイルをコロン(:)で区切って指定してきます。ここではカレントディレクトリー(.)と、servlet.jarが指定されています。</p>
+<p>ワイルドカードが使え、CLASSPATH=&quot;.:/var/tomcat/common/lib/*&quot;と指定することもできます。</p>
 
 <h3>java、javacコマンドの-cpオプション</h3>
 <p>-cpオプションをつけることで、環境変数CLASSPATHの指定をコンパイル時や、アプリケーション実行時に指定することができます。</p>
 <div class="code">
 java -cp /var/tomcat/common/lib/servlet.jar ExampleServlet.java
 </div>
-<p>以上は実際のクラスパスの例ですが、ディレクトリーかjarファイルをコロン(:)で区切って指定してきます。</p>
+<p>以上は実際のクラスパスの例ですが、ディレクトリーかjarファイルをコロン(:)で区切って指定してきます。ワイルドカードも使えます。</p>
 
 <h3>$JAVA_HOME/jre/lib/ext/</h3>
 <p>環境変数やオプションをいちいち指定するのが面倒な場合、環境変数JAVA_HOME以下のjre/lib/ext/ディレクトリーにjarファイルを配置することで、クラスを利用可能にできます。</p>
