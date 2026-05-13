@@ -65,6 +65,7 @@ div.right h2.menu {
     <dt><a href="t-test.shtml">t検定への道</a></dt>
     <dt><a href="F-test.shtml">Rによる等分散性の検定と分散分析（ANOVA）</a></dt>
     <dt><a href="multicomp.shtml">手当り次第に効果を探すあなたのための多重比較補正</a></dt>
+    <dt><a href="imputation.shtml">鉛筆なめなめ欠損値補定</a></dt>
 </dl>
 
 <h2 class="menu">Rグラフィックス</h2>
