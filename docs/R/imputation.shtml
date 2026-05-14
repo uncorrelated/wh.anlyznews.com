@@ -740,7 +740,7 @@ y_i &amp;= \gamma_0 + \gamma_1 a_i + \beta_2 z_i + \epsilon_i \quad
 href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>。</p>
 <div style="padding: 8px 0 0 8px;">
 <div class="grViz html-widget html-fill-item" id="htmlwidget-ce72a64f95284cbea8c1" style="width:480px;height:288px;"></div>
-<script type="application/json" data-for="htmlwidget-ce72a64f95284cbea8c1">{"x":{"diagram":"digraph multiple_imputation {\n  graph [\n    charset = \"UTF-8\"\n    label = \"多重代入法の概念図\"\n    fontname = \"HackGen35 Console NF\"\n    rankdir = TB\n  ]\n  rds [shape = plaintext, label = \"欠損値ありデータセット\", margin=\"0.0, 0.2\"]\n  ids1 [shape = plaintext, label = \"補定された\\nデータセット①\", margin=\"0.0, 0.2\"]\n  ids2 [shape = plaintext, label = \"補定された\\nデータセット②\", margin=\"0.0, 0.2\"]\n  ids3 [shape = plaintext, label = \"補定された\\nデータセット③\", margin=\"0.0, 0.2\"]\n  ids4 [shape = plaintext, label = \"補定された\\nデータセット④\", margin=\"0.0, 0.2\"]\n  ids5 [shape = plaintext, label = \"補定された\\nデータセット⑤\", margin=\"0.0, 0.2\"]\n  r1 [shape = plaintext, label = \"推定結果①\", margin=\"0.0, 0.2\"]\n  r2 [shape = plaintext, label = \"推定結果②\", margin=\"0.0, 0.2\"]\n  r3 [shape = plaintext, label = \"推定結果③\", margin=\"0.0, 0.2\"]\n  r4 [shape = plaintext, label = \"推定結果④\", margin=\"0.0, 0.2\"]\n  r5 [shape = plaintext, label = \"推定結果⑤\", margin=\"0.0, 0.2\"]\n  ur [shape = plaintext, label = \"統合された推定結果\", margin=\"0.0, 0.2\"]\n  rds -> ids1 -> r1 -> ur\n  rds -> ids2 -> r2 -> ur\n  rds -> ids3 -> r3 -> ur\n  rds -> ids4 -> r4 -> ur\n  rds -> ids5 -> r5 -> ur\n}\n","config":{"engine":800,"options":null}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-ce72a64f95284cbea8c1">{"x":{"diagram":"digraph multiple_imputation {\n  graph [\n    charset = \"UTF-8\"\n#    label = \"多重代入法の概念図\"\n    fontname = \"HackGen35 Console NF\"\n    rankdir = TB\n  ]\n  rds [shape = plaintext, label = \"欠損値ありデータセット\", margin=\"0.0, 0.2\"]\n  ids1 [shape = plaintext, label = \"補定された\\nデータセット①\", margin=\"0.0, 0.2\"]\n  ids2 [shape = plaintext, label = \"補定された\\nデータセット②\", margin=\"0.0, 0.2\"]\n  ids3 [shape = plaintext, label = \"補定された\\nデータセット③\", margin=\"0.0, 0.2\"]\n  ids4 [shape = plaintext, label = \"補定された\\nデータセット④\", margin=\"0.0, 0.2\"]\n  ids5 [shape = plaintext, label = \"補定された\\nデータセット⑤\", margin=\"0.0, 0.2\"]\n  r1 [shape = plaintext, label = \"推定結果①\", margin=\"0.0, 0.2\"]\n  r2 [shape = plaintext, label = \"推定結果②\", margin=\"0.0, 0.2\"]\n  r3 [shape = plaintext, label = \"推定結果③\", margin=\"0.0, 0.2\"]\n  r4 [shape = plaintext, label = \"推定結果④\", margin=\"0.0, 0.2\"]\n  r5 [shape = plaintext, label = \"推定結果⑤\", margin=\"0.0, 0.2\"]\n  ur [shape = plaintext, label = \"統合された推定結果\", margin=\"0.0, 0.2\"]\n  rds -> ids1 -> r1 -> ur\n  rds -> ids2 -> r2 -> ur\n  rds -> ids3 -> r3 -> ur\n  rds -> ids4 -> r4 -> ur\n  rds -> ids5 -> r5 -> ur\n}\n","config":{"engine":800,"options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="amelia" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Amelia</h2>
@@ -756,25 +756,35 @@ href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>。</p>
 class="math inline">\(X_0\)</span>を作成します。</li>
 <li><span class="math inline">\(k=0\)</span>と置きます。</li>
 <li>データセット<span
-class="math inline">\(X_k\)</span>を用いて、補定モデル（のパラメーター）を推定します。補定モデルは線形回帰や予測平均マッチングなどを変数ごとに選択できます。</li>
+class="math inline">\(X_k\)</span>を用いて、補定モデル（のパラメーター）を推定します。補定モデルは線形回帰や予測平均マッチングなどを、変数ごとに選択できます。</li>
 <li>補定モデルから、確率的誤差を加味した単一代入法による新たな補定値を含むデータセット<span
 class="math inline">\(X_{k+1}\)</span>を作成します。補定されたデータセットから推定するので、複数の変数に欠損があってもそれぞれ推定できます。</li>
 <li><span
-class="math inline">\(k\)</span>が十分な大きさであれば終了します。</li>
+class="math inline">\(X_k\)</span>が収束したと見做せれば、その最初の<span
+class="math inline">\(k\)</span>を<span
+class="math inline">\(s\)</span>として保存します</li>
+<li><span
+class="math inline">\(k-s+1\)</span>が十分な大きさになり、必要な数のサンプルが集まったのであれば終了します。</li>
 <li><span class="math inline">\(k\)</span>を<span
 class="math inline">\(k+1\)</span>に置き直します（e.g. <span
 class="math inline">\(k\)</span>が<span
 class="math inline">\(0\)</span>であれば<span
 class="math inline">\(1\)</span>、<span
 class="math inline">\(1\)</span>であれば<span
-class="math inline">\(2\)</span>）</li>
+class="math inline">\(2\)</span>、<span
+class="math inline">\(2\)</span>であれば<span
+class="math inline">\(3\)</span>）</li>
 <li>(3)に戻ります。</li>
 </ol>
 <p>これで多数のデータセット<span class="math inline">\(X_0, X_1, X_2,
-\cdots, X_c, \cdots,
+\cdots, X_s, \cdots,
 X_k\)</span>ができます。そして、それらの中で補定モデルのパラメーターが収束したと見做せた後のデータセット（e.g. <span
-class="math inline">\(X_{c}, X_{c+1}, \cdots,
-X_k\)</span>）を用いて、回帰モデルなどの推定量を出します。</p>
+class="math inline">\(X_{s}, X_{s+1}, \cdots,
+X_k\)</span>）を用いて、回帰モデルなどの推定量を出します</p>
+<div style="padding: 8px 0 8px 0;">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-22da0ef370f839f20a8e" style="width:480px;height:96px;"></div>
+<script type="application/json" data-for="htmlwidget-22da0ef370f839f20a8e">{"x":{"diagram":"digraph multiple_imputation {\n  graph [\n    charset = \"UTF-8\"\n#    label = \"miceによる補定手順\"\n    fontname = \"HackGen35 Console NF\"\n    rankdir = LR\n  ]\n  node [\n    shape = plaintext\n    fontname = \"Latin Modern Roman\"\n    margin = \"0.1, 0.1\"\n    ranksep = 1.3\n    nodesep = 0.2\n  ]\n  edge [\n    fontname = \"Latin Modern Roman\"\n  ]\n\n  X0 [shape = plaintext, label = <補定された<br />データ<br /><i>X&#x2080;<\/i>>]\n\n  M1 [shape = plaintext, label = <補定モデル<br /><i>M&#x2096;<\/i>>]\n  X1 [shape = plaintext, label = <補定値が<br />更新されたデータ<br /><i>X&#x2096;<\/i>>]\n  R  [shape = plaintext, label = <採択サンプル<br /><i>X&#x209b;<\/i>, …, <i>X&#x2096;<\/i> >]\n \n  X0 -> M1 [label = <<i>k<\/i>=1>]\n  M1 -> X1\n  X1 -> M1 [label = <<i>k<\/i>=<i>k<\/i>+1>, headport = s, tailport = s, style = dashed]\n  X1 -> R  [label = <収束前の<br /><i>X&#x2080;<\/i>, …, <i>X&#x209b;&#x208b;&#x2081;<\/i>を除去>, style = dotted]\n}","config":{"engine":800,"options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
 <p>miceは数理的な正当化は完全に行われていないようですが、シミュレーションでは良好な結果を示すことが知られています。</p>
 </div>
 <div id="miceの利用例" class="section level2" number="4.3">
