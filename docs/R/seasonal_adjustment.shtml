@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rでお手軽季節調整</title>
+
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<link href="common_files/htmltools-fill-0.5.9/fill.css" rel="stylesheet" />
+<script src="common_files/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<script src="common_files/viz-1.8.2/viz.js"></script>
+<link href="common_files/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="common_files/grViz-binding-1.0.11/grViz.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rでお手軽季節調整</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>上下にクネクネと周期的に動く系列をトレンド、周期、残差の3つに分解しましょう</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#データセット" id="toc-データセット"><span
+class="toc-section-number">1</span> データセット</a></li>
+<li><a href="#平滑化アルゴリズム" id="toc-平滑化アルゴリズム"><span
+class="toc-section-number">2</span> 平滑化アルゴリズム</a>
+<ul>
+<li><a href="#移動平均" id="toc-移動平均"><span
+class="toc-section-number">2.1</span> 移動平均</a></li>
+<li><a href="#局所回帰lowess" id="toc-局所回帰lowess"><span
+class="toc-section-number">2.2</span> 局所回帰（Lo(w)ess）</a></li>
+</ul></li>
+<li><a href="#季節調整stl" id="toc-季節調整stl"><span
+class="toc-section-number">3</span> 季節調整（STL）</a>
+<ul>
+<li><a href="#seasonal-diagnostic-plot"
+id="toc-seasonal-diagnostic-plot"><span
+class="toc-section-number">3.1</span> Seasonal-Diagnostic Plot</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p>Cleveland, Cleveland, McRae and Terpenning (1990)<a href="#fn1"
+class="footnote-ref"
+id="fnref1"><sup>1</sup></a>のアルゴリズムSTLによる時系列データの季節調整は広く行われており、Rでもビルトイン関数で手軽に行うことができます。利用にあたり周期の長さ以外のパラメーターを指定する必要もほとんど無いでしょう。しかしながら、何をやっているのか説明を求められるときも人生で一回ぐらいはあるかも知れません。稀有な機会に備えて、STLの概要の理解を試みます。</p>
+<div id="データセット" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> データセット</h1>
+<p>推定のためのデータセットを先に準備します。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">with</span>(<span class="fu">new.env</span>(), {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>    <span class="co"># 気象庁が公開している調布市の気候データのコピー</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    df01 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="st">&quot;http://wh.anlyznews.com/R/dataset/data_weather.csv&quot;</span>, <span class="at">sep =</span> <span class="st">&quot;,&quot;</span>, <span class="at">skip =</span> <span class="dv">5</span>, <span class="at">colClasses =</span> <span class="fu">c</span>(<span class="st">&quot;Date&quot;</span>, <span class="fu">rep</span>(<span class="st">&quot;numeric&quot;</span>, <span class="dv">14</span>)))[, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">13</span>)]</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    <span class="co"># 英語でラベルをつける</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    <span class="fu">colnames</span>(df01) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Date&quot;</span>, <span class="st">&quot;temp.avg&quot;</span>, <span class="st">&quot;precipitation&quot;</span>, <span class="st">&quot;sunshine&quot;</span>, <span class="st">&quot;pressure.avgs&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    <span class="co"># 週ごとのデータに変換</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    plt <span class="ot">&lt;-</span> <span class="fu">as.POSIXlt</span>(df01<span class="sc">$</span>Date)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    l <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">&quot;Y%4d W%02d&quot;</span>, plt<span class="sc">$</span>year <span class="sc">+</span> <span class="dv">1900</span>, plt<span class="sc">$</span>yday <span class="sc">%/%</span> <span class="dv">7</span> <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">tapply</span>(df01[, <span class="sc">-</span><span class="dv">1</span>], l, \(r){</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>        <span class="fu">apply</span>(r, <span class="dv">2</span>, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>        })</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">unlist</span>(r), <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>        <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">unique</span>(l), <span class="fu">colnames</span>(df01)[<span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>    <span class="co"># 行番号の列を付与しておく</span></span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>    m <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(m), m)</span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>    <span class="fu">colnames</span>(m)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">&quot;t&quot;</span></span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>    <span class="fu">as.data.frame</span>(m)</span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>})</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>cycle_length <span class="ot">&lt;-</span> <span class="dv">53</span></span></code></pre></div>
+<p>日次データなのですが、うるう年の処理が煩雑になるので週次に変換しました。</p>
+</div>
+<div id="平滑化アルゴリズム" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 平滑化アルゴリズム</h1>
+<p>STLは2種類の平滑化アルゴリズムを組み合わせて処理しており、先に平滑化アルゴリズムを把握する方が理解しやすいです。</p>
+<div id="移動平均" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> 移動平均</h2>
+<p>もっとも基本的な平滑化アルゴリズムは、移動平均です。確率的な誤差を小さくできるのと、移動平均の期間とデータの周期性が一致すれば、周期変動を打ち消せて有用な上に、簡単に実装できるので広く使われています。</p>
+<p>長さ<span class="math inline">\(N\)</span>の系列<span
+class="math inline">\({y_1, y_2, \cdots, y_N}\)</span>に対する期間<span
+class="math inline">\(n\)</span>の後方移動平均（simple moving
+average）は、</p>
+<p><span class="math display">\[
+SMA_n(y_t) = \frac{1}{n} \sum^{t + n - 1}_{s=t} y_{s} \quad \mbox{where}
+\ \  1 \leq t \leq N - n + 1
+\]</span></p>
+<p>と書くことができます。このままでは右の端点および計算に使う値に欠損値が含まれる場合は定義されないのと、トレンド変化にラグが出るのが欠点です。</p>
+<p><span
+class="math inline">\(n\)</span>が3以上の奇数であれば中心化<span
+class="math inline">\(n\)</span>期移動平均（centered <span
+class="math inline">\(n\)</span>-period moving
+average）をとることができます。<span class="math inline">\(n = 2m +
+1\)</span>となるように<span
+class="math inline">\(m\)</span>を置いて、</p>
+<p><span class="math display">\[
+CMA_n(y_t) = \frac{1}{n} \sum^{t + m}_{s=t-m} y_{s} \quad \mbox{where} \
+\  m \lt t \lt N - m, \ m = \frac{n - 1}{2}
+\]</span></p>
+<p>と書くことができます。左右の端点および計算に使う値に欠損値が含まれる場合は定義されないので、実用上は工夫が要ります。</p>
+<p>Rでは<code>filter</code>関数を用いると簡単に計算することができます<a
+href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>cma <span class="ot">&lt;-</span> <span class="fu">filter</span>(df01<span class="sc">$</span>temp.avg, <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">/</span>cycle_length, cycle_length), <span class="at">method =</span> <span class="st">&quot;convolution&quot;</span>, <span class="at">side =</span> <span class="dv">2</span>, <span class="at">circular =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>第1引数は移動平均をとる系列で、<code>df01[, 2:4]</code>のようにデータフレームなどで複数の系列を同時に指定できます。第2引数はウェイトで、移動平均の期間の逆数を割り当てています。<code>method = "convolution"</code>はデフォルトで、ウェイト付きの和をとります。<code>side = 2</code>は中心化の指定で、<code>side = 1</code>で後方移動平均になります。<code>circular = TRUE</code>にすると<code>NA</code>の値は戻さず削除されます。</p>
+<p><img src="common_files/figure-html/seasonal_adjustment_cma-1.png" width="672" /></p>
+<p>周期をあわせたので上手く季節調整されていますが、両端付近が欠損値となっています。</p>
+</div>
+<div id="局所回帰lowess" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span>
+局所回帰（Lo(w)ess）</h2>
+<p>移動平均よりも手の込んだ方法として、局所回帰（<abbr title="Locally (Weighted) Estimated Scatterd Smoothing">Lo(w)ess</abbr>）があります。中心化移動平均をウェイト付き最小二乗法（WLS）で推定する手法です。ウェイトを設定する場合は<ruby>Lowess<rp>（</rp><rt>ロウエス</rt><rp>）</rp></ruby><a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>、しない場合は<ruby>Loess<rp>（</rp><rt>ロウエス</rt><rp>）</rp></ruby>と使い分けるべきな気がしますが、どちらもLoessと書かれることが多いようです。</p>
+<p>幾つか欠損値があっても計算することができ、左右の端点の値も出ます。</p>
+<p><span class="math display">\[\begin{align}
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+\hat{\beta(t)} = &amp;\argmin_{\beta} \sum\nolimits_{s \in T} \delta_s
+w_s(x_t) \big(y_t - \sum^d_{i=0} \beta_i (x_t - x_s)^i \big) \\
+\end{align}\]</span></p>
+<p><span class="math inline">\(T\)</span>は観測値を表す添字の集合、<span
+class="math inline">\(x\)</span>は時点をあらわす変数です。同じ時点の観測値が2つ以上ない場合は、<span
+class="math inline">\(x_t = t\)</span>と考えて問題ないです。<span
+class="math inline">\(d\)</span>は0以上3以下の任意の次数で、1もしくは2が使われる事が多いようです。<span
+class="math inline">\(q\)</span>は、局所回帰に用いるサブサンプルを指定する変数です。</p>
+<p><span
+class="math inline">\(\delta_s\)</span>は推定に頑強性を与えるための係数です。推定に<abbr title="Feasible General Least Squares">FGLS</abbr>を用いると、最初の推定では1が入り、2回目以降の推定ではその前の推定の予測値と観測値の差になる残差<span
+class="math inline">\(R_t\)</span>の大きさから計算されます。例えば残差の絶対値の中央値の6倍を<span
+class="math inline">\(h\)</span>として、</p>
+<p><span class="math display">\[
+\delta_t = \bigg(1 - \min\bigg(\frac{|R_t|}{h}, 1\bigg)^2\bigg)^2
+\]</span></p>
+<p>と計算されます。</p>
+<p><span class="math inline">\(w_s(x_t)\)</span>は、<span
+class="math inline">\(x_t\)</span>と<span
+class="math inline">\(x_s\)</span>の距離に応じたウェイトです。推定に用いる<span
+class="math inline">\(\{x_s\}_{s \in T}\)</span>の要素<span
+class="math inline">\(x_s\)</span>と<span
+class="math inline">\(x_t\)</span>の距離を<span
+class="math inline">\(dist(t)_s\)</span>と置きます。<span
+class="math inline">\(\{dist(t)_s\}_{s \in
+T}\)</span>の中で、もっとも遠い値を<span
+class="math inline">\(\lambda_n(x_t)\)</span>、<span
+class="math inline">\(q\)</span>番目に遠い値を<span
+class="math inline">\(\lambda_q(x_t)\)</span>と置きます。サンプルサイズを<span
+class="math inline">\(n\)</span>と置いて、</p>
+<p><span class="math display">\[\begin{align}
+\lambda(x_t) &amp;= \begin{cases}
+\lambda_q(x_t) &amp; (q \leq n) \\
+\lambda_n(x_t)\frac{q}{n} &amp; (q &gt; n)
+\end{cases}\\
+w_s(x_t) &amp;= \bigg( 1 - \min\bigg( 1, \frac{|x_t -
+x_s|}{\lambda(x_t)} \bigg)^3 \bigg)^3
+\end{align}\]</span></p>
+<p>と定義します。<span
+class="math inline">\(q\)</span>が小さいと時点が遠い観測値のウェイトが小さくなり、また、ゼロウェイトの観測値が増えて、実質的に推定に用いる観測値が少なくなります。</p>
+<p><span
+class="math inline">\(\hat{\beta(t)}\)</span>はベクトルで、<span
+class="math inline">\(\hat{\beta(t)}_0\)</span>が推定された平均値、求める値になります。</p>
+<p>Rでは<code>loess</code>関数が用意されています。</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>span <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>degree <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>r_loess <span class="ot">&lt;-</span> <span class="fu">loess</span>(temp.avg <span class="sc">~</span> t, df01, <span class="at">span =</span> span, <span class="at">degree =</span> degree, <span class="at">normalize =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p><code>span</code>は局所回帰に用いる区間を指定する変数で、比率指定なので0より大きく1以下の値を与えます。サンプルサイズは1326なので、span
+= 0.5を指定すると、上の説明の<span
+class="math inline">\(q\)</span>が663となります。<code>degree</code>は次数で、説明では<span
+class="math inline">\(d\)</span>に相当します。<code>normalize</code>は説明にあわせるために<code>FALSE</code>にしています。今回は使っていませんが、<code>lm</code>関数と同様に<code>weights</code>を入れられるので、説明の<span
+class="math inline">\(\delta_t\)</span>を計算すれば<code>lowess</code>にすることができます。</p>
+<p>上の説明で<span
+class="math inline">\(\hat{\beta(t)}\)</span>の集合となる<code>r_loess$fitted</code>をプロットし、平滑化した値を確認します。</p>
+<p><img src="common_files/figure-html/seasonal_adjustment_loess-1.png" width="672" /></p>
+<p>両端付近に欠損値はなくなりました。なお、<code>span</code>が短いと季節変動が取り切れず、とくに両端付近で目立つようになります。</p>
+</div>
+</div>
+<div id="季節調整stl" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> 季節調整（STL）</h1>
+<p>本題の季節調整（STL）に入ります。原系列<span
+class="math inline">\(\{y_t\}\)</span>をトレンド<span
+class="math inline">\(\{\tau_t\}\)</span>、季節変動<span
+class="math inline">\(\{s_t\}\)</span>、残余<span
+class="math inline">\(\{r_t\}\)</span>に分解する作業です。</p>
+<p>処理は大きく内部ループと外部ループに分かれます。ループはそれぞれ<span
+class="math inline">\(n_i\)</span>回と<span
+class="math inline">\(n_o\)</span>回行います。内部ループでは<span
+class="math inline">\(T\)</span>と<span
+class="math inline">\(S\)</span>を計算し、外部ループでは残余を計算します。</p>
+<p>図示すると以下のようになります。ステップは末尾のアルファベットを除けば、Cleveland,
+Cleveland, McRae and Terpenning (1990)の説明に対応しています。</p>
+<div style="padding: 8px 0 0 8px;">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-b8bf64493d1f38a391c7" style="width:480px;height:1334.4px;"></div>
+<script type="application/json" data-for="htmlwidget-b8bf64493d1f38a391c7">{"x":{"diagram":"digraph corona {\n  graph [\n    charset = \"UTF-8\";\n    label = \"STL: Seasonal-Trend Decomposition Procedure Based on Loess\"\n    fontname = \"HackGen35 Console NF\"\n    rankdir = TB\n  ]\n  node [\n    shape = plaintext\n  ]\n  edge [\n  ]\n  begin [label = \"開始\"]\n  end [label = \"終了\"]\n  T_nu [label = <{&tau;&#x209C;&#x1D4F;&#x207A;&#x00B9;}>]\n  S_nu [label = <{s&#x209C;&#x1D4F;&#x207A;&#x00B9;}>]\n  R_nu [label = <{r&#x209C;}>]\n#  detrended [shape = oval]\n  cw2 [shape = point]\n#  cw1 [label = <&delta;&#x209C;>]\n  dt1 [shape = point]\n  dt2 [shape = point]\n  dt3 [shape = point]\n  dt4 [shape = point]\n  C_nu [label = <{c&#x209C;&#x1D4F;&#x207A;&#x00B9;}>]\n  lpf1 [shape = point]\n  lpf2 [shape = point]\n  lpf3 [shape = point]\n  ds [shape = point]\n  L_nu [label = <{&#x2113;&#x209C;&#x1D4F;&#x207A;&#x00B9;}>]\n  chk_inner [shape = diamond, label = <k==n&#x1d62;>]\n  chk_outer [shape = diamond, label = <n&#x2092;回ループ？>]\n  begin -> cw2 [arrowhead = none, label = <&nbsp;r&#x209C;=1 (&#x2200;t&#x220A;T)>] \n#  cw1 -> cw2 [xlabel = \"頑強性ウェイト計算\"]\n  cw2 -> dt1 [arrowhead = none, label = <&nbsp;k = 0>]\n  dt1 -> dt2 [arrowhead = none, label = <&nbsp;Step 1: y&#x209C; - &tau;&#x209C;&#x1D4F;&#x207A;&#x00B9; (&#x2200;t&#x220A;T)>]\n  dt2 -> dt3 [arrowhead = none, label = <&nbsp;Step 2a: 周期部分列それぞれに<br/>前後に1期づつ足す<br/>足した期のyはNA>]\n  dt3 -> dt4 [arrowhead = none, label = <&nbsp;Step 2b: 拡張周期部分列それぞれを<br/>loess平滑化(q=n&#x209B;, d=d&#x209B;)>]\n  dt4 -> C_nu [label = <&nbsp;Step 2c: 拡張平滑化された<br/>周期部分列を<br/>ひとつにまとめる>]\n  C_nu -> lpf1 [arrowhead = none, label = <&nbsp;Step 3a: 中心化n&#x209A;期移動平均>]\n  lpf1 -> lpf2 [arrowhead = none, label = <&nbsp;Step 3b: 中心化n&#x209A;期移動平均>]\n  lpf2 -> lpf3 [arrowhead = none, label = <&nbsp;Step 3c: 中心化3期移動平均>]\n  lpf3 -> L_nu [label = <&nbsp;Step 3d: loess平滑化(q=n&#x2097;, d=d&#x2097;)>]\n  L_nu -> S_nu [label = <&nbsp;Step 4: c&#x209C;&#x1D4F;&#x207A;&#x00B9;-&#x2113;&#x209C;&#x1D4F;&#x207A;&#x00B9; (&#x2200;t&#x220A;T)>]\n  S_nu -> ds [arrowhead = none, label = <&nbsp;Step 5: y&#x209C;-s&#x209C;&#x1D4F;&#x207A;&#x00B9; (&#x2200;t&#x220A;T)>]\n  ds -> T_nu [label = <&nbsp;Step 6: loess平滑化(q=nₜ, d=dₜ)>]\n  T_nu -> chk_inner [label = <&nbsp;k = k + 1>]\n  chk_inner -> dt1 [fontcolor = \"red\", taillabel = \"false\", tailport = \"e\", label = <<font color=\"blue\">内部ループ<\/font>>] # , headport = e, tailport = e\n  chk_inner -> R_nu [label = <&nbsp;<font color=\"black\">y&#x209C; - &tau;&#x209C; - s&#x209C; (&#x2200;t&#x220A;T)<\/font>>, fontcolor = \"red\", taillabel = \"true\", tailport = \"s\"]\n  R_nu -> chk_outer\n  chk_outer -> end [fontcolor = \"red\", taillabel = \"yes\"]\n  chk_outer -> cw2 [fontcolor = \"red\", taillabel = \"no\", tailport = \"e\", label = <<font color=\"blue\">外部ループ<\/font>>]\n#  Y_nu -> S_nu [headport = sw, tailport = e]\n}\n","config":{"engine":800,"options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+<p>周期部分列（cycle-subseries）は、<span class="math inline">\(y_t -
+\tau_t^{k + 1}\)</span>の季節ごとにまとめた部分列です。季節の数<span
+class="math inline">\(n_p\)</span>だけ部分列がとれます。今回のデータセットの場合、1月1日から開始の1週から53週までがひとつの季節になります。<span
+class="math inline">\(t=1, 54, 107, \cdots,
+1326\)</span>は、2001年，2002年，2003年，…，2026年のそれぞれ第20週を指す部分列になります。同様に<span
+class="math inline">\(t=2, 55, \cdots\)</span>，<span
+class="math inline">\(t=3, 56,
+\cdots\)</span>といった部分列をつくれます。53周期ですから、53部分列がとれます。</p>
+<p>周期部分列それぞれの前後に1期づつ拡張し、それぞれloess平滑化します。拡張された期の<span
+class="math inline">\(y_{(\cdot)}\)</span>は<code>NA</code>とし、拡張されていない期のデータから<span
+class="math inline">\(\beta(\cdot)_0\)</span>を推定します。拡張平滑化周期部分列も<span
+class="math inline">\(n_p\)</span>あるので、全体となる拡張平滑化周期列<span
+class="math inline">\(\{c_t^k\}\)</span>では<span
+class="math inline">\(2n_p\)</span>拡張されることになります。</p>
+<p>Step 2b, Step 3d, Step
+6のloess平滑化のウェイトは記載されていませんが、それぞれ<span
+class="math inline">\(\{r_t\}\)</span>から頑強性ウェイト列<span
+class="math inline">\(\{\sigma_t\}\)</span>を、<span
+class="math inline">\(x_t\)</span>から距離ウェイト<span
+class="math inline">\(w_s(x_t)\)</span>を計算します。</p>
+<p>Step 3a, 3b,
+3cの中心化移動平均を3回かける部分では、拡張した系列を縮小しています。<span
+class="math inline">\(n_p\)</span>期移動平均をかけると、前後にそれぞれ<span
+class="math inline">\((n_p-1)/2\)</span>だけ<code>NA</code>が入ることになります。よって、<span
+class="math inline">\(2(n_p-1)/2 + 2(n_p-1)/2 + 2(3-1)/2 =
+2n_p\)</span>縮小するので、<span
+class="math inline">\(l_t^{k+1}\)</span>では元に長さに戻ります。</p>
+<p><span
+class="math inline">\(l_t^{k+1}\)</span>は、周期列の中のローパス成分トレンド項になります。よって周期列からこれを除くと、真の季節変動になります。</p>
+<p>終了時の<span class="math inline">\(\{\tau_t^{n_o}\}\)</span>と<span
+class="math inline">\(\{s_t^{n_o}\}\)</span>と<span
+class="math inline">\(\{r_t^{n_o}\}\)</span>が求める系列です。</p>
+<p>実践してみます。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a>s.year <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">gsub</span>(<span class="st">&quot;^Y([0-9]+).*$&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">1&quot;</span>, <span class="fu">rownames</span>(df01)[<span class="dv">1</span>]))</span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>s.week <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">gsub</span>(<span class="st">&quot;^.*W&quot;</span>, <span class="st">&quot;&quot;</span>, <span class="fu">rownames</span>(df01)[<span class="dv">1</span>]))</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>r_ts <span class="ot">&lt;-</span> <span class="fu">ts</span>(df01<span class="sc">$</span>temp.avg, <span class="at">start =</span> <span class="fu">c</span>(s.year, s.week), <span class="at">frequency =</span> cycle_length)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>r_stl <span class="ot">&lt;-</span> <span class="fu">stl</span>(r_ts, <span class="at">s.window =</span> <span class="st">&quot;periodic&quot;</span>)</span></code></pre></div>
+<p>第1引数は<code>ts</code>オブジェクトが入るので、<code>frequency</code>に53を入れて<code>ts</code>オブジェクト<code>r_ts</code>を作成し、指定しています。<code>start</code>は期の開始時点を指定します。</p>
+<p><code>s.window</code>はStep 2bのLoess平滑化に用いる<span
+class="math inline">\(n_s\)</span>を定める引数です。7以上の奇数が推奨されます。<code>s.degree</code>はそのとき<span
+class="math inline">\(d\)</span>に指定するdₛに該当します。<code>"periodic"</code>を指定すると、Loess平滑化ではなくて部分周期列ごとの平均値が入ります。</p>
+<p>今回は指定していませんが、他にも引数はあります。<code>inner</code>で説明の<span
+class="math inline">\(n_i\)</span>、<code>outer</code>で<span
+class="math inline">\(n_o\)</span>を指定できます。<code>robust = TRUE</code>を指定すると、<code>inner</code>と<code>outer</code>のデフォルト値が変わります。<code>s.jump</code>,
+<code>t.jump</code>,
+<code>l.jump</code>は、Loessを行う間隔を指定する引数で、処理の高速化ができます。Loessを飛ばす時点は、前後のLoess推定量から線形補間を行います。</p>
+<p>応用では変更する必要がない引数もあります。<code>l.window</code>はStep
+3dのLoess平滑化に用いる<span
+class="math inline">\(n_l\)</span>を指定する引数です。<code>l.degree</code>はそのとき<span
+class="math inline">\(d\)</span>に指定するdₗに該当します。<code>t.window</code>はStep
+6のLoess平滑化に用いる<span
+class="math inline">\(n_t\)</span>を指定する引数です。<code>t.degree</code>はそのとき<span
+class="math inline">\(d\)</span>に指定するdₜに該当します。現論文のSummaryによると、<span
+class="math inline">\(n_l\)</span>（<code>l.window</code>）は<span
+class="math inline">\(n_p\)</span>以上の最小の奇数が、<span
+class="math inline">\(n_t\)</span>（<code>t.window</code>）は<span
+class="math inline">\(1.5n_p/(1-1.5/n_s)\)</span>以上の最小の奇数が推奨されており、デフォルトでは推奨値が設定されます。</p>
+<p>結果オブジェクトの<code>time.series</code>に、トレンド、季節変動、残余が入っています。他にもLoessのパラメーターなども入るので、必要に応じて確認しましょう。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">head</span>(r_stl<span class="sc">$</span>time.series)</span></code></pre></div>
+<pre><code>Time Series:
+Start = c(2001, 20) 
+End = c(2001, 25) 
+Frequency = 53 
+         seasonal    trend  remainder
+2001.358 3.003705 16.67056  1.2857339
+2001.377 3.766479 16.67630  0.7429325
+2001.396 4.285254 16.68204  1.0327022
+2001.415 5.057290 16.68779  0.4834953
+2001.434 5.536716 16.69353 -1.8159578
+2001.453 7.024595 16.69927 -0.4952918</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">names</span>(r_stl)</span></code></pre></div>
+<pre><code>[1] &quot;time.series&quot; &quot;weights&quot;     &quot;call&quot;        &quot;win&quot;         &quot;deg&quot;        
+[6] &quot;jump&quot;        &quot;inner&quot;       &quot;outer&quot;      </code></pre>
+<p>細かく引数を指定しなくても、だいたいは上手く行きます。ほぼデフォルトの上のSTLの推定結果をプロットします。</p>
+<p><img src="common_files/figure-html/seasonal_adjustment_stl-1.png" width="672" /></p>
+<p>上手く分離できているようです。少なくとも残余に周期性やトレンドは見られません。</p>
+<div id="seasonal-diagnostic-plot" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Seasonal-Diagnostic
+Plot</h2>
+<p>もう少し妥当性を細かく見たいときはSeasonal-Diagnostic
+Plotを表示しましょう。
+これは、特定の周期部分列の季節変動値とそれに残余を加えた2つを、見やすいように特定の周期部分列の季節変動値の平均をそれぞれ引いてプロットした図です。</p>
+<p>上の例そのままでは問題がなさすぎるので、<code>s.window</code>（<span
+class="math inline">\(n_s\)</span>）を13にしたものを描いてみます。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a>plot_sd <span class="ot">&lt;-</span> <span class="cf">function</span>(r_stl, <span class="at">season =</span> <span class="dv">1</span>, <span class="at">unit =</span> <span class="st">&quot;week&quot;</span>, <span class="at">label.interval =</span> <span class="dv">10</span>){</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>    s <span class="ot">&lt;-</span> <span class="fu">start</span>(r_stl<span class="sc">$</span>time.series)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>    f <span class="ot">&lt;-</span> <span class="fu">frequency</span>(r_stl<span class="sc">$</span>time.series)</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>    <span class="fu">with</span>(r_stl, {</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>        ptr <span class="ot">&lt;-</span> <span class="fu">seq</span>(season, <span class="fu">nrow</span>(time.series), f)</span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>        t <span class="ot">&lt;-</span> s[<span class="dv">1</span>] <span class="sc">+</span> (s[<span class="dv">2</span>] <span class="sc">+</span> ptr <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">/</span> f</span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>        time.series <span class="ot">&lt;-</span> time.series[ptr, ]</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>        c_s <span class="ot">&lt;-</span> time.series[, <span class="st">&quot;seasonal&quot;</span>] <span class="sc">-</span> <span class="fu">mean</span>(time.series[, <span class="st">&quot;seasonal&quot;</span>])</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>        c_r <span class="ot">&lt;-</span> c_s <span class="sc">+</span> time.series[, <span class="st">&quot;remainder&quot;</span>]</span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>        <span class="fu">plot</span>(c_r <span class="sc">~</span> t, <span class="at">axes =</span> <span class="cn">FALSE</span>, <span class="at">xlab =</span> <span class="st">&quot;&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;&quot;</span>)</span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>        <span class="fu">lines</span>(t, c_s)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>        ptr2 <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">length</span>(t), label.interval)</span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>        <span class="fu">axis</span>(<span class="dv">1</span>, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>, <span class="at">at =</span> t[ptr2], <span class="at">labels =</span> <span class="fu">floor</span>(t[ptr2]))</span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>        <span class="fu">axis</span>(<span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">0</span>, <span class="at">lwd.ticks =</span> <span class="dv">1</span>, <span class="at">las =</span> <span class="dv">1</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>        w <span class="ot">&lt;-</span> <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">2</span>] <span class="sc">-</span> <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">1</span>]</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>        h <span class="ot">&lt;-</span> <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">4</span>] <span class="sc">-</span> <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">3</span>]</span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>        <span class="fu">text</span>(<span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">1</span>] <span class="sc">+</span> w<span class="sc">/</span><span class="dv">20</span>, <span class="fu">par</span>()<span class="sc">$</span>usr[<span class="dv">3</span>] <span class="sc">+</span> <span class="dv">19</span><span class="sc">*</span>h<span class="sc">/</span><span class="dv">20</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>            <span class="fu">sprintf</span>(<span class="st">&quot;%s: %.0f&quot;</span>, unit, (s[<span class="dv">2</span>] <span class="sc">+</span> season <span class="sc">-</span> <span class="dv">2</span>) <span class="sc">%%</span> f <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>            <span class="at">cex =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">adj =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">col =</span> <span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>        <span class="fu">box</span>()</span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a>    })</span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a>}</span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>plot_sds <span class="ot">&lt;-</span> <span class="cf">function</span>(r_ts, s.window, <span class="at">nr =</span> <span class="dv">3</span>, <span class="at">nc =</span> <span class="dv">3</span>){</span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>    r_stl <span class="ot">&lt;-</span> <span class="fu">stl</span>(r_ts, <span class="at">s.window =</span> s.window)</span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>    <span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(nr, nc), <span class="at">oma =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">3</span>, <span class="fl">0.5</span>), <span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">0</span>, <span class="dv">0</span>))</span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">as.integer</span>(<span class="fu">seq</span>(<span class="dv">1</span>, <span class="fu">frequency</span>(r_stl<span class="sc">$</span>time.series), <span class="at">length.out =</span> nr<span class="sc">*</span>nc))){</span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a>        <span class="fu">plot_sd</span>(r_stl, i)</span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>    }</span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.numeric</span>(s.window)) <span class="fu">title</span>(<span class="at">main =</span> <span class="fu">substitute</span>(<span class="fu">paste</span>(<span class="st">&quot;Seasonal-Diagnostic Plot (&quot;</span>, n[s]<span class="sc">==</span>a, <span class="st">&quot;)&quot;</span>), <span class="fu">list</span>(<span class="at">a=</span>r_stl<span class="sc">$</span>win[<span class="st">&quot;s&quot;</span>])), <span class="at">outer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a>    <span class="cf">else</span> <span class="fu">title</span>(<span class="at">main =</span> <span class="st">&quot;Seasonal-Diagnostic Plot (periodic)&quot;</span>, <span class="at">outer =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>}</span>
+<span id="cb9-33"><a href="#cb9-33" tabindex="-1"></a></span>
+<span id="cb9-34"><a href="#cb9-34" tabindex="-1"></a><span class="fu">plot_sds</span>(r_ts, <span class="dv">13</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/seasonal-diagnostic-plot-1.png" width="672" /></p>
+<p>53週それぞれをプロットしても確認しきれないので、9週だけ表示しました。</p>
+<p>スムーズではない部分周期列が多いですね。27や31にするとだいぶ一次方程式であらわせる変化に近づきます。</p>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>Cleveland, Cleveland, McRae and Terpenning (1990) "STL:
+A Seasonal-Trend Decomposition Procedure Based on Loess," <em>Journal of
+Official Statistics</em>, Vol. 6 (1), pp. 3–73<a href="#fnref1"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p>様々なパッケージで提供される多様な関数で計算でき、<code>filter</code>関数にこだわる必要はありません。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>ロウエスではなくロスと読む人もいるそうです。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
