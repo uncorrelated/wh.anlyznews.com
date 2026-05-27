@@ -29,11 +29,11 @@ div.right h2.menu {
     <dt><a href="dataframe.shtml">データフレームの扱い方のざっとした説明</a></dt>
     <dt><a href="function.shtml">関数のざっとした説明</a></dt>
     <dt><a href="string%20operations.shtml">文字列の操作のざっとした説明</a></dt>
-    <dt><a href="aggregate.shtml">ペンギンで覚える集計関数</a></dt>
     <dt><a href="apply.shtml">apply関数群のざっとした説明</a></dt>
     <dt><a href="rep.shtml">要素が同一パターンの繰り返しのベクトルの作り方</a></dt>
     <dt><a href="all%20combinations.shtml">要素と要素の全パターンの組み合わせの作り方</a></dt>
     <dt><a href="factor.shtml">因子型と順序型のざっとした説明</a></dt>
+    <dt><a href="aggregate.shtml">ペンギンで覚える集計関数</a></dt>
     <dt><a href="datetime.shtml">日付関数群のざっとした説明</a></dt>
     <dt><a href="debugging.shtml">デバッグ用関数群</a></dt>
     <dt><a href="environment.shtml">名前空間とスコーピング</a></dt>
