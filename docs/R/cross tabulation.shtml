@@ -13,7 +13,7 @@
 
 <title>Rでチマチマとクロス表の検定と信頼区間の計算</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -424,10 +431,12 @@ class="toc-section-number">4.3</span> 絶対リスク差</a></li>
 6    Emil  c  z</code></pre>
 <p>中身は見ての通り、3種類の文字列のデータセットです。</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="fu">summary</span>(df01)</span></code></pre></div>
-<pre><code>     name           d1     d2    
- Length:100         a:32   x:14  
- Class :character   b:35   y:15  
- Mode  :character   c:33   z:71  </code></pre>
+<pre><code>        name     d1     d2    
+ Length   :100   a:32   x:14  
+ N.unique : 99   b:35   y:15  
+ N.blank  :  0   c:33   z:71  
+ Min.nchar:  2                
+ Max.nchar:  9                </code></pre>
 <p>因子型にしておくと、<code>summary</code>で要素ごとの頻度が出ます。因子型の2列目と3列目が、今回の分析の対象となります。</p>
 <p><a
 href="./aggregate.shtml">ペンギンで覚えるRの集計関数</a>で練習したように、集計してクロス表を作成します。</p>
@@ -477,7 +486,7 @@ class="math inline">\(j\)</span>列の頻度の合計を乗じたものを、全
 href="#fn1" class="footnote-ref"
 id="fnref1"><sup>1</sup></a>、χ二乗検定を用いて独立性の検定を行うことができます<a
 href="#fn2" class="footnote-ref"
-id="fnref2"><sup>2</sup></a>。また、各セルの差も正規分布を用いて外れ値でないか検定ができます<a
+id="fnref2"><sup>2</sup></a>。自由度は行の数から1を引いたものと列の数から1を引いたものを乗じた数になります。また、各セルの差も正規分布を用いて外れ値でないか検定ができます<a
 href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>(xst <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(xt, <span class="at">correct =</span> <span class="cn">FALSE</span>)) <span class="co"># 2×2表でもイェーツの連続性補正は行わない</span></span></code></pre></div>
 <pre><code>Warning in chisq.test(xt, correct = FALSE): カイ自乗近似は不正確かもしれません</code></pre>
@@ -694,7 +703,8 @@ sample estimates:
 <ol>
 <li id="fn1"><p><a
 href="https://doi.org/10.48550/arXiv.1808.09171">Benhamou and Melot
-(2018)</a>に証明があります。ただしクロス表で使うには、さらに議論が必要です。<a
+(2018)</a>に証明があります。ただしクロス表で使うには、さらに議論が必要です。適合度検定と異なり線形従属しているセルが複数になるためです。自由度だけが変わるので、各行、各列の総和が決まっており、行にしろ、列にしろ、最後のセルの頻度は独立に定まらないため、自由度は<span
+class="math inline">\((\mbox{列の数}-1)(\mbox{行の数}-1)\)</span>になると、直観的に理解しておきましょう。<a
 href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li
 id="fn2"><p>正規分布を仮定しないFisherの正確検定をかける場合は、<code>fisher.test(xt)</code>です。<a
