@@ -698,6 +698,11 @@ H_t &amp;= \begin{pmatrix}
 0
 \end{pmatrix}
 \end{align}\]</span></p>
+<p>このモデルでは時点<span
+class="math inline">\(t\)</span>に関わらず値は一定ですが、<span
+class="math inline">\(t\)</span>によって値を変えても問題ありません。<span
+class="math inline">\(Z_t\)</span>や<span
+class="math inline">\(T_t\)</span>に説明変数を入れることもあります。</p>
 <p>この教科書的な設定を入力できるパッケージが見当たらないので、ベタベタとRでコードを書いていきます。</p>
 <div id="データセット" class="section level4" number="2.1.1.1">
 <h4><span class="header-section-number">2.1.1.1</span> データセット</h4>
@@ -775,7 +780,7 @@ number="2.1.1.2">
 <span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a>        <span class="at">y_hat =</span> Zt <span class="sc">%*%</span> alpha_hat, <span class="at">D =</span> Dt</span>
 <span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a>    )</span>
 <span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.na</span>(y[t])){</span>
-<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a>        mu_hat <span class="ot">&lt;-</span> alpha_hat <span class="co"># y_tが欠損値の場合は、1期先予測値を使う</span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a>        mu_hat <span class="ot">&lt;-</span> alpha_hat <span class="co"># y_tが欠損値の場合は、予測値を使う</span></span>
 <span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a>        alpha_hat <span class="ot">&lt;-</span> Tt <span class="sc">%*%</span> alpha_hat</span>
 <span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a>        Pt <span class="ot">&lt;-</span> Tt <span class="sc">%*%</span> Pt <span class="sc">%*%</span> <span class="fu">t</span>(Tt) <span class="sc">+</span> Ht <span class="sc">%*%</span> <span class="fu">t</span>(Ht)</span>
 <span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
@@ -959,7 +964,7 @@ href="#fn7" class="footnote-ref"
 id="fnref7"><sup>7</sup></a>。また、季節調整に用いる事もできます<a
 href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>。</p>
 <p><code>KFAS</code>パッケージでも<code>SSMregression</code>、<code>SSMarima</code>、<code>SSMseasonal</code>関数を用意することでサポートしており、<code>SSModel</code>に引数として渡すことで利用することができます。詳しくは<a
-href="https://cran.r-project.org/web/packages/KFAS/vignettes/KFAS.pdf"><code>KFAS</code>パッケージのVignette</a>を参照してください。</p>
+href="https://cran.r-project.org/web/packages/KFAS/vignettes/KFAS.pdf"><code>KFAS</code>パッケージのvignettes</a>を参照してください。</p>
 </div>
 </div>
 <div id="非線形状態空間モデル" class="section level1" number="3">
@@ -971,7 +976,7 @@ number="3.1">
 <h2><span class="header-section-number">3.1</span>
 観測方程式が指数分布族の確率分布</h2>
 <p>観測方程式が指数分布族の確率分布に従う場合（i.e. <code>glm</code>で推定できるモデル）は<code>KFAS</code>パッケージが使えるので推定が容易です。</p>
-<p><code>KFAS</code>のvignietteにある例のそのままですが、イギリスのシートベルト着用義務（<code>law</code>）とバンの運転手の死亡者数（<code>VanKilled</code>）の分析です。</p>
+<p><code>KFAS</code>のvignettesにある例のそのままですが、イギリスのシートベルト着用義務（<code>law</code>）とバンの運転手の死亡者数（<code>VanKilled</code>）の分析です。</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(KFAS)</span>
 <span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>model_van <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(VanKilled <span class="sc">~</span> law <span class="sc">+</span> <span class="fu">SSMtrend</span>(<span class="dv">1</span>, <span class="at">Q =</span> <span class="fu">list</span>(<span class="fu">matrix</span>(<span class="cn">NA</span>))) <span class="sc">+</span></span>
 <span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="fu">SSMseasonal</span>(<span class="at">period =</span> <span class="dv">12</span>, <span class="at">sea.type =</span> <span class="st">&quot;dummy&quot;</span>, <span class="at">Q =</span> <span class="cn">NA</span>),</span>
@@ -985,13 +990,13 @@ number="3.1">
 <span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co"># State smoothing via importance sampling</span></span>
 <span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>out_sim <span class="ot">&lt;-</span> <span class="fu">KFS</span>(model_van, <span class="at">nsim =</span> <span class="dv">1000</span>)</span>
 <span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>out_sim</span></code></pre></div>
-<p>この例では<code>distribution = "poisson"</code>で、観測方程式にポアソン回帰が指定されています。期待値と分散がネイピア数の線形予測子（linear
-predictor）乗になるオーソドックスなモデルになります。線形予測子は、シートベルト義務の有無、状態変数のトレンド、別の状態変数の季節調整値で構成されています。季節調整はダミー変数を使ったもので、周期関数は使っていません。</p>
-<p>死亡者数は長期減少傾向と季節変動があって、プロットしてもシートベルト着用義務の効果があるのか無いのかよくわかりませんが、トレンドと月ごとの変動を統制すると微妙に効果が見えてきます。</p>
-<p>他に<code>binomial</code>（二項分布/ロジットモデル）,
+<p>この例では<code>distribution = "poisson"</code>で、観測方程式にポアソン回帰が指定されています。他に<code>binomial</code>（二項分布/ロジットモデル）,
 <code>negative binomial</code>（負の二項分布）,
 <code>gamma</code>（ガンマ分布）,
 <code>gaussian</code>（正規分布）が指定できます。</p>
+<p>ポアソン回帰は、期待値と分散がネイピア数の線形予測子（linear
+predictor）乗になるオーソドックスなモデルになります。線形予測子は、シートベルト義務の有無、状態変数のトレンド、別の状態変数の季節調整値で構成されています。季節調整はダミー変数を使ったもので、周期関数は使っていません。</p>
+<p>死亡者数は長期減少傾向と季節変動があって、プロットしてもシートベルト着用義務の効果があるのか無いのかよくわかりませんが、トレンドと月ごとの変動を統制すると微妙に効果が見えてきます。</p>
 </div>
 </div>
 <div id="粒子フィルター" class="section level1" number="4">
@@ -1099,7 +1104,7 @@ X_{t+1} &amp;= X_t + \nu_t \quad \mbox{(遷移方程式)} \\
 <span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>yp_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)))</span></code></pre></div>
 <p>プロットすると相場が大きく動くときに信用区間が広くなっていることがわかります。誤差項の分散を逐次推定しているためです。</p>
 <p><img src="common_files/figure-html/Particle_Filter-1.png" width="672" /></p>
-<p>1期先予測分布に平滑化をかけることもできます。</p>
+<p>予測分布に平滑化をかけることもできます。</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="dv">5</span></span>
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>yp_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M<span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>L<span class="sc">+</span><span class="dv">1</span>), n)</span>
 <span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
