@@ -626,8 +626,8 @@ T_{t+s-1}P_{t}(s-1){}^t\!T_{t+s-1} + H_{t+s-1} {}^t\!H_{t+s-1} &amp; s
 \ge 2
 \end{cases}
 \end{align}\]</span></p>
-<p><span
-class="math inline">\(y\)</span>の期先予測分布は以下になります。</p>
+<p><span class="math inline">\(y\)</span>の<span
+class="math inline">\(s\)</span>期先予測分布は以下になります。</p>
 <p><span class="math display">\[\begin{align}
 E[y_{t+s}] &amp;= Z_{t+s} \hat{\alpha}_t \\
 V\!AR[y_{t+s}] &amp;= Z_{t+s} P_t(s) {}^t\!Z_{t+s} +
@@ -870,7 +870,7 @@ id="fnref6"><sup>6</sup></a>、最尤法で推定するようにつくってあ�
 <span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>P1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
 <span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>P1inf <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>) <span class="co"># diag(2)とすると、初期値の分散を無限大として計算する</span></span>
 <span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co"># 観測値の末尾に欠損値を追加（s期先予測分布が計算される）</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co"># 観測値の末尾に欠損値を追加（len期先まで予測分布が計算される）</span></span>
 <span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>y <span class="ot">&lt;-</span> df02<span class="sc">$</span>at9</span>
 <span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>date <span class="ot">&lt;-</span> df02<span class="sc">$</span>Date</span>
 <span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>len <span class="ot">&lt;-</span> <span class="dv">10</span></span>
@@ -945,7 +945,7 @@ id="fnref6"><sup>6</sup></a>、最尤法で推定するようにつくってあ�
 </table>
 <p>今回の分析結果から<span
 class="math inline">\(y\)</span>の1期先予測分布を得る場合、<code>r_KFAS$mu</code>で期待値を、<code>sqrt(r_KFAS$P_mu[1,,])</code>で標準誤差を参照します。</p>
-<p>カルマンフィルターの説明とスクラッチのコードとなるべく対応が分かるように<code>KFAS</code>パッケージを使いましたが、平滑化するだけならば以下で簡単に済ます事ができます。</p>
+<p><code>KFAS</code>パッケージをなるべくカルマンフィルターの説明とスクラッチのコードとの対応が分かるように使いましたが、平滑化するだけならば以下で簡単に済ます事ができます。</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">library</span>(KFAS)</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>model_KFAS <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(y <span class="sc">~</span> <span class="fu">SSMtrend</span>(<span class="dv">1</span>, <span class="at">Q=</span><span class="cn">NA</span>), <span class="at">H=</span><span class="cn">NA</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>fit_KFAS <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_KFAS, <span class="at">inits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>)</span>
