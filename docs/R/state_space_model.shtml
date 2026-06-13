@@ -868,30 +868,29 @@ id="fnref6"><sup>6</sup></a>、最尤法で推定するようにつくってあ�
 <span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>a1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(prior_dist_means, <span class="dv">2</span>, <span class="dv">1</span>)</span>
 <span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co"># 状態変数の初期値の分散</span></span>
 <span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>P1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>P1inf <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">2</span>) <span class="co"># diag(2)とすると、初期値の分散を無限大として計算する</span></span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co"># 観測値の末尾に欠損値を追加（len期先まで予測分布が計算される）</span></span>
-<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>y <span class="ot">&lt;-</span> df02<span class="sc">$</span>at9</span>
-<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>date <span class="ot">&lt;-</span> df02<span class="sc">$</span>Date</span>
-<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a>len <span class="ot">&lt;-</span> <span class="dv">10</span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="cf">if</span>(<span class="dv">0</span> <span class="sc">&lt;</span> len){</span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">c</span>(y, <span class="fu">rep</span>(<span class="cn">NA</span>, len))</span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>    date <span class="ot">&lt;-</span> <span class="fu">c</span>(date, <span class="fu">seq</span>(date[<span class="fu">length</span>(date)] <span class="sc">+</span> <span class="dv">1</span>, date[<span class="fu">length</span>(date)] <span class="sc">+</span> len, <span class="st">&quot;days&quot;</span>))</span>
-<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a>}</span>
-<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a></span>
-<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co"># 推定するモデルの構築</span></span>
-<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>model_KFAS <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> <span class="fu">SSMcustom</span>(</span>
-<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>    <span class="at">Z =</span> Zt, <span class="at">T =</span> Tt, <span class="at">R =</span> Rt, <span class="at">Q =</span> Qt, <span class="at">a1 =</span> a1, <span class="at">P1 =</span> P1, <span class="at">P1inf =</span> P1inf), <span class="at">H =</span> Ht)</span>
-<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a></span>
-<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="co"># 最尤法で推定（optimに渡すパラメーターが与えられている）</span></span>
-<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>fit_KFAS <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_KFAS, <span class="at">inits =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>)</span>
-<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a></span>
-<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co"># 状態変数と観測値の推定値の系列を得る</span></span>
-<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co"># stateは状態変数、signalは観測値を表し、それぞれのフィルタリング分布と平滑化分布を計算するように指定</span></span>
-<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>r_KFAS <span class="ot">&lt;-</span> <span class="fu">KFS</span>(fit_KFAS<span class="sc">$</span>model, <span class="at">filtering =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>, <span class="st">&quot;signal&quot;</span>), <span class="at">smoothing =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>, <span class="st">&quot;signal&quot;</span>))</span>
-<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a></span>
-<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="co"># 平滑化された予測値を得る</span></span>
-<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>r_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_KFAS<span class="sc">$</span>model, <span class="at">interval =</span> <span class="st">&quot;predict&quot;</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co"># 観測値の末尾に欠損値を追加（len期先まで予測分布が計算される）</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a>y <span class="ot">&lt;-</span> df02<span class="sc">$</span>at9</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a>date <span class="ot">&lt;-</span> df02<span class="sc">$</span>Date</span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a>len <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="cf">if</span>(<span class="dv">0</span> <span class="sc">&lt;</span> len){</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="fu">c</span>(y, <span class="fu">rep</span>(<span class="cn">NA</span>, len))</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>    date <span class="ot">&lt;-</span> <span class="fu">c</span>(date, <span class="fu">seq</span>(date[<span class="fu">length</span>(date)] <span class="sc">+</span> <span class="dv">1</span>, date[<span class="fu">length</span>(date)] <span class="sc">+</span> len, <span class="st">&quot;days&quot;</span>))</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>}</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co"># 推定するモデルの構築</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>model_KFAS <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> <span class="fu">SSMcustom</span>(</span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>    <span class="at">Z =</span> Zt, <span class="at">T =</span> Tt, <span class="at">R =</span> Rt, <span class="at">Q =</span> Qt, <span class="at">a1 =</span> a1, <span class="at">P1 =</span> P1), <span class="at">H =</span> Ht) <span class="co"># この例では大差ないが、P1 = P1の代わりにP1inf = diag(2)を指定すると、初期値の分散を無限大として計算する</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co"># 最尤法で推定（optimに渡すパラメーターが与えられている）</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>fit_KFAS <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_KFAS, <span class="at">inits =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co"># 状態変数と観測値の推定値の系列を得る</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co"># stateは状態変数、signalは観測値を表し、それぞれのフィルタリング分布と平滑化分布を計算するように指定</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a>r_KFAS <span class="ot">&lt;-</span> <span class="fu">KFS</span>(fit_KFAS<span class="sc">$</span>model, <span class="at">filtering =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>, <span class="st">&quot;signal&quot;</span>), <span class="at">smoothing =</span> <span class="fu">c</span>(<span class="st">&quot;state&quot;</span>, <span class="st">&quot;signal&quot;</span>))</span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="co"># 平滑化された予測値を得る</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>r_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_KFAS<span class="sc">$</span>model, <span class="at">interval =</span> <span class="st">&quot;predict&quot;</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code></pre></div>
 <p>分散共分散行列が最適化されたため、プロットの形状も微妙に変わりました。</p>
 <p><img src="common_files/figure-html/KF_KFAS-1.png" width="672" /></p>
 <p><code>KFS</code>の結果オブジェクトの中の<code>model$Q</code>と<code>model$H</code>で、推定された分散共分散行列を確認できます。</p>
