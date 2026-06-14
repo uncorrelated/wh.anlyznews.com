@@ -372,6 +372,14 @@ class="toc-section-number">2.1.1</span> 教科書モデルの推定例</a></li>
 id="toc-最尤法によるパラメーターの推定"><span
 class="toc-section-number">2.1.2</span>
 最尤法によるパラメーターの推定</a></li>
+<li><a href="#kfasパッケージssmcustom利用tips"
+id="toc-kfasパッケージssmcustom利用tips"><span
+class="toc-section-number">2.1.3</span>
+<code>KFAS</code>パッケージ<code>SSMcustom</code>利用tips</a></li>
+<li><a href="#kfasを簡単に利用する方法"
+id="toc-kfasを簡単に利用する方法"><span
+class="toc-section-number">2.1.4</span>
+<code>KFAS</code>を簡単に利用する方法</a></li>
 </ul></li>
 <li><a href="#その他の線形状態空間モデル"
 id="toc-その他の線形状態空間モデル"><span
@@ -854,8 +862,7 @@ number="2.1.2.1">
 パッケージを使った推定例</h4>
 <p><code>KFAS</code>は正規分布を含めた指数分布族をサポートする状態空間モデルの推定ができるパッケージで<a
 href="#fn6" class="footnote-ref"
-id="fnref6"><sup>6</sup></a>、最尤法で推定するようにつくってあります。</p>
-<p>誤差項の多変量正規分布の次元（<code>KFAS</code>のエラーメッセージの変数<code>k</code>）は直接指定できず、分散共分散行列のサイズから判別されます。最尤法で推定する箇所に<code>NA</code>を入れます。<code>fitSSM</code>関数の引数<code>inits</code>で指定する初期値の数と、<code>NA</code>の数はあわせてください。<code>NA</code>は<code>Ht</code>と<code>Qt</code>と<code>Zt</code>にのみ入れられます。</p>
+id="fnref6"><sup>6</sup></a>、最尤法で推定するようにつくってあります。典型的なモデルであれば、簡単に組み合わせて設定、推定することができますが、まずは明確に行列をパラメーターに与えて使ってみましょう。</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">library</span>(KFAS)</span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="co"># 観測方程式の多変量正規分布に従う誤差項の分散共分散行列; NAで推定するパラメーターであることを指定</span></span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>Ht <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="dv">1</span>, <span class="dv">1</span>) </span>
@@ -882,7 +889,7 @@ id="fnref6"><sup>6</sup></a>、最尤法で推定するようにつくってあ�
 <span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a>model_KFAS <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(y <span class="sc">~</span> <span class="sc">-</span><span class="dv">1</span> <span class="sc">+</span> <span class="fu">SSMcustom</span>(</span>
 <span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>    <span class="at">Z =</span> Zt, <span class="at">T =</span> Tt, <span class="at">R =</span> Rt, <span class="at">Q =</span> Qt, <span class="at">a1 =</span> a1, <span class="at">P1 =</span> P1), <span class="at">H =</span> Ht) <span class="co"># この例では大差ないが、P1 = P1の代わりにP1inf = diag(2)を指定すると、初期値の分散を無限大として計算する</span></span>
 <span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a></span>
-<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co"># 最尤法で推定（optimに渡すパラメーターが与えられている）</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co"># 最尤法で推定（optimに渡すパラメーターが与えられている; 行列に挿入したNAと数をあわせる）</span></span>
 <span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>fit_KFAS <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_KFAS, <span class="at">inits =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>)</span>
 <span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a></span>
 <span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co"># 状態変数と観測値の推定値の系列を得る</span></span>
@@ -891,6 +898,9 @@ id="fnref6"><sup>6</sup></a>、最尤法で推定するようにつくってあ�
 <span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a></span>
 <span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="co"># 平滑化された予測値を得る</span></span>
 <span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>r_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_KFAS<span class="sc">$</span>model, <span class="at">interval =</span> <span class="st">&quot;predict&quot;</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<p>観測値のベクトルの末尾に<code>NA</code>を10追加することで<a
+href="#fn7" class="footnote-ref"
+id="fnref7"><sup>7</sup></a>、未来を10期先まで予測をさせています。</p>
 <p>分散共分散行列が最適化されたため、プロットの形状も微妙に変わりました。</p>
 <p><img src="common_files/figure-html/KF_KFAS-1.png" width="672" /></p>
 <p><code>KFS</code>の結果オブジェクトの中の<code>model$Q</code>と<code>model$H</code>で、推定された分散共分散行列を確認できます。</p>
@@ -944,12 +954,44 @@ id="fnref6"><sup>6</sup></a>、最尤法で推定するようにつくってあ�
 </table>
 <p>今回の分析結果から<span
 class="math inline">\(y\)</span>の1期先予測分布を得る場合、<code>r_KFAS$mu</code>で期待値を、<code>sqrt(r_KFAS$P_mu[1,,])</code>で標準誤差を参照します。</p>
+</div>
+</div>
+<div id="kfasパッケージssmcustom利用tips" class="section level3"
+number="2.1.3">
+<h3><span class="header-section-number">2.1.3</span>
+<code>KFAS</code>パッケージ<code>SSMcustom</code>利用tips</h3>
+<p>より複雑な分析ができないか検討するときのために、今回は使わなかったところを含めて、<code>SSMcustom</code>のパラメーターの指定方法で特徴的なところをあげておきます。</p>
+<ul>
+<li>数理モデルで行列になっているパラメーターは、時点<span
+class="math inline">\(t\)</span>によらず一定の場合は行列で指定します。時点ごとに変わる外生変数を<span
+class="math inline">\(T_t\)</span>に入れ、<span
+class="math inline">\(t-1\)</span>期の状態変数をその係数として<span
+class="math inline">\(t\)</span>期の状態を説明させたいときなど、<span
+class="math inline">\(t\)</span>ごとに行列の成分が変わる場合は、配列（<code>array</code>）で設定します。配列の添字は行、列、時点の順になります。</li>
+<li>誤差項の多変量正規分布の次元（<code>KFAS</code>のエラーメッセージの変数<code>k</code>）は直接指定できず、分散共分散行列のサイズから判別されます。</li>
+<li>最尤法で推定させるパラメーターの指定は、簡単には行列の成分に<code>NA</code>を入れます。<code>fitSSM</code>の引数<code>inits</code>で指定する初期値の数と、<code>NA</code>の数はあわせてください。<code>NA</code>は<code>SSMcustom</code>の引数<code>H</code>と<code>Q</code>と<code>Z</code>で入れる配列にのみ入れられます。やや煩雑な方法で、<code>T</code>の成分を最尤推定するパラメーターとして扱うこともできます<a
+href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>。</li>
+</ul>
+</div>
+<div id="kfasを簡単に利用する方法" class="section level3"
+number="2.1.4">
+<h3><span class="header-section-number">2.1.4</span>
+<code>KFAS</code>を簡単に利用する方法</h3>
 <p><code>KFAS</code>パッケージをなるべくカルマンフィルターの説明とスクラッチのコードとの対応が分かるように使いましたが、平滑化するだけならば以下で簡単に済ます事ができます。</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">library</span>(KFAS)</span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>model_KFAS <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(y <span class="sc">~</span> <span class="fu">SSMtrend</span>(<span class="dv">1</span>, <span class="at">Q=</span><span class="cn">NA</span>), <span class="at">H=</span><span class="cn">NA</span>)</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>fit_KFAS <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_KFAS, <span class="at">inits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>fit_KFAS <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_KFAS, <span class="at">inits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>), <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>)</span>
 <span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>r_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_KFAS<span class="sc">$</span>model, <span class="at">interval =</span> <span class="st">&quot;predict&quot;</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code></pre></div>
-</div>
+<p>季節調整も簡単に追加できます。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(KFAS)</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>model_KFAS <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(y <span class="sc">~</span> <span class="fu">SSMtrend</span>(<span class="dv">1</span>, <span class="at">Q =</span> <span class="cn">NA</span>) <span class="sc">+</span> </span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="fu">SSMseasonal</span>(<span class="at">period =</span> <span class="dv">7</span>, <span class="at">Q =</span> <span class="cn">NA</span>, <span class="at">sea.type =</span> <span class="st">&quot;dummy&quot;</span>, <span class="at">P1 =</span> <span class="fu">diag</span>(<span class="dv">6</span>) <span class="sc">*</span> <span class="dv">100</span>), </span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="at">H =</span> <span class="cn">NA</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>fit_KFAS <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_KFAS, <span class="at">inits =</span> <span class="fu">rep</span>(<span class="dv">0</span>, <span class="dv">8</span>), <span class="at">method =</span> <span class="st">&quot;L-BFGS-B&quot;</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>r_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit_KFAS<span class="sc">$</span>model, <span class="at">interval =</span> <span class="st">&quot;predict&quot;</span>, <span class="at">level =</span> <span class="fl">0.95</span>)</span></code></pre></div>
+<p>これで観測方程式に季節調整の項が追加されました。引数<code>period</code>で周期を、<code>sea.type</code>で季節調整の方法を指定します。</p>
+<p>最尤法で推定するパラメーターが6つ増えたことに注意してください。<code>sea.type = "dummy"</code>の場合、ダミー変数を用いるので、季節の数から1を減じたパラメーターを推定することになります。<code>trigonometric</code>を入れると三角関数を用いることで推定パラメーターの数を抑制できますが、周期性があっても綺麗な波動をしているとは限らないので、<code>dummy</code>を入れておきましょう。</p>
+<p>今回の例では<code>P1</code>を指定しないと警告が出ましたが、データによっては省略しても問題ないです。</p>
 </div>
 </div>
 <div id="その他の線形状態空間モデル" class="section level2"
@@ -959,10 +1001,9 @@ number="2.2">
 <p>線形状態空間モデルの応用（もしくは線形状態空間モデルに書き直せる分析）は色々とあります。可変係数回帰モデル（time-varying
 coefficients regression
 model）、動学的因子モデル、自己回帰移動モデル（ARMA）、マルコフ混合分布モデル（HMM）です<a
-href="#fn7" class="footnote-ref"
-id="fnref7"><sup>7</sup></a>。また、季節調整に用いる事もできます<a
-href="#fn8" class="footnote-ref" id="fnref8"><sup>8</sup></a>。</p>
-<p><code>KFAS</code>パッケージでも<code>SSMregression</code>、<code>SSMarima</code>、<code>SSMseasonal</code>関数を用意することでサポートしており、<code>SSModel</code>に引数として渡すことで利用することができます。詳しくは<a
+href="#fn9" class="footnote-ref" id="fnref9"><sup>9</sup></a><a
+href="#fn10" class="footnote-ref" id="fnref10"><sup>10</sup></a>。</p>
+<p><code>KFAS</code>パッケージでも<code>SSMregression</code>関数と<code>SSMarima</code>関数を用意することでサポートしており、<code>SSModel</code>に引数として渡すことで利用することができます。詳しくは<a
 href="https://cran.r-project.org/web/packages/KFAS/vignettes/KFAS.pdf"><code>KFAS</code>パッケージのvignettes</a>を参照してください。</p>
 </div>
 </div>
@@ -976,19 +1017,19 @@ number="3.1">
 観測方程式が指数分布族の確率分布</h2>
 <p>観測方程式が指数分布族の確率分布に従う場合（i.e. <code>glm</code>で推定できるモデル）は<code>KFAS</code>パッケージが使えるので推定が容易です。</p>
 <p><code>KFAS</code>のvignettesにある例のそのままですが、イギリスのシートベルト着用義務（<code>law</code>）とバンの運転手の死亡者数（<code>VanKilled</code>）の分析です。</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="fu">library</span>(KFAS)</span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>model_van <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(VanKilled <span class="sc">~</span> law <span class="sc">+</span> <span class="fu">SSMtrend</span>(<span class="dv">1</span>, <span class="at">Q =</span> <span class="fu">list</span>(<span class="fu">matrix</span>(<span class="cn">NA</span>))) <span class="sc">+</span></span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>    <span class="fu">SSMseasonal</span>(<span class="at">period =</span> <span class="dv">12</span>, <span class="at">sea.type =</span> <span class="st">&quot;dummy&quot;</span>, <span class="at">Q =</span> <span class="cn">NA</span>),</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>    <span class="at">data =</span> Seatbelts, <span class="at">distribution =</span> <span class="st">&quot;poisson&quot;</span>)</span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co"># Estimate variance parameters</span></span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>fit_van <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_van, <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">7</span>), <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>model_van <span class="ot">&lt;-</span> fit_van<span class="sc">$</span>model</span>
-<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co"># use approximating model, gives posterior modes</span></span>
-<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a>out_nosim <span class="ot">&lt;-</span> <span class="fu">KFS</span>(model_van, <span class="at">nsim =</span> <span class="dv">0</span>)</span>
-<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a>out_nosim</span>
-<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co"># State smoothing via importance sampling</span></span>
-<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a>out_sim <span class="ot">&lt;-</span> <span class="fu">KFS</span>(model_van, <span class="at">nsim =</span> <span class="dv">1000</span>)</span>
-<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a>out_sim</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="fu">library</span>(KFAS)</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>model_van <span class="ot">&lt;-</span> <span class="fu">SSModel</span>(VanKilled <span class="sc">~</span> law <span class="sc">+</span> <span class="fu">SSMtrend</span>(<span class="dv">1</span>, <span class="at">Q =</span> <span class="fu">list</span>(<span class="fu">matrix</span>(<span class="cn">NA</span>))) <span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>    <span class="fu">SSMseasonal</span>(<span class="at">period =</span> <span class="dv">12</span>, <span class="at">sea.type =</span> <span class="st">&quot;dummy&quot;</span>, <span class="at">Q =</span> <span class="cn">NA</span>),</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>    <span class="at">data =</span> Seatbelts, <span class="at">distribution =</span> <span class="st">&quot;poisson&quot;</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="co"># Estimate variance parameters</span></span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a>fit_van <span class="ot">&lt;-</span> <span class="fu">fitSSM</span>(model_van, <span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="sc">-</span><span class="dv">7</span>), <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>model_van <span class="ot">&lt;-</span> fit_van<span class="sc">$</span>model</span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co"># use approximating model, gives posterior modes</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>out_nosim <span class="ot">&lt;-</span> <span class="fu">KFS</span>(model_van, <span class="at">nsim =</span> <span class="dv">0</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>out_nosim</span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="co"># State smoothing via importance sampling</span></span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>out_sim <span class="ot">&lt;-</span> <span class="fu">KFS</span>(model_van, <span class="at">nsim =</span> <span class="dv">1000</span>)</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>out_sim</span></code></pre></div>
 <p>この例では<code>distribution = "poisson"</code>で、観測方程式にポアソン回帰が指定されています。他に<code>binomial</code>（二項分布/ロジットモデル）,
 <code>negative binomial</code>（負の二項分布）,
 <code>gamma</code>（ガンマ分布）,
@@ -1016,106 +1057,106 @@ X_{t+1} &amp;= X_t + \nu_t \quad \mbox{(遷移方程式)} \\
 \tau_{t+1} &amp;= g_\tau(\tau_t, \epsilon_{\tau t})\\
 \end{align}\]</span></p>
 <p>裾野の厚いコーシー分布は、金融データなどで当てはまりが良いことが知られています。</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># シミュレーション技法なので、seed値は設定しておく</span></span>
-<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">406149</span>)</span>
-<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a><span class="co"># 仮定するsystem noiseのνはコーシー分布</span></span>
-<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="cf">function</span>(location, log_tau2) <span class="fu">rcauchy</span>(<span class="fu">length</span>(log_tau2), <span class="at">location =</span> location, <span class="at">scale =</span> <span class="fu">sqrt</span>(<span class="dv">10</span><span class="sc">^</span>log_tau2))</span>
-<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a></span>
-<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co"># 観測誤差は正規分布</span></span>
-<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a>calcWeights <span class="ot">&lt;-</span> <span class="cf">function</span>(y, x, sd){</span>
-<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(y, <span class="at">mean =</span> x, <span class="at">sd =</span> sd)</span>
-<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a>    p <span class="sc">/</span> <span class="fu">sum</span>(p)</span>
-<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a>}</span>
-<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a></span>
-<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>y <span class="ot">&lt;-</span> df02<span class="sc">$</span>at9</span>
-<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>date <span class="ot">&lt;-</span> df02<span class="sc">$</span>Date</span>
-<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
-<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a></span>
-<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co"># M: 各期でサンプリングする数</span></span>
-<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co"># osa: 各期の1期先予測分布</span></span>
-<span id="cb13-18"><a href="#cb13-18" tabindex="-1"></a><span class="co"># x: 各期でサンプリングした値</span></span>
-<span id="cb13-19"><a href="#cb13-19" tabindex="-1"></a><span class="co"># log_tau2: 各期でサンプリングに使う分布のパラメーター/x[i,j]ごとにある/log(tau^2, 10)</span></span>
-<span id="cb13-20"><a href="#cb13-20" tabindex="-1"></a><span class="co"># w: 各期でリサンプリングに使うウェイト/尤度</span></span>
-<span id="cb13-21"><a href="#cb13-21" tabindex="-1"></a><span class="co"># theta: 観測誤差の標準偏差</span></span>
-<span id="cb13-22"><a href="#cb13-22" tabindex="-1"></a></span>
-<span id="cb13-23"><a href="#cb13-23" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="dv">201</span></span>
-<span id="cb13-24"><a href="#cb13-24" tabindex="-1"></a></span>
-<span id="cb13-25"><a href="#cb13-25" tabindex="-1"></a><span class="co"># 初期値を設定</span></span>
-<span id="cb13-26"><a href="#cb13-26" tabindex="-1"></a>w <span class="ot">&lt;-</span> theta <span class="ot">&lt;-</span> log_tau2 <span class="ot">&lt;-</span> x <span class="ot">&lt;-</span> osa <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M, n)</span>
-<span id="cb13-27"><a href="#cb13-27" tabindex="-1"></a>log_tau2[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(M, <span class="at">min =</span> <span class="sc">-</span><span class="dv">8</span>, <span class="at">max =</span> <span class="sc">-</span><span class="dv">2</span>)</span>
-<span id="cb13-28"><a href="#cb13-28" tabindex="-1"></a><span class="co"># log_tau2[, 1] &lt;- -4.5</span></span>
-<span id="cb13-29"><a href="#cb13-29" tabindex="-1"></a>theta[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(M, <span class="at">min =</span> <span class="fl">1e-6</span>, <span class="at">max =</span> <span class="dv">2</span>)</span>
-<span id="cb13-30"><a href="#cb13-30" tabindex="-1"></a><span class="co"># theta[, 1] &lt;- 1</span></span>
-<span id="cb13-31"><a href="#cb13-31" tabindex="-1"></a>osa[, <span class="dv">1</span>] <span class="ot">&lt;-</span> x[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(M, <span class="at">mean =</span> prior_dist_means[<span class="dv">1</span>], <span class="at">sd =</span> <span class="dv">4</span>)</span>
-<span id="cb13-32"><a href="#cb13-32" tabindex="-1"></a><span class="co"># 始点のウェイトは雑につくる</span></span>
-<span id="cb13-33"><a href="#cb13-33" tabindex="-1"></a>w[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">calcWeights</span>(<span class="fu">ifelse</span>(<span class="fu">is.na</span>(y[<span class="dv">1</span>]), prior_dist_means[<span class="dv">1</span>], y[<span class="dv">1</span>]), x[, <span class="dv">1</span>], <span class="at">sd =</span> theta[, <span class="dv">1</span>])</span>
-<span id="cb13-34"><a href="#cb13-34" tabindex="-1"></a></span>
-<span id="cb13-35"><a href="#cb13-35" tabindex="-1"></a><span class="co"># パラメーターの誤差を大きくして、縮退しないようにする関数</span></span>
-<span id="cb13-36"><a href="#cb13-36" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">*</span><span class="fu">runif</span>(M, <span class="at">min =</span> <span class="fl">0.9</span>, <span class="at">max =</span> <span class="fl">1.1</span>)</span>
-<span id="cb13-37"><a href="#cb13-37" tabindex="-1"></a></span>
-<span id="cb13-38"><a href="#cb13-38" tabindex="-1"></a><span class="co"># フィルタリング分布を計算</span></span>
-<span id="cb13-39"><a href="#cb13-39" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">2</span>, n)){</span>
-<span id="cb13-40"><a href="#cb13-40" tabindex="-1"></a>    <span class="co"># 1期先予測分布をつくる</span></span>
-<span id="cb13-41"><a href="#cb13-41" tabindex="-1"></a>    osa[, j] <span class="ot">&lt;-</span> x[, j] <span class="ot">&lt;-</span> <span class="fu">nu</span>(x[, j <span class="sc">-</span> <span class="dv">1</span>], log_tau2[, j <span class="sc">-</span> <span class="dv">1</span>])</span>
-<span id="cb13-42"><a href="#cb13-42" tabindex="-1"></a></span>
-<span id="cb13-43"><a href="#cb13-43" tabindex="-1"></a>    <span class="co"># フィルタリング分布にする</span></span>
-<span id="cb13-44"><a href="#cb13-44" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.na</span>(y[j])){</span>
-<span id="cb13-45"><a href="#cb13-45" tabindex="-1"></a>        <span class="co"># 欠損値のときは予測分布をそのまま使う</span></span>
-<span id="cb13-46"><a href="#cb13-46" tabindex="-1"></a>        log_tau2[, j] <span class="ot">&lt;-</span> log_tau2[, j <span class="sc">-</span> <span class="dv">1</span>]</span>
-<span id="cb13-47"><a href="#cb13-47" tabindex="-1"></a>        theta[, j] <span class="ot">&lt;-</span> theta[, j <span class="sc">-</span> <span class="dv">1</span>]</span>
-<span id="cb13-48"><a href="#cb13-48" tabindex="-1"></a>        w[, j] <span class="ot">&lt;-</span> w[, j <span class="sc">-</span> <span class="dv">1</span>]</span>
-<span id="cb13-49"><a href="#cb13-49" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
-<span id="cb13-50"><a href="#cb13-50" tabindex="-1"></a>        <span class="co"># リサンプリング用のウェイトをつくる</span></span>
-<span id="cb13-51"><a href="#cb13-51" tabindex="-1"></a>        w[, j] <span class="ot">&lt;-</span> <span class="fu">calcWeights</span>(y[j], x[, j], <span class="at">sd =</span> theta[, j <span class="sc">-</span> <span class="dv">1</span>])</span>
-<span id="cb13-52"><a href="#cb13-52" tabindex="-1"></a>        <span class="co"># リサンプリング</span></span>
-<span id="cb13-53"><a href="#cb13-53" tabindex="-1"></a>        i <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(M, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> w[, j])</span>
-<span id="cb13-54"><a href="#cb13-54" tabindex="-1"></a>        x[, j] <span class="ot">&lt;-</span> x[i, j]</span>
-<span id="cb13-55"><a href="#cb13-55" tabindex="-1"></a>        <span class="co"># 縮退防止で粒子のばらつきを増す</span></span>
-<span id="cb13-56"><a href="#cb13-56" tabindex="-1"></a>        log_tau2[, j] <span class="ot">&lt;-</span> <span class="fu">g</span>(log_tau2[i, j <span class="sc">-</span> <span class="dv">1</span>])</span>
-<span id="cb13-57"><a href="#cb13-57" tabindex="-1"></a>        theta[, j] <span class="ot">&lt;-</span> <span class="fu">g</span>(theta[i, j <span class="sc">-</span> <span class="dv">1</span>])</span>
-<span id="cb13-58"><a href="#cb13-58" tabindex="-1"></a>    }</span>
-<span id="cb13-59"><a href="#cb13-59" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># シミュレーション技法なので、seed値は設定しておく</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">406149</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a><span class="co"># 仮定するsystem noiseのνはコーシー分布</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>nu <span class="ot">&lt;-</span> <span class="cf">function</span>(location, log_tau2) <span class="fu">rcauchy</span>(<span class="fu">length</span>(log_tau2), <span class="at">location =</span> location, <span class="at">scale =</span> <span class="fu">sqrt</span>(<span class="dv">10</span><span class="sc">^</span>log_tau2))</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a></span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="co"># 観測誤差は正規分布</span></span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>calcWeights <span class="ot">&lt;-</span> <span class="cf">function</span>(y, x, sd){</span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    p <span class="ot">&lt;-</span> <span class="fu">dnorm</span>(y, <span class="at">mean =</span> x, <span class="at">sd =</span> sd)</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    p <span class="sc">/</span> <span class="fu">sum</span>(p)</span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>}</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>y <span class="ot">&lt;-</span> df02<span class="sc">$</span>at9</span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>date <span class="ot">&lt;-</span> df02<span class="sc">$</span>Date</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(y)</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co"># M: 各期でサンプリングする数</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co"># osa: 各期の1期先予測分布</span></span>
+<span id="cb14-18"><a href="#cb14-18" tabindex="-1"></a><span class="co"># x: 各期でサンプリングした値</span></span>
+<span id="cb14-19"><a href="#cb14-19" tabindex="-1"></a><span class="co"># log_tau2: 各期でサンプリングに使う分布のパラメーター/x[i,j]ごとにある/log(tau^2, 10)</span></span>
+<span id="cb14-20"><a href="#cb14-20" tabindex="-1"></a><span class="co"># w: 各期でリサンプリングに使うウェイト/尤度</span></span>
+<span id="cb14-21"><a href="#cb14-21" tabindex="-1"></a><span class="co"># theta: 観測誤差の標準偏差</span></span>
+<span id="cb14-22"><a href="#cb14-22" tabindex="-1"></a></span>
+<span id="cb14-23"><a href="#cb14-23" tabindex="-1"></a>M <span class="ot">&lt;-</span> <span class="dv">201</span></span>
+<span id="cb14-24"><a href="#cb14-24" tabindex="-1"></a></span>
+<span id="cb14-25"><a href="#cb14-25" tabindex="-1"></a><span class="co"># 初期値を設定</span></span>
+<span id="cb14-26"><a href="#cb14-26" tabindex="-1"></a>w <span class="ot">&lt;-</span> theta <span class="ot">&lt;-</span> log_tau2 <span class="ot">&lt;-</span> x <span class="ot">&lt;-</span> osa <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M, n)</span>
+<span id="cb14-27"><a href="#cb14-27" tabindex="-1"></a>log_tau2[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(M, <span class="at">min =</span> <span class="sc">-</span><span class="dv">8</span>, <span class="at">max =</span> <span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb14-28"><a href="#cb14-28" tabindex="-1"></a><span class="co"># log_tau2[, 1] &lt;- -4.5</span></span>
+<span id="cb14-29"><a href="#cb14-29" tabindex="-1"></a>theta[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">runif</span>(M, <span class="at">min =</span> <span class="fl">1e-6</span>, <span class="at">max =</span> <span class="dv">2</span>)</span>
+<span id="cb14-30"><a href="#cb14-30" tabindex="-1"></a><span class="co"># theta[, 1] &lt;- 1</span></span>
+<span id="cb14-31"><a href="#cb14-31" tabindex="-1"></a>osa[, <span class="dv">1</span>] <span class="ot">&lt;-</span> x[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(M, <span class="at">mean =</span> prior_dist_means[<span class="dv">1</span>], <span class="at">sd =</span> <span class="dv">4</span>)</span>
+<span id="cb14-32"><a href="#cb14-32" tabindex="-1"></a><span class="co"># 始点のウェイトは雑につくる</span></span>
+<span id="cb14-33"><a href="#cb14-33" tabindex="-1"></a>w[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">calcWeights</span>(<span class="fu">ifelse</span>(<span class="fu">is.na</span>(y[<span class="dv">1</span>]), prior_dist_means[<span class="dv">1</span>], y[<span class="dv">1</span>]), x[, <span class="dv">1</span>], <span class="at">sd =</span> theta[, <span class="dv">1</span>])</span>
+<span id="cb14-34"><a href="#cb14-34" tabindex="-1"></a></span>
+<span id="cb14-35"><a href="#cb14-35" tabindex="-1"></a><span class="co"># パラメーターの誤差を大きくして、縮退しないようにする関数</span></span>
+<span id="cb14-36"><a href="#cb14-36" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(x) x<span class="sc">*</span><span class="fu">runif</span>(M, <span class="at">min =</span> <span class="fl">0.9</span>, <span class="at">max =</span> <span class="fl">1.1</span>)</span>
+<span id="cb14-37"><a href="#cb14-37" tabindex="-1"></a></span>
+<span id="cb14-38"><a href="#cb14-38" tabindex="-1"></a><span class="co"># フィルタリング分布を計算</span></span>
+<span id="cb14-39"><a href="#cb14-39" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="fu">seq</span>(<span class="dv">2</span>, n)){</span>
+<span id="cb14-40"><a href="#cb14-40" tabindex="-1"></a>    <span class="co"># 1期先予測分布をつくる</span></span>
+<span id="cb14-41"><a href="#cb14-41" tabindex="-1"></a>    osa[, j] <span class="ot">&lt;-</span> x[, j] <span class="ot">&lt;-</span> <span class="fu">nu</span>(x[, j <span class="sc">-</span> <span class="dv">1</span>], log_tau2[, j <span class="sc">-</span> <span class="dv">1</span>])</span>
+<span id="cb14-42"><a href="#cb14-42" tabindex="-1"></a></span>
+<span id="cb14-43"><a href="#cb14-43" tabindex="-1"></a>    <span class="co"># フィルタリング分布にする</span></span>
+<span id="cb14-44"><a href="#cb14-44" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.na</span>(y[j])){</span>
+<span id="cb14-45"><a href="#cb14-45" tabindex="-1"></a>        <span class="co"># 欠損値のときは予測分布をそのまま使う</span></span>
+<span id="cb14-46"><a href="#cb14-46" tabindex="-1"></a>        log_tau2[, j] <span class="ot">&lt;-</span> log_tau2[, j <span class="sc">-</span> <span class="dv">1</span>]</span>
+<span id="cb14-47"><a href="#cb14-47" tabindex="-1"></a>        theta[, j] <span class="ot">&lt;-</span> theta[, j <span class="sc">-</span> <span class="dv">1</span>]</span>
+<span id="cb14-48"><a href="#cb14-48" tabindex="-1"></a>        w[, j] <span class="ot">&lt;-</span> w[, j <span class="sc">-</span> <span class="dv">1</span>]</span>
+<span id="cb14-49"><a href="#cb14-49" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb14-50"><a href="#cb14-50" tabindex="-1"></a>        <span class="co"># リサンプリング用のウェイトをつくる</span></span>
+<span id="cb14-51"><a href="#cb14-51" tabindex="-1"></a>        w[, j] <span class="ot">&lt;-</span> <span class="fu">calcWeights</span>(y[j], x[, j], <span class="at">sd =</span> theta[, j <span class="sc">-</span> <span class="dv">1</span>])</span>
+<span id="cb14-52"><a href="#cb14-52" tabindex="-1"></a>        <span class="co"># リサンプリング</span></span>
+<span id="cb14-53"><a href="#cb14-53" tabindex="-1"></a>        i <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(M, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> w[, j])</span>
+<span id="cb14-54"><a href="#cb14-54" tabindex="-1"></a>        x[, j] <span class="ot">&lt;-</span> x[i, j]</span>
+<span id="cb14-55"><a href="#cb14-55" tabindex="-1"></a>        <span class="co"># 縮退防止で粒子のばらつきを増す</span></span>
+<span id="cb14-56"><a href="#cb14-56" tabindex="-1"></a>        log_tau2[, j] <span class="ot">&lt;-</span> <span class="fu">g</span>(log_tau2[i, j <span class="sc">-</span> <span class="dv">1</span>])</span>
+<span id="cb14-57"><a href="#cb14-57" tabindex="-1"></a>        theta[, j] <span class="ot">&lt;-</span> <span class="fu">g</span>(theta[i, j <span class="sc">-</span> <span class="dv">1</span>])</span>
+<span id="cb14-58"><a href="#cb14-58" tabindex="-1"></a>    }</span>
+<span id="cb14-59"><a href="#cb14-59" tabindex="-1"></a>}</span></code></pre></div>
 <p>状態変数のフィルタリング分布の計算ができました。</p>
 <p>各期の平均と中央値と95%信用区間の計算は以下のように計算できます。コーシー分布を使っている都合、平均より中央値を見た方が良さそうです。</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>x_mean <span class="ot">&lt;-</span> <span class="fu">apply</span>(x, <span class="dv">2</span>, mean)</span>
-<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>x_median <span class="ot">&lt;-</span> <span class="fu">apply</span>(x, <span class="dv">2</span>, median)</span>
-<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>x_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(x, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>x_mean <span class="ot">&lt;-</span> <span class="fu">apply</span>(x, <span class="dv">2</span>, mean)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>x_median <span class="ot">&lt;-</span> <span class="fu">apply</span>(x, <span class="dv">2</span>, median)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>x_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(x, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)))</span></code></pre></div>
 <p>平滑化分布を計算します。構造的にはフィルタリング分布と同じなのですが、過去の粒子も推定に用いることで滑らかにします。</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M<span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>L<span class="sc">+</span><span class="dv">1</span>), n)</span>
-<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a>    columns <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="dv">1</span>, j <span class="sc">-</span> L <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span><span class="fu">min</span>(n, j <span class="sc">+</span> L <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a>    i <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(M, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> w[, j])</span>
-<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a>    tmp <span class="ot">&lt;-</span> <span class="fu">sapply</span>(columns, <span class="cf">function</span>(k){</span>
-<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>        x[i, k]</span>
-<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    })</span>
-<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>    s[<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(tmp), j] <span class="ot">&lt;-</span> tmp</span>
-<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a>}</span>
-<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a>s_median <span class="ot">&lt;-</span> <span class="fu">apply</span>(s, <span class="dv">2</span>, median, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a>s_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(s, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M<span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>L<span class="sc">+</span><span class="dv">1</span>), n)</span>
+<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>    columns <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="dv">1</span>, j <span class="sc">-</span> L <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span><span class="fu">min</span>(n, j <span class="sc">+</span> L <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>    i <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(M, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> w[, j])</span>
+<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>    tmp <span class="ot">&lt;-</span> <span class="fu">sapply</span>(columns, <span class="cf">function</span>(k){</span>
+<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>        x[i, k]</span>
+<span id="cb16-8"><a href="#cb16-8" tabindex="-1"></a>    })</span>
+<span id="cb16-9"><a href="#cb16-9" tabindex="-1"></a>    s[<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(tmp), j] <span class="ot">&lt;-</span> tmp</span>
+<span id="cb16-10"><a href="#cb16-10" tabindex="-1"></a>}</span>
+<span id="cb16-11"><a href="#cb16-11" tabindex="-1"></a>s_median <span class="ot">&lt;-</span> <span class="fu">apply</span>(s, <span class="dv">2</span>, median, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" tabindex="-1"></a>s_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(s, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <p>観測値の1期先予測分布も計算してみましょう。</p>
-<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>yp <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M, n)</span>
-<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb16-3"><a href="#cb16-3" tabindex="-1"></a>    <span class="co"># i &lt;- sample.int(M, replace = TRUE)</span></span>
-<span id="cb16-4"><a href="#cb16-4" tabindex="-1"></a>    yp[, j] <span class="ot">&lt;-</span> osa[, j] <span class="sc">+</span> theta[, j] <span class="sc">*</span> <span class="fu">rnorm</span>(M)</span>
-<span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>}</span>
-<span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>yp_median <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp, <span class="dv">2</span>, median)</span>
-<span id="cb16-7"><a href="#cb16-7" tabindex="-1"></a>yp_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>yp <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M, n)</span>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>    <span class="co"># i &lt;- sample.int(M, replace = TRUE)</span></span>
+<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>    yp[, j] <span class="ot">&lt;-</span> osa[, j] <span class="sc">+</span> theta[, j] <span class="sc">*</span> <span class="fu">rnorm</span>(M)</span>
+<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>}</span>
+<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>yp_median <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp, <span class="dv">2</span>, median)</span>
+<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>yp_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)))</span></code></pre></div>
 <p>プロットすると相場が大きく動くときに信用区間が広くなっていることがわかります。誤差項の分散を逐次推定しているためです。</p>
 <p><img src="common_files/figure-html/Particle_Filter-1.png" width="672" /></p>
 <p>予測分布に平滑化をかけることもできます。</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>yp_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M<span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>L<span class="sc">+</span><span class="dv">1</span>), n)</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>    columns <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="dv">1</span>, j <span class="sc">-</span> L <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span><span class="fu">min</span>(n, j <span class="sc">+</span> L <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>    i <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(M, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> w[, j])</span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>    tmp <span class="ot">&lt;-</span> <span class="fu">sapply</span>(columns, <span class="cf">function</span>(k){</span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>        osa[i, k] <span class="sc">+</span> theta[i, k] <span class="sc">*</span> <span class="fu">rnorm</span>(M)</span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a>    })</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a>    yp_s[<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(tmp), j] <span class="ot">&lt;-</span> tmp</span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>}</span>
-<span id="cb17-11"><a href="#cb17-11" tabindex="-1"></a>yp_s_median <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp_s, <span class="dv">2</span>, median, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-12"><a href="#cb17-12" tabindex="-1"></a>yp_s_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp_s, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>yp_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, M<span class="sc">*</span>(<span class="dv">2</span><span class="sc">*</span>L<span class="sc">+</span><span class="dv">1</span>), n)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>    columns <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="dv">1</span>, j <span class="sc">-</span> L <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span><span class="fu">min</span>(n, j <span class="sc">+</span> L <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>    i <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(M, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">prob =</span> w[, j])</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>    tmp <span class="ot">&lt;-</span> <span class="fu">sapply</span>(columns, <span class="cf">function</span>(k){</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>        osa[i, k] <span class="sc">+</span> theta[i, k] <span class="sc">*</span> <span class="fu">rnorm</span>(M)</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a>    })</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a>    yp_s[<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(tmp), j] <span class="ot">&lt;-</span> tmp</span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>}</span>
+<span id="cb18-11"><a href="#cb18-11" tabindex="-1"></a>yp_s_median <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp_s, <span class="dv">2</span>, median, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-12"><a href="#cb18-12" tabindex="-1"></a>yp_s_quantiles <span class="ot">&lt;-</span> <span class="fu">apply</span>(yp_s, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">quantile</span>(x, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>), <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
 <p><img src="common_files/figure-html/Particle_Filter_Smoothing-1.png" width="672" /></p>
 <p>それらしいプロットになりました。</p>
 </div>
@@ -1143,11 +1184,17 @@ pp.181–192<a href="#fnref5" class="footnote-back">↩︎</a></p></li>
 href="https://doi.org/10.18637/jss.v039.i02">Tusell
 (2011)</a>）のですが、以前の人気パッケージでメンテナンス終了しているものもあり、現在は機能や人気で<code>KFAS</code>が無難な選択です。<a
 href="#fnref6" class="footnote-back">↩︎</a></p></li>
-<li id="fn7"><p>中妻 (2003)
-pp.279–283に、線形状態空間モデルの変数をどのようにすれば、これらのモデルと見做せるかの説明があります。<a
+<li
+id="fn7"><p>観測値の欠損しか補定されないので、パラメーターを配列で渡す場合は、予測する時点まで配列を拡張する必要があります。<a
 href="#fnref7" class="footnote-back">↩︎</a></p></li>
-<li id="fn8"><p>北川 (2019) に、中妻
-(2003)に無い応用方法の紹介があります。<a href="#fnref8"
+<li
+id="fn8"><p>宣言部が<code>function(pars, model, ...)</code>であり、引数のリスト<code>model</code>の中の配列<code>T</code>を<code>pars</code>に基づいて（例えば<code>T[1,1,]&lt;-pars[1]</code>と言うように）更新し、<code>model</code>を戻り値とするカスタマイズ関数を、<code>fitSSM</code>関数の<code>updatefn</code>引数で渡します。カスタマイズ関数では、<code>model$Q</code>や<code>model$H</code>に入った<code>NA</code>の値も<code>pars</code>に基づいて負にならないように更新する必要があり、<code>model$T</code>、<code>model$Q</code>、<code>model$H</code>などが<code>array</code>型でなければならないことに注意してください。また、試した限りですが、上手く収束させるのは難しいようです。<a
+href="#fnref8" class="footnote-back">↩︎</a></p></li>
+<li id="fn9"><p>中妻 (2003)
+pp.279–283に、線形状態空間モデルの変数をどのようにすれば、これらのモデルと見做せるかの説明があります。<a
+href="#fnref9" class="footnote-back">↩︎</a></p></li>
+<li id="fn10"><p>北川 (2019) に、中妻
+(2003)に無い応用方法の紹介があります。<a href="#fnref10"
 class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
