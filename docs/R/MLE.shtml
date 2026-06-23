@@ -13,7 +13,7 @@
 
 <title>Rでべたべたと最尤法</title>
 
-<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -434,9 +434,11 @@ class="toc-section-number">6.2</span> プロファイル尤度信頼区間</a></
 </ul>
 </div>
 
-<p>計量分析で最初に習うOLSは性質がよく計算しやすい推定ですが、非線形モデルの推定に使えません。非線形関数を推定する場合は、その非線形関数を推定するパッケージを用いない限りは、最尤法が手っ取り早い選択になります<a
+<p>計量分析で最初に習うOLSは性質がよく計算しやすい推定ですが、非線形モデルの推定に使えません。非線形関数を推定する場合は、最尤法が手っ取り早い選択になります<a
 href="#fn1" class="footnote-ref"
-id="fnref1"><sup>1</sup></a>。最尤法は、一般化線形回帰モデル（GLM）やベイズ統計学の理解の前提になるなど、統計学の学習にも避けて通ることができない手法です。</p>
+id="fnref1"><sup>1</sup></a>。最尤法は、一般化線形回帰モデル（GLM）<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>やベイズ統計学の理解の前提になるなど、統計学の学習にも避けて通ることができない手法です。</p>
 <p>実用上は尤度関数を書いて、何らかの凸最適化のアルゴリズムを実装して走らせるか、<code>nlm</code>か<code>optim</code>といったパラメーターの最適化をしてくれる関数を呼べば簡単に最適点と最適点におけるヘッシアンを推定でき、ヘッシアンの意味を理解していたら標準誤差を計算することができ、それで推定したパラメーターを検定することができます。理解のために実際に、最尤法を試してみましょう。</p>
 <div id="対数尤度関数" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> 対数尤度関数</h1>
@@ -586,8 +588,8 @@ class="math inline">\(\sigma\)</span>なのに注意してください。</p>
 <p>実際のところ分析では色々と検定する事になるので、パラメーターの標準誤差の算出方法を確認しましょう。</p>
 <div id="導出" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> 導出</h2>
-<p>テキストに沿い<a href="#fn2" class="footnote-ref"
-id="fnref2"><sup>2</sup></a>、対数尤度関数のモーメントの性質を用いて、パラメーターの推定量が漸近的に正規分布に従うことと、その分散共分散行列を導出します。</p>
+<p>テキストに沿い<a href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>、対数尤度関数のモーメントの性質を用いて、パラメーターの推定量が漸近的に正規分布に従うことと、その分散共分散行列を導出します。</p>
 <div id="対数尤度関数のモーメントの性質" class="section level3"
 number="4.1.1">
 <h3><span class="header-section-number">4.1.1</span>
@@ -932,8 +934,8 @@ Wald検定，LM検定，LR検定の使い分け</h2>
 <h2><span class="header-section-number">6.2</span>
 プロファイル尤度信頼区間</h2>
 <p>プロファイル尤度信頼区間は、計算に手間暇がかかるためか21世紀になってから一般化した信頼区間<a
-href="#fn3" class="footnote-ref"
-id="fnref3"><sup>3</sup></a>で、今ではデフォルト出力になっていたりします。</p>
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>で、今ではデフォルト出力になっていたりします。</p>
 <p>尤度関数の複数の説明変数を、ひとつを残して陰関数として扱うことで、尤度関数を一変数関数にしたものがプロファイル尤度関数です。ある変数以外の変数は、ある変数にあわせて最適な値がとられるときの尤度が得られます。</p>
 <p>計算には尤度比検定に用いる制約付き最尤法に使う関数が必要になります。グラディエント、ヘッシアン、制約付き対数尤度関数、制約付きグラディエントを用意しましょう。</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># グラディエント</span></span>
@@ -1004,13 +1006,16 @@ id="fnref3"><sup>3</sup></a>で、今ではデフォルト出力になってい�
 <hr />
 <ol>
 <li
-id="fn1"><p>指数分布族で制約が線形など典型的な場合はGLMを用いることで、収束しやすくなり、標準誤差が小さくなります。<a
+id="fn1"><p>一般化モーメント法（<abbr title="Generalized Method of Moments">GMM</abbr>）を用いることもできますが、GMMは確率分布を明確に仮定する必要がない一方で効率が悪く、とくに小標本での特性が悪いと指摘されています。<a
 href="#fnref1" class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>Greene (2003) “Econometric Analysis,” 5th Edition<a
+<li
+id="fn2"><p>指数分布族で制約が線形など典型的な場合に用いられます。ヘッシアンを計算せずに推定できます。<a
 href="#fnref2" class="footnote-back">↩︎</a></p></li>
-<li id="fn3"><p><a
+<li id="fn3"><p>Greene (2003) “Econometric Analysis,” 5th Edition<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p><a
 href="https://www.researchgate.net/publication/341702223_purofairuyouduxinlaiqujian_Profile_likelihood_confidence_interval_yitengyaoer_muyaotanhuahui_2019nian3yue14ri">伊藤
-(2019)</a>に詳しい説明があります。<a href="#fnref3"
+(2019)</a>に詳しい説明があります。<a href="#fnref4"
 class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
