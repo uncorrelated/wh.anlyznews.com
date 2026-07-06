@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Rによる定番時系列データ分析</title>
+
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Rによる定番時系列データ分析</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>時系列データをぽんと与えられて何か分析してと言われたときのために、教科書的な手法を抑えておきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#tsオブジェクト" id="toc-tsオブジェクト"><span
+class="toc-section-number">1</span> <code>ts</code>オブジェクト</a>
+<ul>
+<li><a href="#プロット" id="toc-プロット"><span
+class="toc-section-number">1.1</span> プロット</a></li>
+<li><a href="#季節調節" id="toc-季節調節"><span
+class="toc-section-number">1.2</span> 季節調節</a></li>
+</ul></li>
+<li><a href="#単変量時系列モデル" id="toc-単変量時系列モデル"><span
+class="toc-section-number">2</span> 単変量時系列モデル</a>
+<ul>
+<li><a href="#arモデル" id="toc-arモデル"><span
+class="toc-section-number">2.1</span> ARモデル</a></li>
+<li><a href="#maモデル" id="toc-maモデル"><span
+class="toc-section-number">2.2</span> MAモデル</a></li>
+<li><a href="#armaモデル" id="toc-armaモデル"><span
+class="toc-section-number">2.3</span> ARMAモデル</a></li>
+<li><a href="#arimaモデル" id="toc-arimaモデル"><span
+class="toc-section-number">2.4</span> ARIMAモデル</a></li>
+<li><a href="#sarimaモデル" id="toc-sarimaモデル"><span
+class="toc-section-number">2.5</span> SARIMAモデル</a></li>
+</ul></li>
+<li><a href="#時系列データの定常性" id="toc-時系列データの定常性"><span
+class="toc-section-number">3</span> 時系列データの定常性</a>
+<ul>
+<li><a href="#初期値mathbfy_0の影響の収束"
+id="toc-初期値mathbfy_0の影響の収束"><span
+class="toc-section-number">3.1</span> 初期値<span
+class="math inline">\(\mathbf{y}_0\)</span>の影響の収束</a></li>
+<li><a href="#切片項mathbfcの影響の収束"
+id="toc-切片項mathbfcの影響の収束"><span
+class="toc-section-number">3.2</span> 切片項<span
+class="math inline">\(\mathbf{c}\)</span>の影響の収束</a></li>
+<li><a href="#撹乱項mathbfvarepsilon_tの影響の収束"
+id="toc-撹乱項mathbfvarepsilon_tの影響の収束"><span
+class="toc-section-number">3.3</span> 撹乱項<span
+class="math inline">\(\mathbf{\varepsilon}_t\)</span>の影響の収束</a></li>
+<li><a href="#特性方程式" id="toc-特性方程式"><span
+class="toc-section-number">3.4</span> 特性方程式</a></li>
+<li><a href="#単位根検定" id="toc-単位根検定"><span
+class="toc-section-number">3.5</span> 単位根検定</a></li>
+</ul></li>
+<li><a href="#単変量時系列モデルの推定"
+id="toc-単変量時系列モデルの推定"><span
+class="toc-section-number">4</span> 単変量時系列モデルの推定</a>
+<ul>
+<li><a href="#モデルラグと階差の自動決定"
+id="toc-モデルラグと階差の自動決定"><span
+class="toc-section-number">4.1</span>
+モデル（ラグと階差）の自動決定</a></li>
+<li><a href="#予測値" id="toc-予測値"><span
+class="toc-section-number">4.2</span> 予測値</a></li>
+<li><a href="#欠損値処理" id="toc-欠損値処理"><span
+class="toc-section-number">4.3</span> 欠損値処理</a></li>
+<li><a href="#過剰適合" id="toc-過剰適合"><span
+class="toc-section-number">4.4</span> 過剰適合</a></li>
+<li><a href="#外生変数" id="toc-外生変数"><span
+class="toc-section-number">4.5</span> 外生変数</a></li>
+</ul></li>
+<li><a href="#多変量時系列分析" id="toc-多変量時系列分析"><span
+class="toc-section-number">5</span> 多変量時系列分析</a>
+<ul>
+<li><a href="#単位根検定と階差" id="toc-単位根検定と階差"><span
+class="toc-section-number">5.1</span> 単位根検定と階差</a></li>
+<li><a href="#varモデル" id="toc-varモデル"><span
+class="toc-section-number">5.2</span> VARモデル</a>
+<ul>
+<li><a href="#情報量規準によるラグの選択"
+id="toc-情報量規準によるラグの選択"><span
+class="toc-section-number">5.2.1</span>
+情報量規準によるラグの選択</a></li>
+<li><a href="#制約付きvarモデル" id="toc-制約付きvarモデル"><span
+class="toc-section-number">5.2.2</span> 制約付きVARモデル</a></li>
+<li><a href="#グレンジャー因果" id="toc-グレンジャー因果"><span
+class="toc-section-number">5.2.3</span> グレンジャー因果</a></li>
+<li><a href="#予測値-1" id="toc-予測値-1"><span
+class="toc-section-number">5.2.4</span> 予測値</a></li>
+<li><a href="#インパルス応答列" id="toc-インパルス応答列"><span
+class="toc-section-number">5.2.5</span> インパルス応答列</a></li>
+<li><a href="#予測誤差分散分解" id="toc-予測誤差分散分解"><span
+class="toc-section-number">5.2.6</span> 予測誤差分散分解</a></li>
+</ul></li>
+<li><a href="#構造化varモデル" id="toc-構造化varモデル"><span
+class="toc-section-number">5.3</span> 構造化VARモデル</a></li>
+<li><a href="#共和分検定" id="toc-共和分検定"><span
+class="toc-section-number">5.4</span> 共和分検定</a></li>
+<li><a href="#vecmの推定" id="toc-vecmの推定"><span
+class="toc-section-number">5.5</span> VECMの推定</a></li>
+<li><a href="#構造化vecm" id="toc-構造化vecm"><span
+class="toc-section-number">5.6</span> 構造化VECM</a></li>
+</ul></li>
+<li><a href="#状態空間モデル" id="toc-状態空間モデル"><span
+class="toc-section-number">6</span> 状態空間モデル</a></li>
+<li><a href="#終わりに" id="toc-終わりに"><span
+class="toc-section-number">7</span> 終わりに</a></li>
+</ul>
+</div>
+
+<p>数量や金額や価格の推移の記録する時系列データは観察記録や社会統計で広く見られ、それしか無い場合も多いです。しかし、時系列データは統計解析をかけるには厄介な性質を持つことが多々あります。</p>
+<p>実験データやアンケート調査の分析でよく使われる統計手法は通用しないことが多いです。非定常なデータは、定常なデータに変換する必要があります。定常であっても、往々にして自己回帰や系列相関といった性質があり、それらに応じた統計モデルが必要です。</p>
+<p>厄介と言っても、これまでの統計学者の努力で時系列データの分析手法は整備され、教科書的なアプローチがあり、ソフトウェアの対応も進んでいます。Rにも時系列データを処理するためのビルトイン関数や様々なパッケージがあります。</p>
+<div id="tsオブジェクト" class="section level1" number="1">
+<h1><span class="header-section-number">1</span>
+<code>ts</code>オブジェクト</h1>
+<p>使い勝手が微妙で、季節調整をしないときは使わない方が良い気もしますが、Rには時系列データ用の<code>ts</code>型があります。</p>
+<p>ベクトルもしくは行列によるデータ系列に、開始時点（<code>start</code>）と周期（<code>frequency</code>）をつけ加えたオブジェクトで、関数<code>ts</code>で作成することができます。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;https://wh.anlyznews.com/R/dataset/jtar-ur.csv&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">head</span>(df01, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>  YEAR MONTH JTAR  UR
+1 1998     1 0.63 3.6
+2 1998     2 0.61 3.7
+3 1998     3 0.57 4.1</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>JTAR <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">ts</span>(JTAR, <span class="at">start =</span> <span class="fu">c</span>(YEAR[<span class="dv">1</span>], MONTH[<span class="dv">1</span>]), <span class="at">frequency =</span> <span class="dv">12</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="fu">head</span>(JTAR, <span class="dv">12</span>)</span></code></pre></div>
+<pre><code>      Jan  Feb  Mar  Apr  May  Jun  Jul
+1998 0.63 0.61 0.57 0.56 0.54 0.52 0.51
+      Aug  Sep  Oct  Nov  Dec
+1998 0.50 0.49 0.48 0.47 0.47</code></pre>
+<p>周期12は月次データとして解釈されます。周期が2以上の場合、<code>start</code>は何周期目かと周期内の位置を指定します。年と月を指定しました。</p>
+<p><code>ts</code>オブジェクトに設定した<code>start</code>と<code>frequency</code>は同名のメソッドで確認可能です。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">start</span>(JTAR)</span></code></pre></div>
+<pre><code>[1] 1998    1</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">frequency</span>(JTAR)</span></code></pre></div>
+<pre><code>[1] 12</code></pre>
+<p><code>ts</code>オブジェクトの系列を年月など周期と季節を添字に取り出す時は、<code>window</code>メソッドを持ちいます。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">window</span>(JTAR, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">2010</span>, <span class="dv">9</span>), <span class="at">end =</span> <span class="fu">c</span>(<span class="dv">2012</span>, <span class="dv">8</span>))</span></code></pre></div>
+<pre><code>      Jan  Feb  Mar  Apr  May  Jun  Jul
+2010                                   
+2011 0.60 0.62 0.62 0.62 0.61 0.62 0.64
+2012 0.74 0.75 0.77 0.78 0.79 0.80 0.81
+      Aug  Sep  Oct  Nov  Dec
+2010      0.55 0.56 0.58 0.59
+2011 0.65 0.67 0.69 0.71 0.72
+2012 0.82                    </code></pre>
+<p>位置を指定するときは添字を使えますが、<code>ts</code>オブジェクトではなく、ベクトル扱いになります。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>JTAR[<span class="dv">13</span><span class="sc">:</span><span class="dv">12</span>]</span></code></pre></div>
+<pre><code>[1] 0.48 0.47</code></pre>
+<p>行列を<code>ts</code>オブジェクトにすることもできます。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a>ts_y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">ts</span>(<span class="fu">cbind</span>(JTAR, UR), <span class="at">start =</span> <span class="fu">c</span>(YEAR[<span class="dv">1</span>], MONTH[<span class="dv">1</span>]), <span class="at">frequency =</span> <span class="dv">12</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">head</span>(ts_y, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>         JTAR  UR
+Jan 1998 0.63 3.6
+Feb 1998 0.61 3.7
+Mar 1998 0.57 4.1</code></pre>
+<p>四半期ごとに平均をとって、周期4の<code>ts</code>オブジェクトを作ってみましょう。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>df_q <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="fu">cbind</span>(JTAR, UR) <span class="sc">~</span> <span class="fu">I</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="fu">nrow</span>(df01)<span class="sc">/</span><span class="dv">4</span>)) <span class="sc">+</span> YEAR, mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>, <span class="at">data =</span> df01)</span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="fu">colnames</span>(df_q)[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="st">&quot;Q&quot;</span></span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a>ts_q <span class="ot">&lt;-</span> <span class="fu">with</span>(df_q, <span class="fu">ts</span>(<span class="fu">cbind</span>(JTAR, UR), <span class="at">start =</span> <span class="fu">c</span>(YEAR[<span class="dv">1</span>], Q[<span class="dv">1</span>]), <span class="at">frequency =</span> <span class="dv">4</span>))</span></code></pre></div>
+<p>モデル式内の<code>I(...)</code>は、内側のRのコードを実行し、戻り値を説明変数として扱うための関数です。<code>I(rep(1:4, nrow(df01)/4))</code>は、<code>1, 2, 3, 4</code>の繰り返しをつくって説明変数とします。</p>
+<p>周期4は四半期データとして解釈されます。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">window</span>(ts_q, <span class="at">start =</span> <span class="fu">c</span>(<span class="dv">2010</span>, <span class="dv">1</span>), <span class="at">end =</span> <span class="fu">c</span>(<span class="dv">2011</span>, <span class="dv">4</span>))</span></code></pre></div>
+<pre><code>             JTAR       UR
+2010 Q1 0.5000000 5.066667
+2010 Q2 0.5100000 5.066667
+2010 Q3 0.5300000 5.033333
+2010 Q4 0.5400000 5.033333
+2011 Q1 0.6266667 4.566667
+2011 Q2 0.6433333 4.566667
+2011 Q3 0.6566667 4.633333
+2011 Q4 0.6633333 4.566667</code></pre>
+<p>周期は<code>1</code>でも<code>53</code>でも問題なく計算できますが、<code>print</code>による表示は<code>4</code>と<code>12</code>のときのみカスタマイズされたものが使われます。</p>
+<div id="プロット" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> プロット</h2>
+<p>見栄えがよくないので<code>ggplot2</code>を使うことになる気もしますが、<code>plot(JTAR)</code>とすると散布図ではなくて折れ線グラフが出ます。系列が複数の場合は、</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">plot</span>(ts_y)</span></code></pre></div>
+<p><img src="common_files/figure-html/ts-1.png" width="672" /></p>
+<p>と複数の折れ線グラフを並べて描画してくれます。</p>
+<p><code>ts</code>オブジェクトをプロットしたときは、<code>text</code>など低水準グラフィックス関数のx座標が年など<code>start</code>で指定した基準になることに注意してください。周期は小数点以下の数字になります。</p>
+</div>
+<div id="季節調節" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> 季節調節</h2>
+<p>季節調整をかけるのも容易です。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>ts_y_s <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">nrow</span>(ts_y), <span class="fu">ncol</span>(ts_y))</span>
+<span id="cb19-2"><a href="#cb19-2" tabindex="-1"></a><span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) ts_y_s[, j] <span class="ot">&lt;-</span> <span class="fu">apply</span>(<span class="fu">stl</span>(ts_y[, j],</span>
+<span id="cb19-3"><a href="#cb19-3" tabindex="-1"></a>    <span class="at">s.window =</span> <span class="fu">frequency</span>(ts_y))<span class="sc">$</span>time.series[, <span class="fu">c</span>(<span class="st">&quot;trend&quot;</span>, <span class="st">&quot;remainder&quot;</span>)],</span>
+<span id="cb19-4"><a href="#cb19-4" tabindex="-1"></a>    <span class="dv">1</span>, sum)</span>
+<span id="cb19-5"><a href="#cb19-5" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">ts</span>(ts_y_s, <span class="at">frequency =</span> <span class="fu">frequency</span>(ts_y),</span>
+<span id="cb19-6"><a href="#cb19-6" tabindex="-1"></a>    <span class="at">start =</span> <span class="fu">start</span>(ts_y),</span>
+<span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>    <span class="at">names =</span> <span class="fu">colnames</span>(ts_y)), <span class="at">main =</span> <span class="st">&quot;季節調整値&quot;</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/STL-1.png" width="672" /></p>
+<p>上のコードは、行列の列ごとに季節調整をかけて、戻り値の中のトレンドと残差を合計して季節変動分を捨てているだけです。</p>
+<p>詳しくは<a
+href="https://wh.anlyznews.com/R/seasonal_adjustment.shtml">Rでお手軽季節調整</a>を参照してください。</p>
+</div>
+</div>
+<div id="単変量時系列モデル" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 単変量時系列モデル</h1>
+<p>単一系列しかない時系列データで将来予測を行いたいときに、よく使われるのが自己回帰和分移動平均（<abbr title="AutoRegressive Integrated Moving Average">ARIMA</abbr>）モデルです。</p>
+<p>ARIMAは、自己回帰（<abbr title="AutoRegressive">AR</abbr>）モデルと移動平均（<abbr title="Moving Average">MA</abbr>）モデルを統合した自己回帰移動平均（<abbr title="AutoRegressive Moving Average">ARMA</abbr>）モデルに、時系列に0以上の階差をとった変数のモデルをデータ生成過程（<abbr title="Data Generating Process">DGP</abbr>）と捉えるものです。</p>
+<div id="arモデル" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> ARモデル</h2>
+<p>前期までの値が、今期の値に影響するモデルです。ラグの数を括弧でくくり<code>AR(1)</code>のように表記することが多いです。</p>
+<p><span class="math display">\[\begin{align}
+y_{t} = \alpha_0 + \sum^L_{\ell=1} \alpha_i y_{t - \ell} + \epsilon_t
+\end{align}\]</span></p>
+<p><span class="math inline">\(y\)</span>が時系列データで、<span
+class="math inline">\(t\)</span>は時点を表す添字、<span
+class="math inline">\(L\)</span>はラグの数で、<span
+class="math inline">\(\epsilon\)</span>が撹乱項です。</p>
+<p>推定はOLSでもできますし、自己相関係数の方程式（Yule-Walker方程式）をLevinson-Durbinアルゴリズムで解く高速な方法もあります。欠損値に対応させるために、<a
+href="https://wh.anlyznews.com/R/state_space_model.shtml">状態空間モデル</a>の形式にして最尤推定する方法もあります。</p>
+</div>
+<div id="maモデル" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> MAモデル</h2>
+<p><span class="math inline">\(t\)</span>期の値が、<span
+class="math inline">\(t\)</span>期の撹乱項だけではなく、<span
+class="math inline">\(t\)</span>期以前の撹乱項の値にも影響されるモデルです。</p>
+<p>ラグの数を括弧でくくり<code>MA(2)</code>のように表記することが多いです。</p>
+<p><span class="math display">\[
+y_t = \mu + \sum^L_{\ell=0} \theta_\ell \epsilon_{t - \ell}
+\]</span></p>
+<p><span class="math inline">\(\mu\)</span>は平均です。</p>
+<p>数学的にはラグ無限のMAモデルと定常なARモデルは相互に変換可能であるそうですが、実用上は別のものとして扱われます。</p>
+<p>推定は、最尤法で行います。尤度は、パラメーター<span
+class="math inline">\(mu\)</span>と<span
+class="math inline">\(\theta_{\ell}\)</span>が与えられたとして、時点<span
+class="math inline">\(t=1\)</span>から昇順に残差（誤差）を計算していき、算出します。</p>
+</div>
+<div id="armaモデル" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> ARMAモデル</h2>
+<p>ARモデルとMAモデルを組み合わせたモデルです。よくARモデルのラグとMAモデルのラグを括弧内に入れて<code>ARMA(1, 2)</code>のように表記されます。一番目の値がARモデルの、二番目の値がMAモデルのラグになります。</p>
+<p><span class="math display">\[
+y_{t} = \alpha_0 + \sum^{L_{AR}}_{\ell=1} \alpha_i y_{t - \ell} +
+\sum^{L_{MA}}_{\ell=0} \theta_\ell \epsilon_{t - \ell}
+\]</span></p>
+</div>
+<div id="arimaモデル" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> ARIMAモデル</h2>
+<p>時系列の階差をとった変数が、ARMAモデルに従うとしたモデルです<a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>。ARのラグが<code>2</code>で、階差が<code>1</code>階、MAのラグが<code>3</code>のときは、<code>ARIMA(2, 1, 3)</code>のように表記されます。<code>ARIMA(2, 0, 3)</code>であれば<code>ARMA(2, 3)</code>と同じで、<code>ARIMA(2, 0, 0)</code>であれば<code>AR(2)</code>と同じに、<code>ARIMA(0, 0, 3)</code>であれば<code>MA(3)</code>と同等になります。</p>
+</div>
+<div id="sarimaモデル" class="section level2" number="2.5">
+<h2><span class="header-section-number">2.5</span> SARIMAモデル</h2>
+<p><abbr title="Seasonal ARIMA">SARIMA</abbr>は、時系列を周期成分とそれ以外に分けて、それぞれARIMAモデルに従うと考えて推定する手法です。非時系列成分のARIMAのラグと階差、時系列成分のARIMAのラグと階差、時系列の周期を<code>ARIMA(1,0,1)(1,1,2)[12]</code>と言うように表記されます。</p>
+</div>
+</div>
+<div id="時系列データの定常性" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+時系列データの定常性</h1>
+<p>時系列データの分析では、定常過程であることが要求されます。非定常であると、多変量解析では見せかけの相関を拾うことが多く、単変量解析でも最尤法が収束しなかったり、推定結果が不安定になることが多いです<a
+href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
+<p>感覚的には、正の方向にも負の方向にもどんどん大きくならないのが定常です。統計学では数理的に扱えるように、同じ長さの任意の二つの期間の同時分布が等しい時系列データのことだと定義されています。<span
+class="math inline">\(\{X_{t}, X_{t+1}, \cdots,
+X_{t+l}\}\)</span>と<span class="math inline">\(\{X_{t + s}, X_{t + s +
+1}, \cdots, X_{t + s +
+l}\}\)</span>の同時分布が同じと言うことです。強定常と呼ばれます。ただし、この強定常の定義は扱いづらいので、どの時点でも期待値と分散が同じで、同じ間隔の任意の2時点の自己共分散が同じである弱定常であるかどうかを調べることが多いです。強定常であれば必ず弱定常ですが、逆は成立しません。</p>
+<p>具体的な例として、ARモデルが定常過程になる条件を整理しましょう。まず、ARモデルを、行列を用いて書きなおします<a
+href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+<p><span class="math display">\[\begin{align}
+\begin{pmatrix}
+y_{t} \\
+y_{t-1} \\
+y_{t-2} \\
+\vdots \\
+y_{t-L+1}
+\end{pmatrix} = \begin{pmatrix}
+\alpha_0 \\
+0 \\
+0 \\
+\vdots \\
+0
+\end{pmatrix} + \begin{pmatrix}
+\alpha_1 &amp; \alpha_1 &amp; \cdots &amp; \alpha_L \\
+1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; 1 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; 1
+\end{pmatrix}\begin{pmatrix}
+y_{t-1} \\
+y_{t-2} \\
+y_{t-3} \\
+\vdots \\
+y_{t-L}
+\end{pmatrix} + \begin{pmatrix}
+\epsilon_t \\
+0 \\
+0 \\
+\vdots \\
+0
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>右辺第2項の正方行列を<span class="math inline">\(A\)</span>、<span
+class="math inline">\(\mathbf{y}_t = {}^t\!(y_t, y_{t-1}, \cdots ,
+y_{t-L})\)</span>、<span class="math inline">\(\mathbf{c} =
+{}^t\!(\alpha_0, 0, \cdots , 0)\)</span>、<span
+class="math inline">\(\mathbf{\varepsilon}_t = {}^t\!(\epsilon_t, 0,
+\cdots , 0)\)</span>と置くと、</p>
+<p><span class="math display">\[
+\mathbf{y}_t = \mathbf{c} + A \mathbf{y}_{t-1} + \mathbf{\varepsilon}_t
+\]</span></p>
+<p>と簡潔に書けます。</p>
+<p><span class="math inline">\(\mathbf{y}_t\)</span>が<span
+class="math inline">\(t \rightarrow
+\infty\)</span>で発散せずに、ARモデルが定常になる条件は、<span
+class="math inline">\(A\)</span>の固有値の絶対値がすべて<span
+class="math inline">\(1\)</span>未満になります。初期値<span
+class="math inline">\(\mathbf{y}_0\)</span>、切片項<span
+class="math inline">\(\mathbf{c}\)</span>、撹乱項<span
+class="math inline">\(\mathbf{\varepsilon}_t\)</span>の影響が有限の値に収束しることを順番に確認しましょう。</p>
+<div id="初期値mathbfy_0の影響の収束" class="section level2"
+number="3.1">
+<h2><span class="header-section-number">3.1</span> 初期値<span
+class="math inline">\(\mathbf{y}_0\)</span>の影響の収束</h2>
+<p>まず、<span class="math inline">\(\mathbf{c}\)</span>と<span
+class="math inline">\(\mathbf{\varepsilon}_t\)</span>が<span
+class="math inline">\(0\)</span>で、<span
+class="math inline">\(\mathbf{y}_t = A
+\mathbf{y}_{t-1}\)</span>のケースを考えます。</p>
+<p><span class="math display">\[
+\mathbf{y}_t = A \mathbf{y}_{t-1} = A A \mathbf{y}_{t-2} = \cdots = A^t
+\mathbf{y}_0
+\]</span></p>
+<p>と書けます。<span
+class="math inline">\(A\)</span>は正則なので、ある正則行列<span
+class="math inline">\(P\)</span>と対角成分に固有値をとる対角行列<span
+class="math inline">\(\Lambda\)</span>で、<span
+class="math inline">\(A=P \Lambda P^{-1}\)</span>とかけるので</p>
+<p><span class="math display">\[\begin{align}
+\mathbf{y}_t = (P \Lambda P^{-1})^t \mathbf{y}_0 = P \Lambda^t P^{-1}
+\mathbf{y}_0
+\end{align}\]</span></p>
+<p>となり、すべての固有値の絶対値が<span
+class="math inline">\(1\)</span>未満であれば、<span
+class="math inline">\(t \rightarrow \infty\)</span>で<span
+class="math inline">\(0\)</span>に収束します。</p>
+</div>
+<div id="切片項mathbfcの影響の収束" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> 切片項<span
+class="math inline">\(\mathbf{c}\)</span>の影響の収束</h2>
+<p><span class="math inline">\(\mathbf{c}\)</span>が非ゼロの場合は、</p>
+<p><span class="math display">\[\begin{align}
+\mathbf{y}_t = \mathbf{c} + A \mathbf{y}_{t-1} = \bigg( \sum^t_{k=0} A^k
+\bigg) \mathbf{c} + A^t \mathbf{y}_0
+\end{align}\]</span></p>
+<p>ここで<span class="math inline">\(I\)</span>を単位行列として、<span
+class="math inline">\(A\)</span>のすべての固有値が<span
+class="math inline">\(1\)</span>未満であれば、<span
+class="math inline">\((I - A)(I + A + A^2 + A^3 + \cdots) =
+I\)</span>から<span class="math inline">\(\sum^t_{k=0} A^k = (I -
+A)^{-1}\)</span>になることから、<span class="math inline">\(t
+\rightarrow \infty\)</span>で<span
+class="math inline">\(\mathbf{y}_t\)</span>は有限の値<span
+class="math inline">\((I - A)^{-1} \mathbf{c}\)</span>に収束します。</p>
+</div>
+<div id="撹乱項mathbfvarepsilon_tの影響の収束" class="section level2"
+number="3.3">
+<h2><span class="header-section-number">3.3</span> 撹乱項<span
+class="math inline">\(\mathbf{\varepsilon}_t\)</span>の影響の収束</h2>
+<p>撹乱項の影響が収束するかも検討しましょう。撹乱項の累積的な影響は<span
+class="math inline">\(\sum^{t-1}_{k=0} A^k
+\mathbf{\varepsilon}_{t-k}\)</span>と書けます。<span
+class="math inline">\(E\big[\mathbf{\varepsilon}_t\big]={}^t\!(0, 0,
+\cdots , 0)\)</span>なので、期待値はゼロです。分散共分散行列は<span
+class="math inline">\(\sum^{t-1}_{k=0} A^k E\big[
+\mathbf{\varepsilon}_{t-k} {}^t\! \mathbf{\varepsilon}_{t-k} \big]
+({}^t\!A)^k\)</span>となります。<span class="math inline">\(E\big[
+\mathbf{\varepsilon}_{t-k} {}^t\! \mathbf{\varepsilon}_{t-k}
+\big]\)</span>は撹乱項の累積効果を考えない分散で、1行1列以外はゼロの定数になります。<span
+class="math inline">\(A\)</span>のすべての固有値は<span
+class="math inline">\(1\)</span>未満なので、<span
+class="math inline">\(t \rightarrow
+\infty\)</span>で累積効果の分散は有限の値に収束します。<span
+class="math inline">\(A^k\ {}^t\!A^k &lt;
+A^k\)</span>なので、級数の内側が収束する列に上から抑えられていることに注意してください。</p>
+</div>
+<div id="特性方程式" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> 特性方程式</h2>
+<p>教科書的には<span
+class="math inline">\(A\)</span>の固有方程式の固有値<span
+class="math inline">\(\lambda\)</span>を<span
+class="math inline">\(x=1/\lambda\)</span>として<span
+class="math inline">\(x\)</span>で置き換えた特性方程式の解（根）の絶対値が、収束条件として示される事が多いです。</p>
+<p><span class="math display">\[
+1 - \alpha_1 x - \alpha_2 x^2 - \cdots - \alpha_L x^L = 0
+\]</span></p>
+<p><span
+class="math inline">\(|\lambda|&lt;0\)</span>が定常条件でしたから、<span
+class="math inline">\(|x|&gt;1\)</span>のときにARモデルは定常となります。</p>
+<p>解が<span
+class="math inline">\(1\)</span>の場合を単位根と呼びます。単位根がある場合は非定常になります。<span
+class="math inline">\(1\)</span>より大きい解がある場合は爆発的と呼び、やはり非定常です。</p>
+</div>
+<div id="単位根検定" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> 単位根検定</h2>
+<p>時系列モデルが分かっていれば、数理的に定常か非定常かを識別することができますが、実データではそうは行きません。単位根があるかどうかを検定して調べます。複数の手法が提案されており決定版はないようですが、拡張ディッキーフラー（<abbr title="augmented Dickey–Fuller">ADF</abbr>）検定や<abbr title="Kwiatkowski–Phillips–Schmidt–Shin">KPSS</abbr>検定が使われる事が多いようです。複数の検定を行い、すべてが単位根を棄却したときのみ単位根がないと見做す保守的な運用も見かけます。</p>
+</div>
+</div>
+<div id="単変量時系列モデルの推定" class="section level1" number="4">
+<h1><span class="header-section-number">4</span>
+単変量時系列モデルの推定</h1>
+<p>ラグと階差の次数が定まっている場合は、ビルトイン関数の<code>arima</code>を使っても簡単です。</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>(r_arima <span class="ot">&lt;-</span> <span class="fu">arima</span>(ts_y[, <span class="st">&quot;JTAR&quot;</span>], <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)))</span></code></pre></div>
+<pre><code>
+Call:
+arima(x = ts_y[, &quot;JTAR&quot;], order = c(1, 1, 1))
+
+Coefficients:
+         ar1      ma1
+      0.8833  -0.2641
+s.e.  0.0310   0.0622
+
+sigma^2 estimated as 0.0001238:  log likelihood = 1031.11,  aic = -2056.23</code></pre>
+<div id="モデルラグと階差の自動決定" class="section level2"
+number="4.1">
+<h2><span class="header-section-number">4.1</span>
+モデル（ラグと階差）の自動決定</h2>
+<p>ARIMAでも3、SARIMAだと6のパラメーターを決めた上で推定するわけですが、事前に定まっている事は少ないでしょう。階差は単位根検定で単位根が棄却できる次数にするのが通例で、パラメーターは統計量規準で求める事が多いです。</p>
+<p>機械的に選ぶわけですが、ビルトイン関数の<code>arima</code>を使うと推定を繰り返す事になるので煩雑です。便利なパッケージを使いましょう。例えば、<code>forecast::auto.arima</code>を使うと簡単にモデル選択ができます。</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a><span class="fu">library</span>(forecast)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a><span class="co"># JTAR系列とUR系列を順次推定</span></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>r_arima <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(ts_y), \(j){</span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>    <span class="co"># 情報量規準はA.I.C.</span></span>
+<span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>    <span class="co"># サーチ方法は高速なstepwise法</span></span>
+<span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a>    <span class="co"># サーチの経過は表示しない</span></span>
+<span id="cb22-7"><a href="#cb22-7" tabindex="-1"></a>    <span class="fu">auto.arima</span>(ts_y[, j], <span class="at">ic =</span> <span class="st">&quot;aic&quot;</span>, <span class="at">stepwise =</span> <span class="cn">TRUE</span>, <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb22-8"><a href="#cb22-8" tabindex="-1"></a>})</span>
+<span id="cb22-9"><a href="#cb22-9" tabindex="-1"></a><span class="co"># 列名をリストの要素名にする</span></span>
+<span id="cb22-10"><a href="#cb22-10" tabindex="-1"></a><span class="fu">names</span>(r_arima) <span class="ot">&lt;-</span> <span class="fu">colnames</span>(ts_y)</span>
+<span id="cb22-11"><a href="#cb22-11" tabindex="-1"></a><span class="co"># リストの要素名を確認</span></span>
+<span id="cb22-12"><a href="#cb22-12" tabindex="-1"></a><span class="fu">names</span>(r_arima)</span></code></pre></div>
+<pre><code>[1] &quot;JTAR&quot; &quot;UR&quot;  </code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># 結果オブジェクトのメンバー変数名を確認</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">names</span>(r_arima[[<span class="st">&quot;JTAR&quot;</span>]])</span></code></pre></div>
+<pre><code> [1] &quot;coef&quot;      &quot;sigma2&quot;    &quot;var.coef&quot; 
+ [4] &quot;mask&quot;      &quot;loglik&quot;    &quot;aic&quot;      
+ [7] &quot;arma&quot;      &quot;residuals&quot; &quot;call&quot;     
+[10] &quot;series&quot;    &quot;code&quot;      &quot;n.cond&quot;   
+[13] &quot;nobs&quot;      &quot;model&quot;     &quot;bic&quot;      
+[16] &quot;aicc&quot;      &quot;x&quot;         &quot;fitted&quot;   </code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># 推定結果を確認</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>r_arima[[<span class="st">&quot;JTAR&quot;</span>]]</span></code></pre></div>
+<pre><code>Series: ts_y[, j] 
+ARIMA(3,1,0) 
+
+Coefficients:
+         ar1     ar2     ar3
+      0.6120  0.1773  0.0503
+s.e.  0.0545  0.0640  0.0552
+
+sigma^2 = 0.0001248:  log likelihood = 1031.24
+AIC=-2054.49   AICc=-2054.37   BIC=-2039.23</code></pre>
+</div>
+<div id="予測値" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> 予測値</h2>
+<p>結果オブジェクトから予測値を簡単に出せます。</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># JTAR系列を24期先まで95%予測区間で予測</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>(r_forecast <span class="ot">&lt;-</span> <span class="fu">forecast</span>(r_arima[[<span class="st">&quot;JTAR&quot;</span>]], <span class="at">h =</span> <span class="dv">24</span>, <span class="at">level =</span> <span class="dv">95</span>))</span></code></pre></div>
+<pre><code>         Point Forecast     Lo 95
+Jan 2026       1.205617 1.1837207
+Feb 2026       1.210828 1.1692912
+Mar 2026       1.215515 1.1525067
+Apr 2026       1.219589 1.1337814
+May 2026       1.223176 1.1138659
+Jun 2026       1.226328 1.0931683
+Jul 2026       1.229098 1.0719939
+Aug 2026       1.231533 1.0505740
+Sep 2026       1.233672 1.0290804
+Oct 2026       1.235552 1.0076428
+Nov 2026       1.237205 0.9863585
+Dec 2026       1.238656 0.9653003
+Jan 2027       1.239932 0.9445217
+Feb 2027       1.241054 0.9240618
+Mar 2027       1.242039 0.9039476
+Apr 2027       1.242905 0.8841973
+May 2027       1.243666 0.8648221
+Jun 2027       1.244335 0.8458274
+Jul 2027       1.244923 0.8272144
+Aug 2027       1.245439 0.8089810
+Sep 2027       1.245893 0.7911224
+Oct 2027       1.246292 0.7736320
+Nov 2027       1.246643 0.7565017
+Dec 2027       1.246951 0.7397223
+            Hi 95
+Jan 2026 1.227513
+Feb 2026 1.252364
+Mar 2026 1.278523
+Apr 2026 1.305397
+May 2026 1.332485
+Jun 2026 1.359489
+Jul 2026 1.386203
+Aug 2026 1.412492
+Sep 2026 1.438264
+Oct 2026 1.463462
+Nov 2026 1.488051
+Dec 2026 1.512013
+Jan 2027 1.535343
+Feb 2027 1.558046
+Mar 2027 1.580131
+Apr 2027 1.601613
+May 2027 1.622510
+Jun 2027 1.642843
+Jul 2027 1.662631
+Aug 2027 1.681898
+Sep 2027 1.700664
+Oct 2027 1.718952
+Nov 2027 1.736784
+Dec 2027 1.754179</code></pre>
+<p><code>forecast</code>の戻り値のオブジェクトの中身は予測値ですが、それに対応した<code>plot</code>メソッドがあるので、そのままプロットもできます。</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="fu">plot</span>(r_forecast)</span></code></pre></div>
+<p><img src="common_files/figure-html/ARIMA-1.png" width="672" /></p>
+</div>
+<div id="欠損値処理" class="section level2" number="4.3">
+<h2><span class="header-section-number">4.3</span> 欠損値処理</h2>
+<p>欠損値が含まれている場合は内部的には状態空間モデルを用いるので、問題なく計算できます。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>ts_y_missing <span class="ot">&lt;-</span> ts_y[, <span class="st">&quot;JTAR&quot;</span>]</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>ts_y_missing[<span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(ts_y_missing)), <span class="dv">100</span>)] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>r_arima_missing <span class="ot">&lt;-</span> <span class="fu">auto.arima</span>(ts_y_missing, <span class="at">ic=</span><span class="st">&quot;aic&quot;</span>, <span class="at">stepwise =</span> <span class="cn">TRUE</span>, <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>r_forecast_missing <span class="ot">&lt;-</span> <span class="fu">forecast</span>(r_arima_missing, <span class="at">h =</span> <span class="dv">24</span>, <span class="at">level =</span> <span class="dv">95</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a><span class="fu">plot</span>(r_forecast_missing)</span></code></pre></div>
+<p><img src="common_files/figure-html/ARIMA_missing-1.png" width="672" /></p>
+</div>
+<div id="過剰適合" class="section level2" number="4.4">
+<h2><span class="header-section-number">4.4</span> 過剰適合</h2>
+<p>モデル選択と（ラグと階差以外の）パラメーターの推定を同時に行うので、データに過剰適合している蓋然性が高い事には注意してください。</p>
+</div>
+<div id="外生変数" class="section level2" number="4.5">
+<h2><span class="header-section-number">4.5</span> 外生変数</h2>
+<p><code>ARIMA</code>は単一時系列分析ですが、外生変数を付け加えた<code>ARIMAX</code>/<code>SARIMAX</code>モデルもあります。<code>forecast::auto.arima</code>と<code>forecast::forecast</code>は、引数<code>xreg</code>で行列形式の外部変数を与えることができます。</p>
+</div>
+</div>
+<div id="多変量時系列分析" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> 多変量時系列分析</h1>
+<p>多変量の時系列分析はベクトル自己回帰（<abbr title="Vector Autoregression">VAR</abbr>）モデルとそのバリエーションを用いることが多いです。説明変数の定常性を気にしつつ分析します。</p>
+<div id="単位根検定と階差" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> 単位根検定と階差</h2>
+<p>VARモデルにも単位根の問題はあるため、単位根検定で単位根が棄却できない場合は、階差をとったり、（データがすべて正であれば）Box-Cox変換をかけたりします。</p>
+<p>単位根検定をする関数を提供するパッケージは幾つもありますが、<code>urca::ur.df</code>を使ってみましょう。</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>L <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">library</span>(urca)</span>
+<span id="cb32-3"><a href="#cb32-3" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">ur.df</span>(df01<span class="sc">$</span>JTAR, <span class="at">lags =</span> L))</span></code></pre></div>
+<pre><code>
+############################################### 
+# Augmented Dickey-Fuller Test Unit Root Test # 
+############################################### 
+
+Test regression none 
+
+
+Call:
+lm(formula = z.diff ~ z.lag.1 - 1 + z.diff.lag)
+
+Residuals:
+      Min        1Q    Median        3Q 
+-0.060326 -0.005823  0.001114  0.007828 
+      Max 
+ 0.028328 
+
+Coefficients:
+              Estimate Std. Error
+z.lag.1     -0.0000446  0.0005913
+z.diff.lag1  0.6187454  0.0550019
+z.diff.lag2  0.1708425  0.0632770
+z.diff.lag3  0.0496128  0.0546660
+            t value Pr(&gt;|t|)    
+z.lag.1      -0.075   0.9399    
+z.diff.lag1  11.250   &lt;2e-16 ***
+z.diff.lag2   2.700   0.0073 ** 
+z.diff.lag3   0.908   0.3648    
+---
+Signif. codes:  
+  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05
+  &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.01109 on 328 degrees of freedom
+Multiple R-squared:  0.639, Adjusted R-squared:  0.6346 
+F-statistic: 145.1 on 4 and 328 DF,  p-value: &lt; 2.2e-16
+
+
+Value of test-statistic is: -0.0754 
+
+Critical values for test statistics: 
+      1pct  5pct 10pct
+tau1 -2.58 -1.95 -1.62</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">ur.df</span>(df01<span class="sc">$</span>UR, <span class="at">lags =</span> L))</span></code></pre></div>
+<pre><code>
+############################################### 
+# Augmented Dickey-Fuller Test Unit Root Test # 
+############################################### 
+
+Test regression none 
+
+
+Call:
+lm(formula = z.diff ~ z.lag.1 - 1 + z.diff.lag)
+
+Residuals:
+     Min       1Q   Median       3Q 
+-0.47396 -0.11693 -0.00575  0.11352 
+     Max 
+ 0.56017 
+
+Coefficients:
+            Estimate Std. Error t value
+z.lag.1     -0.00218    0.00245  -0.890
+z.diff.lag1 -0.03058    0.05447  -0.561
+z.diff.lag2 -0.09859    0.05391  -1.829
+z.diff.lag3 -0.14028    0.05414  -2.591
+            Pr(&gt;|t|)   
+z.lag.1      0.37431   
+z.diff.lag1  0.57489   
+z.diff.lag2  0.06838 . 
+z.diff.lag3  0.00999 **
+---
+Signif. codes:  
+  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05
+  &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.1764 on 328 degrees of freedom
+Multiple R-squared:  0.03226,   Adjusted R-squared:  0.02045 
+F-statistic: 2.733 on 4 and 328 DF,  p-value: 0.02906
+
+
+Value of test-statistic is: -0.8896 
+
+Critical values for test statistics: 
+      1pct  5pct 10pct
+tau1 -2.58 -1.95 -1.62</code></pre>
+<p><code>lags</code>はラグです。厳密にはVARモデルのラグと合わせるべきですが、とりあえず<code>3</code>としました。先行研究や何かの理屈で正当化するか、情報量規準で機械的に選ぶかする方が良いです。なお、ドリフト項やトレンド項を仮定する場合は、<code>type</code>で指定します。</p>
+<p>どちらも単位根を棄却できませんでした。<code>Value of test-statistic</code>の絶対値が、<code>Critical values for test statistics</code>の絶対値を超えていないです。</p>
+<p>一階の差分をとって、もう一度単位根検定をしてみましょう。</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">ur.df</span>(<span class="fu">diff</span>(df01<span class="sc">$</span>JTAR, d), <span class="at">lags =</span> L))</span></code></pre></div>
+<pre><code>
+############################################### 
+# Augmented Dickey-Fuller Test Unit Root Test # 
+############################################### 
+
+Test regression none 
+
+
+Call:
+lm(formula = z.diff ~ z.lag.1 - 1 + z.diff.lag)
+
+Residuals:
+      Min        1Q    Median        3Q 
+-0.060424 -0.005932  0.001104  0.007852 
+      Max 
+ 0.027575 
+
+Coefficients:
+            Estimate Std. Error t value
+z.lag.1     -0.16112    0.03724  -4.327
+z.diff.lag1 -0.21776    0.05890  -3.697
+z.diff.lag2 -0.05373    0.05868  -0.916
+z.diff.lag3 -0.00846    0.05473  -0.155
+            Pr(&gt;|t|)    
+z.lag.1     2.01e-05 ***
+z.diff.lag1 0.000256 ***
+z.diff.lag2 0.360523    
+z.diff.lag3 0.877243    
+---
+Signif. codes:  
+  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05
+  &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.0111 on 327 degrees of freedom
+Multiple R-squared:  0.1439,    Adjusted R-squared:  0.1334 
+F-statistic: 13.74 on 4 and 327 DF,  p-value: 2.292e-10
+
+
+Value of test-statistic is: -4.3266 
+
+Critical values for test statistics: 
+      1pct  5pct 10pct
+tau1 -2.58 -1.95 -1.62</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">ur.df</span>(<span class="fu">diff</span>(df01<span class="sc">$</span>UR, d), <span class="at">lags =</span> L))</span></code></pre></div>
+<pre><code>
+############################################### 
+# Augmented Dickey-Fuller Test Unit Root Test # 
+############################################### 
+
+Test regression none 
+
+
+Call:
+lm(formula = z.diff ~ z.lag.1 - 1 + z.diff.lag)
+
+Residuals:
+     Min       1Q   Median       3Q 
+-0.50922 -0.13104 -0.01825  0.09651 
+     Max 
+ 0.58542 
+
+Coefficients:
+            Estimate Std. Error t value
+z.lag.1     -1.52761    0.11774 -12.974
+z.diff.lag1  0.46713    0.09668   4.832
+z.diff.lag2  0.34580    0.07633   4.530
+z.diff.lag3  0.20066    0.05370   3.737
+            Pr(&gt;|t|)    
+z.lag.1      &lt; 2e-16 ***
+z.diff.lag1 2.08e-06 ***
+z.diff.lag2 8.27e-06 ***
+z.diff.lag3  0.00022 ***
+---
+Signif. codes:  
+  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05
+  &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.1732 on 327 degrees of freedom
+Multiple R-squared:  0.5424,    Adjusted R-squared:  0.5368 
+F-statistic: 96.89 on 4 and 327 DF,  p-value: &lt; 2.2e-16
+
+
+Value of test-statistic is: -12.9745 
+
+Critical values for test statistics: 
+      1pct  5pct 10pct
+tau1 -2.58 -1.95 -1.62</code></pre>
+<p>今度は単位根を棄却できました。</p>
+</div>
+<div id="varモデル" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> VARモデル</h2>
+<p>時系列が2本あるときのVARモデルは以下のようになります。</p>
+<p><span class="math display">\[\begin{align}
+\begin{pmatrix}
+y_{1,t} \\
+y_{2,t}
+\end{pmatrix} = \begin{pmatrix}
+\tau_{1} \\
+\tau_{2}
+\end{pmatrix} + \sum^{L}_{\ell=1} \begin{pmatrix}
+\alpha_{1,1,\ell} &amp; \alpha_{1,2,\ell} \\
+\alpha_{2,1,\ell} &amp; \alpha_{2,2,\ell}
+\end{pmatrix} \begin{pmatrix}
+y_{1,t - \ell} \\
+y_{2,t - \ell}
+\end{pmatrix} + \begin{pmatrix}
+\epsilon_{1,t} \\
+\epsilon_{2,t}
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>誤差項の共分散を考慮する表記もあるのですが、ここでは使用するパッケージにあわせて<span
+class="math inline">\(Cov(\epsilon_{1,t},
+\epsilon_{2,t})=0\)</span>を仮定します。また、誤差項のラグは入りません。</p>
+<p>行列を展開すると、<span class="math inline">\(y_{1,t}\)</span>が<span
+class="math inline">\(y_{2,t - \ell}\)</span>に影響され、<span
+class="math inline">\(y_{2,t}\)</span>が<span
+class="math inline">\(y_{1,t -
+\ell}\)</span>に影響される系列間の相互作用があることがわかります。</p>
+<p>内部的にはOLSなのですが、後々の事を考えて<code>vars</code>パッケージを用いて推定します。</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="fu">library</span>(vars)</span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">cbind</span>(JTAR, UR))</span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a>dy <span class="ot">&lt;-</span> <span class="fu">diff</span>(y, d)</span>
+<span id="cb40-4"><a href="#cb40-4" tabindex="-1"></a>(r_VAR <span class="ot">&lt;-</span> <span class="fu">VAR</span>(dy, <span class="at">season =</span> <span class="dv">12</span>, <span class="at">p =</span> L, <span class="at">type =</span> <span class="st">&quot;none&quot;</span>))</span></code></pre></div>
+<pre><code>
+VAR Estimation Results:
+======================= 
+
+Estimated coefficients for equation JTAR: 
+========================================= 
+Call:
+JTAR = JTAR.l1 + UR.l1 + JTAR.l2 + UR.l2 + JTAR.l3 + UR.l3 + sd1 + sd2 + sd3 + sd4 + sd5 + sd6 + sd7 + sd8 + sd9 + sd10 + sd11 
+
+      JTAR.l1         UR.l1 
+ 6.350202e-01 -7.683781e-04 
+      JTAR.l2         UR.l2 
+ 1.850550e-01 -1.081519e-03 
+      JTAR.l3         UR.l3 
+ 2.513386e-02  4.045717e-03 
+          sd1           sd2 
+ 5.795690e-04  7.888610e-03 
+          sd3           sd4 
+ 7.802413e-04 -6.596309e-05 
+          sd5           sd6 
+ 5.396528e-03  4.708628e-03 
+          sd7           sd8 
+ 1.879278e-03  5.199467e-03 
+          sd9          sd10 
+ 5.821393e-03  2.106307e-03 
+         sd11 
+ 5.383255e-03 
+
+
+Estimated coefficients for equation UR: 
+======================================= 
+Call:
+UR = JTAR.l1 + UR.l1 + JTAR.l2 + UR.l2 + JTAR.l3 + UR.l3 + sd1 + sd2 + sd3 + sd4 + sd5 + sd6 + sd7 + sd8 + sd9 + sd10 + sd11 
+
+    JTAR.l1       UR.l1     JTAR.l2 
+-0.24407047 -0.25872880 -2.32061641 
+      UR.l2     JTAR.l3       UR.l3 
+-0.23332457 -0.41459354 -0.06044361 
+        sd1         sd2         sd3 
+-0.09307099  0.07712959 -0.04889832 
+        sd4         sd5         sd6 
+-0.21233242 -0.27812709 -0.26956426 
+        sd7         sd8         sd9 
+-0.16107285 -0.15464012 -0.19255033 
+       sd10        sd11 
+-0.28582985 -0.33773954 </code></pre>
+<p>月次データなので<code>season</code>は<code>12</code>とし、データ全体を見ると単調増加や単調減少ではないので<code>type</code>は<code>none</code>でトレンドなどは無いものと見做します。</p>
+<p><code>summary(r_VAR)</code>とすると、係数の標準誤差とそのt検定の結果などが表示されますが、ラグや相互作用があるため係数間の関係は複雑で、直感的に結果の意味は把握はできません。インパルス応答列を見たり、グレンジャー因果性テスト、予測誤差分散分解をかけることになります。</p>
+<div id="情報量規準によるラグの選択" class="section level3"
+number="5.2.1">
+<h3><span class="header-section-number">5.2.1</span>
+情報量規準によるラグの選択</h3>
+<p><code>3</code>としたラグですが、情報量規準で選ぶこともできます。</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a><span class="fu">VARselect</span>(dy, <span class="at">season =</span> <span class="dv">12</span>, <span class="at">lag.max =</span> <span class="dv">12</span>)</span></code></pre></div>
+<pre><code>$selection
+AIC(n)  HQ(n)  SC(n) FPE(n) 
+     2      2      2      2 
+
+$criteria
+                   1             2
+AIC(n) -1.290409e+01 -1.299117e+01
+HQ(n)  -1.277336e+01 -1.284177e+01
+SC(n)  -1.257661e+01 -1.261692e+01
+FPE(n)  2.488135e-06  2.280740e-06
+                   3             4
+AIC(n) -1.297312e+01 -1.297522e+01
+HQ(n)  -1.280505e+01 -1.278847e+01
+SC(n)  -1.255208e+01 -1.250740e+01
+FPE(n)  2.322439e-06  2.317768e-06
+                   5             6
+AIC(n) -1.297310e+01 -1.295181e+01
+HQ(n)  -1.276768e+01 -1.272771e+01
+SC(n)  -1.245850e+01 -1.239042e+01
+FPE(n)  2.322935e-06  2.373225e-06
+                   7             8
+AIC(n) -1.293016e+01 -1.292211e+01
+HQ(n)  -1.268739e+01 -1.266066e+01
+SC(n)  -1.232199e+01 -1.226716e+01
+FPE(n)  2.425529e-06  2.445566e-06
+                   9            10
+AIC(n) -1.290882e+01 -1.290270e+01
+HQ(n)  -1.262869e+01 -1.260390e+01
+SC(n)  -1.220708e+01 -1.215419e+01
+FPE(n)  2.478786e-06  2.494564e-06
+                  11            12
+AIC(n) -1.289539e+01 -1.290451e+01
+HQ(n)  -1.257792e+01 -1.256836e+01
+SC(n)  -1.210010e+01 -1.206243e+01
+FPE(n)  2.513521e-06  2.491445e-06</code></pre>
+<p>単位根検定にラグが必要なので、厳密には、この結果のラグ<code>2</code>で単位根検定をやり直す必要があります。もっとも単位根検定の結果はだいたい階差の次数で決まっており、ラグの長さはさほど影響しないです。あまり気にしなくて大丈夫です。もちろん、なるべく厳密にしたい時は、階差とラグごとに単位根を棄却できるか表をつくり、その中から情報量規準で選びましょう。</p>
+</div>
+<div id="制約付きvarモデル" class="section level3" number="5.2.2">
+<h3><span class="header-section-number">5.2.2</span>
+制約付きVARモデル</h3>
+<p>OLSなので制約付きモデルをつくる事も可能です。</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="co"># t値の閾値2.0でゼロ制約をつける係数を定める（これ自体はbad-practice）</span></span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a>r_restrict_auto <span class="ot">&lt;-</span> <span class="fu">restrict</span>(r_VAR, <span class="at">method =</span> <span class="st">&quot;ser&quot;</span>, <span class="at">thresh =</span> <span class="fl">2.0</span>)</span></code></pre></div>
+<p>統計解析としてはbad-praticeなのですが、コーディング時の工夫になります。つまり、結果オブジェクトを見るとどういう構造の行列を渡せばよいかわかります。</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>(restrictions <span class="ot">&lt;-</span> r_restrict_auto<span class="sc">$</span>restrictions)</span></code></pre></div>
+<pre><code>     JTAR.l1 UR.l1 JTAR.l2 UR.l2
+JTAR       1     0       1     0
+UR         0     1       1     1
+     JTAR.l3 UR.l3 sd1 sd2 sd3 sd4 sd5
+JTAR       0     0   0   0   0   0   0
+UR         0     0   1   0   1   1   1
+     sd6 sd7 sd8 sd9 sd10 sd11
+JTAR   0   0   0   0    0    0
+UR     1   1   1   1    1    1</code></pre>
+<p>行が系列を表し、列が係数を表していますね。</p>
+<p>ラグ3の係数を<code>0</code>にして、他は<code>1</code>とする制約をつくり推定しましょう。</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a>restrictions[, ] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a>restrictions[, <span class="fu">c</span>(<span class="st">&quot;JTAR.l3&quot;</span>, <span class="st">&quot;UR.l3&quot;</span>)] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a><span class="co"># ゼロ制約を表す行列を指定してVARを行う</span></span>
+<span id="cb47-4"><a href="#cb47-4" tabindex="-1"></a>r_restrict_manual <span class="ot">&lt;-</span> <span class="fu">restrict</span>(r_VAR, <span class="at">method =</span> <span class="st">&quot;man&quot;</span>, <span class="at">resmat =</span> restrictions)</span></code></pre></div>
+<p>制約付きモデルの推定結果が計算できました。</p>
+<p>なお、制約を表す行列は</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a>restrictions <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">1</span>, <span class="fu">length</span>(<span class="fu">coef</span>(r_VAR)), <span class="fu">nrow</span>(<span class="fu">coef</span>(r_VAR)[[<span class="dv">1</span>]]), <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">names</span>(<span class="fu">coef</span>(r_VAR)), <span class="fu">rownames</span>(<span class="fu">coef</span>(r_VAR)[[<span class="dv">1</span>]])))</span></code></pre></div>
+<p>としてから、任意の場所に<code>0</code>を入れてもよいです。</p>
+</div>
+<div id="グレンジャー因果" class="section level3" number="5.2.3">
+<h3><span class="header-section-number">5.2.3</span>
+グレンジャー因果</h3>
+<p>グレンジャー因果は、制約付きモデルと制約なしモデルの比較の応用です。
+ある系列の予測値を、原因となっていそうな系列を説明変数に含めたモデルと、含めないモデルでそれぞれ出し、二つの差を検定にかけます。
+予測精度が統計的に有意に上がるのであれば因果がありそうだと考えます。</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="fu">causality</span>(r_VAR, <span class="at">cause =</span> <span class="st">&quot;JTAR&quot;</span>)<span class="sc">$</span>Granger</span></code></pre></div>
+<pre><code>
+    Granger causality H0: JTAR do not
+    Granger-cause UR
+
+data:  VAR object r_VAR
+F-Test = 14.32, df1 = 3, df2 = 630,
+p-value = 4.9e-09</code></pre>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="fu">causality</span>(r_VAR, <span class="at">cause =</span> <span class="st">&quot;UR&quot;</span>)<span class="sc">$</span>Granger</span></code></pre></div>
+<pre><code>
+    Granger causality H0: UR do not
+    Granger-cause JTAR
+
+data:  VAR object r_VAR
+F-Test = 0.33845, df1 = 3, df2 =
+630, p-value = 0.7975</code></pre>
+<p>基本的なVARでは共分散構造は考えないので、Instantaneous
+causalityは参照していません。</p>
+<p>変数<code>JTAR</code>は有効求人倍率（jobs-to-applicants
+ratio）は変数<code>UR</code>は失業率（unemployment
+ratio）で、有効求人倍率は景気一致指数、失業率は景気遅行指数として知られていますが、有効求人倍率は失業率のグレンジャー因果である一方、失業率は有効求人倍率とは言えない事が確認されました。</p>
+</div>
+<div id="予測値-1" class="section level3" number="5.2.4">
+<h3><span class="header-section-number">5.2.4</span> 予測値</h3>
+<p>階差をとった値の予測になるので、直感的な把握はしづらいですが予測値が出ます。</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a>n.ahead <span class="ot">&lt;-</span> <span class="dv">18</span></span>
+<span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a><span class="fu">plot</span>(r_predict <span class="ot">&lt;-</span> <span class="fu">predict</span>(r_VAR, <span class="at">n.ahead =</span> n.ahead))</span></code></pre></div>
+<p><img src="common_files/figure-html/predict_VAR-1.png" width="672" /></p>
+<p><code>diffinv</code>で差分を足した方が把握しやすいかもです。</p>
+</div>
+<div id="インパルス応答列" class="section level3" number="5.2.5">
+<h3><span class="header-section-number">5.2.5</span>
+インパルス応答列</h3>
+<p>VARの推定結果の係数からは、ある変数が増えた時に、他の変数が増えるのか減るのか良く分かりません。インパルス応答列を見て解釈しましょう。</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a><span class="co"># 大きさ1のショックが生じたとして、18期先まで予測; 直交化は行わない</span></span>
+<span id="cb54-2"><a href="#cb54-2" tabindex="-1"></a><span class="co"># 差分モデルなのでcumulative = TRUEをつけた方が、実データとの対応はわかりやすくなる</span></span>
+<span id="cb54-3"><a href="#cb54-3" tabindex="-1"></a>r_irf <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_VAR, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb54-4"><a href="#cb54-4" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y), <span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y)))</span>
+<span id="cb54-5"><a href="#cb54-5" tabindex="-1"></a><span class="fu">plot</span>(r_irf, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/irf-1.png" width="672" /></p>
+<p><code>plot</code>の正体は<code>plot.varirf</code>で、<code>?plot.varirf</code>でヘルプを参照できます。</p>
+<p>有効求人倍率に上昇ショックが起きると、完全失業率が減少することがわかりました。</p>
+</div>
+<div id="予測誤差分散分解" class="section level3" number="5.2.6">
+<h3><span class="header-section-number">5.2.6</span>
+予測誤差分散分解</h3>
+<p>有効求人倍率の変化は完全失業率の変化をどれぐらい予測できるものでしょうか。
+予測誤差分散分解（<abbr title="Forecast Error Variance Decomposition">FEVD</abbr>）で程度を測ることができます。</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_VAR, <span class="at">n.ahead =</span> n.ahead))</span></code></pre></div>
+<p><img src="common_files/figure-html/fevd-1.png" width="672" /></p>
+<p>撹乱項の影響が大きく、そんなに大きくは無いと<strong>とりあえず</strong>なりました。</p>
+</div>
+</div>
+<div id="構造化varモデル" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> 構造化VARモデル</h2>
+<p>マクロ経済モデルでは、複数の変数が同時決定されることにより、撹乱項の共分散が非ゼロと予想される事があります。</p>
+<p>これまでの有効求人倍率と完全失業率の分析では、異なる系列間の作用は一ヶ月後からと仮定してきましたが、もっと同時に生じて、撹乱項の共分散が非ゼロと言う事もあります。</p>
+<p><span class="math display">\[\begin{align}
+\begin{pmatrix}
+y_{1,t} \\
+y_{2,t}
+\end{pmatrix} &amp;= \begin{pmatrix}
+\tau_{1} \\
+\tau_{2}
+\end{pmatrix} - \begin{pmatrix}
+0 &amp; \alpha_{1,2,0} \\
+\alpha_{2,1,0} &amp; 0
+\end{pmatrix} \begin{pmatrix}
+y_{1,t} \\
+y_{2,t}
+\end{pmatrix} + \sum^{L}_{\ell=1} \begin{pmatrix}
+\alpha_{1,1,\ell} &amp; \alpha_{1,2,\ell} \\
+\alpha_{2,1,\ell} &amp; \alpha_{2,2,\ell}
+\end{pmatrix} \begin{pmatrix}
+y_{1,t - \ell} \\
+y_{2,t - \ell}
+\end{pmatrix} + \begin{pmatrix}
+\epsilon_{1,t} \\
+\epsilon_{2,t}
+\end{pmatrix} \\
+\begin{pmatrix}
+1 &amp; \alpha_{1,2,0} \\
+\alpha_{2,1,0} &amp; 1
+\end{pmatrix} \begin{pmatrix}
+y_{1,t} \\
+y_{2,t}
+\end{pmatrix} &amp;= \begin{pmatrix}
+\tau_{1} \\
+\tau_{2}
+\end{pmatrix} + \sum^{L}_{\ell=1} \begin{pmatrix}
+\alpha_{1,1,\ell} &amp; \alpha_{1,2,\ell} \\
+\alpha_{2,1,\ell} &amp; \alpha_{2,2,\ell}
+\end{pmatrix} \begin{pmatrix}
+y_{1,t - \ell} \\
+y_{2,t - \ell}
+\end{pmatrix} + \begin{pmatrix}
+\epsilon_{1,t} \\
+\epsilon_{2,t}
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>煩雑なので、書き直します。</p>
+<p><span class="math display">\[
+A \mathbf{y}_t = \mathbf{\tau}^* + \sum^{L}_{\ell=1} A^*_\ell
+\mathbf{y}_{t - \ell} + \mathbf{\epsilon}_t
+\]</span></p>
+<p>構造化VAR（<abbr title="Strctual VAR">SVAR</abbr>）のAモデルと呼ばれる形式になりました。</p>
+<p><span
+class="math inline">\(B=A^{-1}\)</span>を両辺に生じると、Bモデルになります。<span
+class="math inline">\(A^{-1}\mathbf{\tau}^*=\mathbf{\tau}\)</span>,
+<span
+class="math inline">\(A^{-1}A^*_\ell=A_\ell\)</span>になっているので注意してください。</p>
+<p><span class="math display">\[
+\mathbf{y}_t = \mathbf{\tau} + \sum^{L}_{\ell=1} A_\ell \mathbf{y}_{t -
+\ell} + B \mathbf{\epsilon}_t
+\]</span></p>
+<p>両方を組み合わせたABモデルもあります。</p>
+<p>これらは最尤法で推定しますが、<code>vars:SVAR</code>が計算してくれるので尤度関数を考える必要はありません。しかし、<code>A</code>や<code>B</code>は何でも良いと言うことはなく、推定可能なように指定する必要があります。</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="fu">library</span>(vars)</span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="dv">1</span>; L <span class="ot">&lt;-</span> <span class="dv">3</span>; n.ahead <span class="ot">&lt;-</span> <span class="dv">18</span></span>
+<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">cbind</span>(JTAR, UR))</span>
+<span id="cb56-4"><a href="#cb56-4" tabindex="-1"></a>dy <span class="ot">&lt;-</span> <span class="fu">diff</span>(y, d)</span>
+<span id="cb56-5"><a href="#cb56-5" tabindex="-1"></a>Amat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>) <span class="co"># 推定する箇所にNAを入れる;NAの数はK*(K-1)以下</span></span>
+<span id="cb56-6"><a href="#cb56-6" tabindex="-1"></a>r_VAR <span class="ot">&lt;-</span> <span class="fu">VAR</span>(dy, <span class="at">season =</span> <span class="dv">12</span>, <span class="at">p =</span> L, <span class="at">type =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb56-7"><a href="#cb56-7" tabindex="-1"></a><span class="co"># このデータではデフォルトのestmethod = &quot;scoring&quot;では収束しないためdirect/BFGSを指定した</span></span>
+<span id="cb56-8"><a href="#cb56-8" tabindex="-1"></a>(r_SVAR <span class="ot">&lt;-</span> <span class="fu">SVAR</span>(r_VAR, <span class="at">estmethod =</span> <span class="st">&quot;direct&quot;</span>, <span class="at">Amat =</span> Amat, <span class="at">max.iter =</span> <span class="dv">1000</span>, <span class="at">method=</span><span class="st">&quot;BFGS&quot;</span>))</span></code></pre></div>
+<pre><code>
+SVAR Estimation Results:
+======================== 
+
+
+Estimated A matrix:
+      JTAR UR
+JTAR 1.000  0
+UR   1.157  1</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="co"># インパルス応答列</span></span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a>r_irf_svar <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_SVAR, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y), <span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y)))</span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a><span class="fu">plot</span>(r_irf_svar, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/svar-1.png" width="672" /></p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="co"># FEVD</span></span>
+<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_SVAR, <span class="at">n.ahead =</span> n.ahead))</span></code></pre></div>
+<p><img src="common_files/figure-html/fevd_svar-1.png" width="672" /></p>
+<p>有効求人倍率の効果が大きく計測されるようになりました。</p>
+</div>
+<div id="共和分検定" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> 共和分検定</h2>
+<p>差分を取ると単位根がなくなる二つの時系列<span
+class="math inline">\(y_1\)</span>と<span
+class="math inline">\(y_2\)</span>の間に、定数<span
+class="math inline">\(k\)</span>と定常過程<span
+class="math inline">\(z_t\)</span>で表せる、<span
+class="math inline">\(y_{1t} - k y_{2t} =
+z_t\)</span>という関係があるとき、<span
+class="math inline">\(y_1\)</span>と<span
+class="math inline">\(y_2\)</span>は共和分関係にあるといいます。また、共和分関係があるときは、VARではモデル特定化が誤っている事になります。</p>
+<p><code>urca::ca.po</code>で共和分テストができるのでやってみましょう。</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">ca.po</span>(y, <span class="at">demean =</span> <span class="st">&quot;none&quot;</span>))</span></code></pre></div>
+<pre><code>
+######################################## 
+# Phillips and Ouliaris Unit Root Test # 
+######################################## 
+
+Test of type Pu 
+detrending of series none 
+
+
+Call:
+lm(formula = z[, 1] ~ z[, -1] - 1)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.7677 -0.4035  0.1230  0.6559  1.1291 
+
+Coefficients:
+        Estimate Std. Error t value
+z[, -1] 0.217771   0.007964   27.34
+        Pr(&gt;|t|)    
+z[, -1]   &lt;2e-16 ***
+---
+Signif. codes:  
+  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05
+  &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 0.5763 on 335 degrees of freedom
+Multiple R-squared:  0.6906,    Adjusted R-squared:  0.6897 
+F-statistic: 747.7 on 1 and 335 DF,  p-value: &lt; 2.2e-16
+
+
+Value of test-statistic is: 0.989 
+
+Critical values of Pu are:
+                  10pct    5pct    1pct
+critical values 20.3933 25.9711 38.3413</code></pre>
+<p>今回はトレンドなし過程を仮定しているので、<code>demean = "none"</code>にしています。</p>
+<p><code>Value of test-statistic</code>の絶対値が<code>Critical values</code>の<code>10pct</code>,
+<code>5pct</code>, <code>1pct</code>絶対値を超えたら、それぞれ10%, 5%,
+1%有意で共和分が無い（<span
+class="math inline">\(z_t\)</span>に単位根がない）という帰無仮説を棄却します。</p>
+<p>今回は共和分がないと言う帰無仮説（<span
+class="math inline">\(z_t\)</span>が単位根過程）は棄却されませんでした。</p>
+</div>
+<div id="vecmの推定" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> VECMの推定</h2>
+<p>共和分関係がある場合は、ベクトル誤差修正モデル（<abbr title="Vector Error Correction Model">VECM</abbr>）を使う方が望ましいと言うことになります。</p>
+<p>VARをやや抽象的に表記すると以下のようになります。</p>
+<p><span class="math display">\[
+\mathbf{y}_t = \mathbf{\tau} + \sum^{L}_{\ell=1} A_\ell \mathbf{y}_{t -
+\ell} + \mathbf{\epsilon}_t
+\]</span></p>
+<p><span
+class="math inline">\(\mathbf{y}\)</span>は時系列変数のベクトル、<span
+class="math inline">\(\mathbf{\tau}\)</span>はトレンド項、<span
+class="math inline">\(A\)</span>は係数行列、<span
+class="math inline">\(\mathbf{\epsilon}\)</span>は撹乱項のベクトルです。</p>
+<p>定常過程にするために、1期前の値を引きましょう。</p>
+<p><span class="math display">\[\begin{align}
+\mathbf{y}_t - \mathbf{y}_{t-1} &amp;= \mathbf{\tau} + \sum^{L}_{\ell=1}
+A_\ell \mathbf{y}_{t - \ell} + \mathbf{\epsilon}_t  - \mathbf{y}_{t-1}
+\\
+&amp;= \mathbf{\tau} + (\sum^L_{\ell=1} A_{\ell} - I)\mathbf{y}_{t-1} +
+\sum^{L-1}_{i=1} \sum^{L}_{j=i+1} A_j (\mathbf{y}_{t - i} -
+\mathbf{y}_{t - i - 1}) + \mathbf{\epsilon}_t
+\end{align}\]</span></p>
+<p><span class="math inline">\(\Pi = \sum^L_{\ell=1} A_{\ell} -
+I\)</span>、<span class="math inline">\(\Gamma_i = \sum^{L}_{j=i+1}
+A_j\)</span>と置いてまとめると、</p>
+<p><span class="math display">\[\begin{align}
+\Delta \mathbf{y}_t &amp;= \mathbf{\tau} + \Pi \mathbf{y}_{t-1} +
+\sum^{L-1}_{i=1} \Gamma_i \Delta \mathbf{y}_{t - i} +
+\mathbf{\epsilon}_t
+\end{align}\]</span></p>
+<p>となります。</p>
+<p>階差をとれば定常過程だと分かっているので、左辺も右辺も定常です。右辺の第1項は定数、第3項は階差に行列を乗じており、第4項は撹乱項なので定常です。右辺の第2項は定常でなければなりません。</p>
+<p>右辺の第2項が定常になるためには、<span
+class="math inline">\(\Pi\)</span>がゼロ行列で階差をとったVARモデルと同様になるか、共和分関係があるかです。<span
+class="math inline">\(\Pi \mathbf{y}_{t-1}\)</span>の<span
+class="math inline">\(i\)</span>行目は、<span
+class="math inline">\(\pi_{ij}\)</span>を<span
+class="math inline">\(\Pi\)</span>の成分として、<span
+class="math inline">\(\pi_{i1} y_{1,t-1} + \pi_{i2} y_{2,t-1} + \cdots +
+\pi_{iL}
+y_{L,t-1}\)</span>となっており、これが定常であることが、すなわち共和分関係があることになるからです。</p>
+<p><span
+class="math inline">\(\Pi\)</span>は共和分ベクトルそのままではなく、推定するパラメーターである調整係数行列を乗じたものになります。時系列2つの例で、上の第2項を書き直すと</p>
+<p><span class="math display">\[
+\Pi \mathbf{y}_{t-1} = \begin{pmatrix}
+lv_1 \\
+lv_2
+\end{pmatrix} \begin{pmatrix}
+cv_1 &amp; cv_2
+\end{pmatrix} \begin{pmatrix}
+y_{1, t-1} \\
+y_{2, t-1}
+\end{pmatrix}
+\]</span></p>
+<p>となります。<span
+class="math inline">\(lv_i\)</span>は調整係数行列の要素である送出ベクトル（loading
+vector）の成分で、<span
+class="math inline">\(ci_j\)</span>は共和分ベクトル（cointegration
+vector）の成分です。共和分ベクトルの数は時系列の数より少なくなりますが、調整係数行列を乗じることで<span
+class="math inline">\(\Pi\)</span>の行数を時系列の数と同じにしています。</p>
+<p>VARに<span
+class="math inline">\(\Pi\)</span>を付け加えたこのモデルがVECMになります。推定は<span
+class="math inline">\(\Pi\)</span>があるために煩雑になります[^fn03]が、<a
+href="https://www.imes.boj.or.jp/research/papers/japanese/kk11-2-4.pdf">川崎
+(1993)</a>の説明が参考になると思います。</p>
+<p><code>vars</code>パッケージでは、<code>urca::ca.jo</code>関数で推定した後に、<code>vars::vec2var</code>で結果オブジェクトを変換して、インパルス応答列と予測誤差分散分解を見る事ができます。</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a>r_ca.jo <span class="ot">&lt;-</span> <span class="fu">ca.jo</span>(y, <span class="at">ecdet =</span> <span class="st">&quot;none&quot;</span>, <span class="at">K =</span> L, <span class="at">season =</span> <span class="dv">12</span>)</span>
+<span id="cb62-2"><a href="#cb62-2" tabindex="-1"></a>r_vecm <span class="ot">&lt;-</span> <span class="fu">vec2var</span>(r_ca.jo)</span>
+<span id="cb62-3"><a href="#cb62-3" tabindex="-1"></a>r_vecm_irf <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_vecm, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb62-4"><a href="#cb62-4" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_vecm<span class="sc">$</span>y), <span class="fu">ncol</span>(r_vecm<span class="sc">$</span>y)))</span>
+<span id="cb62-5"><a href="#cb62-5" tabindex="-1"></a><span class="fu">plot</span>(r_vecm_irf, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
+<p><img src="common_files/figure-html/vecm-1.png" width="672" /></p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_vecm, <span class="at">n.ahead =</span> n.ahead))</span></code></pre></div>
+<p><img src="common_files/figure-html/vecm_fevd-1.png" width="672" /></p>
+<p>予測誤差分散分解（FEVD）の結果が大きく変わり、有効求人倍率が大きな予測因子になっています。共和分検定で帰無仮説を棄却できていないので、VARの方がそれらしいと言う事になりますが。</p>
+</div>
+<div id="構造化vecm" class="section level2" number="5.6">
+<h2><span class="header-section-number">5.6</span> 構造化VECM</h2>
+<p>共和分関係について制約を置く構造化VECM（<abbr title="Strctual VECM">SVECM</abbr>）もあります。</p>
+</div>
+</div>
+<div id="状態空間モデル" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> 状態空間モデル</h1>
+<p>被説明変数が離散もしくは非負である場合、観測値に予測区間をつける必要がある場合、推定を逐次更新したい場合は、<a
+href="https://wh.anlyznews.com/R/state_space_model.shtml">状態空間モデル</a>の利用を考えましょう。</p>
+</div>
+<div id="終わりに" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> 終わりに</h1>
+<p>教科書的な手法を網羅的に見てきました。実務的には無目的に収集した時系列データがあって、ここから何か分からないかと言う話になることは多々あるのですが、そういうときに何かする助けになると思います。ただし、モデルの階差とラグの次数をデータから決めるようなことになりがちで、往々にしてデータに過剰適合した推定結果になることには注意してください。また、見ての通り予測値の幅は広くなるため、データが助けにならない事を確認して終わる事が多そうです。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>DGPが階差ゼロの自己回帰モデルで階差をとって推定すると下方推定バイスが入ります（Nickellバイアス）が、ARIMAの<strong>前提</strong>だとこのバイアスが入りません。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p>非定常なAR(1)は<code>arima</code>コマンドでは推定が不安定になりますが、OLSでは係数の点推定量自体は上手く推定できたりします。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>ARMAモデルも行列で書けるため、ここでの議論はほぼそのままARMAモデルに適用する事ができます。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

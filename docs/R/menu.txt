@@ -67,6 +67,7 @@ div.right h2.menu {
     <dt><a href="multicomp.shtml">手当り次第に効果を探すあなたのための多重比較補正</a></dt>
     <dt><a href="imputation.shtml">鉛筆なめなめ欠損値補定</a></dt>
     <dt><a href="seasonal_adjustment.shtml">Rでお手軽季節調整</a></dt>
+    <dt><a href="time_series.shtml">Rによる定番時系列データ分析</a></dt>
     <dt><a href="state_space_model.shtml">Rでささっと状態空間モデルを使おう</a></dt>
 </dl>
 
