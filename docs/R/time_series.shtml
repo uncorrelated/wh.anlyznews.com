@@ -1087,9 +1087,12 @@ tau1 -2.58 -1.95 -1.62</code></pre>
 y_{1,t} \\
 y_{2,t}
 \end{pmatrix} = \begin{pmatrix}
+c_{1} \\
+c_{2}
+\end{pmatrix} + \begin{pmatrix}
 \tau_{1} \\
 \tau_{2}
-\end{pmatrix} + \sum^{L}_{\ell=1} \begin{pmatrix}
+\end{pmatrix} t + \sum^{L}_{\ell=1} \begin{pmatrix}
 \alpha_{1,1,\ell} &amp; \alpha_{1,2,\ell} \\
 \alpha_{2,1,\ell} &amp; \alpha_{2,2,\ell}
 \end{pmatrix} \begin{pmatrix}
@@ -1100,6 +1103,10 @@ y_{2,t - \ell}
 \epsilon_{2,t}
 \end{pmatrix}
 \end{align}\]</span></p>
+<p>定数項<span class="math inline">\({}^t\!(c_1,
+c_2)\)</span>はドリフト項とも呼ばれます。<span
+class="math inline">\({}^t\!(\tau_1,
+\tau_2)t\)</span>はトレンド項で、時間経過で変化します。この2つは、入る場合も入らない場合もあります。</p>
 <p>誤差項の共分散を考慮する表記もあるのですが、ここでは使用するパッケージにあわせて<span
 class="math inline">\(Cov(\epsilon_{1,t},
 \epsilon_{2,t})=0\)</span>を仮定します。また、誤差項のラグは入りません。</p>
@@ -1159,7 +1166,7 @@ UR = JTAR.l1 + UR.l1 + JTAR.l2 + UR.l2 + JTAR.l3 + UR.l3 + sd1 + sd2 + sd3 + sd4
 -0.16107285 -0.15464012 -0.19255033 
        sd10        sd11 
 -0.28582985 -0.33773954 </code></pre>
-<p>月次データなので<code>season</code>は<code>12</code>とし、データ全体を見ると単調増加や単調減少ではないので<code>type</code>は<code>none</code>でトレンドなどは無いものと見做します。</p>
+<p>月次データなので<code>season</code>は<code>12</code>とし、データ全体を見ると単調増加や単調減少ではないので<code>type</code>は<code>none</code>でドリフトとトレンドは無いものとします。</p>
 <p><code>summary(r_VAR)</code>とすると、係数の標準誤差とそのt検定の結果などが表示されますが、ラグや相互作用があるため係数間の関係は複雑で、直感的に結果の意味は把握はできません。インパルス応答列を見たり、グレンジャー因果性テスト、予測誤差分散分解をかけることになります。</p>
 <div id="外生変数-1" class="section level3" number="5.2.1">
 <h3><span class="header-section-number">5.2.1</span> 外生変数</h3>
@@ -1319,16 +1326,21 @@ instantaneous causalityが棄却されます。</p>
 \begin{pmatrix}
 y_{1,t} \\
 y_{2,t}
-\end{pmatrix} &amp;= \begin{pmatrix}
+\end{pmatrix} =&amp; \begin{pmatrix}
+c_{1} \\
+c_{2}
+\end{pmatrix} + \begin{pmatrix}
 \tau_{1} \\
 \tau_{2}
-\end{pmatrix} - \begin{pmatrix}
+\end{pmatrix} t \\
+&amp;- \begin{pmatrix}
 0 &amp; \alpha_{1,2,0} \\
 \alpha_{2,1,0} &amp; 0
 \end{pmatrix} \begin{pmatrix}
 y_{1,t} \\
 y_{2,t}
-\end{pmatrix} + \sum^{L}_{\ell=1} \begin{pmatrix}
+\end{pmatrix} \\
+&amp;+ \sum^{L}_{\ell=1} \begin{pmatrix}
 \alpha_{1,1,\ell} &amp; \alpha_{1,2,\ell} \\
 \alpha_{2,1,\ell} &amp; \alpha_{2,2,\ell}
 \end{pmatrix} \begin{pmatrix}
@@ -1344,10 +1356,14 @@ y_{2,t - \ell}
 \end{pmatrix} \begin{pmatrix}
 y_{1,t} \\
 y_{2,t}
-\end{pmatrix} &amp;= \begin{pmatrix}
+\end{pmatrix} =&amp; \begin{pmatrix}
+c_{1} \\
+c_{2}
+\end{pmatrix} + \begin{pmatrix}
 \tau_{1} \\
 \tau_{2}
-\end{pmatrix} + \sum^{L}_{\ell=1} \begin{pmatrix}
+\end{pmatrix} t \\
+&amp;+ \sum^{L}_{\ell=1} \begin{pmatrix}
 \alpha_{1,1,\ell} &amp; \alpha_{1,2,\ell} \\
 \alpha_{2,1,\ell} &amp; \alpha_{2,2,\ell}
 \end{pmatrix} \begin{pmatrix}
@@ -1360,18 +1376,19 @@ y_{2,t - \ell}
 \end{align}\]</span></p>
 <p>煩雑なので、書き直します。</p>
 <p><span class="math display">\[
-A \mathbf{y}_t = \mathbf{\tau}^* + \sum^{L}_{\ell=1} A^*_\ell
-\mathbf{y}_{t - \ell} + \mathbf{\epsilon}_t
+A \mathbf{y}_t = \mathbf{c}^* + \mathbf{\tau}^* t + \sum^{L}_{\ell=1}
+A^*_\ell \mathbf{y}_{t - \ell} + \mathbf{\epsilon}_t
 \]</span></p>
 <p>構造化VAR（<abbr title="Strctual VAR">SVAR</abbr>）のAモデルと呼ばれる形式になりました。</p>
 <p><span
 class="math inline">\(B=A^{-1}\)</span>を両辺に生じると、Bモデルになります。<span
+class="math inline">\(A^{-1}\mathbf{c}^*=\mathbf{c}\)</span>, <span
 class="math inline">\(A^{-1}\mathbf{\tau}^*=\mathbf{\tau}\)</span>,
 <span
 class="math inline">\(A^{-1}A^*_\ell=A_\ell\)</span>になっているので注意してください。</p>
 <p><span class="math display">\[
-\mathbf{y}_t = \mathbf{\tau} + \sum^{L}_{\ell=1} A_\ell \mathbf{y}_{t -
-\ell} + B \mathbf{\epsilon}_t
+\mathbf{y}_t = \mathbf{c} + \mathbf{\tau} t + \sum^{L}_{\ell=1} A_\ell
+\mathbf{y}_{t - \ell} + B \mathbf{\epsilon}_t
 \]</span></p>
 <p>両方を組み合わせたABモデルもあります。</p>
 <p>これらは最尤法で推定しますが、<code>vars:SVAR</code>が計算してくれるので尤度関数を考える必要はありません。しかし、<code>A</code>や<code>B</code>は何でも良いと言うことはなく、推定可能なように指定する必要があります。</p>
@@ -1464,19 +1481,20 @@ class="math inline">\(z_t\)</span>が単位根過程）は棄却されません�
 <p>共和分関係がある場合は、ベクトル誤差修正モデル（<abbr title="Vector Error Correction Model">VECM</abbr>）を使う方が望ましいと言うことになります。</p>
 <p>VARをやや抽象的に表記すると以下のようになります。</p>
 <p><span class="math display">\[
-\mathbf{y}_t = \mathbf{\tau} + \sum^{L}_{\ell=1} A_\ell \mathbf{y}_{t -
-\ell} + \mathbf{\epsilon}_t
+\mathbf{y}_t = \mathbf{c} + \mathbf{\tau} t + \sum^{L}_{\ell=1} A_\ell
+\mathbf{y}_{t - \ell} + \mathbf{\epsilon}_t
 \]</span></p>
 <p><span
 class="math inline">\(\mathbf{y}\)</span>は時系列変数のベクトル、<span
-class="math inline">\(\mathbf{\tau}\)</span>はトレンド項、<span
+class="math inline">\(\mathbf{c}\)</span>はドリフト項、<span
+class="math inline">\(\mathbf{\tau}t\)</span>はトレンド項、<span
 class="math inline">\(A\)</span>は係数行列、<span
 class="math inline">\(\mathbf{\epsilon}\)</span>は撹乱項のベクトルです。</p>
 <p>定常過程にするために、1期前の値を引きましょう。</p>
 <p><span class="math display">\[\begin{align}
-\mathbf{y}_t - \mathbf{y}_{t-1} &amp;= \mathbf{\tau} + \sum^{L}_{\ell=1}
-A_\ell \mathbf{y}_{t - \ell} + \mathbf{\epsilon}_t  - \mathbf{y}_{t-1}
-\\
+\mathbf{y}_t - \mathbf{y}_{t-1} &amp;= \mathbf{c} + \mathbf{\tau} t +
+\sum^{L}_{\ell=1} A_\ell \mathbf{y}_{t - \ell} + \mathbf{\epsilon}_t  -
+\mathbf{y}_{t-1} \\
 &amp;= \mathbf{\tau} + (\sum^L_{\ell=1} A_{\ell} - I)\mathbf{y}_{t-1} +
 \sum^{L-1}_{i=1} \sum^{L}_{j=i+1} A_j (\mathbf{y}_{t - i} -
 \mathbf{y}_{t - i - 1}) + \mathbf{\epsilon}_t
@@ -1485,8 +1503,8 @@ A_\ell \mathbf{y}_{t - \ell} + \mathbf{\epsilon}_t  - \mathbf{y}_{t-1}
 I\)</span>、<span class="math inline">\(\Gamma_i = \sum^{L}_{j=i+1}
 A_j\)</span>と置いてまとめると、</p>
 <p><span class="math display">\[\begin{align}
-\Delta \mathbf{y}_t &amp;= \mathbf{\tau} + \Pi \mathbf{y}_{t-1} +
-\sum^{L-1}_{i=1} \Gamma_i \Delta \mathbf{y}_{t - i} +
+\Delta \mathbf{y}_t &amp;= \mathbf{c} + \mathbf{\tau} t + \Pi
+\mathbf{y}_{t-1} + \sum^{L-1}_{i=1} \Gamma_i \Delta \mathbf{y}_{t - i} +
 \mathbf{\epsilon}_t
 \end{align}\]</span></p>
 <p>となります。</p>
