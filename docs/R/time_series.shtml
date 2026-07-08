@@ -1081,7 +1081,7 @@ tau1 -2.58 -1.95 -1.62</code></pre>
 </div>
 <div id="varモデル" class="section level2" number="5.2">
 <h2><span class="header-section-number">5.2</span> VARモデル</h2>
-<p>時系列が2本あるときのVARモデルは以下のようになります。</p>
+<p>時系列が2本（内生変数が2つ）あるときのVARモデルは以下のようになります。</p>
 <p><span class="math display">\[\begin{align}
 \begin{pmatrix}
 y_{1,t} \\
@@ -1299,10 +1299,11 @@ ratio）で、有効求人倍率は景気一致指数、失業率は景気遅行
 インパルス応答列</h3>
 <p>VARの推定結果の係数からは、ある変数が増えた時に、他の変数が増えるのか減るのか良く分かりません。インパルス応答列を見て解釈しましょう。</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="co"># 大きさ1のショックが生じたとして、18期先まで予測; 直交化は行わない</span></span>
-<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a><span class="co"># 差分モデルなのでcumulative = TRUEをつけた方が、実データとの対応はわかりやすくなる</span></span>
-<span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a>r_irf <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_VAR, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y), <span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y)))</span>
-<span id="cb55-5"><a href="#cb55-5" tabindex="-1"></a><span class="fu">plot</span>(r_irf, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
+<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>r_irf <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_VAR, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>引数<code>impluse</code>で変数名のベクトルを渡すことで、一部の内生変数へのショックのインパルス応答列を計算できます。<code>impluse = "JTAR"</code>をつければ、<code>JTAR</code>の影響だけを計算できます。</p>
+<p>差分モデルなので<code>cumulative = TRUE</code>をつけた方が、実データとの対応はわかりやすくなりますが、上では行いませんでした。</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y), <span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y)))</span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a><span class="fu">plot</span>(r_irf, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/irf-1.png" width="672" /></p>
 <p><code>plot</code>の正体は<code>plot.varirf</code>で、<code>?plot.varirf</code>でヘルプを参照できます。</p>
 <p>有効求人倍率に上昇ショックが起きると、完全失業率が減少することがわかりました。</p>
@@ -1312,8 +1313,10 @@ ratio）で、有効求人倍率は景気一致指数、失業率は景気遅行
 予測誤差分散分解</h3>
 <p>有効求人倍率の変化は完全失業率の変化をどれぐらい予測できるものでしょうか。
 予測誤差分散分解（<abbr title="Forecast Error Variance Decomposition">FEVD</abbr>）で程度を測ることができます。</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_VAR, <span class="at">n.ahead =</span> n.ahead))</span></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="co"># namesでプロットする時系列を指定できる</span></span>
+<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_VAR, <span class="at">n.ahead =</span> n.ahead), <span class="at">names =</span> <span class="st">&quot;UR&quot;</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/fevd-1.png" width="672" /></p>
+<p><code>plot</code>の正体は<code>plot.varfevd</code>で、<code>?plot.varfevd</code>でヘルプが見られます。</p>
 <p>撹乱項の影響が大きく、そんなに大きくは無いと<strong>とりあえず</strong>なりました。</p>
 </div>
 </div>
@@ -1393,14 +1396,14 @@ class="math inline">\(A^{-1}A^*_\ell=A_\ell\)</span>になっているので注�
 \]</span></p>
 <p>両方を組み合わせたABモデルもあります。</p>
 <p>これらは最尤法で推定しますが、<code>vars:SVAR</code>が計算してくれるので尤度関数を考える必要はありません。しかし、<code>A</code>や<code>B</code>は何でも良いと言うことはなく、推定可能なように指定する必要があります。</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="fu">library</span>(vars)</span>
-<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="dv">1</span>; L <span class="ot">&lt;-</span> <span class="dv">3</span>; n.ahead <span class="ot">&lt;-</span> <span class="dv">18</span></span>
-<span id="cb57-3"><a href="#cb57-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">cbind</span>(JTAR, UR))</span>
-<span id="cb57-4"><a href="#cb57-4" tabindex="-1"></a>dy <span class="ot">&lt;-</span> <span class="fu">diff</span>(y, d)</span>
-<span id="cb57-5"><a href="#cb57-5" tabindex="-1"></a>Amat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>) <span class="co"># 推定する箇所にNAを入れる;NAの数はK*(K-1)以下</span></span>
-<span id="cb57-6"><a href="#cb57-6" tabindex="-1"></a>r_VAR <span class="ot">&lt;-</span> <span class="fu">VAR</span>(dy, <span class="at">season =</span> <span class="dv">12</span>, <span class="at">p =</span> L, <span class="at">type =</span> <span class="st">&quot;none&quot;</span>)</span>
-<span id="cb57-7"><a href="#cb57-7" tabindex="-1"></a><span class="co"># このデータではデフォルトのestmethod = &quot;scoring&quot;では収束しないためdirect/BFGSを指定した</span></span>
-<span id="cb57-8"><a href="#cb57-8" tabindex="-1"></a>(r_SVAR <span class="ot">&lt;-</span> <span class="fu">SVAR</span>(r_VAR, <span class="at">estmethod =</span> <span class="st">&quot;direct&quot;</span>, <span class="at">Amat =</span> Amat, <span class="at">max.iter =</span> <span class="dv">1000</span>, <span class="at">method=</span><span class="st">&quot;BFGS&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="fu">library</span>(vars)</span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="dv">1</span>; L <span class="ot">&lt;-</span> <span class="dv">3</span>; n.ahead <span class="ot">&lt;-</span> <span class="dv">18</span></span>
+<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, <span class="fu">cbind</span>(JTAR, UR))</span>
+<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a>dy <span class="ot">&lt;-</span> <span class="fu">diff</span>(y, d)</span>
+<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a>Amat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="cn">NA</span>, <span class="dv">0</span>, <span class="dv">1</span>), <span class="dv">2</span>, <span class="dv">2</span>) <span class="co"># 推定する箇所にNAを入れる;NAの数はK*(K-1)以下</span></span>
+<span id="cb58-6"><a href="#cb58-6" tabindex="-1"></a>r_VAR <span class="ot">&lt;-</span> <span class="fu">VAR</span>(dy, <span class="at">season =</span> <span class="dv">12</span>, <span class="at">p =</span> L, <span class="at">type =</span> <span class="st">&quot;none&quot;</span>)</span>
+<span id="cb58-7"><a href="#cb58-7" tabindex="-1"></a><span class="co"># このデータではデフォルトのestmethod = &quot;scoring&quot;では収束しないためdirect/BFGSを指定した</span></span>
+<span id="cb58-8"><a href="#cb58-8" tabindex="-1"></a>(r_SVAR <span class="ot">&lt;-</span> <span class="fu">SVAR</span>(r_VAR, <span class="at">estmethod =</span> <span class="st">&quot;direct&quot;</span>, <span class="at">Amat =</span> Amat, <span class="at">max.iter =</span> <span class="dv">1000</span>, <span class="at">method=</span><span class="st">&quot;BFGS&quot;</span>))</span></code></pre></div>
 <pre><code>
 SVAR Estimation Results:
 ======================== 
@@ -1410,13 +1413,13 @@ Estimated A matrix:
       JTAR UR
 JTAR 1.000  0
 UR   1.157  1</code></pre>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="co"># インパルス応答列</span></span>
-<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>r_irf_svar <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_SVAR, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y), <span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y)))</span>
-<span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a><span class="fu">plot</span>(r_irf_svar, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="co"># インパルス応答列</span></span>
+<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a>r_irf_svar <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_SVAR, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y), <span class="fu">ncol</span>(r_VAR<span class="sc">$</span>y)))</span>
+<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a><span class="fu">plot</span>(r_irf_svar, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/svar-1.png" width="672" /></p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="co"># FEVD</span></span>
-<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_SVAR, <span class="at">n.ahead =</span> n.ahead))</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="co"># FEVD</span></span>
+<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_SVAR, <span class="at">n.ahead =</span> n.ahead), <span class="at">names =</span> <span class="st">&quot;UR&quot;</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/fevd_svar-1.png" width="672" /></p>
 <p>有効求人倍率の効果が大きく計測されるようになりました。</p>
 </div>
@@ -1432,7 +1435,7 @@ z_t\)</span>という関係があるとき、<span
 class="math inline">\(y_1\)</span>と<span
 class="math inline">\(y_2\)</span>は共和分関係にあるといいます。また、共和分関係があるときは、VARではモデル特定化が誤っている事になります。</p>
 <p><code>urca::ca.po</code>で共和分テストができるのでやってみましょう。</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">ca.po</span>(y, <span class="at">demean =</span> <span class="st">&quot;none&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">ca.po</span>(y, <span class="at">demean =</span> <span class="st">&quot;none&quot;</span>))</span></code></pre></div>
 <pre><code>
 ######################################## 
 # Phillips and Ouliaris Unit Root Test # 
@@ -1544,19 +1547,27 @@ class="math inline">\(\Pi\)</span>があるために煩雑になります[^fn03]
 href="https://www.imes.boj.or.jp/research/papers/japanese/kk11-2-4.pdf">川崎
 (1993)</a>の説明が参考になると思います。</p>
 <p><code>vars</code>パッケージでは、<code>urca::ca.jo</code>関数で推定した後に、<code>vars::vec2var</code>で結果オブジェクトを変換して、インパルス応答列と予測誤差分散分解を見る事ができます。</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>r_ca.jo <span class="ot">&lt;-</span> <span class="fu">ca.jo</span>(y, <span class="at">ecdet =</span> <span class="st">&quot;none&quot;</span>, <span class="at">K =</span> L, <span class="at">season =</span> <span class="dv">12</span>)</span>
-<span id="cb63-2"><a href="#cb63-2" tabindex="-1"></a>r_vecm <span class="ot">&lt;-</span> <span class="fu">vec2var</span>(r_ca.jo)</span>
-<span id="cb63-3"><a href="#cb63-3" tabindex="-1"></a>r_vecm_irf <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_vecm, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb63-4"><a href="#cb63-4" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_vecm<span class="sc">$</span>y), <span class="fu">ncol</span>(r_vecm<span class="sc">$</span>y)))</span>
-<span id="cb63-5"><a href="#cb63-5" tabindex="-1"></a><span class="fu">plot</span>(r_vecm_irf, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a>r_ca.jo <span class="ot">&lt;-</span> <span class="fu">ca.jo</span>(y, <span class="at">ecdet =</span> <span class="st">&quot;none&quot;</span>, <span class="at">K =</span> L, <span class="at">season =</span> <span class="dv">12</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" tabindex="-1"></a>r_vecm <span class="ot">&lt;-</span> <span class="fu">vec2var</span>(r_ca.jo)</span>
+<span id="cb64-3"><a href="#cb64-3" tabindex="-1"></a>r_vecm_irf <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_vecm, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb64-4"><a href="#cb64-4" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_vecm<span class="sc">$</span>y), <span class="fu">ncol</span>(r_vecm<span class="sc">$</span>y)))</span>
+<span id="cb64-5"><a href="#cb64-5" tabindex="-1"></a><span class="fu">plot</span>(r_vecm_irf, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/vecm-1.png" width="672" /></p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_vecm, <span class="at">n.ahead =</span> n.ahead))</span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_vecm, <span class="at">n.ahead =</span> n.ahead), <span class="at">names =</span> <span class="st">&quot;UR&quot;</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/vecm_fevd-1.png" width="672" /></p>
 <p>予測誤差分散分解（FEVD）の結果が大きく変わり、有効求人倍率が大きな予測因子になっています。共和分検定で帰無仮説を棄却できていないので、VARの方がそれらしいと言う事になりますが。</p>
 </div>
 <div id="構造化vecm" class="section level2" number="5.6">
 <h2><span class="header-section-number">5.6</span> 構造化VECM</h2>
-<p>共和分関係について制約を置く構造化VECM（<abbr title="Strctual VECM">SVECM</abbr>）もあります。</p>
+<p>共和分関係について制約を置く構造化VECM（<abbr title="Strctual VECM">SVECM</abbr>）もあり、<code>vars</code>パッケージで推定できます。</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" tabindex="-1"></a>SR <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="cn">NA</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="cn">NA</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" tabindex="-1"></a>LR <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>, <span class="cn">NA</span>), <span class="dv">2</span>, <span class="dv">2</span>)</span>
+<span id="cb66-3"><a href="#cb66-3" tabindex="-1"></a>r_SVEC <span class="ot">&lt;-</span> <span class="fu">SVEC</span>(r_ca.jo, <span class="at">SR =</span> SR, <span class="at">LR =</span> LR)</span>
+<span id="cb66-4"><a href="#cb66-4" tabindex="-1"></a>r_svec_irf <span class="ot">&lt;-</span> <span class="fu">irf</span>(r_SVEC, <span class="at">n.ahead =</span> n.ahead, <span class="at">ortho =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb66-5"><a href="#cb66-5" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="fu">ncol</span>(r_vecm<span class="sc">$</span>y), <span class="fu">ncol</span>(r_vecm<span class="sc">$</span>y)))</span>
+<span id="cb66-6"><a href="#cb66-6" tabindex="-1"></a><span class="fu">plot</span>(r_svec_irf, <span class="at">plot.type =</span> <span class="st">&quot;single&quot;</span>)</span>
+<span id="cb66-7"><a href="#cb66-7" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_SVEC, <span class="at">n.ahead =</span> n.ahead), <span class="at">names =</span> <span class="st">&quot;UR&quot;</span>)</span></code></pre></div>
+<p>今回のデータセットで収束するように引数を設定したので、単なるVECMになってしまっています。</p>
 </div>
 </div>
 <div id="状態空間モデル" class="section level1" number="6">
