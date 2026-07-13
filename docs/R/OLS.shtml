@@ -13,7 +13,7 @@
 
 <title>Rで簡単にOLS</title>
 
-<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -714,7 +714,9 @@ z^{\beta_2}\)</span>を推定したい場合は、</p>
 <span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>    vcov <span class="ot">&lt;-</span> sigma2<span class="sc">*</span><span class="fu">solve</span>(<span class="fu">t</span>(X) <span class="sc">%*%</span> X)</span>
 <span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>    <span class="fu">list</span>(<span class="at">coef =</span> b, <span class="at">vcov =</span> vcov, <span class="at">df =</span> df)</span>
 <span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a>})</span></code></pre></div>
-<p>大したことにならないとは言え、コーディングミスや見通しの問題から、<code>lm</code>を使う方が望ましいです。</p>
+<p>大したことにならないとは言え、コーディングミスや見通し、計算結果の安定性の問題<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>から、<code>lm</code>を使う方が望ましいです。</p>
 </div>
 </div>
 <div id="推定結果の確認と数値の取得" class="section level1" number="3">
@@ -859,7 +861,7 @@ $ci
 <div id="偏相関係数" class="section level2" number="3.8">
 <h2><span class="header-section-number">3.8</span> 偏相関係数</h2>
 <p>計算してくれる関数は標準では入っていないのですが、以下のようにt値を使って簡単に計算できます<a
-href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
+href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a>(<span class="cf">function</span>(r_lm){</span>
 <span id="cb39-2"><a href="#cb39-2" tabindex="-1"></a>    s <span class="ot">&lt;-</span> <span class="fu">summary</span>(r_lm)</span>
 <span id="cb39-3"><a href="#cb39-3" tabindex="-1"></a>    t <span class="ot">&lt;-</span> <span class="fu">coef</span>(s)[,<span class="dv">3</span>]</span>
@@ -990,7 +992,7 @@ y ~ x     120.68841 124.8920</code></pre>
 </ul>
 <p>の4つのプロットが順番に表示されます。</p>
 <p>プロット領域を4分割し、<code>ask = FALSE</code>をつけて、一枚に納めて表示してみましょう<a
-href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
 <span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a><span class="fu">plot</span>(r_lm, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/ols_diagnosis-1.png" width="672" /></p>
@@ -1015,8 +1017,8 @@ D_i \equiv
 \]</span></p>
 <p>と定義されます。</p>
 <p>なお、不偏性のある一致推定量を得るという意味では、誤差項が正規分布する必要も、分散が均一である必要もなく、系列相関も原則として支障になりません<a
-href="#fn4" class="footnote-ref"
-id="fnref4"><sup>4</sup></a>。大標本のときは、梃子比を気にしましょう。</p>
+href="#fn5" class="footnote-ref"
+id="fnref5"><sup>5</sup></a>。大標本のときは、梃子比を気にしましょう。</p>
 </div>
 <div id="予測値" class="section level2" number="6.2">
 <h2><span class="header-section-number">6.2</span> 予測値</h2>
@@ -1084,16 +1086,19 @@ id="fnref4"><sup>4</sup></a>。大標本のときは、梃子比を気にしま�
 <li id="fn1"><p>このページは Greene (2003) “Econometric Analysis,” 5th
 Editionを参考にしています。<a href="#fnref1"
 class="footnote-back">↩︎</a></p></li>
-<li id="fn2"><p>導出はテキストを参考にしてください。<a href="#fnref2"
+<li
+id="fn2"><p>例では数式にあわせて逆行列をかけて係数を推定していますが、<code>solve(t(X) %*% X, t(X) %*% y)</code>と連立方程式を解く方が高速かつ（計算機の都合から）安定した結果が得られます。<code>lm</code>ではQR分解を用いるアルゴリズムで計算するため、さらに高速かつ安定です。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>導出はテキストを参考にしてください。<a href="#fnref3"
 class="footnote-back">↩︎</a></p></li>
 <li
-id="fn3"><p>個別に表示したい場合は、<code>plot(r_lm, which = 1)</code>と言うように<code>1</code>,
+id="fn4"><p>個別に表示したい場合は、<code>plot(r_lm, which = 1)</code>と言うように<code>1</code>,
 <code>2</code>, <code>3</code>,
 <code>5</code>の数字を指定します。<code>4</code>を指定するとクック距離だけを表示ます。詳しくは<code>? plot.lm</code>としてヘルプを参照してください。<a
-href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li
-id="fn4"><p>系列相関がある場合、時系列データであったり、欠落変数バイアスが反映されていたりする場合があります。<a
 href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn5"><p>系列相関がある場合、時系列データであったり、欠落変数バイアスが反映されていたりする場合があります。<a
+href="#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
