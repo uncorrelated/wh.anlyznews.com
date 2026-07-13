@@ -13,7 +13,7 @@
 
 <title>パネルデータ分析の定番手法、固定効果モデルを学ぼう</title>
 
-<script src="common_files/header-attrs-2.30/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -577,7 +577,8 @@ regressionを行うか、within変換をかけてからOLSで推定すること�
 <h2><span class="header-section-number">2.3</span>
 ダミー変数による回帰</h2>
 <p>固定効果モデルの推定ですが、個体や時点が少なければ、以下のように個体と時点のダミー変数を入れればOLSで推定できます（dummy
-variable regression）。</p>
+variable
+regression）。近年は<abbr title="Least Squares Dummy Variable">LSDV</abbr>モデルと呼ぶようになりました。</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>r_lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> id <span class="sc">+</span> t, df01)</span>
 <span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="fu">coef</span>(r_lm)</span></code></pre></div>
 <pre><code>(Intercept)           x           z        id.L        id.Q        id.C 
@@ -648,8 +649,8 @@ plm(formula = y ~ x + z, data = df01, effect = &quot;twoway&quot;, model = &quot
 Balanced Panel: n = 30, T = 3, N = 90
 
 Residuals:
-    Min.  1st Qu.   Median  3rd Qu.     Max. 
--9.31327 -3.31232  0.42447  3.25524 10.79302 
+   Min. 1st Qu.  Median 3rd Qu.    Max. 
+ -9.313  -3.312   0.424   3.255  10.793 
 
 Coefficients:
   Estimate Std. Error t-value Pr(&gt;|t|)  
@@ -1131,8 +1132,8 @@ plm(formula = y ~ x + z | iv + z, data = df_feiv, effect = &quot;individual&quot
 Balanced Panel: n = 100, T = 5, N = 500
 
 Residuals:
-     Min.   1st Qu.    Median   3rd Qu.      Max. 
--7.755946 -1.618664 -0.063813  1.666907  7.256245 
+   Min. 1st Qu.  Median 3rd Qu.    Max. 
+-7.7559 -1.6187 -0.0638  1.6669  7.2562 
 
 Coefficients:
   Estimate Std. Error z-value  Pr(&gt;|z|)    
@@ -1160,8 +1161,8 @@ plm(formula = y ~ x + z | iv + z, data = df_feiv, effect = &quot;individual&quot
 Balanced Panel: n = 100, T = 5, N = 500
 
 Residuals:
-     Min.   1st Qu.    Median   3rd Qu.      Max. 
--7.755946 -1.618664 -0.063813  1.666907  7.256245 
+   Min. 1st Qu.  Median 3rd Qu.    Max. 
+-7.7559 -1.6187 -0.0638  1.6669  7.2562 
 
 Coefficients:
   Estimate Std. Error z-value  Pr(&gt;|z|)    
