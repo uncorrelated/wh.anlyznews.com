@@ -369,9 +369,17 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 class="toc-section-number">1</span> OLSとは</a>
 <ul>
 <li><a href="#ols推定量" id="toc-ols推定量"><span
-class="toc-section-number">1.1</span> OLS推定量</a></li>
+class="toc-section-number">1.1</span> OLS推定量</a>
+<ul>
+<li><a href="#不偏性" id="toc-不偏性"><span
+class="toc-section-number">1.1.1</span> 不偏性</a></li>
+</ul></li>
 <li><a href="#ols推定量の分散" id="toc-ols推定量の分散"><span
-class="toc-section-number">1.2</span> OLS推定量の分散</a></li>
+class="toc-section-number">1.2</span> OLS推定量の分散</a>
+<ul>
+<li><a href="#有効性" id="toc-有効性"><span
+class="toc-section-number">1.2.1</span> 有効性</a></li>
+</ul></li>
 <li><a href="#自由度と分散の不偏推定量"
 id="toc-自由度と分散の不偏推定量"><span
 class="toc-section-number">1.3</span> 自由度と分散の不偏推定量</a></li>
@@ -549,6 +557,22 @@ class="math inline">\(b\)</span>の要素それぞれに関して微分してで
 b = ({}^t\!XX)^{-1}{{}^t\!Xy}
 \]</span></p>
 <p>が得られます。</p>
+<div id="不偏性" class="section level3" number="1.1.1">
+<h3><span class="header-section-number">1.1.1</span> 不偏性</h3>
+<p>OLS推定量の期待値が真のパラメーターに一致することは、次のように確認できます。<span
+class="math inline">\(y = X\beta +
+\epsilon\)</span>をOLS推定量を求める式に代入すると、</p>
+<p><span class="math display">\[\begin{align}
+E[b|X] &amp;= E[({}^t\!XX)^{-1}{}^t\!X(X\beta + \epsilon) | X]\\
+&amp;= E[\beta + ({}^t\!XX)^{-1}{}^t\!\epsilon |X] \\
+&amp;= \beta + ({}^t\!XX)^{-1}{}^t\!E[\epsilon |X] \\
+&amp;= \beta
+\end{align}\]</span></p>
+<p>とOLS推定量の条件付き期待値が求まり、さらに期待収束法則（Law of
+Iterated Expectations）から<span class="math inline">\(E[b] = E[E[b|X]]
+=
+\beta\)</span>なので、OLS推定量の期待値は真の値になることがわかります。</p>
+</div>
 </div>
 <div id="ols推定量の分散" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> OLS推定量の分散</h2>
@@ -571,6 +595,53 @@ class="math inline">\(b\)</span>は推定量なので誤差があり、その分
 \]</span></p>
 <p><span class="math inline">\(I\)</span>は<span class="math inline">\(k
 \times k\)</span>の恒等行列です。</p>
+<div id="有効性" class="section level3" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> 有効性</h3>
+<p>OLS推定量は、線形不偏推定量の中で分散がもっとも小さくなります（ガウス・マルコフの定理）。</p>
+<p><span
+class="math inline">\(b_0\)</span>を、OLSではない方法で推定された線形不偏推定量とします。</p>
+<p>線形推定量なので、ある行列<span
+class="math inline">\(C\)</span>があり、</p>
+<p><span class="math display">\[
+b_0 = Cy
+\]</span></p>
+<p>と書けます。</p>
+<p><span class="math inline">\(b_0\)</span>も不偏推定量なので、</p>
+<p><span class="math display">\[
+E[Cy|X] = E[CX\beta + C\epsilon|X] = \beta
+\]</span></p>
+<p>となります。<span
+class="math inline">\(CX\)</span>が恒等行列でなければ、不偏性は満たされません。よって、<span
+class="math inline">\(CX=I\)</span>です。</p>
+<p><span
+class="math inline">\(b_0\)</span>の分散はOLSと同様に計算できます。</p>
+<p><span class="math display">\[
+VAR[b_0|X] = \sigma^2 C{}^t\!C
+\]</span></p>
+<p><span class="math inline">\(b_0\)</span>とOLS推定量<span
+class="math inline">\(b\)</span>の差を計算する行列<span
+class="math inline">\(D\)</span>を置きます。</p>
+<p><span class="math display">\[\begin{align}
+D &amp;= C - ({}^t\!XX)^{-1}{}^t\!X \\
+Dy &amp;= b_0 - b
+\end{align}\]</span></p>
+<p><span
+class="math inline">\(D\)</span>を使って分散を書き直します。</p>
+<p><span class="math display">\[
+VAR[b_0|X] = \sigma^2[(D + {}^t\!XX)^{-1}{}^t\!X){}^t\!(D +
+{}^t\!XX)^{-1}{}^t\!X)]
+\]</span></p>
+<p><span class="math inline">\(CX = I = DX + ({}^t\!XX)^{-1}({}^t\!XX) =
+DX + I\)</span> なので、<span
+class="math inline">\(DX=0\)</span>になります。整理すると、</p>
+<p><span class="math display">\[
+VAR[b_0|X] = \sigma^2 ({}^t\!XX)^{-1} + \sigma^2D{}^t\!D = VAR[b|X] +
+\sigma^2 D{}^t\!D
+\]</span></p>
+<p><span class="math inline">\(\sigma^2
+D{}^t\!D\)</span>は非負なので、OLSではない線形不偏推定量の分散は、OLS推定量の分散と同じか、より大きくなります。</p>
+<p>これでOLSが不偏かつ有効（つまり最良）であり、つまり最良線形不偏推定量（<abbr title="Best Linear Unbiased Estimator">BLUE</abbr>）であることが示されました。</p>
+</div>
 </div>
 <div id="自由度と分散の不偏推定量" class="section level2" number="1.3">
 <h2><span class="header-section-number">1.3</span>
