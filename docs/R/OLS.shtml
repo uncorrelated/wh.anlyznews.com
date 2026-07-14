@@ -446,10 +446,12 @@ class="toc-section-number">5</span> モデル選択</a>
 <ul>
 <li><a href="#分散分析f検定" id="toc-分散分析f検定"><span
 class="toc-section-number">5.1</span> 分散分析/F検定</a></li>
+<li><a href="#durbin-watson比" id="toc-durbin-watson比"><span
+class="toc-section-number">5.2</span> Durbin-Watson比</a></li>
 <li><a href="#loocv" id="toc-loocv"><span
-class="toc-section-number">5.2</span> LOOCV</a></li>
+class="toc-section-number">5.3</span> LOOCV</a></li>
 <li><a href="#情報量規準" id="toc-情報量規準"><span
-class="toc-section-number">5.3</span> 情報量規準</a></li>
+class="toc-section-number">5.4</span> 情報量規準</a></li>
 </ul></li>
 <li><a href="#プロット" id="toc-プロット"><span
 class="toc-section-number">6</span> プロット</a>
@@ -1021,29 +1023,56 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <span id="cb53-2"><a href="#cb53-2" tabindex="-1"></a><span class="fu">pf</span>(F, r_lm<span class="sc">$</span>rank <span class="sc">-</span> r_lm_r<span class="sc">$</span>rank, r_lm<span class="sc">$</span>df.residual, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <pre><code>[1] 5.082933e-10</code></pre>
 </div>
-<div id="loocv" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span> LOOCV</h2>
+<div id="durbin-watson比" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Durbin-Watson比</h2>
+<p>観測値に時間的な並びがある場合、ある時点に生じた撹乱が、続く時点に波及していく系列相関が生じるときがあります。系列相関がある場合もOLSは一致推定量になりますが、標準誤差が過小推定されるのでp値や信頼区間に問題が生じるため、<a
+href="https://wh.anlyznews.com/R/time_series.shtml#ma%E3%83%A2%E3%83%87%E3%83%AB">時系列データ分析のMAモデル</a>を用いる事になります。系列相関が入る可能性がある場合は検定を行い、推定結果の頑強性を確認しましょう。</p>
+<p>古典的には1期前の撹乱が当期にも影響していないか調べるDurbin-Watson比と、その検定が参照サれることが多いです。</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(r_lm)</span>
+<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>e0 <span class="ot">&lt;-</span> e[<span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(e)<span class="sc">-</span><span class="dv">1</span>)]</span>
+<span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a>e1 <span class="ot">&lt;-</span> e[<span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(e)]</span>
+<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a>(d <span class="ot">&lt;-</span> <span class="fu">sum</span>((e1<span class="sc">-</span>e0)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sum</span>(e<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
+<pre><code>[1] 1.667529</code></pre>
+<p>Durbin-Watson比は<span class="math inline">\(0\)</span>から<span
+class="math inline">\(4\)</span>の値をとり、正の系列相関がある場合は<span
+class="math inline">\(2\)</span>未満、正の系列相関がある場合は<span
+class="math inline">\(2\)</span>より大となります。丁度<span
+class="math inline">\(2\)</span>と言う事はまず無いので、<span
+class="math inline">\(1\)</span>未満か<span
+class="math inline">\(3\)</span>より大のときに（観測値に時間的な並びがあれば）系列相関が疑われるとなります。</p>
+<p>詳細は省略しますがDurbin-Watson比の分布は計算されており、検定することもできます。</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a>lmtest<span class="sc">::</span><span class="fu">dwtest</span>(r_lm)</span></code></pre></div>
+<pre><code>
+    Durbin-Watson test
+
+data:  r_lm
+DW = 1.6675, p-value = 0.153
+alternative hypothesis: true autocorrelation is greater than 0</code></pre>
+<p>Breusch-Godfrey検定やLjung-Box検定を用いると自己回帰項がある複雑なモデルの系列相関を調べる事ができますが、時系列モデルの範疇に入るので省略します。</p>
+</div>
+<div id="loocv" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> LOOCV</h2>
 <p>一つ抜き交差検証の名前の通りに計算した各モデルの誤差の大きさを比較します。<code>boot</code>パッケージの<code>cv.glm</code>を使うと手軽に実行できますが、<code>cv.glm</code>は<code>lm</code>の結果オブジェクトでは正常に動かないため、<code>glm</code>関数でOLS推定しています。</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
-<span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>frml <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;y ~ x&quot;</span>, <span class="st">&quot;y ~ z&quot;</span>, <span class="st">&quot;y ~ x + z&quot;</span>)</span>
-<span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">length</span>(frml), <span class="dv">2</span>)</span>
-<span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a><span class="fu">rownames</span>(delta) <span class="ot">&lt;-</span> frml</span>
-<span id="cb55-5"><a href="#cb55-5" tabindex="-1"></a><span class="fu">colnames</span>(delta) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;raw&quot;</span>, <span class="st">&quot;adjusted&quot;</span>)</span>
-<span id="cb55-6"><a href="#cb55-6" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(frml)){</span>
-<span id="cb55-7"><a href="#cb55-7" tabindex="-1"></a>    delta[i, ] <span class="ot">&lt;-</span> <span class="fu">cv.glm</span>(df01, <span class="fu">glm</span>(<span class="fu">formula</span>(frml[i]), <span class="at">data=</span>df01))<span class="sc">$</span>delta</span>
-<span id="cb55-8"><a href="#cb55-8" tabindex="-1"></a>}</span>
-<span id="cb55-9"><a href="#cb55-9" tabindex="-1"></a><span class="fu">print</span>(delta)</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="fu">library</span>(boot)</span>
+<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>frml <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;y ~ x&quot;</span>, <span class="st">&quot;y ~ z&quot;</span>, <span class="st">&quot;y ~ x + z&quot;</span>)</span>
+<span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a>delta <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">length</span>(frml), <span class="dv">2</span>)</span>
+<span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a><span class="fu">rownames</span>(delta) <span class="ot">&lt;-</span> frml</span>
+<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a><span class="fu">colnames</span>(delta) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;raw&quot;</span>, <span class="st">&quot;adjusted&quot;</span>)</span>
+<span id="cb59-6"><a href="#cb59-6" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(frml)){</span>
+<span id="cb59-7"><a href="#cb59-7" tabindex="-1"></a>    delta[i, ] <span class="ot">&lt;-</span> <span class="fu">cv.glm</span>(df01, <span class="fu">glm</span>(<span class="fu">formula</span>(frml[i]), <span class="at">data=</span>df01))<span class="sc">$</span>delta</span>
+<span id="cb59-8"><a href="#cb59-8" tabindex="-1"></a>}</span>
+<span id="cb59-9"><a href="#cb59-9" tabindex="-1"></a><span class="fu">print</span>(delta)</span></code></pre></div>
 <pre><code>                raw  adjusted
 y ~ x     3.0713661 3.0645320
 y ~ z     2.5311366 2.5249000
 y ~ x + z 0.7603282 0.7579476</code></pre>
 <p>ここでは<code>y ~ x + z</code>が最も誤差が小さいです。</p>
 </div>
-<div id="情報量規準" class="section level2" number="5.3">
-<h2><span class="header-section-number">5.3</span> 情報量規準</h2>
+<div id="情報量規準" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> 情報量規準</h2>
 <p>赤池情報量規準とシュワルツ情報量規準もメソッドが用意されています。</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">AIC</span>(r_lm), <span class="fu">AIC</span>(r_lm_r), <span class="fu">BIC</span>(r_lm), <span class="fu">BIC</span>(r_lm_r)), </span>
-<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a>    <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, y <span class="sc">~</span> x), <span class="fu">c</span>(<span class="st">&quot;AIC&quot;</span>, <span class="st">&quot;BIC&quot;</span>)))</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">AIC</span>(r_lm), <span class="fu">AIC</span>(r_lm_r), <span class="fu">BIC</span>(r_lm), <span class="fu">BIC</span>(r_lm_r)), </span>
+<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a>    <span class="dv">2</span>, <span class="dv">2</span>, <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, y <span class="sc">~</span> x), <span class="fu">c</span>(<span class="st">&quot;AIC&quot;</span>, <span class="st">&quot;BIC&quot;</span>)))</span></code></pre></div>
 <pre><code>                AIC      BIC
 y ~ x + z  79.04471  84.6495
 y ~ x     120.68841 124.8920</code></pre>
@@ -1064,8 +1093,8 @@ y ~ x     120.68841 124.8920</code></pre>
 <p>の4つのプロットが順番に表示されます。</p>
 <p>プロット領域を4分割し、<code>ask = FALSE</code>をつけて、一枚に納めて表示してみましょう<a
 href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
-<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a><span class="fu">plot</span>(r_lm, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
+<span id="cb63-2"><a href="#cb63-2" tabindex="-1"></a><span class="fu">plot</span>(r_lm, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/ols_diagnosis-1.png" width="672" /></p>
 <p>数字が入っていますが、データフレーム内の観測値の行番号を表します。行名がついている場合は、行名の表示になります。</p>
 <p>予測値と残差や残差の散らばりに相関がある場合、極端なはずれ値がある場合は、推定モデルが不適切な可能性が高いです。</p>
@@ -1087,67 +1116,67 @@ D_i \equiv
 \frac{e_i^2}{\hat{\sigma}^2}\frac{1}{k}\frac{h_{ii}}{(1-h_{ii})^2}
 \]</span></p>
 <p>と定義されます。</p>
-<p>なお、不偏性のある一致推定量を得るという意味では、誤差項が正規分布する必要も、分散が均一である必要もなく、系列相関も原則として支障になりません<a
+<p>なお、係数の点推定において、不偏性のある一致推定量を得るという意味では、誤差項が正規分布する必要も、分散が均一である必要もなく、系列相関も原則として支障になりません<a
 href="#fn5" class="footnote-ref"
 id="fnref5"><sup>5</sup></a>。大標本のときは、梃子比を気にしましょう。</p>
 </div>
 <div id="予測値" class="section level2" number="6.2">
 <h2><span class="header-section-number">6.2</span> 予測値</h2>
 <p>3変数以上ある場合はプロットに用いない変数の影響を除外するほうが、見栄えがよくなります。</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="co"># xの要素の昇順番を得る</span></span>
-<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="fu">order</span>(df01<span class="sc">$</span>x)</span>
-<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a><span class="co"># zの効果を引き、zが平均値だった場合の効果を足したyをつくる</span></span>
-<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, y <span class="sc">-</span> <span class="fu">coef</span>(r_lm)[<span class="dv">3</span>]<span class="sc">*</span>(z <span class="sc">-</span> <span class="fu">mean</span>(z)))</span>
-<span id="cb60-5"><a href="#cb60-5" tabindex="-1"></a><span class="co"># xとyを昇順に並び替える</span></span>
-<span id="cb60-6"><a href="#cb60-6" tabindex="-1"></a>x <span class="ot">&lt;-</span> df01<span class="sc">$</span>x[i]</span>
-<span id="cb60-7"><a href="#cb60-7" tabindex="-1"></a>y <span class="ot">&lt;-</span> y[i]</span>
-<span id="cb60-8"><a href="#cb60-8" tabindex="-1"></a><span class="co"># キャンバスの大きさを決める</span></span>
-<span id="cb60-9"><a href="#cb60-9" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">ceiling</span>(<span class="fu">max</span>(x)))</span>
-<span id="cb60-10"><a href="#cb60-10" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">ceiling</span>(<span class="fu">max</span>(y)))</span>
-<span id="cb60-11"><a href="#cb60-11" tabindex="-1"></a></span>
-<span id="cb60-12"><a href="#cb60-12" tabindex="-1"></a><span class="co"># 白紙のキャンバスをつくる</span></span>
-<span id="cb60-13"><a href="#cb60-13" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
-<span id="cb60-14"><a href="#cb60-14" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
-<span id="cb60-15"><a href="#cb60-15" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
-<span id="cb60-16"><a href="#cb60-16" tabindex="-1"></a></span>
-<span id="cb60-17"><a href="#cb60-17" tabindex="-1"></a><span class="co"># 95%予測区間をピンク斜線で描く</span></span>
-<span id="cb60-18"><a href="#cb60-18" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">length.out=</span><span class="dv">100</span>)</span>
-<span id="cb60-19"><a href="#cb60-19" tabindex="-1"></a>prdct <span class="ot">&lt;-</span> <span class="fu">predict</span>(r_lm, <span class="fu">data.frame</span>(<span class="at">x =</span> px, <span class="at">z =</span> <span class="fu">rep</span>(<span class="fu">mean</span>(df01<span class="sc">$</span>z), <span class="fu">length</span>(px))), <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span>
-<span id="cb60-20"><a href="#cb60-20" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">c</span>(px, <span class="fu">rev</span>(px))</span>
-<span id="cb60-21"><a href="#cb60-21" tabindex="-1"></a>py <span class="ot">&lt;-</span> <span class="fu">c</span>(prdct[,<span class="dv">2</span>], <span class="fu">rev</span>(prdct[,<span class="dv">3</span>]))</span>
-<span id="cb60-22"><a href="#cb60-22" tabindex="-1"></a><span class="fu">polygon</span>(px, py, <span class="at">density=</span><span class="dv">25</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>, <span class="at">border=</span><span class="cn">NA</span>)</span>
-<span id="cb60-23"><a href="#cb60-23" tabindex="-1"></a></span>
-<span id="cb60-24"><a href="#cb60-24" tabindex="-1"></a><span class="co"># 予測線を描く</span></span>
-<span id="cb60-25"><a href="#cb60-25" tabindex="-1"></a><span class="fu">lines</span>(xlim, <span class="fu">predict</span>(r_lm, <span class="fu">data.frame</span>(<span class="at">x =</span> xlim, <span class="at">z =</span> <span class="fu">rep</span>(<span class="fu">mean</span>(df01<span class="sc">$</span>z), <span class="dv">2</span>))), <span class="at">lty =</span> <span class="dv">3</span>)</span>
-<span id="cb60-26"><a href="#cb60-26" tabindex="-1"></a></span>
-<span id="cb60-27"><a href="#cb60-27" tabindex="-1"></a><span class="co"># 観測値をプロットする</span></span>
-<span id="cb60-28"><a href="#cb60-28" tabindex="-1"></a><span class="fu">points</span>(x, y, <span class="at">pch=</span><span class="dv">21</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>)</span>
-<span id="cb60-29"><a href="#cb60-29" tabindex="-1"></a></span>
-<span id="cb60-30"><a href="#cb60-30" tabindex="-1"></a><span class="co"># 縦横軸ラベルを書く</span></span>
-<span id="cb60-31"><a href="#cb60-31" tabindex="-1"></a><span class="fu">title</span>(</span>
-<span id="cb60-32"><a href="#cb60-32" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="fu">substitute</span>(y <span class="sc">-</span> b<span class="sc">*</span>z <span class="sc">+</span> c, <span class="fu">list</span>(<span class="at">b =</span> <span class="fu">coef</span>(r_lm)[<span class="dv">3</span>], <span class="at">c =</span> <span class="fu">mean</span>(df01<span class="sc">$</span>z))),</span>
-<span id="cb60-33"><a href="#cb60-33" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="fu">expression</span>(x)</span>
-<span id="cb60-34"><a href="#cb60-34" tabindex="-1"></a>)</span>
-<span id="cb60-35"><a href="#cb60-35" tabindex="-1"></a></span>
-<span id="cb60-36"><a href="#cb60-36" tabindex="-1"></a><span class="co"># 軸を描く</span></span>
-<span id="cb60-37"><a href="#cb60-37" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>)</span>
-<span id="cb60-38"><a href="#cb60-38" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" tabindex="-1"></a><span class="co"># xの要素の昇順番を得る</span></span>
+<span id="cb64-2"><a href="#cb64-2" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="fu">order</span>(df01<span class="sc">$</span>x)</span>
+<span id="cb64-3"><a href="#cb64-3" tabindex="-1"></a><span class="co"># zの効果を引き、zが平均値だった場合の効果を足したyをつくる</span></span>
+<span id="cb64-4"><a href="#cb64-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">with</span>(df01, y <span class="sc">-</span> <span class="fu">coef</span>(r_lm)[<span class="dv">3</span>]<span class="sc">*</span>(z <span class="sc">-</span> <span class="fu">mean</span>(z)))</span>
+<span id="cb64-5"><a href="#cb64-5" tabindex="-1"></a><span class="co"># xとyを昇順に並び替える</span></span>
+<span id="cb64-6"><a href="#cb64-6" tabindex="-1"></a>x <span class="ot">&lt;-</span> df01<span class="sc">$</span>x[i]</span>
+<span id="cb64-7"><a href="#cb64-7" tabindex="-1"></a>y <span class="ot">&lt;-</span> y[i]</span>
+<span id="cb64-8"><a href="#cb64-8" tabindex="-1"></a><span class="co"># キャンバスの大きさを決める</span></span>
+<span id="cb64-9"><a href="#cb64-9" tabindex="-1"></a>xlim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">ceiling</span>(<span class="fu">max</span>(x)))</span>
+<span id="cb64-10"><a href="#cb64-10" tabindex="-1"></a>ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">ceiling</span>(<span class="fu">max</span>(y)))</span>
+<span id="cb64-11"><a href="#cb64-11" tabindex="-1"></a></span>
+<span id="cb64-12"><a href="#cb64-12" tabindex="-1"></a><span class="co"># 白紙のキャンバスをつくる</span></span>
+<span id="cb64-13"><a href="#cb64-13" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
+<span id="cb64-14"><a href="#cb64-14" tabindex="-1"></a><span class="fu">plot.new</span>()</span>
+<span id="cb64-15"><a href="#cb64-15" tabindex="-1"></a><span class="fu">plot.window</span>(<span class="at">xlim=</span>xlim, <span class="at">ylim=</span>ylim)</span>
+<span id="cb64-16"><a href="#cb64-16" tabindex="-1"></a></span>
+<span id="cb64-17"><a href="#cb64-17" tabindex="-1"></a><span class="co"># 95%予測区間をピンク斜線で描く</span></span>
+<span id="cb64-18"><a href="#cb64-18" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">seq</span>(xlim[<span class="dv">1</span>], xlim[<span class="dv">2</span>], <span class="at">length.out=</span><span class="dv">100</span>)</span>
+<span id="cb64-19"><a href="#cb64-19" tabindex="-1"></a>prdct <span class="ot">&lt;-</span> <span class="fu">predict</span>(r_lm, <span class="fu">data.frame</span>(<span class="at">x =</span> px, <span class="at">z =</span> <span class="fu">rep</span>(<span class="fu">mean</span>(df01<span class="sc">$</span>z), <span class="fu">length</span>(px))), <span class="at">interval =</span> <span class="st">&quot;prediction&quot;</span>)</span>
+<span id="cb64-20"><a href="#cb64-20" tabindex="-1"></a>px <span class="ot">&lt;-</span> <span class="fu">c</span>(px, <span class="fu">rev</span>(px))</span>
+<span id="cb64-21"><a href="#cb64-21" tabindex="-1"></a>py <span class="ot">&lt;-</span> <span class="fu">c</span>(prdct[,<span class="dv">2</span>], <span class="fu">rev</span>(prdct[,<span class="dv">3</span>]))</span>
+<span id="cb64-22"><a href="#cb64-22" tabindex="-1"></a><span class="fu">polygon</span>(px, py, <span class="at">density=</span><span class="dv">25</span>, <span class="at">col=</span><span class="st">&quot;pink&quot;</span>, <span class="at">border=</span><span class="cn">NA</span>)</span>
+<span id="cb64-23"><a href="#cb64-23" tabindex="-1"></a></span>
+<span id="cb64-24"><a href="#cb64-24" tabindex="-1"></a><span class="co"># 予測線を描く</span></span>
+<span id="cb64-25"><a href="#cb64-25" tabindex="-1"></a><span class="fu">lines</span>(xlim, <span class="fu">predict</span>(r_lm, <span class="fu">data.frame</span>(<span class="at">x =</span> xlim, <span class="at">z =</span> <span class="fu">rep</span>(<span class="fu">mean</span>(df01<span class="sc">$</span>z), <span class="dv">2</span>))), <span class="at">lty =</span> <span class="dv">3</span>)</span>
+<span id="cb64-26"><a href="#cb64-26" tabindex="-1"></a></span>
+<span id="cb64-27"><a href="#cb64-27" tabindex="-1"></a><span class="co"># 観測値をプロットする</span></span>
+<span id="cb64-28"><a href="#cb64-28" tabindex="-1"></a><span class="fu">points</span>(x, y, <span class="at">pch=</span><span class="dv">21</span>, <span class="at">bg=</span><span class="st">&quot;white&quot;</span>)</span>
+<span id="cb64-29"><a href="#cb64-29" tabindex="-1"></a></span>
+<span id="cb64-30"><a href="#cb64-30" tabindex="-1"></a><span class="co"># 縦横軸ラベルを書く</span></span>
+<span id="cb64-31"><a href="#cb64-31" tabindex="-1"></a><span class="fu">title</span>(</span>
+<span id="cb64-32"><a href="#cb64-32" tabindex="-1"></a>    <span class="at">ylab =</span> <span class="fu">substitute</span>(y <span class="sc">-</span> b<span class="sc">*</span>z <span class="sc">+</span> c, <span class="fu">list</span>(<span class="at">b =</span> <span class="fu">coef</span>(r_lm)[<span class="dv">3</span>], <span class="at">c =</span> <span class="fu">mean</span>(df01<span class="sc">$</span>z))),</span>
+<span id="cb64-33"><a href="#cb64-33" tabindex="-1"></a>    <span class="at">xlab =</span> <span class="fu">expression</span>(x)</span>
+<span id="cb64-34"><a href="#cb64-34" tabindex="-1"></a>)</span>
+<span id="cb64-35"><a href="#cb64-35" tabindex="-1"></a></span>
+<span id="cb64-36"><a href="#cb64-36" tabindex="-1"></a><span class="co"># 軸を描く</span></span>
+<span id="cb64-37"><a href="#cb64-37" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">1</span>)</span>
+<span id="cb64-38"><a href="#cb64-38" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">2</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/ols_plot-1.png" width="672" /></p>
 </div>
 <div id="信頼区間" class="section level2" number="6.3">
 <h2><span class="header-section-number">6.3</span> 信頼区間</h2>
 <p><code>dotchart</code>は信頼区間を一覧するときに便利です。</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a>ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(r_lm)</span>
-<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a></span>
-<span id="cb61-3"><a href="#cb61-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
-<span id="cb61-4"><a href="#cb61-4" tabindex="-1"></a></span>
-<span id="cb61-5"><a href="#cb61-5" tabindex="-1"></a><span class="fu">dotchart</span>(<span class="fu">rev</span>(<span class="fu">coef</span>(r_lm)), <span class="at">xlim =</span> <span class="fl">1.2</span><span class="sc">*</span><span class="fu">range</span>(ci),</span>
-<span id="cb61-6"><a href="#cb61-6" tabindex="-1"></a>    <span class="at">cex =</span> <span class="fl">1.25</span>, <span class="at">labels =</span> <span class="fu">rev</span>(<span class="fu">rownames</span>(ci)),</span>
-<span id="cb61-7"><a href="#cb61-7" tabindex="-1"></a>    <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">pt.cex =</span> <span class="fl">1.5</span>, </span>
-<span id="cb61-8"><a href="#cb61-8" tabindex="-1"></a>    <span class="at">bg =</span> <span class="st">&quot;white&quot;</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lcolor =</span> <span class="st">&quot;darkgray&quot;</span>)</span>
-<span id="cb61-9"><a href="#cb61-9" tabindex="-1"></a></span>
-<span id="cb61-10"><a href="#cb61-10" tabindex="-1"></a><span class="fu">arrows</span>(ci[, <span class="dv">1</span>], <span class="fu">nrow</span>(ci)<span class="sc">:</span><span class="dv">1</span>, ci[, <span class="dv">2</span>], <span class="fu">nrow</span>(ci)<span class="sc">:</span><span class="dv">1</span>, </span>
-<span id="cb61-11"><a href="#cb61-11" tabindex="-1"></a>    <span class="at">length =</span> <span class="fl">0.1</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>ci <span class="ot">&lt;-</span> <span class="fu">confint</span>(r_lm)</span>
+<span id="cb65-2"><a href="#cb65-2" tabindex="-1"></a></span>
+<span id="cb65-3"><a href="#cb65-3" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">4</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
+<span id="cb65-4"><a href="#cb65-4" tabindex="-1"></a></span>
+<span id="cb65-5"><a href="#cb65-5" tabindex="-1"></a><span class="fu">dotchart</span>(<span class="fu">rev</span>(<span class="fu">coef</span>(r_lm)), <span class="at">xlim =</span> <span class="fl">1.2</span><span class="sc">*</span><span class="fu">range</span>(ci),</span>
+<span id="cb65-6"><a href="#cb65-6" tabindex="-1"></a>    <span class="at">cex =</span> <span class="fl">1.25</span>, <span class="at">labels =</span> <span class="fu">rev</span>(<span class="fu">rownames</span>(ci)),</span>
+<span id="cb65-7"><a href="#cb65-7" tabindex="-1"></a>    <span class="at">pch =</span> <span class="dv">21</span>, <span class="at">pt.cex =</span> <span class="fl">1.5</span>, </span>
+<span id="cb65-8"><a href="#cb65-8" tabindex="-1"></a>    <span class="at">bg =</span> <span class="st">&quot;white&quot;</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>, <span class="at">lcolor =</span> <span class="st">&quot;darkgray&quot;</span>)</span>
+<span id="cb65-9"><a href="#cb65-9" tabindex="-1"></a></span>
+<span id="cb65-10"><a href="#cb65-10" tabindex="-1"></a><span class="fu">arrows</span>(ci[, <span class="dv">1</span>], <span class="fu">nrow</span>(ci)<span class="sc">:</span><span class="dv">1</span>, ci[, <span class="dv">2</span>], <span class="fu">nrow</span>(ci)<span class="sc">:</span><span class="dv">1</span>, </span>
+<span id="cb65-11"><a href="#cb65-11" tabindex="-1"></a>    <span class="at">length =</span> <span class="fl">0.1</span>, <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/ols_dotchart-1.png" width="672" /></p>
 </div>
 </div>
@@ -1168,7 +1197,7 @@ id="fn4"><p>個別に表示したい場合は、<code>plot(r_lm, which = 1)</cod
 <code>5</code>の数字を指定します。<code>4</code>を指定するとクック距離だけを表示ます。詳しくは<code>? plot.lm</code>としてヘルプを参照してください。<a
 href="#fnref4" class="footnote-back">↩︎</a></p></li>
 <li
-id="fn5"><p>系列相関がある場合、時系列データであったり、欠落変数バイアスが反映されていたりする場合があります。<a
+id="fn5"><p>不均一分散や系列相関があると、標準誤差にバイアスが入ります。系列相関がある場合はとくに、時系列データであったり、欠落変数バイアスが反映されていたりする場合があります。<a
 href="#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
