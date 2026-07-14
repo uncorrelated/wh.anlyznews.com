@@ -581,7 +581,7 @@ y_t = \mu + \sum^L_{\ell=0} \theta_\ell \epsilon_{t - \ell}
 <p><span class="math inline">\(\mu\)</span>は平均です。</p>
 <p>数学的にはラグ無限のMAモデルと定常なARモデルは相互に変換可能であるそうですが、実用上は別のものとして扱われます。</p>
 <p>推定は、最尤法で行います。尤度は、パラメーター<span
-class="math inline">\(mu\)</span>と<span
+class="math inline">\(\mu\)</span>と<span
 class="math inline">\(\theta_{\ell}\)</span>が与えられたとして、時点<span
 class="math inline">\(t=1\)</span>から昇順に残差（誤差）を計算していき、算出します。</p>
 </div>
