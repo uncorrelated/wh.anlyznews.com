@@ -1609,7 +1609,7 @@ vector）の成分です。共和分ベクトルの数は時系列の数より�
 class="math inline">\(\Pi\)</span>の行数を時系列の数と同じにしています。</p>
 <p>VARに<span
 class="math inline">\(\Pi\)</span>を付け加えたこのモデルがVECMになります。推定は<span
-class="math inline">\(\Pi\)</span>があるために煩雑になります[^fn03]が、<a
+class="math inline">\(\Pi\)</span>があるために煩雑になりますが、<a
 href="https://www.imes.boj.or.jp/research/papers/japanese/kk11-2-4.pdf">川崎
 (1993)</a>の説明が参考になると思います。</p>
 <p><code>vars</code>パッケージでは、<code>urca::ca.jo</code>関数で推定した後に、<code>vars::vec2var</code>で結果オブジェクトを変換して、インパルス応答列と予測誤差分散分解を見る事ができます。</p>
