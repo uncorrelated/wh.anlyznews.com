@@ -13,7 +13,7 @@
 
 <title>t検定への道</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -653,7 +660,7 @@ id="fnref1"><sup>1</sup></a>に従うことが分かります。</p>
 </div>
 <div id="t分布の導出" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> t分布の導出</h1>
-<p>母集団の平均<span class="math inline">\(\mu\)</span>と標準誤差<span
+<p>母集団の平均<span class="math inline">\(\mu\)</span>と標準偏差<span
 class="math inline">\(\sigma\)</span>が分かっていれば、標本平均を標準化した値</p>
 <p><span class="math display">\[
 Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}
@@ -800,7 +807,7 @@ k_2s_2\)</span>の分布を考えましょう。<span
 class="math inline">\(k_1s_1\)</span>と<span
 class="math inline">\(k_2s_2\)</span>は、これまで見てきたようにχ二乗分布に従います。<span
 class="math inline">\(k_1=n_1-1\)</span>，<span
-class="math inline">\(k_1=n_1-2\)</span>であることも確認してきました。</p>
+class="math inline">\(k_2=n_2-1\)</span>であることも確認してきました。</p>
 <p>さて、χ二乗分布には再生性があります。自由度<span
 class="math inline">\(k\)</span>のときのモーメント母関数が</p>
 <p><span class="math display">\[
@@ -869,7 +876,7 @@ class="math inline">\(V_s\)</span>の一次、二次モーメントが一致す�
 class="math inline">\(k\)</span>を定めます。</p>
 <p>まず、一次モーメントを考えましょう。</p>
 <p><span
-class="math inline">\(sigma_p^2\)</span>の定義に注意すると、</p>
+class="math inline">\(\sigma_p^2\)</span>の定義に注意すると、</p>
 <p><span class="math display">\[
 E[W] = \frac{k}{\sigma_p^2} \bigg(\frac{\sigma_1^2}{n_1} +
 \frac{\sigma_2^2}{n_2}\bigg) = k
