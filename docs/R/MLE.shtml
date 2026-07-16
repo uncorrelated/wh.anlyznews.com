@@ -880,7 +880,6 @@ class="math inline">\(\mu=10\)</span>を置いて、尤度比検定をかけて�
 <span id="cb22-6"><a href="#cb22-6" tabindex="-1"></a><span class="fu">format</span>(<span class="fu">pchisq</span>(lrs, <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>), <span class="at">digits=</span><span class="dv">5</span>)</span></code></pre></div>
 <pre><code>[1] &quot;0.083754&quot;</code></pre>
 <p><code>lm</code>や<code>optim</code>に慣れれば尤度比検定をかけるのが楽です。</p>
-<p>似たような検定が3種類あっても感があるわけですが、推定を2回する必要があるのが欠点</p>
 </div>
 <div id="ラグランジェ乗数lm検定" class="section level2" number="5.2">
 <h2><span class="header-section-number">5.2</span>
@@ -909,7 +908,11 @@ class="math inline">\(\mu=10\)</span>を置いて、尤度比検定をかけて�
 number="5.3">
 <h2><span class="header-section-number">5.3</span>
 Wald検定，LM検定，LR検定の使い分け</h2>
-<p>この3つは本質的には同一の検定である事が示されているわけですが、Wald検定は制約無しモデルを推定すれば利用でき、LM検定は制約付きモデルを推定すれば利用でき、LR検定は2つのモデルをそれぞれ推定しないと利用できないです。計算量から言えばWald検定が優れているような気がしますが、現在の計算機の速度から言えば誤差ですし、コーディング量はLR検定が少ないです。Breusch-Pagan検定のような定番の手法で使っている場合でなければ、説明がしやすい手法を選びましょう。計量経済学を履修していれば、全部、試験範囲だと思いますが。</p>
+<p>Wald検定は、制約なしモデルと制約付きモデルの点推定量の差、LR検定は〃の対数尤度の差、LM検定は制約付きモデルの点推定量の（制約なしモデルにおける）グラディエントに対する検定ですが、この3つは本質的には同一の検定である事が示されています（<a
+href="https://doi.org/10.1016/S1573-4412(84)02005-5">Engle
+(1984)</a>）。</p>
+<p>どれを使うべきでしょうか。小標本になるほど、Wald検定は偽陽性、LM検定は偽陰性が出やすいことが示されています。LR検定を使うべきとなりそうですが、気にされていません。Wald検定は制約無しモデルを推定すれば利用でき、LM検定は制約付きモデルを推定すれば利用でき、LR検定は2つのモデルをそれぞれ推定しないと利用できないです。計算量から言えばWald検定が優れているような気がしますが、現在の計算機の速度から言えば誤差です。</p>
+<p>Breusch-Pagan検定のような定番の手法で使っている場合でなければ、説明がしやすい手法を選びましょう。計量経済学を履修していればすべて試験範囲だと思いますが。</p>
 </div>
 </div>
 <div id="信頼区間" class="section level1" number="6">
@@ -917,7 +920,7 @@ Wald検定，LM検定，LR検定の使い分け</h2>
 <p>最尤法はヘッシアンから計算した標準誤差を元にしたワルド信頼区間と、尤度比検定の棄却域に境界が対応するプロファイル尤度信頼区間の二つが主に使われています。</p>
 <div id="ワルド信頼区間" class="section level2" number="6.1">
 <h2><span class="header-section-number">6.1</span> ワルド信頼区間</h2>
-<p>漸近正規性を前提としている推定量です。</p>
+<p>漸近正規性を前提としている推定量です。このため、非負であるはずのパラメーターの信頼区間が負の値を含む可能性があるなど、問題が出るときがあります。</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fl">0.05</span> <span class="co"># 有意水準</span></span>
 <span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>lwrupr <span class="ot">&lt;-</span> <span class="fu">c</span>(a<span class="sc">/</span><span class="dv">2</span>, <span class="dv">1</span> <span class="sc">-</span> a<span class="sc">/</span><span class="dv">2</span>)</span>
 <span id="cb26-3"><a href="#cb26-3" tabindex="-1"></a>estimated <span class="ot">&lt;-</span> r_nlm<span class="sc">$</span>estimate</span>
@@ -935,7 +938,7 @@ Wald検定，LM検定，LR検定の使い分け</h2>
 プロファイル尤度信頼区間</h2>
 <p>プロファイル尤度信頼区間は、計算に手間暇がかかるためか21世紀になってから一般化した信頼区間<a
 href="#fn4" class="footnote-ref"
-id="fnref4"><sup>4</sup></a>で、今ではデフォルト出力になっていたりします。</p>
+id="fnref4"><sup>4</sup></a>で、今ではデフォルト出力になっていたりします。ワルド信頼区間にある問題が起きません。</p>
 <p>尤度関数の複数の説明変数を、ひとつを残して陰関数として扱うことで、尤度関数を一変数関数にしたものがプロファイル尤度関数です。ある変数以外の変数は、ある変数にあわせて最適な値がとられるときの尤度が得られます。</p>
 <p>計算には尤度比検定に用いる制約付き最尤法に使う関数が必要になります。グラディエント、ヘッシアン、制約付き対数尤度関数、制約付きグラディエントを用意しましょう。</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># グラディエント</span></span>
