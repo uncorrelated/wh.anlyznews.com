@@ -642,11 +642,12 @@ y_{t-L+1}
 \vdots \\
 0
 \end{pmatrix} + \begin{pmatrix}
-\alpha_1 &amp; \alpha_1 &amp; \cdots &amp; \alpha_L \\
-1 &amp; 0 &amp; \cdots &amp; 0 \\
-0 &amp; 1 &amp; \cdots &amp; 0 \\
-\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-0 &amp; 0 &amp; \cdots &amp; 1
+\alpha_1 &amp; \alpha_2 &amp; \cdots &amp; \alpha_{L-1} &amp; \alpha_L
+\\
+1 &amp; 0 &amp; \cdots &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; \cdots &amp; 0 &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; 1 &amp; 0
 \end{pmatrix}\begin{pmatrix}
 y_{t-1} \\
 y_{t-2} \\
@@ -663,7 +664,7 @@ y_{t-L}
 \end{align}\]</span></p>
 <p>右辺第2項の正方行列を<span class="math inline">\(A\)</span>、<span
 class="math inline">\(\mathbf{y}_t = {}^t\!(y_t, y_{t-1}, \cdots ,
-y_{t-L})\)</span>、<span class="math inline">\(\mathbf{c} =
+y_{t-L-1})\)</span>、<span class="math inline">\(\mathbf{c} =
 {}^t\!(\alpha_0, 0, \cdots , 0)\)</span>、<span
 class="math inline">\(\mathbf{\varepsilon}_t = {}^t\!(\epsilon_t, 0,
 \cdots , 0)\)</span>と置くと、</p>
