@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>経済学でしか見かけない気がするGMM</title>
+
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">経済学でしか見かけない気がするGMM</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>社会科学分野の計量分析を見る事が多い人は、目にする機会がそこそこあるはずの手法なので、概要を把握しておきましょう。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#gmmの構成" id="toc-gmmの構成"><span
+class="toc-section-number">1</span> GMMの構成</a>
+<ul>
+<li><a href="#モーメント条件" id="toc-モーメント条件"><span
+class="toc-section-number">1.1</span> モーメント条件</a>
+<ul>
+<li><a href="#よくある例正規分布" id="toc-よくある例正規分布"><span
+class="toc-section-number">1.1.1</span> よくある例（正規分布）</a></li>
+<li><a href="#実践的な例線形モデル" id="toc-実践的な例線形モデル"><span
+class="toc-section-number">1.1.2</span>
+実践的な例（線形モデル）</a></li>
+<li><a href="#非線形の例ロジットモデル"
+id="toc-非線形の例ロジットモデル"><span
+class="toc-section-number">1.1.3</span>
+非線形の例（ロジットモデル）</a></li>
+</ul></li>
+<li><a href="#ウェイト行列" id="toc-ウェイト行列"><span
+class="toc-section-number">1.2</span> ウェイト行列</a>
+<ul>
+<li><a href="#tsls-gmm" id="toc-tsls-gmm"><span
+class="toc-section-number">1.2.1</span> TSLS-GMM</a></li>
+<li><a href="#two-step-gmm-efficient-gmm"
+id="toc-two-step-gmm-efficient-gmm"><span
+class="toc-section-number">1.2.2</span> Two-Step GMM / Efficient
+GMM</a></li>
+<li><a href="#cu-gmm" id="toc-cu-gmm"><span
+class="toc-section-number">1.2.3</span> CU-GMM</a></li>
+<li><a href="#newey-west一致推定量" id="toc-newey-west一致推定量"><span
+class="toc-section-number">1.2.4</span> Newey-West一致推定量</a></li>
+</ul></li>
+<li><a href="#過剰識別検定j検定" id="toc-過剰識別検定j検定"><span
+class="toc-section-number">1.3</span> 過剰識別検定（J検定）</a></li>
+<li><a href="#分散共分散行列" id="toc-分散共分散行列"><span
+class="toc-section-number">1.4</span> 分散共分散行列</a>
+<ul>
+<li><a href="#不均一分散と標準誤差" id="toc-不均一分散と標準誤差"><span
+class="toc-section-number">1.4.1</span> 不均一分散と標準誤差</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#推定" id="toc-推定"><span
+class="toc-section-number">2</span> 推定</a>
+<ul>
+<li><a href="#データセット" id="toc-データセット"><span
+class="toc-section-number">2.1</span> データセット</a></li>
+<li><a href="#推定-1" id="toc-推定-1"><span
+class="toc-section-number">2.2</span> 推定</a>
+<ul>
+<li><a href="#線形モデルとしてtsls-gmmを推定"
+id="toc-線形モデルとしてtsls-gmmを推定"><span
+class="toc-section-number">2.2.1</span>
+線形モデルとしてTSLS-GMMを推定</a></li>
+<li><a href="#非線形モデルとしてtwo-step-gmmを推定"
+id="toc-非線形モデルとしてtwo-step-gmmを推定"><span
+class="toc-section-number">2.2.2</span> 非線形モデルとしてTWO STEP
+GMMを推定</a></li>
+</ul></li>
+<li><a href="#momentfitを使った推定"
+id="toc-momentfitを使った推定"><span
+class="toc-section-number">2.3</span>
+<code>momentfit</code>を使った推定</a>
+<ul>
+<li><a href="#線形モデルとしてtsls-gmmを推定-1"
+id="toc-線形モデルとしてtsls-gmmを推定-1"><span
+class="toc-section-number">2.3.1</span>
+線形モデルとしてTSLS-GMMを推定</a></li>
+<li><a href="#非線形モデルとしてtwo-step-gmmを推定-1"
+id="toc-非線形モデルとしてtwo-step-gmmを推定-1"><span
+class="toc-section-number">2.3.2</span> 非線形モデルとしてTWO STEP
+GMMを推定</a></li>
+<li><a href="#不均一分散に頑強な標準誤差"
+id="toc-不均一分散に頑強な標準誤差"><span
+class="toc-section-number">2.3.3</span>
+不均一分散に頑強な標準誤差</a></li>
+<li><a href="#制約付きモデル" id="toc-制約付きモデル"><span
+class="toc-section-number">2.3.4</span> 制約付きモデル</a></li>
+<li><a href="#統計的仮説検定" id="toc-統計的仮説検定"><span
+class="toc-section-number">2.3.5</span> 統計的仮説検定</a></li>
+<li><a href="#ウェイトを指定した推定"
+id="toc-ウェイトを指定した推定"><span
+class="toc-section-number">2.3.6</span> ウェイトを指定した推定</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#まとめ" id="toc-まとめ"><span
+class="toc-section-number">3</span> まとめ</a></li>
+</ul>
+</div>
+
+<p>一般化モーメント法（<abbr title="generalized method of moments">GMM</abbr>）は、計量経済学（Econometrics）で開発され発展した手法で、非線形モデルが推定でき、不均一分散、内生性に対処することができ、さらに誤差項が従う分布を特定しなくても推定ができる場合があるため、経済学の計量分析でよく使われています<a
+href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>。</p>
+<p>社会科学分野の統計を見る事が多い人は、目にする機会がそこそこあるはずの手法なので、概要を把握しておくのが良いでしょう。推定手順を説明し、簡単なものを実践してみるための説明を用意しました。</p>
+<div id="gmmの構成" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> GMMの構成</h1>
+<p>モーメント法を多数のモーメント条件を使って推定できるように一般化したのがGMMです。学部の統計学の教科書にも紹介があるモーメント法ですが、だいたいすっかり忘れ去られていると思うので、モーメント条件から確認していきましょう。</p>
+<div id="モーメント条件" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> モーメント条件</h2>
+<p>モーメント条件は、期待値をとったらゼロになる観測値とパラメーターの関係です<a
+href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a>。代表的なものを幾つか見ておきましょう。</p>
+<div id="よくある例正規分布" class="section level3" number="1.1.1">
+<h3><span class="header-section-number">1.1.1</span>
+よくある例（正規分布）</h3>
+<p>GMMの紹介では平均と分散と正規分布のモーメント特性を使った3つの式を例として挙げることが多いです。</p>
+<p><span class="math display">\[\begin{align}
+E[x - \mu] &amp;= 0 \\
+E[(x - \mu)^2 - \sigma] &amp;= 0 \\
+E[(x - \mu)^4 - 3 \sigma^4] &amp;= 0
+\end{align}\]</span></p>
+<p><span class="math inline">\(x\)</span>が観測値、<span
+class="math inline">\(\mu\)</span>は母平均、<span
+class="math inline">\(\sigma^2\)</span>は母分散です。左辺の期待値をモーメントと呼びます。</p>
+<p>モーメント条件がパラメーターよりも多い場合があることを示すために3つになっています。正規分布は2変数なのでモーメント条件2つで推定でき、この2つで推定するとモーメント法になります。3つ使うためには、GMMが必要です。</p>
+</div>
+<div id="実践的な例線形モデル" class="section level3" number="1.1.2">
+<h3><span class="header-section-number">1.1.2</span>
+実践的な例（線形モデル）</h3>
+<p>教科書のGMMの節では実践的に線形回帰モデルのモーメント条件を</p>
+<p><span class="math display">\[
+E[{}^t\!Z(y - X\beta)] = 0
+\]</span></p>
+<p>として説明していることが多いです。</p>
+<p><span class="math inline">\(Z\)</span>は外生変数の行列、<span
+class="math inline">\(y\)</span>は従属変数ベクトル、<span
+class="math inline">\(X\)</span>は内生変数を含む説明変数の行列、<span
+class="math inline">\(\beta\)</span>は係数ベクトルです。観測値の数を<span
+class="math inline">\(n\)</span>、外生変数の数を<span
+class="math inline">\(l\)</span>、説明変数の数を<span
+class="math inline">\(k\)</span>とすると、<span
+class="math inline">\(Z\)</span>は<span
+class="math inline">\(n\)</span>行<span
+class="math inline">\(l\)</span>列、<span
+class="math inline">\(y\)</span>の長さは<span
+class="math inline">\(n\)</span>、<span
+class="math inline">\(X\)</span>は<span
+class="math inline">\(n\)</span>行<span
+class="math inline">\(k\)</span>列、<span
+class="math inline">\(\beta\)</span>の長さは<span
+class="math inline">\(k\)</span>です。<span class="math inline">\(y -
+X\beta\)</span>は回帰モデルの残差なので誤差項になり、<span
+class="math inline">\(E[{}^t\!Z(y -
+X\beta)]\)</span>がモーメントになります。</p>
+<p>この式は、外生変数と誤差項が直交していることを表していますが、和がゼロになると言う直交条件は、期待値がゼロになると言う事なので、モーメント条件でもあります。また、式は1つですが、行列表記になっているので、モーメント条件は<span
+class="math inline">\(l\)</span>あります。<span class="math inline">\(l
+\ge
+k\)</span>であれば、分布に依存するモーメント条件なくして推定できます。</p>
+</div>
+<div id="非線形の例ロジットモデル" class="section level3"
+number="1.1.3">
+<h3><span class="header-section-number">1.1.3</span>
+非線形の例（ロジットモデル）</h3>
+<p>非線形モデルでもモーメント条件が導出できれば推定できます。ロジットモデルだと以下のモーメント条件が使えます。</p>
+<p><span class="math display">\[
+E\bigg[{}^t\!Z\bigg( y - \frac{1}{1 + e^{-X\beta}}\bigg)\bigg] = 0
+\]</span></p>
+<p>分布を特定しているので有り難みが薄いですが、操作変数が使えるのは利点かも知れません。</p>
+</div>
+</div>
+<div id="ウェイト行列" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> ウェイト行列</h2>
+<p>丁度識別と言いますが、<span class="math inline">\(l =
+k\)</span>であれば、すべてのモーメント条件を満たすパラメーターが存在します。しかし、<span
+class="math inline">\(l &gt;
+k\)</span>である過剰識別の場合は、すべての条件を満たせない事がほとんどです。</p>
+<p>素朴な解決策として、すべてのモーメントの二乗和を足した値が一番小さくなるパラメーターを推定量とすることを考えます。非線形モデルでも同様に議論できますが、後で試すのが線形モデルなので、線形モデルのモーメント関数を以下のように<span
+class="math inline">\(g(y, X, Z, \beta)\)</span>と置きます。</p>
+<p><span class="math display">\[
+g(y, X, Z, \beta) = E[ {}^t\!Z(y - X\beta) ]
+\]</span></p>
+<p>教科書的な表記は<span
+class="math inline">\(g(\beta)\)</span>ですが、後のRのコードにあわせています。</p>
+<p>真のパラメーター<span
+class="math inline">\(\beta\)</span>を任意の<span
+class="math inline">\(b\)</span>に置き換え、期待値ではなく算術平均をとった標本モーメント関数を定義します<a
+href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+<p><span class="math display">\[
+\bar{g}(y, X, Z, b) = \frac{1}{n}\sum^n_{i=1}{}^t\!Z_i(y_i - X_ib)
+\]</span></p>
+<p>これを使い係数の推定量を定義すると以下になります。</p>
+<p><span class="math display">\[
+\newcommand{\argmin}{\mathop{\rm arg~min}\limits}
+\hat{\beta}^{identity} = \argmin_{b} \ {}^t\! \bar{g}(y, X, Z, b)
+\bar{g}(y, X, Z, b)
+\]</span></p>
+<p>この<span
+class="math inline">\(\hat{\beta}^{identity}\)</span>は一致推定量になるのでそんなには悪く無いのですが、効率的ではないことが分かっています。<span
+class="math inline">\(l\)</span>あるモーメントの分散は異なり、不均一分散があるからです。</p>
+<p>GMMでは不均一分散を是正するために、<span
+class="math inline">\(l\)</span>行<span
+class="math inline">\(l\)</span>列のウェイト行列<span
+class="math inline">\(W\)</span>を導入します。</p>
+<p><span class="math display">\[
+\hat{\beta} = \argmin_{b} \ {}^t\! \bar{g}(y, X, Z, b) W \bar{g}(y, X,
+Z, b)
+\]</span></p>
+<p>この式は、GMM推定量の説明でよく見かけるもので、ここでおおよそ完成です。しかし、<span
+class="math inline">\(W\)</span>をどう求めれば良いのか課題が残ります。恒等行列<span
+class="math inline">\(I\)</span>を入れても推定できるのですが、それでは<span
+class="math inline">\(\hat{\beta}^{identity}\)</span>が得られてしまうので改善になりません。</p>
+<div id="tsls-gmm" class="section level3" number="1.2.1">
+<h3><span class="header-section-number">1.2.1</span> TSLS-GMM</h3>
+<p>均一分散が仮定できる線形モデルの場合は、<span
+class="math inline">\((Z{}^t\!Z)^{-1}\)</span>の逆行列を使います。<abbr title="Two Stage Least Square">TSLS</abbr>推定量に一致するので、TSLS-GMM推定量と呼ばれます。均一分散の仮定において、効率的な推定量です（不均一分散においては、効率的では無いです）。計算量の意味でも効率がよいです。係数の分散共分散行列を計算するには<span
+class="math inline">\(\hat{S}\)</span>が必要になりますが、<span
+class="math inline">\(Z{}^t\!Z\)</span>に誤差項の標本分散を乗じれば<span
+class="math inline">\(\hat{S}\)</span>になります。</p>
+</div>
+<div id="two-step-gmm-efficient-gmm" class="section level3"
+number="1.2.2">
+<h3><span class="header-section-number">1.2.2</span> Two-Step GMM /
+Efficient GMM</h3>
+<p>効率的なウェイト行列の計算方法は分かっていて、モーメントの分散共分散行列の</p>
+<p><span class="math display">\[
+S = E[ \bar{g}(y_i, X_i, Z_i, \beta)\ {}^t\!\bar{g}(y_i, X_i, Z_i,
+\beta)]
+\]</span></p>
+<p>の逆行列を用いるのが理想です。<span
+class="math inline">\(\bar{g}(y_i, X_i, Z_i, \beta)\)</span>は、<span
+class="math inline">\(i\)</span>番目（行目）の観測値だけを使った<span
+class="math inline">\(\beta\)</span>を中心とする標本モーメントで、<span
+class="math inline">\(1\)</span>行<span
+class="math inline">\(l\)</span>列になります。<span
+class="math inline">\(1\)</span>行<span
+class="math inline">\(l\)</span>列の行列に<span
+class="math inline">\(l\)</span>行<span
+class="math inline">\(1\)</span>列の行列を乗じているので、<span
+class="math inline">\(l\)</span>行<span
+class="math inline">\(l\)</span>列の行列になるのに注意してください。</p>
+<p>しかしながら、<span
+class="math inline">\(\beta\)</span>は未知の値なので<span
+class="math inline">\(S\)</span>は計算できません。<span
+class="math inline">\(S\)</span>の推定量を得る様々な手法が提案されていますが、応用ではTwo
+StepもしくはEfficient GMMと呼ばれる手法が一般的です。</p>
+<p>線形モデルではウェイト行列<span
+class="math inline">\(W^0\)</span>に<span
+class="math inline">\(Z{}^t\!Z\)</span>を、非線形モデルでは恒等行列<span
+class="math inline">\(I\)</span>を用いて、推定を行いone step推定量<span
+class="math inline">\(\hat{\beta}^{one}\)</span>を得ます。次に、</p>
+<p><span class="math display">\[
+\hat{S} = \frac{1}{n} \sum^n_{i=1} \bar{g}(y_i, X_i, Z_i,
+\hat{\beta}^{one})\ W^0 \ {}^t\!\bar{g}(y_i, X_i, Z_i,
+\hat{\beta}^{one})
+\]</span></p>
+<p>と<span class="math inline">\(\hat{S}\)</span>を得た後、<span
+class="math inline">\(W^0=\hat{S}^{-1}\)</span>として推定をしなおし、Efficient
+GMM推定量<span
+class="math inline">\(\hat{\beta}^{two}\)</span>を得ます。</p>
+<p><span class="math display">\[
+\hat{\beta}^{two} = \argmin_{b} \ {}^t\! \bar{g}(y, X, Z, b)
+\hat{S}^{-1} \bar{g}(y, X, Z, b)
+\]</span></p>
+<p>この手順を<span
+class="math inline">\(\hat{S}\)</span>が収束したと見なせる値まで繰り返すこともでき、Iterated
+GMMと呼ばれます。</p>
+</div>
+<div id="cu-gmm" class="section level3" number="1.2.3">
+<h3><span class="header-section-number">1.2.3</span> CU-GMM</h3>
+<p><abbr title="continuously updated">CU</abbr>-GMMは、ウェイト行列を係数の推定量の関数<span
+class="math inline">\(W(b)\)</span>と見做して、係数と同時に推定する方法です。</p>
+</div>
+<div id="newey-west一致推定量" class="section level3" number="1.2.4">
+<h3><span class="header-section-number">1.2.4</span>
+Newey-West一致推定量</h3>
+<p>自己回帰項がある時系列データ向けのウェイト行列の作り方です。</p>
+</div>
+</div>
+<div id="過剰識別検定j検定" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span>
+過剰識別検定（J検定）</h2>
+<p>操作変数を積み上げるなどしてモーメント条件を大量に入れると、モーメント条件とモーメント条件が直交しないモデル特定化の失敗が生じ、推定結果が不安定になるなどの問題が生じるときがあります。</p>
+<p>この問題が生じていないかを調べる過剰識別検定は、J統計量を</p>
+<p><span class="math display">\[
+J(b) = n \bar{g}(y, X, Z, b) \hat{S}^{-1} \bar{g}(y, X, Z, b) \sim
+\chi^2(l - k)
+\]</span></p>
+<p>を用いて行います。ウェイト付き標本モーメントに標本サイズを乗じていますが、モーメントが十分にゼロに近いかを見る検定です。モデル定式化は適切であると言うのが帰無仮説なので、χ二乗検定を棄却してしまったときはモデル（操作変数）を見直す必要があります。</p>
+<p>なお、<span
+class="math inline">\(l=k\)</span>の丁度識別のときはモーメントはすべて<span
+class="math inline">\(0\)</span>になるため、J統計量も<span
+class="math inline">\(0\)</span>になりモデル定式化が不適切になることはありません。</p>
+<p>また、GMM推定量はこのJ統計量を用いて定義する事もできます。</p>
+<p><span class="math display">\[
+\hat{\beta}^{GMM} = \argmin_{b}\ J(b)
+\]</span></p>
+</div>
+<div id="分散共分散行列" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> 分散共分散行列</h2>
+<p>統計学的仮説検定や信頼区間の計算に必要な推定されたパラメーターの分散共分散行列は、最小化する目的関数の一階微分がゼロになることと、<span
+class="math inline">\(\sqrt{n} \bar{g} \xrightarrow[d]{} \mathcal{N}(0,
+S)\)</span>になることから求められます。</p>
+<p><span class="math display">\[
+V_\beta = ({}^t\!G W G)^{-1}({}^t\!G W S^{-1} W G) ({}^t\!G W G)^{-1}
+\]</span></p>
+<p>ここで、</p>
+<p><span class="math display">\[
+G = E\bigg[ \frac{\partial}{\partial \beta} g(y, X, Z, \beta) \bigg]
+\]</span></p>
+<p>です。推定するときは、<span class="math inline">\(S\)</span>は<span
+class="math inline">\(\hat{S}\)</span>を用い、<span
+class="math inline">\(G\)</span>は標本平均<span
+class="math inline">\(\bar{G}\)</span>を代わりに用います。</p>
+<p><span class="math display">\[
+\bar{G} = \frac{1}{n} \sum^n_{i=1} \frac{\partial}{\partial \beta}
+\bar{g}(y_i, X_i, Z_i, \beta)
+\]</span></p>
+<p>線形モデルの推定においては、</p>
+<p><span class="math display">\[
+G = E\big[ {}^t\! Z X \big],\quad S = E\big[ Z {}^t\! Z e^2 \big]
+\]</span></p>
+<p>を用いて計算します。Iterated GMMだと<span
+class="math inline">\(W=S^{-1}\)</span>になるので、<span
+class="math inline">\(({}^t\!G W
+G)^{-1}\)</span>まで計算が簡潔になります。</p>
+<div id="不均一分散と標準誤差" class="section level3" number="1.4.1">
+<h3><span class="header-section-number">1.4.1</span>
+不均一分散と標準誤差</h3>
+<p>不均一分散があるときにTWO-STEP GMMは効率的なのですが、<span
+class="math inline">\(\hat{S}\)</span>が頑強かと言うとそういうことは無いです。OLSと同様の不均一分散に頑強な分散共分散行列を計算します。</p>
+</div>
+</div>
+</div>
+<div id="推定" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> 推定</h1>
+<p>教科書の説明と対応が分かるように簡単なモデルを推定した後、パッケージを使って同じ推定をします。</p>
+<div id="データセット" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> データセット</h2>
+<p>内生変数1つ、操作変数2つの線形モデルのデータセットをつくります。</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>df01 <span class="ot">&lt;-</span> <span class="fu">with</span>(<span class="fu">new.env</span>(), {</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>    n <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>    d1 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">*</span>(<span class="fu">runif</span>(n) <span class="sc">&gt;=</span> <span class="fl">0.5</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>    d2 <span class="ot">&lt;-</span> <span class="dv">0</span> <span class="sc">+</span> <span class="dv">1</span><span class="sc">*</span>(<span class="fu">runif</span>(n) <span class="sc">&gt;=</span> <span class="fl">0.5</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>    z <span class="ot">&lt;-</span> d1 <span class="sc">+</span> <span class="fu">runif</span>(n, <span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>    e <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>    x <span class="ot">&lt;-</span> d1 <span class="sc">+</span> d2 <span class="sc">+</span> <span class="fu">runif</span>(n)<span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> e<span class="sc">/</span><span class="dv">2</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>    y <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x <span class="sc">-</span> <span class="dv">3</span><span class="sc">*</span>z <span class="sc">+</span> e</span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>    <span class="fu">data.frame</span>(y, x, z, d1, d2)</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>})</span></code></pre></div>
+</div>
+<div id="推定-1" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> 推定</h2>
+<p>線形モデルとしてTSLS-GMM推定量を、非線形モデルとしてTwo Step
+GMM推定量を計算します。</p>
+<p>まず、任意のパラメーター<span
+class="math inline">\(b\)</span>からモーメントを計算する関数を用意します。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># データフレームの変数を展開</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> x <span class="sc">+</span> z, df01)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>Z <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> z <span class="sc">+</span> d1 <span class="sc">+</span> d2, df01)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>y <span class="ot">&lt;-</span> df01<span class="sc">$</span>y</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(df01)</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co"># モーメント関数を定義</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, Z, b) (<span class="fu">t</span>(Z) <span class="sc">%*%</span> (y <span class="sc">-</span> X <span class="sc">%*%</span> b))<span class="sc">/</span><span class="fu">length</span>(y)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co"># 試しに計算してみる</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="fu">g</span>(y, X, Z, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>))</span></code></pre></div>
+<pre><code>                  [,1]
+(Intercept)  0.5473707
+z           -0.6451392
+d1          -0.0934314
+d2           0.5637733</code></pre>
+<div id="線形モデルとしてtsls-gmmを推定" class="section level3"
+number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span>
+線形モデルとしてTSLS-GMMを推定</h3>
+<p>ニュートン=ラフソン法などの最適化アルゴリズムで、<code>y</code>,
+<code>X</code>,
+<code>Z</code>を所与として、<code>g</code>を最小化する<code>b</code>を求めます。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># 最小化する目的関数</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>objf <span class="ot">&lt;-</span> <span class="cf">function</span>(b, W) <span class="fu">t</span>(<span class="fu">g</span>(y, X, Z, b)) <span class="sc">%*%</span> W <span class="sc">%*%</span> <span class="fu">g</span>(y, X, Z, b)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="co"># Step 1</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>W0_tsls <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(Z) <span class="sc">%*%</span> Z <span class="sc">/</span> n)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>r_tsls <span class="ot">&lt;-</span> <span class="fu">nlm</span>(objf, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">W =</span> W0_tsls, <span class="at">gradtol =</span> <span class="fl">1e-10</span>, <span class="at">steptol =</span> <span class="fl">1e-10</span>) <span class="co"># momentfitパッケージの出力との比較のために制度をあげている</span></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>(b_tsls <span class="ot">&lt;-</span> r_tsls<span class="sc">$</span>estimate)</span></code></pre></div>
+<pre><code>[1]  1.181857  1.947318 -2.946895</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># 誤差項の影響をウェイトに加える</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>include_variance <span class="ot">&lt;-</span> <span class="cf">function</span>(W, b){</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>    e <span class="ot">&lt;-</span> y <span class="sc">-</span> X <span class="sc">%*%</span> b</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>    W <span class="sc">/</span> (<span class="fu">drop</span>(<span class="fu">t</span>(e) <span class="sc">%*%</span> e) <span class="sc">/</span> n)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>}</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># Step 2はウェイト行列の補正だけ</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>W_tsls <span class="ot">&lt;-</span> <span class="fu">include_variance</span>(W0_tsls, b_tsls)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">ncol</span>(Z)</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co"># J検定</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>J <span class="ot">&lt;-</span> <span class="cf">function</span>(b, W) n <span class="sc">*</span> <span class="fu">t</span>(<span class="fu">g</span>(y, X, Z, b)) <span class="sc">%*%</span> W <span class="sc">%*%</span> <span class="fu">g</span>(y, X, Z, b)</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;J-Statistics (One Step): %5f&quot;</span>, (J_tsls <span class="ot">&lt;-</span> <span class="fu">J</span>(b_tsls, W_tsls)))</span></code></pre></div>
+<pre><code>[1] &quot;J-Statistics (One Step): 0.222662&quot;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;p-value of J-test: %.5f&quot;</span>, <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(J_tsls, l <span class="sc">-</span> k))</span></code></pre></div>
+<pre><code>[1] &quot;p-value of J-test: 0.63702&quot;</code></pre>
+<p>TSLS-GMM推定量が計算できました。係数の分散共分散行列も出しておきましょう。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>G <span class="ot">&lt;-</span> <span class="fu">t</span>(Z)<span class="sc">%*%</span>X<span class="sc">/</span>n</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>inv_GWG <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(G) <span class="sc">%*%</span> W0_tsls <span class="sc">%*%</span> G)</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>S_hat_tsls <span class="ot">&lt;-</span> <span class="fu">solve</span>(W_tsls) <span class="sc">/</span> n</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>(V_tsls <span class="ot">&lt;-</span> inv_GWG <span class="sc">%*%</span> (<span class="fu">t</span>(G) <span class="sc">%*%</span> W0_tsls <span class="sc">%*%</span> S_hat_tsls <span class="sc">%*%</span> W0_tsls <span class="sc">%*%</span> G) <span class="sc">%*%</span> inv_GWG)</span></code></pre></div>
+<pre><code>             (Intercept)           x            z
+(Intercept)  0.059537083 -0.03871773  0.008202819
+x           -0.038717727  0.03490428 -0.015916071
+z            0.008202819 -0.01591607  0.028152453</code></pre>
+<p>概ねDGPの係数<span class="math inline">\(\beta = {}^t\!(1, 2,
+-3)\)</span>に近い値が推定できています。また、モーメント条件の妥当性は<span
+class="math inline">\(J\)</span>検定で棄却されず、信頼がおけると言うことになります。</p>
+</div>
+<div id="非線形モデルとしてtwo-step-gmmを推定" class="section level3"
+number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span>
+非線形モデルとしてTWO STEP GMMを推定</h3>
+<p><span
+class="math inline">\(W^0\)</span>を恒等行列にして推定します。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>W0_nl <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">ncol</span>(Z))</span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>r_nlm_step1 <span class="ot">&lt;-</span> <span class="fu">nlm</span>(objf, <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>), <span class="at">W =</span> W0_nl, <span class="at">gradtol =</span> <span class="fl">1e-10</span>, <span class="at">steptol =</span> <span class="fl">1e-10</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>(b_step1 <span class="ot">&lt;-</span> r_nlm_step1<span class="sc">$</span>estimate)</span></code></pre></div>
+<pre><code>[1]  1.152770  1.978351 -2.973269</code></pre>
+<p>続けてモーメントの分散共分散行列の<span
+class="math inline">\(\hat{S}\)</span>を求めます。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a>estimate_S <span class="ot">&lt;-</span> <span class="cf">function</span>(b){</span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>    g_i <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, n, l)</span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>    <span class="co"># 1行ごとのモーメントを計算</span></span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>        g_i[i, ] <span class="ot">&lt;-</span> <span class="fu">g</span>(y[i], X[i, ,<span class="at">drop =</span> <span class="cn">FALSE</span>], Z[i, ,<span class="at">drop =</span> <span class="cn">FALSE</span>], b)</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a>    }</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a>    <span class="co"># 列（外生変数）ごとの平均を出す</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a>    g_mean <span class="ot">&lt;-</span> <span class="fu">apply</span>(g_i, <span class="dv">2</span>, mean)</span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a>    <span class="co"># モーメントの分散共分散行列を計算</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a>    S_hat <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fl">0.0</span>, l, l)</span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a>    <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n){</span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a>        <span class="co"># Centeredしているが、無くてもよい</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a>        S_hat <span class="ot">&lt;-</span> S_hat <span class="sc">+</span> (g_i[i, ] <span class="sc">-</span> g_mean) <span class="sc">%*%</span> <span class="fu">t</span>(g_i[i, ] <span class="sc">-</span> g_mean) <span class="sc">/</span> n</span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a>    }</span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a>    S_hat</span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a>}</span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a>S_hat <span class="ot">&lt;-</span> <span class="fu">estimate_S</span>(b_step1)</span></code></pre></div>
+<p><span
+class="math inline">\(\hat{S}\)</span>の逆行列をウェイトとします。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>W_step2 <span class="ot">&lt;-</span> <span class="fu">solve</span>(S_hat)</span></code></pre></div>
+<p>推定したウェイトを用いて、2段階目の推定を行います。</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a>r_nlm_step2 <span class="ot">&lt;-</span> <span class="fu">nlm</span>(objf, b_step1, <span class="at">W =</span> W_step2, <span class="at">gradtol =</span> <span class="fl">1e-10</span>, <span class="at">steptol =</span> <span class="fl">1e-10</span>) <span class="co"># b_step1は初期値に使っているだけ</span></span>
+<span id="cb16-2"><a href="#cb16-2" tabindex="-1"></a>(b_step2 <span class="ot">&lt;-</span> r_nlm_step2<span class="sc">$</span>estimate)</span></code></pre></div>
+<pre><code>[1]  1.152502  1.963083 -2.951443</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>W_step2 <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">estimate_S</span>(b_step2))</span></code></pre></div>
+<p>J推定量を出します。</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;J-Statistics (Two Step): %5f&quot;</span>, (J_step2 <span class="ot">&lt;-</span> <span class="fu">J</span>(b_step2, W_step2)))</span></code></pre></div>
+<pre><code>[1] &quot;J-Statistics (Two Step): 0.194305&quot;</code></pre>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;p-value of J-test: %.5f&quot;</span>, <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pchisq</span>(J_step2, l <span class="sc">-</span> k))</span></code></pre></div>
+<pre><code>[1] &quot;p-value of J-test: 0.65936&quot;</code></pre>
+<p>推定結果自体は概ね良好ですが、TSLS-GMM推定量とは異なる値になりました。</p>
+<p>分散共分散行列は、非線形であることを前提にするので、数値微分した値を用いて計算します。</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" tabindex="-1"></a><span class="co"># Zの要素ごとのモーメントをXの要素で数値微分</span></span>
+<span id="cb23-2"><a href="#cb23-2" tabindex="-1"></a>derivX <span class="ot">&lt;-</span> <span class="cf">function</span>(y, X, Z, b){</span>
+<span id="cb23-3"><a href="#cb23-3" tabindex="-1"></a>    G <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA</span>, <span class="fu">ncol</span>(Z), <span class="fu">ncol</span>(X),</span>
+<span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>        <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">colnames</span>(Z), <span class="fu">colnames</span>(X)))</span>
+<span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>    <span class="cf">for</span>(j <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(X)){</span>
+<span id="cb23-6"><a href="#cb23-6" tabindex="-1"></a>        d <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">ncol</span>(X))</span>
+<span id="cb23-7"><a href="#cb23-7" tabindex="-1"></a>        delta <span class="ot">&lt;-</span> <span class="fl">1e-6</span></span>
+<span id="cb23-8"><a href="#cb23-8" tabindex="-1"></a>        d[j] <span class="ot">&lt;-</span> delta</span>
+<span id="cb23-9"><a href="#cb23-9" tabindex="-1"></a>        g0 <span class="ot">&lt;-</span> <span class="fu">g</span>(y, X, Z, b <span class="sc">-</span> d)</span>
+<span id="cb23-10"><a href="#cb23-10" tabindex="-1"></a>        g2 <span class="ot">&lt;-</span> <span class="fu">g</span>(y, X, Z, b <span class="sc">+</span> d)</span>
+<span id="cb23-11"><a href="#cb23-11" tabindex="-1"></a>        G[,j] <span class="ot">&lt;-</span> (g2 <span class="sc">-</span> g0)<span class="sc">/</span><span class="dv">2</span><span class="sc">/</span>delta</span>
+<span id="cb23-12"><a href="#cb23-12" tabindex="-1"></a>    }</span>
+<span id="cb23-13"><a href="#cb23-13" tabindex="-1"></a>    G</span>
+<span id="cb23-14"><a href="#cb23-14" tabindex="-1"></a>}</span>
+<span id="cb23-15"><a href="#cb23-15" tabindex="-1"></a>G <span class="ot">&lt;-</span> <span class="fu">derivX</span>(y, X, Z, b_step1)</span>
+<span id="cb23-16"><a href="#cb23-16" tabindex="-1"></a>inv_GWG <span class="ot">&lt;-</span> <span class="fu">solve</span>(<span class="fu">t</span>(G) <span class="sc">%*%</span> W_step2 <span class="sc">%*%</span> G)</span>
+<span id="cb23-17"><a href="#cb23-17" tabindex="-1"></a>S_hat_step2 <span class="ot">&lt;-</span> <span class="fu">estimate_S</span>(b_step2) <span class="sc">/</span> n</span>
+<span id="cb23-18"><a href="#cb23-18" tabindex="-1"></a>(V_2step <span class="ot">&lt;-</span> inv_GWG <span class="sc">%*%</span> (<span class="fu">t</span>(G) <span class="sc">%*%</span> W_step2 <span class="sc">%*%</span> S_hat_step2 <span class="sc">%*%</span> W_step2 <span class="sc">%*%</span> G) <span class="sc">%*%</span> inv_GWG)</span></code></pre></div>
+<pre><code>            (Intercept)           x           z
+(Intercept)  0.05199936 -0.03823610  0.01282015
+x           -0.03823610  0.03866967 -0.01931077
+z            0.01282015 -0.01931077  0.02253776</code></pre>
+</div>
+</div>
+<div id="momentfitを使った推定" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span>
+<code>momentfit</code>を使った推定</h2>
+<p>最尤法と比べてコードの分量は多くはないですが、やはりパッケージを使って推定する方が無難です。推定だけならばまだしも、制約の検定などもあります。<code>momentfit</code>パッケージ<a
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>を使ってみましょう。</p>
+<div id="線形モデルとしてtsls-gmmを推定-1" class="section level3"
+number="2.3.1">
+<h3><span class="header-section-number">2.3.1</span>
+線形モデルとしてTSLS-GMMを推定</h3>
+<p>線形モデルは<code>sem::tsls</code>のように推定できます。</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a><span class="fu">library</span>(momentfit)</span></code></pre></div>
+<pre><code>要求されたパッケージ sandwich をロード中です</code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>model_lm <span class="ot">&lt;-</span> <span class="fu">momentModel</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="sc">~</span> z <span class="sc">+</span> d1 <span class="sc">+</span> d2, <span class="at">data =</span> df01)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>r_model_lm <span class="ot">&lt;-</span> <span class="fu">gmmFit</span>(model_lm, <span class="at">init =</span> <span class="st">&quot;tsls&quot;</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a><span class="fu">summary</span>(r_model_lm)</span></code></pre></div>
+<pre><code>Model based on moment conditions
+*********************************
+Moment type: linear
+Covariance matrix: iid
+Number of regressors: 3
+Number of moment conditions: 4
+Number of Endogenous Variables: 1
+Sample size:  100 
+
+Estimation:  Two-Stage Least Squares 
+Sandwich vcov: FALSE
+coefficients:
+            Estimate Std. Error  t value  Pr(&gt;|t|)    
+(Intercept)  1.18186    0.24400   4.8436 1.275e-06 ***
+x            1.94732    0.18683  10.4231 &lt; 2.2e-16 ***
+z           -2.94689    0.16779 -17.5633 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+ J-Test 
+                Statistics  df   pvalue
+Test E(g)=0:       0.22266   1  0.63702
+
+
+Instrument strength based on the F-Statistics of the first stage OLS
+x : F( 2 ,  96 ) =  55.76589  (P-Vavue =  1.110223e-16 )</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a><span class="fu">vcov</span>(r_model_lm)</span></code></pre></div>
+<pre><code>             (Intercept)           x            z
+(Intercept)  0.059537083 -0.03871773  0.008202819
+x           -0.038717727  0.03490428 -0.015916071
+z            0.008202819 -0.01591607  0.028152453
+attr(,&quot;type&quot;)
+attr(,&quot;type&quot;)$sandwich
+[1] FALSE
+
+attr(,&quot;type&quot;)$df.adj
+[1] FALSE
+
+attr(,&quot;type&quot;)$breadOnly
+[1] FALSE</code></pre>
+<p>簡単に計算できました。パッケージを使わない場合と同じ値ですね。</p>
+</div>
+<div id="非線形モデルとしてtwo-step-gmmを推定-1" class="section level3"
+number="2.3.2">
+<h3><span class="header-section-number">2.3.2</span>
+非線形モデルとしてTWO STEP GMMを推定</h3>
+<p>モデル式に<code>exp</code>などが含まれる場合、<code>momentModel</code>は自動で非線形モデル用の<code>nonlinearModel</code>オブジェクトにしてくれるのですが、今回は強引に非線形モデルとして推定するので、行ごとのモーメントを計算する関数を用意して<code>functionModel</code>オブジェクトをつくります。</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>moment_function <span class="ot">&lt;-</span> <span class="cf">function</span>(b, M) {</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>    y <span class="ot">&lt;-</span> M[, <span class="dv">1</span>]</span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>    X <span class="ot">&lt;-</span> M[, <span class="dv">2</span><span class="sc">:</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">ncol</span>(X))]</span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>    Z <span class="ot">&lt;-</span> M[, (<span class="dv">2</span><span class="sc">+</span><span class="fu">ncol</span>(X))<span class="sc">:</span>(<span class="dv">1</span><span class="sc">+</span><span class="fu">ncol</span>(X)<span class="sc">+</span><span class="fu">ncol</span>(Z))]</span>
+<span id="cb31-5"><a href="#cb31-5" tabindex="-1"></a>    e <span class="ot">&lt;-</span> <span class="fu">drop</span>(y <span class="sc">-</span> X <span class="sc">%*%</span> b)</span>
+<span id="cb31-6"><a href="#cb31-6" tabindex="-1"></a>    Z <span class="sc">*</span> e <span class="co"># Zの各列にeを乗じる</span></span>
+<span id="cb31-7"><a href="#cb31-7" tabindex="-1"></a>}</span>
+<span id="cb31-8"><a href="#cb31-8" tabindex="-1"></a>model_nl <span class="ot">&lt;-</span> <span class="fu">momentModel</span>(</span>
+<span id="cb31-9"><a href="#cb31-9" tabindex="-1"></a>    <span class="at">g =</span> moment_function,</span>
+<span id="cb31-10"><a href="#cb31-10" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">cbind</span>(y, X, Z),</span>
+<span id="cb31-11"><a href="#cb31-11" tabindex="-1"></a>    <span class="at">theta0 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb31-12"><a href="#cb31-12" tabindex="-1"></a>r_model_nl <span class="ot">&lt;-</span> <span class="fu">gmmFit</span>(model_nl)</span>
+<span id="cb31-13"><a href="#cb31-13" tabindex="-1"></a><span class="fu">summary</span>(r_model_nl)</span></code></pre></div>
+<pre><code>Model based on moment conditions
+*********************************
+Moment type: function
+Covariance matrix: iid
+Number of regressors: 3
+Number of moment conditions: 4
+Number of Endogenous Variables: 0
+Sample size:  100 
+
+Estimation:  Two-Step GMM 
+Convergence code: 0 (see help(optim))
+Sandwich vcov: FALSE
+coefficients:
+       Estimate Std. Error  t value  Pr(&gt;|t|)    
+theta1  1.15250    0.22803   5.0541 4.325e-07 ***
+theta2  1.96308    0.19665   9.9828 &lt; 2.2e-16 ***
+theta3 -2.95144    0.15013 -19.6598 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+ J-Test 
+                Statistics  df   pvalue
+Test E(g)=0:        0.1943   1  0.65936</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a><span class="fu">vcov</span>(r_model_nl)</span></code></pre></div>
+<pre><code>            theta1      theta2      theta3
+theta1  0.05199935 -0.03823610  0.01282015
+theta2 -0.03823610  0.03866966 -0.01931076
+theta3  0.01282015 -0.01931076  0.02253775
+attr(,&quot;type&quot;)
+attr(,&quot;type&quot;)$sandwich
+[1] FALSE
+
+attr(,&quot;type&quot;)$df.adj
+[1] FALSE
+
+attr(,&quot;type&quot;)$breadOnly
+[1] FALSE</code></pre>
+<p>簡単に計算できました。パッケージを使わない場合と同じ値ですね。</p>
+</div>
+<div id="不均一分散に頑強な標準誤差" class="section level3"
+number="2.3.3">
+<h3><span class="header-section-number">2.3.3</span>
+不均一分散に頑強な標準誤差</h3>
+<p><code>momentModel</code>関数に引数<code>vcov = "MDS"</code>をつけると、系列相関に頑強になります。<code>vcov = "CL"</code>として<code>vcovOptions</code>でクラスタ識別子を与えると、クラスター頑強標準誤差が得られます。</p>
+</div>
+<div id="制約付きモデル" class="section level3" number="2.3.4">
+<h3><span class="header-section-number">2.3.4</span> 制約付きモデル</h3>
+<p><code>momentfit</code>では、パラメーターを<span
+class="math inline">\(\theta\)</span>として、<span
+class="math inline">\(R\theta =
+q\)</span>という形式の制約をつけることができます。</p>
+<p><span class="math inline">\(x =
+0\)</span>と言う制約を置いた線形モデルを推定してみましょう。</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" tabindex="-1"></a>R1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">0</span>), <span class="dv">1</span>, <span class="dv">3</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" tabindex="-1"></a>q1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" tabindex="-1"></a>(model_R1 <span class="ot">&lt;-</span> <span class="fu">restModel</span>(model_lm, R1, q1)) <span class="co"># restModel(model_lm, &quot;z=1&quot;) でも同じ</span></span></code></pre></div>
+<pre><code>Model based on moment conditions
+*********************************
+Moment type: rlinear
+Covariance matrix: iid
+Number of regressors: 2
+Number of moment conditions: 4
+Number of Endogenous Variables: 1
+Sample size:  100 
+Constraints:
+     x = 1 
+Restricted regression:
+    (y-x) = (Intercept)+z </code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" tabindex="-1"></a>(r_R1 <span class="ot">&lt;-</span> <span class="fu">gmmFit</span>(model_R1, <span class="at">init =</span> <span class="st">&quot;tsls&quot;</span>))</span></code></pre></div>
+<pre><code>Model based on moment conditions
+*********************************
+Moment type: rlinear
+Covariance matrix: iid
+Number of regressors: 2
+Number of moment conditions: 4
+Number of Endogenous Variables: 1
+Sample size:  100 
+Constraints:
+     x = 1 
+Restricted regression:
+    (y-x) = (Intercept)+z 
+
+Estimation:  Two-Stage Least Squares 
+coefficients:
+(Intercept)            z  
+   2.232674    -2.514925  </code></pre>
+<p><span class="math inline">\(x = 1 -
+z\)</span>と言う制約を置いた非線形モデルを推定してみましょう。</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a>(model_R2 <span class="ot">&lt;-</span> <span class="fu">restModel</span>(model_nl, <span class="st">&quot;theta2~1-theta3&quot;</span>))</span></code></pre></div>
+<pre><code>Model based on moment conditions
+*********************************
+Moment type: rfunction
+Covariance matrix: iid
+Number of regressors: 2
+Number of moment conditions: 4
+Number of Endogenous Variables: 0
+Sample size:  100 
+Constraints:
+    theta2 ~ 1 - theta3</code></pre>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>(r_R2 <span class="ot">&lt;-</span> <span class="fu">gmmFit</span>(model_R2))</span></code></pre></div>
+<pre><code>Model based on moment conditions
+*********************************
+Moment type: rfunction
+Covariance matrix: iid
+Number of regressors: 2
+Number of moment conditions: 4
+Number of Endogenous Variables: 0
+Sample size:  100 
+Constraints:
+    theta2 ~ 1 - theta3
+
+Estimation:  Two-Step GMM 
+Convergence code: 0 (see help(optim))
+coefficients:
+   theta1     theta3  
+-1.376305  -3.021013  </code></pre>
+<p><code>functionModel</code>なので変数名が<code>theta1</code>,
+<code>theta2</code>,
+<code>theta3</code>となってしまうこと、<code>~</code>を挟んで左辺と右辺に値が必要なので注意してください。</p>
+</div>
+<div id="統計的仮説検定" class="section level3" number="2.3.5">
+<h3><span class="header-section-number">2.3.5</span> 統計的仮説検定</h3>
+<p>統計的仮説検定は以下のようにします。</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="fu">hypothesisTest</span>(r_model_lm, r_R1) <span class="co"># 制約付きモデルと比較（Wald-test）</span></span></code></pre></div>
+<pre><code>Wald Test 
+***********
+The Null Hypothesis:
+     x = 1 
+Distribution: Chi-square with 1 degrees of freedom
+  Statistics       Pvalue
+1   25.71064 3.966336e-07</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a><span class="fu">hypothesisTest</span>(r_model_lm, <span class="at">R =</span> <span class="st">&quot;z=0&quot;</span>) <span class="co"># 制約付きモデルの推定なしでも実行できる</span></span></code></pre></div>
+<pre><code>Wald Test 
+***********
+The Null Hypothesis:
+     z = 0 
+Distribution: Chi-square with 1 degrees of freedom
+  Statistics Pvalue
+1   308.4701      0</code></pre>
+<p><code>type = "LR"</code>で尤度比検定、<code>type = "LM"</code>でラグランジュ乗数検定が使えます。</p>
+<p>なお、<code>functionModel</code>の場合は<code>hypothesisTest</code>で仮説検定は行えないです。</p>
+</div>
+<div id="ウェイトを指定した推定" class="section level3" number="2.3.6">
+<h3><span class="header-section-number">2.3.6</span>
+ウェイトを指定した推定</h3>
+<p><code>momentfit</code>を使う上でウェイトを強く意識する必要はないと思いますが、ウェイトを指定した推定もできます。</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="co"># TSLS GMM</span></span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a>(r_tsls <span class="ot">&lt;-</span> <span class="fu">solveGmm</span>(model_lm, <span class="fu">evalWeights</span>(model_lm, <span class="at">w =</span> <span class="fu">solve</span>(<span class="fu">t</span>(Z) <span class="sc">%*%</span> Z))))<span class="sc">$</span>theta</span></code></pre></div>
+<pre><code>(Intercept)           x           z 
+   1.181857    1.947318   -2.946895 </code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="co"># Identity</span></span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a>(r_step1 <span class="ot">&lt;-</span> <span class="fu">solveGmm</span>(model_lm, <span class="fu">evalWeights</span>(model_lm, <span class="at">w =</span> <span class="fu">diag</span>(<span class="dv">4</span>)), <span class="at">theta0 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)))<span class="sc">$</span>theta</span></code></pre></div>
+<pre><code>(Intercept)           x           z 
+   1.152720    1.978390   -2.973282 </code></pre>
+<p>モデルのパラメーターを変える<code>update</code>、<code>evalWeights</code>でつくったウェイト・オブジェクトの計算と行列への変換ができる<code>quadra</code>、モーメントのグラディエントを計算する<code>evalDMoment</code>、パラメーターとウェイトを与えると目的関数の値を出す<code>evalGmmObj</code>などもあります。</p>
+</div>
+</div>
+</div>
+<div id="まとめ" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> まとめ</h1>
+<p>ここまでの説明で、GMMによる推定の概要は把握できると思います。数理的に詳しい説明が必要な場合は、「<a
+href="https://keiikegami.github.io/files/teaching/econometrics_graduate/lecture7_12/04-gmm-ja.html">GMM
+—
+計量経済学大学院講義ノート</a>」に詳しい導出があったので、参考にしてください。</p>
+<p>最尤法と比較してGMMは、分布を特定しなくても済む場合がある一方、効率性で劣る事が知られています。また、同じモデルでもウェイト行列の置き方によって推定にバリエーションができるため、とっつきにくさがあります。しかし、資産価格や投資のEuler方程式の推定や、動学的パネルデータモデルの推定ではよく使われています。</p>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>経済学以外で見かける事はほとんどありません。社会学で明らかに経済学の手法を利用した場合ぐらいです。歴史的な理由と、最尤法などに対して圧倒的に優位と言う事ではないためだと思います。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn2"><p>物理学用語のモーメントと概念がややずれるので、このように把握する方が混乱が少ないと思います。<a
+href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><span
+class="math inline">\(\bar{g}(b)\)</span>と書くのが通例ですが、後の説明とRのコードにあわせるために冗長に書いています。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p><code>momentfit</code>は同じ作者の<code>gmm</code>パッケージの後継で、vignetteに計量経済学の有名テキストの例を実行する方法の紹介があるので、GMMを研究に用いた人は<code>browseVignettes("momentfit")</code>で添付のドキュメントに目を通しておくと良いと思います。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>
