@@ -418,7 +418,7 @@ class="toc-section-number">2.2.1</span>
 線形モデルとしてTSLS-GMMを推定</a></li>
 <li><a href="#非線形モデルとしてtwo-step-gmmを推定"
 id="toc-非線形モデルとしてtwo-step-gmmを推定"><span
-class="toc-section-number">2.2.2</span> 非線形モデルとしてTWO STEP
+class="toc-section-number">2.2.2</span> 非線形モデルとしてTwo-Step
 GMMを推定</a></li>
 </ul></li>
 <li><a href="#momentfitを使った推定"
@@ -432,7 +432,7 @@ class="toc-section-number">2.3.1</span>
 線形モデルとしてTSLS-GMMを推定</a></li>
 <li><a href="#非線形モデルとしてtwo-step-gmmを推定-1"
 id="toc-非線形モデルとしてtwo-step-gmmを推定-1"><span
-class="toc-section-number">2.3.2</span> 非線形モデルとしてTWO STEP
+class="toc-section-number">2.3.2</span> 非線形モデルとしてTwo-Step
 GMMを推定</a></li>
 <li><a href="#不均一分散に頑強な標準誤差"
 id="toc-不均一分散に頑強な標準誤差"><span
@@ -442,13 +442,14 @@ class="toc-section-number">2.3.3</span>
 class="toc-section-number">2.3.4</span> 制約付きモデル</a></li>
 <li><a href="#統計的仮説検定" id="toc-統計的仮説検定"><span
 class="toc-section-number">2.3.5</span> 統計的仮説検定</a></li>
-<li><a href="#ウェイトを指定した推定"
-id="toc-ウェイトを指定した推定"><span
-class="toc-section-number">2.3.6</span> ウェイトを指定した推定</a></li>
+<li><a href="#ウェイトを指定した推定線形モデルのtwo-step-gmm"
+id="toc-ウェイトを指定した推定線形モデルのtwo-step-gmm"><span
+class="toc-section-number">2.3.6</span>
+ウェイトを指定した推定（線形モデルのTwo-Step GMM）</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#まとめ" id="toc-まとめ"><span
-class="toc-section-number">3</span> まとめ</a></li>
+<li><a href="#おわりに" id="toc-おわりに"><span
+class="toc-section-number">3</span> おわりに</a></li>
 </ul>
 </div>
 
@@ -767,7 +768,7 @@ class="math inline">\(J\)</span>検定で棄却されず、信頼がおけると
 <div id="非線形モデルとしてtwo-step-gmmを推定" class="section level3"
 number="2.2.2">
 <h3><span class="header-section-number">2.2.2</span>
-非線形モデルとしてTWO STEP GMMを推定</h3>
+非線形モデルとしてTwo-Step GMMを推定</h3>
 <p><span
 class="math inline">\(W^0\)</span>を恒等行列にして推定します。</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>W0_nl <span class="ot">&lt;-</span> <span class="fu">diag</span>(<span class="fu">ncol</span>(Z))</span>
@@ -893,7 +894,7 @@ attr(,&quot;type&quot;)$breadOnly
 <div id="非線形モデルとしてtwo-step-gmmを推定-1" class="section level3"
 number="2.3.2">
 <h3><span class="header-section-number">2.3.2</span>
-非線形モデルとしてTWO STEP GMMを推定</h3>
+非線形モデルとしてTwo-Step GMMを推定</h3>
 <p>モデル式に<code>exp</code>などが含まれる場合、<code>momentModel</code>は自動で非線形モデル用の<code>nonlinearModel</code>オブジェクトにしてくれるのですが、今回は強引に非線形モデルとして推定するので、行ごとのモーメントを計算する関数を用意して<code>functionModel</code>オブジェクトをつくります。</p>
 <div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>moment_function <span class="ot">&lt;-</span> <span class="cf">function</span>(b, M) {</span>
 <span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>    y <span class="ot">&lt;-</span> M[, <span class="dv">1</span>]</span>
@@ -1050,24 +1051,33 @@ Distribution: Chi-square with 1 degrees of freedom
 <p><code>type = "LR"</code>で尤度比検定、<code>type = "LM"</code>でラグランジュ乗数検定が使えます。</p>
 <p>なお、<code>functionModel</code>の場合は<code>hypothesisTest</code>で仮説検定は行えないです。</p>
 </div>
-<div id="ウェイトを指定した推定" class="section level3" number="2.3.6">
+<div id="ウェイトを指定した推定線形モデルのtwo-step-gmm"
+class="section level3" number="2.3.6">
 <h3><span class="header-section-number">2.3.6</span>
-ウェイトを指定した推定</h3>
+ウェイトを指定した推定（線形モデルのTwo-Step GMM）</h3>
 <p><code>momentfit</code>を使う上でウェイトを強く意識する必要はないと思いますが、ウェイトを指定した推定もできます。</p>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="co"># TSLS GMM</span></span>
-<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a>(r_tsls <span class="ot">&lt;-</span> <span class="fu">solveGmm</span>(model_lm, <span class="fu">evalWeights</span>(model_lm, <span class="at">w =</span> <span class="fu">solve</span>(<span class="fu">t</span>(Z) <span class="sc">%*%</span> Z))))<span class="sc">$</span>theta</span></code></pre></div>
-<pre><code>(Intercept)           x           z 
-   1.181857    1.947318   -2.946895 </code></pre>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="co"># Identity</span></span>
-<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a>(r_step1 <span class="ot">&lt;-</span> <span class="fu">solveGmm</span>(model_lm, <span class="fu">evalWeights</span>(model_lm, <span class="at">w =</span> <span class="fu">diag</span>(<span class="dv">4</span>)), <span class="at">theta0 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)))<span class="sc">$</span>theta</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="co"># Identity</span></span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a>(r_step1 <span class="ot">&lt;-</span> <span class="fu">solveGmm</span>(model_lm, <span class="fu">evalWeights</span>(model_lm, <span class="at">w =</span> <span class="fu">diag</span>(<span class="dv">4</span>)), <span class="at">theta0 =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>)))<span class="sc">$</span>theta</span></code></pre></div>
 <pre><code>(Intercept)           x           z 
    1.152720    1.978390   -2.973282 </code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="co"># Two-Step</span></span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a><span class="co"># gmmFit(model_lm, w = solve(estimate_S(r_step1$theta))) と推定もできる</span></span>
+<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a>(r_step2 <span class="ot">&lt;-</span> <span class="fu">with</span>(r_step1, <span class="fu">solveGmm</span>(model_lm,</span>
+<span id="cb49-4"><a href="#cb49-4" tabindex="-1"></a>    <span class="co"># \hat{S}を得る関数は提供されていないようなので、上で書いた estimate_S を流用</span></span>
+<span id="cb49-5"><a href="#cb49-5" tabindex="-1"></a>    <span class="fu">evalWeights</span>(model_lm, <span class="at">w =</span> <span class="fu">solve</span>(<span class="fu">estimate_S</span>(theta))),</span>
+<span id="cb49-6"><a href="#cb49-6" tabindex="-1"></a>    <span class="at">theta0 =</span> theta)))<span class="sc">$</span>theta</span></code></pre></div>
+<pre><code>(Intercept)           x           z 
+   1.152501    1.963083   -2.951443 </code></pre>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="co"># TSLS GMM</span></span>
+<span id="cb51-2"><a href="#cb51-2" tabindex="-1"></a>(r_tsls <span class="ot">&lt;-</span> <span class="fu">solveGmm</span>(model_lm, <span class="fu">evalWeights</span>(model_lm, <span class="at">w =</span> <span class="fu">solve</span>(<span class="fu">t</span>(Z) <span class="sc">%*%</span> Z))))<span class="sc">$</span>theta</span></code></pre></div>
+<pre><code>(Intercept)           x           z 
+   1.181857    1.947318   -2.946895 </code></pre>
 <p>モデルのパラメーターを変える<code>update</code>、<code>evalWeights</code>でつくったウェイト・オブジェクトの計算と行列への変換ができる<code>quadra</code>、モーメントのグラディエントを計算する<code>evalDMoment</code>、パラメーターとウェイトを与えると目的関数の値を出す<code>evalGmmObj</code>などもあります。</p>
 </div>
 </div>
 </div>
-<div id="まとめ" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> まとめ</h1>
+<div id="おわりに" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> おわりに</h1>
 <p>ここまでの説明で、GMMによる推定の概要は把握できると思います。数理的に詳しい説明が必要な場合は、「<a
 href="https://keiikegami.github.io/files/teaching/econometrics_graduate/lecture7_12/04-gmm-ja.html">GMM
 —
