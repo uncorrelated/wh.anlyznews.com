@@ -566,7 +566,9 @@ class="math inline">\(\hat{\beta}^{identity}\)</span>が得られてしまうの
 <div id="tsls-gmm" class="section level3" number="1.2.1">
 <h3><span class="header-section-number">1.2.1</span> TSLS-GMM</h3>
 <p>均一分散が仮定できる線形モデルの場合は、<span
-class="math inline">\((Z{}^t\!Z)^{-1}\)</span>の逆行列を使います。<abbr title="Two Stage Least Square">TSLS</abbr>推定量に一致するので、TSLS-GMM推定量と呼ばれます。均一分散の仮定において、効率的な推定量です（不均一分散においては、効率的では無いです）。計算量の意味でも効率がよいです。係数の分散共分散行列を計算するには<span
+class="math inline">\((Z{}^t\!Z)^{-1}\)</span>の逆行列を使います。<abbr title="Two Stage Least Square">TSLS</abbr>推定量に一致するので、TSLS-GMM推定量と呼ばれます。均一分散の仮定において、効率的な推定量です（不均一分散においては、一般には効率的では無いです<a
+href="#fn4" class="footnote-ref"
+id="fnref4"><sup>4</sup></a>）。計算量の意味でも効率がよいです。係数の分散共分散行列を計算するには<span
 class="math inline">\(\hat{S}\)</span>が必要になりますが、<span
 class="math inline">\(Z{}^t\!Z\)</span>に誤差項の標本分散を乗じれば<span
 class="math inline">\(\hat{S}\)</span>になります。</p>
@@ -634,7 +636,7 @@ Newey-West一致推定量</h3>
 <h2><span class="header-section-number">1.3</span>
 過剰識別検定（J検定）</h2>
 <p>操作変数を積み上げるなどしてモーメント条件を大量に入れると、モーメント条件とモーメント条件が直交しないモデル特定化の失敗が生じ、推定結果が不安定になるなどの問題が生じるときがあります。</p>
-<p>この問題が生じていないかを調べる過剰識別検定は、J統計量を</p>
+<p>この問題が生じていないかを調べる過剰識別検定は、J統計量</p>
 <p><span class="math display">\[
 J(b) = n \bar{g}(y, X, Z, b) \hat{S}^{-1} \bar{g}(y, X, Z, b) \sim
 \chi^2(l - k)
@@ -837,8 +839,8 @@ z            0.01282015 -0.01931077  0.02253776</code></pre>
 <h2><span class="header-section-number">2.3</span>
 <code>momentfit</code>を使った推定</h2>
 <p>最尤法と比べてコードの分量は多くはないですが、やはりパッケージを使って推定する方が無難です。推定だけならばまだしも、制約の検定などもあります。<code>momentfit</code>パッケージ<a
-href="#fn4" class="footnote-ref"
-id="fnref4"><sup>4</sup></a>を使ってみましょう。</p>
+href="#fn5" class="footnote-ref"
+id="fnref5"><sup>5</sup></a>を使ってみましょう。</p>
 <div id="線形モデルとしてtsls-gmmを推定-1" class="section level3"
 number="2.3.1">
 <h3><span class="header-section-number">2.3.1</span>
@@ -1096,9 +1098,17 @@ href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p><span
 class="math inline">\(\bar{g}(b)\)</span>と書くのが通例ですが、後の説明とRのコードにあわせるために冗長に書いています。<a
 href="#fnref3" class="footnote-back">↩︎</a></p></li>
-<li
-id="fn4"><p><code>momentfit</code>は同じ作者の<code>gmm</code>パッケージの後継で、vignetteに計量経済学の有名テキストの例を実行する方法の紹介があるので、GMMを研究に用いた人は<code>browseVignettes("momentfit")</code>で添付のドキュメントに目を通しておくと良いと思います。<a
+<li id="fn4"><p>外生変数のベクトル<span
+class="math inline">\(z_j\)</span>のモーメント条件の分散は、<span
+class="math inline">\(VAR[z_j \epsilon] = E[z_j^2]E[\epsilon^2] +
+COV(z_j^2, \epsilon^2)\)</span>になるため、<span
+class="math inline">\(COV(z_i^2, \epsilon^2) \ne
+0\)</span>のときは、<span
+class="math inline">\(Z{}^t\!Z\)</span>はモーメント条件の分散共分散行列に比例しないです。<a
 href="#fnref4" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn5"><p><code>momentfit</code>は同じ作者の<code>gmm</code>パッケージの後継で、vignetteに計量経済学の有名テキストの例を実行する方法の紹介があるので、GMMを研究に用いた人は<code>browseVignettes("momentfit")</code>で添付のドキュメントに目を通しておくと良いと思います。<a
+href="#fnref5" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
