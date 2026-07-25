@@ -739,8 +739,8 @@ class="math inline">\(\sum^{t-1}_{k=0} A^k E\big[
 ({}^t\!A)^k\)</span>となります。<span class="math inline">\(E\big[
 \mathbf{\varepsilon}_{t-k} {}^t\! \mathbf{\varepsilon}_{t-k}
 \big]\)</span>は撹乱項の累積効果を考えない分散で、1行1列以外はゼロの定数になります。<span
-class="math inline">\(A\)</span>のすべての固有値は<span
-class="math inline">\(1\)</span>未満なので、<span
+class="math inline">\(A\)</span>のすべての固有値が<span
+class="math inline">\(1\)</span>未満であれば、<span
 class="math inline">\(t \rightarrow
 \infty\)</span>で累積効果の分散は有限の値に収束します。<span
 class="math inline">\(A^k\ {}^t\!A^k &lt;
@@ -1380,6 +1380,73 @@ ratio）で、有効求人倍率は景気一致指数、失業率は景気遅行
 予測誤差分散分解</h3>
 <p>有効求人倍率の変化は完全失業率の変化をどれぐらい予測できるものでしょうか。
 予測誤差分散分解（<abbr title="Forecast Error Variance Decomposition">FEVD</abbr>）で程度を測ることができます。</p>
+<p><span class="math inline">\(t+1\)</span>期の撹乱項の<span
+class="math inline">\(t+s\)</span>期への影響は、自己回帰項の各期の係数をブロック要素としてまとめた遷移行列<span
+class="math inline">\(A\)</span>を<span
+class="math inline">\(s-1\)</span>乗をして、単位行列とゼロ行列をブロック要素として持つ行列<span
+class="math inline">\(J\)</span>ではさみ、<span class="math inline">\(J
+A^{s-1} \
+{}^t\!J\)</span>を計算すれば分かります。ここまでの例であれば、<span
+class="math inline">\(A\)</span>と<span
+class="math inline">\(J\)</span>は</p>
+<p><span class="math display">\[\begin{align}
+A &amp;= \begin{pmatrix}
+A_1 &amp; A_2 &amp; A_3 \\
+I &amp; O &amp; O \\
+O &amp; I &amp; O \\
+\end{pmatrix}\\
+&amp;= \begin{pmatrix}
+a_{1,1,1} &amp; a_{1,2,1} &amp; a_{1,1,2} &amp; a_{1,2,2} &amp;
+a_{1,1,3} &amp; a_{1,2,3} \\
+a_{2,1,1} &amp; a_{2,2,1} &amp; a_{2,1,2} &amp; a_{2,2,2} &amp;
+a_{2,1,3} &amp; a_{2,2,3} \\
+1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0 \\
+\end{pmatrix} \\
+J &amp;= \begin{pmatrix}
+I &amp; O &amp; O
+\end{pmatrix} = \begin{pmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>となります。<span class="math inline">\(A\)</span>と<span
+class="math inline">\(J\)</span>がブロック要素で構成されるのは、VARの内生変数が複数だからです。<span
+class="math inline">\(J\)</span>を使うことで、<span
+class="math inline">\(s\)</span>期より前の内生変数への影響を表す要素をなくし、<span
+class="math inline">\(s\)</span>期への影響だけを表しています。</p>
+<p><span class="math inline">\(t+1\)</span>期の撹乱項の<span
+class="math inline">\(s\)</span>期の平均二乗和への影響は、<span
+class="math inline">\(s-1\)</span>乗した遷移行列2つで撹乱項の分散共分散行列<span
+class="math inline">\(\Sigma\)</span>を挟んだ行列<span
+class="math inline">\((J A^{s-1}\ {}^t\!J) \Sigma \ {}^t\!(J A^{s-1}\
+{}^t\!J)\)</span>で計算ができます。</p>
+<p>内生変数が2つだとします。<span class="math inline">\((J A^{s-1}\
+{}^t\!J) \Sigma \ {}^t\!(J A^{s-1}\ {}^t\!J)\)</span>を<span
+class="math inline">\((\Phi_{s-1}{}^t\!\Phi_{s-1})\)</span>と平方分解して、<span
+class="math inline">\(\Phi_{s-1}{}^t\!(1,0)\)</span>を求めると、<span
+class="math inline">\(t+1\)</span>期の1番目の系列の標準偏差の大きさの撹乱の<span
+class="math inline">\(s\)</span>期の値に与えた影響が分かります。また、<span
+class="math inline">\((1, 0)\Phi_{s-1}\)</span>とすると、<span
+class="math inline">\(t+1\)</span>期のすべての系列に標準偏差の大きさの撹乱あったとして、<span
+class="math inline">\(s\)</span>期の1番目の系列の値がどう変わるかが分かります。</p>
+<p><span class="math inline">\((0, 1)\Phi_{s-1}{}^t\!(1,
+0)\)</span>が、<span
+class="math inline">\(t+1\)</span>期の1番目の系列の標準偏差の大きさの撹乱が、<span
+class="math inline">\(s\)</span>期の2番めの系列の値への影響です。<span
+class="math inline">\((0, 1)\Phi_{s-1}{}^t\!(0,
+1)\)</span>は、2番目の系列の、2番めの系列の値への影響です。標準偏差と分散の関係から、<span
+class="math inline">\(\big( (0, 1)\Phi_{s-1}{}^t\!(1,0)
+\big)^2\)</span>と、<span class="math inline">\(\big( (0,
+1)\Phi_{s-1}{}^t\!(0, 1) \big)^2\)</span>が、<span
+class="math inline">\(t+1\)</span>期の撹乱項が分散に与える影響となります。<span
+class="math inline">\(t+2\)</span>期の影響、<span
+class="math inline">\(t+3\)</span>期の影響も、同様に計算することができます。分散には加法性があるので、1番目と2番目の系列の撹乱の2番目の系列の<span
+class="math inline">\(t+1\)</span>期から<span
+class="math inline">\(s\)</span>期までそれぞれの期の平均二乗和への影響を合計し、1番目の系列の影響を割れば、1番目の系列の2番目の系列の分散への寄与率が出ます。</p>
+<p>時点の<ruby>級数<rp>（</rp><rt>ループ</rt><rp>）</rp></ruby>の中に系列の<ruby>級数<rp>（</rp><rt>ループ</rt><rp>）</rp></ruby>が入っていてややこしいですが、パッケージが計算してくれるので利用するためのコードは一行です。</p>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="co"># namesでプロットする時系列を指定できる</span></span>
 <span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fevd</span>(r_VAR, <span class="at">n.ahead =</span> n.ahead), <span class="at">names =</span> <span class="st">&quot;UR&quot;</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/fevd-1.png" width="672" /></p>
