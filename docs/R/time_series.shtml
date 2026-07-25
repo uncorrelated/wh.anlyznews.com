@@ -1460,6 +1460,7 @@ class="math inline">\(s\)</span>期までそれぞれの期の平均二乗和へ
 <p>これまでの有効求人倍率と完全失業率の分析では、異なる系列間の作用は一ヶ月後からと仮定してきましたが、もっと同時に生じて、撹乱項の共分散が非ゼロと言う事もあります。
 実際<code>causality(r_VAR, cause = "JTAR")$Instant</code>をすると、10%有意で帰無仮説No
 instantaneous causalityが棄却されます。</p>
+<p>同時性をVARモデルに入れてみましょう。</p>
 <p><span class="math display">\[\begin{align}
 \begin{pmatrix}
 y_{1,t} \\
