@@ -13,7 +13,7 @@
 
 <title>Rによる適合度のχ二乗検定</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -703,10 +710,10 @@ formulaを用いると、</p>
 \end{pmatrix}
 \]</span></p>
 <p>が得られます。</p>
-<p>ここからχ二乗統計量が何を意味するのか調べていきましょう。集計表に記入される因子<span
+<p>ここから適合度検定のχ二乗統計量が何を意味するのか調べていきましょう。集計表に記入される因子<span
 class="math inline">\(i\)</span>の観測値は<span
 class="math inline">\(n\bar{X}_i\)</span>、その期待値は<span
-class="math inline">\(np_i\)</span>になりますが、そのχ二乗統計量を変形します。</p>
+class="math inline">\(np_i\)</span>になりますが、それを変形します。</p>
 <p><span class="math display">\[\begin{align}
 \chi^2 &amp;= \sum_{i=1}^k \frac{(n\bar{X}_i - np_i)^2}{np_i} \\
 &amp;= n \sum_{i=1}^k \frac{(\bar{X}_i - p_i)^2}{p_i} \\
@@ -733,7 +740,7 @@ I_{k-1})\)</span>に分布収束します。よって、</p>
 \chi^2 \xrightarrow[n \to \infty]{\mathrm{d}} {}^t\!\mathcal{N}_{k-1}(0,
 I_{k-1}) \mathcal{N}_{k-1}(0, I_{k-1})
 \end{align}\]</span></p>
-<p>となり、χ二乗統計量は<span
+<p>となり、適合度検定のχ二乗統計量は<span
 class="math inline">\(k-1\)</span>次元の標準正規分布の二乗、つまり自由度<span
 class="math inline">\(k-1\)</span>のχ二乗分布に収束することが分かります。これで適合度のχ二乗検定を行う前提を確認できました。</p>
 </div>
