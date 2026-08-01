@@ -1303,7 +1303,7 @@ FPE(n)  2.513521e-06  2.491445e-06</code></pre>
 <p>まずは自動で作ってみましょう。</p>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="co"># t値の閾値2.0でゼロ制約をつける係数を定める（これ自体はbad-practice）</span></span>
 <span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>r_restrict_auto <span class="ot">&lt;-</span> <span class="fu">restrict</span>(r_VAR, <span class="at">method =</span> <span class="st">&quot;ser&quot;</span>, <span class="at">thresh =</span> <span class="fl">2.0</span>)</span></code></pre></div>
-<p>制約の選択と係数の推定を同じデータでしてしまうのはbad-praticeなのですが、コーディング時の工夫になります。つまり、結果オブジェクトを見るとどういう構造の行列を渡せばよいかわかります。</p>
+<p>制約の選択と係数の推定を同じデータでしてしまうのはbad-practiceなのですが、コーディング時の工夫になります。つまり、結果オブジェクトを見るとどういう構造の行列を渡せばよいかわかります。</p>
 <div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a>(restrictions <span class="ot">&lt;-</span> r_restrict_auto<span class="sc">$</span>restrictions)</span></code></pre></div>
 <pre><code>     JTAR.l1 UR.l1 JTAR.l2 UR.l2
 JTAR       1     0       1     0
