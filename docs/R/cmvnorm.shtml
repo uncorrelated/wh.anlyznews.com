@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>多変量正規分布の条件付き確率の導出</title>
+
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
+<script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="common_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="common_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="common_files/navigation-1.1/tabsets.js"></script>
+<meta name="ROBOTS" content="INDEX,FOLLOW"/>
+<link href='http://www.hatena.ne.jp/uncorrelated/' rel='author'/>
+<link rel="SHORTCUT ICON" href="/img/miniicon.ico"/>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10387742-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<script src="/parts/include_parts.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+<style type="text/css">
+  p.abstract{
+    text-align: center;
+    font-weight: bold;
+  }
+  div.abstract{
+    margin: auto;
+    width: 90%;
+  }
+</style>
+
+
+
+<link rel="stylesheet" href="../R/styles.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+<div class="header">
+<!--#include virtual="/parts/header.txt"-->
+
+</div>
+<div class="advertisement">
+
+<!--#include virtual="/parts/ad.txt"-->
+<div class="adsense">
+<script type="text/javascript"><!--
+google_ad_client = "pub-1521343453876863";
+/* 120x600, 作成済み 08/03/26 */
+google_ad_slot = "6814144664";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+
+</div>
+
+<div class="right">
+
+<div id="rhs"><!--#include virtual="menu.txt"--></div>
+<script>include_parts('rhs', 'https://wh.anlyznews.com/R/menu.txt');</script>
+
+<div>
+<!-- SiteSearch Google -->
+<form method="get" action="https://www.google.co.jp/search">
+<div style="text-align:center;">
+<a href="https://www.google.co.jp/"><img src="https://www.google.com/logos/Logo_40wht.gif" border="0" alt="Google" align="absmiddle"/></a>
+
+<input type="text" name="q" size="20" maxlength="255" value=""/>
+<input type="hidden" name="hl" value="ja"/>
+<input type="hidden" name="ie" value="UTF-8"/>
+<input type="hidden" name="domains" value="wh.anlyznews.com"/>
+<input type="submit" name="btnG" value="Google 検索"/><br/>
+<div style="text-align:left;margin:8pt;0pt;0pt;0pt;font-size:10pt;line-height:11pt;">
+<input type="radio" name="sitesearch" value=""/><span style="position:relative; top:-2pt;">WWWを検索</span><br/>
+<input type="radio" name="sitesearch" value="wh.anlyznews.com" checked="true"/><span style="position:relative; top:-2pt;">サイト内を検索</span>
+</div>
+</div>
+</form>
+<!-- SiteSearch Google -->
+</div>
+
+</div>
+
+<div class="article" id="article">
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">多変量正規分布の条件付き確率の導出</h1>
+<!--#include virtual="/parts/under_h2.txt"-->
+
+<div>
+<a href="https://b.hatena.ne.jp/entry/" class="hatena-bookmark-button" data-hatena-bookmark-layout="simple" title="このエントリーをはてなブックマークに追加"><img src="https://b.st-hatena.com/images/entry-button/button-only.gif" alt="このエントリーをはてなブックマークに追加" width="20" height="20" style="border: none;" /></a><script type="text/javascript" src="https://b.st-hatena.com/js/bookmark_button.js" charset="utf-8" async="async"></script>
+<a class='mixi-check-button' data-button='button-1' data-key='956e750b5294c8e605d83627364938b17e5bbc2b' href='https://mixi.jp/share.pl'>Check</a><script src='https://static.mixi.jp/js/share.js' type='text/javascript'></script>
+<script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
+<a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
+<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
+<div style="text-align:center;"><script type="text/javascript"><!--
+google_ad_client = "ca-pub-1521343453876863";
+/* H2下側 */
+google_ad_slot = "1509061605";
+google_ad_width = 468;
+google_ad_height = 60;
+//-->
+</script>
+<script type="text/javascript"
+src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+</div>
+
+<p>カルマンフィルターの更新式の導出などに使います。</p>
+
+</div>
+
+<div id="TOC">
+<ul>
+<li><a href="#多変量正規分布に従う二つのベクトル"
+id="toc-多変量正規分布に従う二つのベクトル"><span
+class="toc-section-number">1</span>
+多変量正規分布に従う二つのベクトル</a></li>
+<li><a href="#二つのベクトルの同時分布"
+id="toc-二つのベクトルの同時分布"><span
+class="toc-section-number">2</span> 二つのベクトルの同時分布</a></li>
+<li><a href="#同時分布の条件付き確率密度"
+id="toc-同時分布の条件付き確率密度"><span
+class="toc-section-number">3</span> 同時分布の条件付き確率密度</a>
+<ul>
+<li><a href="#bの確率密度fb" id="toc-bの確率密度fb"><span
+class="toc-section-number">3.1</span> <span
+class="math inline">\(b\)</span>の確率密度<span
+class="math inline">\(f(b)\)</span></a></li>
+<li><a href="#cの確率密度fc" id="toc-cの確率密度fc"><span
+class="toc-section-number">3.2</span> <span
+class="math inline">\(c\)</span>の確率密度<span
+class="math inline">\(f(c)\)</span></a></li>
+<li><a href="#aの条件付き確率密度fab"
+id="toc-aの条件付き確率密度fab"><span
+class="toc-section-number">3.3</span> <span
+class="math inline">\(a\)</span>の条件付き確率密度<span
+class="math inline">\(f(a|b)\)</span></a></li>
+</ul></li>
+<li><a href="#行列式で検算" id="toc-行列式で検算"><span
+class="toc-section-number">4</span> 行列式で検算</a></li>
+<li><a href="#終わり" id="toc-終わり"><span
+class="toc-section-number">5</span> 終わり</a></li>
+</ul>
+</div>
+
+<div id="多変量正規分布に従う二つのベクトル" class="section level1"
+number="1">
+<h1><span class="header-section-number">1</span>
+多変量正規分布に従う二つのベクトル</h1>
+<p>多変量正規分布に従う二つのベクトル変数を考えます。</p>
+<p><span class="math display">\[\begin{align}
+a = \begin{pmatrix}
+a_1 \\
+\vdots \\
+a_p
+\end{pmatrix} &amp;\sim \mathcal{N}(\mu_a, \Sigma_a) \ \mbox{where} \ a
+\in R^p \\
+b = \begin{pmatrix}
+b_1 \\
+\vdots \\
+b_q
+\end{pmatrix} &amp;\sim \mathcal{N}(\mu_b, \Sigma_b) \ \mbox{where} \ b
+\in R^q
+\end{align}\]</span></p>
+<p>ベクトル<span class="math inline">\(a\)</span>と<span
+class="math inline">\(b\)</span>の期待値は、</p>
+<p><span class="math display">\[
+\mu_a = E[a] = \begin{pmatrix}
+E[a_1] \\
+\vdots \\
+E[a_p]
+\end{pmatrix}, \ \mu_b = E[b] = \begin{pmatrix}
+E[b_1] \\
+\vdots \\
+E[b_q]
+\end{pmatrix}
+\]</span></p>
+<p>になり、ベクトル<span class="math inline">\(a\)</span>と<span
+class="math inline">\(b\)</span>の分散共分散行列は、</p>
+<p><span class="math display">\[\begin{align}
+\Sigma_a &amp;= E\big[ (a - E[a])\ {}^t\!(a - E[a]) \big]\\
+&amp;= \begin{pmatrix}
+E\big[ (a_1 - E[a_1])(a_1 - E[a_1]) \big] &amp; \cdots &amp; E\big[ (a_1
+- E[a_1])(a_p - E[a_p]) \big] \\
+\vdots &amp; \ddots &amp; \vdots \\
+E\big[ (a_p - E[a_p])(a_1 - E[a_1]) \big] &amp; \cdots &amp; E\big[ (a_p
+- E[a_p])(a_p - E[a_p]) \big]
+\end{pmatrix} \\
+\Sigma_b &amp;= E\big[ (b - E[b])\ {}^t\!(b - E[b]) \big]\\
+&amp;= \begin{pmatrix}
+E\big[ (b_1 - E[b_1])(b_1 - E[b_1]) \big] &amp; \cdots &amp; E\big[ (b_1
+- E[b_1])(b_q - E[b_q]) \big] \\
+\vdots &amp; \ddots &amp; \vdots \\
+E\big[ (b_q - E[b_q])(b_1 - E[b_1]) \big] &amp; \cdots &amp; E\big[ (b_q
+- E[b_q])(b_q - E[b_q]) \big]
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>になります。</p>
+</div>
+<div id="二つのベクトルの同時分布" class="section level1" number="2">
+<h1><span class="header-section-number">2</span>
+二つのベクトルの同時分布</h1>
+<p>ベクトル<span class="math inline">\(a\)</span>と<span
+class="math inline">\(b\)</span>の二つを含むベクトル<span
+class="math inline">\(c\)</span>を考えましょう。</p>
+<p><span class="math display">\[\begin{align}
+c = \begin{pmatrix}
+a_1 \\
+\vdots \\
+a_p \\
+b_1 \\
+\vdots \\
+b_q
+\end{pmatrix} &amp;\sim \mathcal{N}(\mu_c, \Sigma_c) \ \mbox{where} \ c
+\in R^{p + q}
+\end{align}\]</span></p>
+<p>ベクトル<span
+class="math inline">\(c\)</span>の期待値と分散共分散行列は、</p>
+<p><span class="math display">\[\begin{align}
+\mu_c &amp;= E[c] = \begin{pmatrix}
+E[a] \\
+E[b]
+\end{pmatrix} = \begin{pmatrix}
+\mu_a \\
+\mu_b
+\end{pmatrix} \\
+\Sigma_c &amp;= E\big[ (c - E[c]) \ {}^t\! (c - E[c]) \big] \\
+&amp;= \begin{pmatrix}
+E\big[ (a - E[a]) \ {}^t\! (a - E[a]) \big] &amp; E\big[ (a - E[a]) \
+{}^t\! (b - E[b]) \big] \\
+E\big[ (b - E[b]) \ {}^t\! (a - E[a]) \big] &amp; E\big[ (b - E[b]) \
+{}^t\! (b - E[b]) \big]
+\end{pmatrix} \\
+&amp;= \begin{pmatrix}
+\Sigma_{a} &amp; \Sigma_{ab} \\
+{}^t\!\Sigma_{ab} &amp; \Sigma_{b} \\
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>になります。<span class="math inline">\(E\big[ (a - E[a]) \ {}^t\! (b
+- E[b]) \big]\)</span>が<span class="math inline">\(p\)</span>行<span
+class="math inline">\(q\)</span>列に、<span class="math inline">\(E\big[
+(b - E[b]) \ {}^t\! (a - E[a]) \big]\)</span>が<span
+class="math inline">\(q\)</span>行<span
+class="math inline">\(p\)</span>列になることに注意してください。</p>
+</div>
+<div id="同時分布の条件付き確率密度" class="section level1" number="3">
+<h1><span class="header-section-number">3</span>
+同時分布の条件付き確率密度</h1>
+<p>同時分布として定義した多変量正規分布の条件付き確率密度を導出します。</p>
+<div id="bの確率密度fb" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> <span
+class="math inline">\(b\)</span>の確率密度<span
+class="math inline">\(f(b)\)</span></h2>
+<p><span class="math inline">\(b\)</span>は<span
+class="math inline">\(q\)</span>次元多変量正規分布(multivariate normal
+distribution)に従うので、確率密度関数は</p>
+<p><span class="math display">\[\begin{align}
+f(b) &amp;= \frac{1}{(2\pi)^\frac{q}{2}|\Sigma_{b}|^\frac{1}{2}} \exp
+\bigg\{ (*_b) \bigg\} \\
+(*_b) &amp;= -\frac{1}{2} {}^t\!(b - \mu_{b}) \Sigma_{b}^{-1} (b -
+\mu_{b})
+\end{align}\]</span></p>
+<p>となります。</p>
+</div>
+<div id="cの確率密度fc" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> <span
+class="math inline">\(c\)</span>の確率密度<span
+class="math inline">\(f(c)\)</span></h2>
+<p><span class="math inline">\(c\)</span>は<span
+class="math inline">\(p+q\)</span>次元多変量正規分布に従うので、確率密度関数は</p>
+<p><span class="math display">\[\begin{align}
+f(c) &amp;= \frac{1}{(2\pi)^\frac{p+q}{2}|\Sigma_c|^\frac{1}{2}} \exp
+\bigg\{ (*_c) \bigg\} \\
+(*_c) &amp;= -\frac{1}{2} {}^t\!(c - \mu) \Sigma_c^{-1} (c - \mu)
+\end{align}\]</span></p>
+<p>となります。</p>
+<p>同時分布の分散共分散行列の逆行列<span
+class="math inline">\(\Sigma_{c}^{-1}\)</span>を、</p>
+<p><span class="math display">\[
+\Sigma_{c}^{-1} = \begin{pmatrix}
+\Omega_{aa} &amp; \Omega_{ab} \\
+{}^t\!\Omega_{ab} &amp; \Omega_{bb}
+\end{pmatrix}
+\]</span></p>
+<p>と書き直すと、<span class="math inline">\((*_c)\)</span>は</p>
+<p><span class="math display">\[\begin{align}
+(*_c) =&amp; -\frac{1}{2} \big[ {}^t\!(a - \mu_a) \Omega_{aa} (a -
+\mu_a) + {}^t\!(b - \mu_b) {}^t\!\Omega_{ab} (a - \mu_a) \\
+&amp;+ {}^t\!(a - \mu_a) \Omega_{ab} (b - \mu_b) + {}^t\!(b - \mu_b)
+\Omega_{bb} (b - \mu_b) \big]
+\end{align}\]</span></p>
+<p>となります。</p>
+</div>
+<div id="aの条件付き確率密度fab" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> <span
+class="math inline">\(a\)</span>の条件付き確率密度<span
+class="math inline">\(f(a|b)\)</span></h2>
+<p><span class="math inline">\(b\)</span>を固定したときの<span
+class="math inline">\(a\)</span>の条件付き確率密度関数<span
+class="math inline">\(f(a|b)\)</span>は、<span
+class="math inline">\(f(a|b)\)</span>の期待値を<span
+class="math inline">\(\mu_{a|b}\)</span>、分散共分散行列を<span
+class="math inline">\(\Sigma_{a|b}\)</span>と置くと</p>
+<p><span class="math display">\[\begin{align}
+f(a|b) &amp;= \frac{1}{(2\pi)^\frac{p}{2}|\Sigma_{a|b}|^\frac{1}{2}}
+\exp \bigg\{ (*_{a|b}) \bigg\} \\
+(*_{a|b}) &amp;= -\frac{1}{2} {}^t\!(a - \mu_{a|b}) \Sigma_{a|b}^{-1} (a
+- \mu_{a|b})
+\end{align}\]</span></p>
+<p>と書くことができます。</p>
+<p><span class="math display">\[
+f(a|b) = f(c|b) = \frac{f(c)}{f(b)}
+\]</span></p>
+<p>になることから、<span class="math inline">\(\mu_{a|b}\)</span>と<span
+class="math inline">\(\Sigma_{a|b}\)</span>を求めていきましょう。</p>
+<p><span class="math display">\[
+\frac{f(c)}{f(b)} =
+\frac{1}{(2\pi)^\frac{p}{2}|\Sigma_c|^\frac{1}{2}|\Sigma_{b}|^{-\frac{1}{2}}}
+\exp \bigg\{ (*_c) - (*_b) \bigg\}
+\]</span></p>
+<p><span class="math display">\[\begin{align}
+(*_c) - (*_b) =&amp; -\frac{1}{2} \big[ {}^t\!(a - \mu_a) \Omega_{aa} (a
+- \mu_a) + {}^t\!(b - \mu_b) {}^t\!\Omega_{ab} (a - \mu_a) \\
+&amp;+ {}^t\!(a - \mu_a) \Omega_{ab} (b - \mu_b)  \big]
+\end{align}\]</span></p>
+<p><span class="math inline">\((*_{a|b}) = (*_c) -
+(*_b)\)</span>となるとすると、</p>
+<p><span class="math display">\[\begin{align}
+{}^t\!a \Sigma_{a|b}^{-1} a &amp;= {}^t\!a \Omega_{aa} a \\
+- {}^t\!a \Sigma_{a|b}^{-1} \mu_{a|b} - {}^t\!\mu_{a|b}
+\Sigma_{a|b}^{-1} a
+&amp;= - {}^t\!a \Omega_{aa} \mu_a - {}^t\! \mu_a \Omega_{aa} a +
+{}^t\!(b - \mu_b) {}^t\!\Omega_{ab} a + {}^t\! a \Omega_{ab} (b - \mu_b)
+\\
+{}^t\!\mu_{a|b} \Sigma_{a|b}^{-1} \mu_{a|b} &amp;= {}^t\!\mu_a
+\Omega_{aa} \mu_a - {}^t\!\mu_a \Omega_{ab} (b - \mu_b) - {}^t\! (b -
+\mu_b) {}^t\!\Omega_{ab} \mu_a
+\end{align}\]</span></p>
+<p><span class="math inline">\(\Sigma_{a|b}^{-1} =
+\Omega_{aa}\)</span>となります。</p>
+<p>また、1行1列の行列の転置は同じ値になることから<span
+class="math inline">\({}^t\!a \Sigma_{a|b}^{-1} \mu_{a|b} = {}^t\!(
+{}^t\!a \Sigma_{a|b}^{-1} \mu_{a|b} )\)</span>なので、<span
+class="math inline">\({}^t\!a \Sigma_{a|b}^{-1} \mu_{a|b} =
+{}^t\!\mu_{a|b} \Sigma_{a|b}^{-1} a\)</span>に、同様に、<span
+class="math inline">\({}^t\! a \Omega_{ab} (b - \mu_b) = {}^t\! (b -
+\mu_b) \Omega_{ab} a\)</span>になります。これらに注意すると、</p>
+<p><span class="math display">\[\begin{align}
+-2 {}^t\!a \Sigma_{a|b}^{-1} \mu_{a|b} &amp;= -2 {}^t\!a \Omega_{aa}
+\mu_a + 2 {}^t\! a \Omega_{ab} (b - \mu_b) \\
+\Sigma_{a|b}^{-1} \mu_{a|b} &amp;= \Omega_{aa} \mu_a - \Omega_{ab} (b -
+\mu_b) \\
+\mu_{a|b} &amp;= \Sigma_{a|b} \Omega_{aa} \mu_a - \Sigma_{a|b}
+\Omega_{ab} (b - \mu_b) \\
+&amp;= \Omega_{aa}^{-1} \Omega_{aa} \mu_a - \Omega_{aa}^{-1} \Omega_{ab}
+(b - \mu_b) \\
+&amp;= \mu_a - \Omega_{aa}^{-1} \Omega_{ab} (b - \mu_b) \\
+\end{align}\]</span></p>
+<p><span class="math inline">\(\Omega_{aa}\)</span>と<span
+class="math inline">\(\Omega_{ab}\)</span>は<a
+href="https://wh.anlyznews.com/R/Wilks.shtml#%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF%E8%A1%8C%E5%88%97%E3%81%AE%E9%80%86%E8%A1%8C%E5%88%97">ブロック行列の逆行列の公式</a>から分かります。</p>
+<p><span class="math display">\[\begin{align}
+\Omega_{aa} &amp;= (\Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1}
+{}^t\!\Sigma_{ab})^{-1} \\
+\Omega_{ab} &amp;= - (\Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1}
+{}^t\!\Sigma_{ab})^{-1} {}^t\!\Sigma_{ab} \Sigma_{b}^{-1} \\
+&amp;= - \Omega_{aa} {}^t\!\Sigma_{ab} \Sigma_{b}^{-1}  
+\end{align}\]</span></p>
+<p>これを<span class="math inline">\(\mu_{a|b}\)</span>と<span
+class="math inline">\(\Sigma_{a|b}\)</span>の式に代入して整理します。</p>
+<p><span class="math display">\[\begin{align}
+\mu_{a|b} &amp;= \mu_a - \Omega_{aa}^{-1} \Omega_{ab} (b - \mu_b) \\
+&amp;= \mu_a - \Omega_{aa}^{-1} (- \Omega_{aa} {}^t\!\Sigma_{ab}
+\Sigma_{b}^{-1}) (b - \mu_b) \\
+&amp;= \mu_a + {}^t\!\Sigma_{ab} \Sigma_{b}^{-1} (b - \mu_b) \\
+\Sigma_{a|b} &amp;= \Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1}
+{}^t\!\Sigma_{ab}
+\end{align}\]</span></p>
+<p><span class="math inline">\(\Sigma_{a|b}^{-1} =
+\Omega_{aa}\)</span>と<span class="math inline">\(\mu_{a|b} = \mu_a -
+\Omega_{aa}^{-1} \Omega_{ab} (b - \mu_b)\)</span>を、<span
+class="math inline">\({}^t\!\mu_{a|b} \Sigma_{a|b}^{-1}
+\mu_{a|b}\)</span>に代入すると、<span class="math inline">\({}^t\!\mu_a
+\Omega_{aa} \mu_a - {}^t\!\mu_a \Omega_{ab} (b - \mu_b) - {}^t\! (b -
+\mu_b) {}^t\!\Omega_{ab} \mu_a\)</span>が得られ、<span
+class="math inline">\((*_{a|b}) = (*_c) -
+(*_b)\)</span>となったことが確認できます。</p>
+</div>
+</div>
+<div id="行列式で検算" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> 行列式で検算</h1>
+<p>平均と分散共分散行列が定まったのですが、検算をしておきましょう。
+<span
+class="math inline">\(\Sigma_{a|b}\)</span>が正規分布の分散共分散行列であれば、<span
+class="math inline">\(\exp\)</span>の外側の<span
+class="math inline">\(|\Sigma_c||\Sigma_b|^{-1}\)</span>が<span
+class="math inline">\(|\Sigma_{a|b}|\)</span>と一致します。</p>
+<p>シューア補行列を<span
+class="math inline">\(\Sigma_c\)</span>に乗じます。</p>
+<p><span class="math display">\[\begin{pmatrix}
+I_p &amp; -\Sigma_{ab}\Sigma_{b}^{-1} \\
+O &amp; I_q  
+\end{pmatrix} \begin{pmatrix}
+\Sigma_{a} &amp; \Sigma_{ab} \\
+{}^t\!\Sigma_{ab} &amp; \Sigma_{b}
+\end{pmatrix} = \begin{pmatrix}
+\Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1} {}^t\!\Sigma_{ab} &amp; 0 \\
+{}^t\!\Sigma_{ab} &amp; \Sigma_{b}
+\end{pmatrix}\]</span></p>
+<p>両辺の行列式を計算します。</p>
+<p><span class="math display">\[\begin{align}
+\det\begin{pmatrix}
+I_p &amp; -\Sigma_{ab}\Sigma_{b}^{-1} \\
+O &amp; I_q  
+\end{pmatrix} \det\begin{pmatrix}
+\Sigma_{a} &amp; \Sigma_{ab} \\
+{}^t\!\Sigma_{ab} &amp; \Sigma_{b}
+\end{pmatrix} &amp;= \det\begin{pmatrix}
+\Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1} {}^t\!\Sigma_{ab} &amp; 0 \\
+{}^t\!\Sigma_{ab} &amp; \Sigma_{b}
+\end{pmatrix}\\
+1 \cdot |\Sigma_c| &amp;= |\Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1}
+{}^t\!\Sigma_{ab}|\cdot|\Sigma_{b}|
+\end{align}\]</span></p>
+<p>両辺を<span class="math inline">\(|\Sigma_b|\)</span>で割ります。</p>
+<p><span class="math display">\[\begin{align}
+|\Sigma_c| |\Sigma_b|^{-1} &amp;= |\Sigma_a - \Sigma_{ab} \Sigma_b^{-1}
+\ {}^t\!\Sigma_{ab} | \\
+&amp;= |\Sigma_{a|b}|
+\end{align}\]</span></p>
+<p>しっかり一致しました。</p>
+</div>
+<div id="終わり" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> 終わり</h1>
+<p>自明ですが多変量正規分布は必ず複数のベクトルで構成されているので、上の結果は一般的に言えます。</p>
+<p>これで、</p>
+<p><span class="math display">\[
+a|b \sim \mathcal{N}(\mu_a + {}^t\!\Sigma_{ab} \Sigma_{b}^{-1} (b -
+\mu_b), \Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1} {}^t\!\Sigma_{ab})
+\]</span></p>
+<p>と言えるようになりました。</p>
+</div>
+
+</div>
+<div class="footer" id="footer"><!--#include virtual="/parts/footer.txt"--></div>
+<script>include_parts('footer', 'https://wh.anlyznews.com/parts/footer.txt');</script>
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<script id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
+</body>
+</html>

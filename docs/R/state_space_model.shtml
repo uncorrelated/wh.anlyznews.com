@@ -594,7 +594,8 @@ y_t  &amp;= Z_t  \alpha_t + G_t u_{t} \\
 class="math inline">\(G_t{}^t\!G_t\)</span>と<span
 class="math inline">\(H_t{}^t\!H_t\)</span>は、分散共分散行列になるわけで、正則行列とします。</p>
 <p>これでモデルの設定は終わりです。</p>
-<p>正規分布の線形結合が正規分布になることと、多変量正規分布の条件付き確率分布の公式を使うと、以下のように行列を使って求める分布を整理できます。</p>
+<p>正規分布の線形結合が正規分布になることと、<a
+href="https://wh.anlyznews.com/R/cmvnorm.shtml">多変量正規分布の条件付き確率分布の公式</a>を使うと、以下のように行列を使って求める分布を整理できます。</p>
 <p><span class="math display">\[\begin{align}
 \alpha_t|y_{t-1}, \cdots, y_1 &amp;\sim \mathcal{N}_r(\hat{\alpha}_t,
 P_t) \quad \mbox{1期先α予測分布}\\
