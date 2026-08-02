@@ -625,9 +625,11 @@ href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>。</p>
 class="math inline">\(\{X_{t}, X_{t+1}, \cdots,
 X_{t+l}\}\)</span>と<span class="math inline">\(\{X_{t + s}, X_{t + s +
 1}, \cdots, X_{t + s +
-l}\}\)</span>の同時分布が同じと言うことです。強定常と呼ばれます。ただし、この強定常の定義は扱いづらいので、どの時点でも期待値と分散が同じで、同じ間隔の任意の2時点の自己共分散が同じである弱定常であるかどうかを調べることが多いです。強定常であれば必ず弱定常ですが、逆は成立しません。</p>
+l}\}\)</span>の同時分布が同じと言うことです。強定常と呼ばれます。ただし、この強定常の定義は扱いづらいので、どの時点でも期待値と分散が同じで、同じ間隔の任意の2時点の自己共分散が同じ<a
+href="#fn3" class="footnote-ref"
+id="fnref3"><sup>3</sup></a>である弱定常であるかどうかを調べることが多いです。強定常であれば必ず弱定常ですが、逆は成立しません。</p>
 <p>具体的な例として、ARモデルが定常過程になる条件を整理しましょう。まず、ARモデルを、行列を用いて書きなおします<a
-href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
+href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
 <p><span class="math display">\[\begin{align}
 \begin{pmatrix}
 y_{t} \\
@@ -1724,8 +1726,14 @@ href="#fnref1" class="footnote-back">↩︎</a></p></li>
 id="fn2"><p>非定常なAR(1)は<code>arima</code>コマンドでは推定が不安定になりますが、OLSでは係数の点推定量自体は上手く推定できたりします。<a
 href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li
-id="fn3"><p>ARMAモデルも行列で書けるため、ここでの議論はほぼそのままARMAモデルに適用する事ができます。<a
+id="fn3"><p>弱定常過程であっても、それまでの時点の値を条件とする条件付き期待値<span
+class="math inline">\(E[X_t|X_{t-1}, \cdots, X_{t-l}]\)</span>は、<span
+class="math inline">\(X_{t-1}, \cdots,
+X_{t-l}\)</span>の値によって変わるので一定になりません。条件付き期待値を使って計算する、〃分散や〃自己共分散も同様です。<a
 href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn4"><p>ARMAモデルも行列で書けるため、ここでの議論はほぼそのままARMAモデルに適用する事ができます。<a
+href="#fnref4" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 

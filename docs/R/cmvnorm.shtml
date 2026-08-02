@@ -423,7 +423,7 @@ class="math inline">\(p+q\)</span>次元多変量正規分布に従うので、�
 <p><span class="math display">\[\begin{align}
 f(c) &amp;= \frac{1}{(2\pi)^\frac{p+q}{2}|\Sigma_c|^\frac{1}{2}} \exp
 \bigg\{ (*_c) \bigg\} \\
-(*_c) &amp;= -\frac{1}{2} {}^t\!(c - \mu) \Sigma_c^{-1} (c - \mu)
+(*_c) &amp;= -\frac{1}{2} {}^t\!(c - \mu_c) \Sigma_c^{-1} (c - \mu_c)
 \end{align}\]</span></p>
 <p>となります。</p>
 <p>同時分布の分散共分散行列の逆行列<span
@@ -515,22 +515,22 @@ href="https://wh.anlyznews.com/R/Wilks.shtml#%E3%83%96%E3%83%AD%E3%83%83%E3%82%A
 \Omega_{aa} &amp;= (\Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1}
 {}^t\!\Sigma_{ab})^{-1} \\
 \Omega_{ab} &amp;= - (\Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1}
-{}^t\!\Sigma_{ab})^{-1} {}^t\!\Sigma_{ab} \Sigma_{b}^{-1} \\
-&amp;= - \Omega_{aa} {}^t\!\Sigma_{ab} \Sigma_{b}^{-1}  
+{}^t\!\Sigma_{ab})^{-1} \Sigma_{ab} \Sigma_{b}^{-1} \\
+&amp;= - \Omega_{aa} \Sigma_{ab} \Sigma_{b}^{-1}  
 \end{align}\]</span></p>
 <p>これを<span class="math inline">\(\mu_{a|b}\)</span>と<span
 class="math inline">\(\Sigma_{a|b}\)</span>の式に代入して整理します。</p>
 <p><span class="math display">\[\begin{align}
 \mu_{a|b} &amp;= \mu_a - \Omega_{aa}^{-1} \Omega_{ab} (b - \mu_b) \\
-&amp;= \mu_a - \Omega_{aa}^{-1} (- \Omega_{aa} {}^t\!\Sigma_{ab}
+&amp;= \mu_a - \Omega_{aa}^{-1} (- \Omega_{aa} \Sigma_{ab}
 \Sigma_{b}^{-1}) (b - \mu_b) \\
-&amp;= \mu_a + {}^t\!\Sigma_{ab} \Sigma_{b}^{-1} (b - \mu_b) \\
+&amp;= \mu_a + \Sigma_{ab} \Sigma_{b}^{-1} (b - \mu_b) \\
 \Sigma_{a|b} &amp;= \Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1}
 {}^t\!\Sigma_{ab}
 \end{align}\]</span></p>
 <p><span class="math inline">\(\Sigma_{a|b}^{-1} =
 \Omega_{aa}\)</span>と<span class="math inline">\(\mu_{a|b} = \mu_a -
-\Omega_{aa}^{-1} \Omega_{ab} (b - \mu_b)\)</span>を、<span
+\Omega_{aa}^{-1} \Omega_{ab} (b - \mu_b)\)</span>を<span
 class="math inline">\({}^t\!\mu_{a|b} \Sigma_{a|b}^{-1}
 \mu_{a|b}\)</span>に代入すると、<span class="math inline">\({}^t\!\mu_a
 \Omega_{aa} \mu_a - {}^t\!\mu_a \Omega_{ab} (b - \mu_b) - {}^t\! (b -
@@ -587,8 +587,8 @@ O &amp; I_q
 <p>自明ですが多変量正規分布は必ず複数のベクトルで構成されているので、上の結果は一般的に言えます。</p>
 <p>これで、</p>
 <p><span class="math display">\[
-a|b \sim \mathcal{N}(\mu_a + {}^t\!\Sigma_{ab} \Sigma_{b}^{-1} (b -
-\mu_b), \Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1} {}^t\!\Sigma_{ab})
+a|b \sim \mathcal{N}(\mu_a + \Sigma_{ab} \Sigma_{b}^{-1} (b - \mu_b),
+\Sigma_{a} - \Sigma_{ab} \Sigma_{b}^{-1} {}^t\!\Sigma_{ab})
 \]</span></p>
 <p>と言えるようになりました。</p>
 </div>
