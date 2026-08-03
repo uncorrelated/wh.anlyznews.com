@@ -1414,9 +1414,32 @@ I &amp; O &amp; O
 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0
 \end{pmatrix}
 \end{align}\]</span></p>
-<p>となります。<span class="math inline">\(A\)</span>と<span
+<p>となります。</p>
+<p><span class="math inline">\(A\)</span>と<span
 class="math inline">\(J\)</span>がブロック要素で構成されるのは、VARの内生変数が複数だからです。<span
-class="math inline">\(J\)</span>を使うことで、<span
+class="math inline">\(A\)</span>に対応する切片項<span
+class="math inline">\(C\)</span>とトレンド項<span
+class="math inline">\(\mathbf{\tau}\)</span>と内生変数のベクトル<span
+class="math inline">\(Y_t\)</span>と誤差項<span
+class="math inline">\(E_t\)</span>は、複数期分をまとめて</p>
+<p><span class="math display">\[\begin{align}
+C_t &amp;= {}^t\! \begin{pmatrix}
+c_1 &amp; c_2 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{pmatrix} \\
+\mathbf{\tau} &amp;= {}^t\! \begin{pmatrix}
+\tau_1 &amp; \tau_2 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{pmatrix} \\
+Y_t &amp;= {}^t\! \begin{pmatrix}
+y_{1, t} &amp; y_{2, t} &amp; y_{1, t-1} &amp; y_{2, t-1} &amp; y_{1,
+t-2} &amp; y_{2, t-2}
+\end{pmatrix} \\
+E_t &amp;= {}^t\! \begin{pmatrix}
+\epsilon_{1, t} &amp; \epsilon_{2, t} &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{pmatrix}
+\end{align}\]</span></p>
+<p>となり、VARを<span class="math inline">\(Y_t = C + \mathbf{\tau} t +
+AY_{t-1} + E_t\)</span>と表現できます。</p>
+<p><span class="math inline">\(J\)</span>を使うことで、<span
 class="math inline">\(s\)</span>期より前の内生変数への影響を表す要素をなくし、<span
 class="math inline">\(s\)</span>期への影響だけを表しています。</p>
 <p><span class="math inline">\(t+1\)</span>期の撹乱項の<span
