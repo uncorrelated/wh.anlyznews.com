@@ -414,7 +414,7 @@ class="toc-section-number">13</span> 応用例②
 
 <p>Rの日時処理は一見すると複雑怪奇に思えるかも知れません。Date型、POSIXct型、POSIXlt型と日時を格納するクラスが何種類もありますし、実際にデータを格納するときは文字列としてテキストファイルに書き込むからです。全てテキスト型か数値型として処理したくなりますが、日付の処理は変則的なことが多いので、バグの発生源になります<a
 href="#fn1" class="footnote-ref"
-id="fnref1"><sup>1</sup></a>。来年や来年度まであと何日か数えるのは意外に手間暇ですが、最近はlubridateパッケージを使うのが一般的のようですが、日時クラスを使うと簡単に処理できます。</p>
+id="fnref1"><sup>1</sup></a>。来年や来年度まであと何日か数えるのは意外に手間暇ですが、日時クラスを使うと簡単に処理できます。最近は<code>lubridate</code>パッケージを使うのが一般的のようですが、大雑把には覚えておきましょう。</p>
 <div id="posixct-posixlt" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> POSIXct → POSIXlt</h1>
 <p>まずは、タイムゾーンUTCでのUNIX秒を保持するクラスPOSIXctと、日付構造体になっているリストPOSIXlt型の変換です。変換に意外性はないですが、POSIXctとPOSIXltの存在を覚えておきましょう。</p>
@@ -545,7 +545,7 @@ roundで丸め処理ができる</h1>
 <span id="cb43-3"><a href="#cb43-3" tabindex="-1"></a>newyear_ct <span class="ot">&lt;-</span> <span class="fu">ISOdate</span>(now_lt<span class="sc">$</span>year <span class="sc">+</span> <span class="dv">1900</span> <span class="sc">+</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="at">tz=</span><span class="st">&quot;Japan&quot;</span>)</span>
 <span id="cb43-4"><a href="#cb43-4" tabindex="-1"></a><span class="co"># 差分をとる前にDate型にして端数を抑制</span></span>
 <span id="cb43-5"><a href="#cb43-5" tabindex="-1"></a><span class="fu">difftime</span>(<span class="fu">as.Date</span>(newyear_ct), <span class="fu">as.Date</span>(now_lt), <span class="at">units=</span><span class="st">&quot;days&quot;</span>)</span></code></pre></div>
-<pre><code>Time difference of 231 days</code></pre>
+<pre><code>Time difference of 149 days</code></pre>
 </div>
 <div id="応用例②-年月の形式を月末日でposixltに変更"
 class="section level1" number="13">
