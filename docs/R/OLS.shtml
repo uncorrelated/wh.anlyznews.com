@@ -1028,17 +1028,19 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
 <div id="durbin-watson比" class="section level2" number="5.2">
 <h2><span class="header-section-number">5.2</span> Durbin-Watson比</h2>
 <p>観測値に時間的な並びがある場合、ある時点に生じた撹乱が、続く時点に波及していく系列相関が生じるときがあります。系列相関がある場合もOLSは一致推定量になりますが、標準誤差が過小推定されるのでp値や信頼区間に問題が生じるため、<a
-href="https://wh.anlyznews.com/R/time_series.shtml#ma%E3%83%A2%E3%83%87%E3%83%AB">時系列データ分析のMAモデル</a>を用いる事になります。系列相関が入る可能性がある場合は検定を行い、推定結果の頑強性を確認しましょう。</p>
-<p>古典的には1期前の撹乱が当期にも影響していないか調べるDurbin-Watson比と、その検定が参照サれることが多いです。</p>
+href="https://wh.anlyznews.com/R/time_series.shtml#ma%E3%83%A2%E3%83%87%E3%83%AB">時系列データ分析のMAモデル</a>を用いる事になります。</p>
+<p>系列相関が入る可能性がある場合は、古典的には1期前の撹乱が当期にも影響していないか調べるDurbin-Watson比と、その検定が参照されることが多いです。</p>
+<p>Durbin-Watson比を計算してみましょう。</p>
 <div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="fu">residuals</span>(r_lm)</span>
 <span id="cb55-2"><a href="#cb55-2" tabindex="-1"></a>e0 <span class="ot">&lt;-</span> e[<span class="dv">1</span><span class="sc">:</span>(<span class="fu">length</span>(e)<span class="sc">-</span><span class="dv">1</span>)]</span>
 <span id="cb55-3"><a href="#cb55-3" tabindex="-1"></a>e1 <span class="ot">&lt;-</span> e[<span class="dv">2</span><span class="sc">:</span><span class="fu">length</span>(e)]</span>
 <span id="cb55-4"><a href="#cb55-4" tabindex="-1"></a>(d <span class="ot">&lt;-</span> <span class="fu">sum</span>((e1<span class="sc">-</span>e0)<span class="sc">^</span><span class="dv">2</span>)<span class="sc">/</span><span class="fu">sum</span>(e<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div>
 <pre><code>[1] 1.667529</code></pre>
-<p>Durbin-Watson比は<span class="math inline">\(0\)</span>から<span
+<p>Durbin-Watson比は、<span class="math inline">\(0\)</span>から<span
 class="math inline">\(4\)</span>の値をとり、正の系列相関がある場合は<span
 class="math inline">\(2\)</span>未満、正の系列相関がある場合は<span
-class="math inline">\(2\)</span>より大となります。丁度<span
+class="math inline">\(2\)</span>より大となります<a href="#fn4"
+class="footnote-ref" id="fnref4"><sup>4</sup></a>。丁度<span
 class="math inline">\(2\)</span>と言う事はまず無いので、<span
 class="math inline">\(1\)</span>未満か<span
 class="math inline">\(3\)</span>より大のときに（観測値に時間的な並びがあれば）系列相関が疑われるとなります。</p>
@@ -1102,7 +1104,7 @@ y ~ x     120.68841 124.8920</code></pre>
 </ul>
 <p>の4つのプロットが順番に表示されます。</p>
 <p>プロット領域を4分割し、<code>ask = FALSE</code>をつけて、一枚に納めて表示してみましょう<a
-href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>。</p>
+href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>。</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow=</span><span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</span>
 <span id="cb65-2"><a href="#cb65-2" tabindex="-1"></a><span class="fu">plot</span>(r_lm, <span class="at">ask =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p><img src="common_files/figure-html/ols_diagnosis-1.png" width="672" /></p>
@@ -1127,8 +1129,8 @@ D_i \equiv
 \]</span></p>
 <p>と定義されます。</p>
 <p>なお、係数の点推定において、不偏性のある一致推定量を得るという意味では、誤差項が正規分布する必要も、分散が均一である必要もなく、系列相関も原則として支障になりません<a
-href="#fn5" class="footnote-ref"
-id="fnref5"><sup>5</sup></a>。大標本のときは、梃子比を気にしましょう。</p>
+href="#fn6" class="footnote-ref"
+id="fnref6"><sup>6</sup></a>。大標本のときは、梃子比を気にしましょう。</p>
 </div>
 <div id="予測値" class="section level2" number="6.2">
 <h2><span class="header-section-number">6.2</span> 予測値</h2>
@@ -1201,14 +1203,20 @@ id="fn2"><p>例では数式にあわせて逆行列をかけて係数を推定�
 href="#fnref2" class="footnote-back">↩︎</a></p></li>
 <li id="fn3"><p>導出はテキストを参考にしてください。<a href="#fnref3"
 class="footnote-back">↩︎</a></p></li>
-<li
-id="fn4"><p>個別に表示したい場合は、<code>plot(r_lm, which = 1)</code>と言うように<code>1</code>,
-<code>2</code>, <code>3</code>,
-<code>5</code>の数字を指定します。<code>4</code>を指定するとクック距離だけを表示ます。詳しくは<code>? plot.lm</code>としてヘルプを参照してください。<a
+<li id="fn4"><p>DW比は、<span class="math inline">\(1\)</span>から<span
+class="math inline">\(t\)</span>期の残差と<span
+class="math inline">\(t-1\)</span>期の残差の相関係数を引き<span
+class="math inline">\(2\)</span>倍した値に漸近し、<span
+class="math inline">\(n\rightarrow\infty\)</span>で一致します。<a
 href="#fnref4" class="footnote-back">↩︎</a></p></li>
 <li
-id="fn5"><p>不均一分散や系列相関があると、標準誤差にバイアスが入ります。系列相関がある場合はとくに、時系列データであったり、欠落変数バイアスが反映されていたりする場合があります。<a
+id="fn5"><p>個別に表示したい場合は、<code>plot(r_lm, which = 1)</code>と言うように<code>1</code>,
+<code>2</code>, <code>3</code>,
+<code>5</code>の数字を指定します。<code>4</code>を指定するとクック距離だけを表示ます。詳しくは<code>? plot.lm</code>としてヘルプを参照してください。<a
 href="#fnref5" class="footnote-back">↩︎</a></p></li>
+<li
+id="fn6"><p>不均一分散や系列相関があると、標準誤差にバイアスが入ります。系列相関がある場合はとくに、時系列データであったり、欠落変数バイアスが反映されていたりする場合があります。<a
+href="#fnref6" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
 
