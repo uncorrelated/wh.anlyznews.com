@@ -13,7 +13,7 @@
 
 <title>Rでのテキストファイルの扱い方</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -373,10 +380,18 @@ class="toc-section-number">3</span>
 id="toc-応答による画面表示をファイルに書き出す"><span
 class="toc-section-number">4</span>
 応答による画面表示をファイルに書き出す</a></li>
+<li><a href="#printの結果をファイルに書き出す"
+id="toc-printの結果をファイルに書き出す"><span
+class="toc-section-number">5</span>
+<code>print</code>の結果をファイルに書き出す</a></li>
 <li><a href="#ファイルを読み込んで変更し上書きする"
 id="toc-ファイルを読み込んで変更し上書きする"><span
-class="toc-section-number">5</span>
-ファイルを読み込んで変更し、上書きする</a></li>
+class="toc-section-number">6</span>
+ファイルを読み込んで変更し、上書きする</a>
+<ul>
+<li><a href="#printの結果" id="toc-printの結果"><span
+class="toc-section-number">6.1</span> <code>print</code>の結果</a></li>
+</ul></li>
 </ul>
 </div>
 
@@ -422,31 +437,43 @@ number="4">
 <span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a><span class="fu">sink</span>()</span></code></pre></div>
 <p>なお、入力の方は<code>savehistory(file = "history.txt")</code>で保存できます。</p>
 </div>
-<div id="ファイルを読み込んで変更し上書きする" class="section level1"
+<div id="printの結果をファイルに書き出す" class="section level1"
 number="5">
 <h1><span class="header-section-number">5</span>
+<code>print</code>の結果をファイルに書き出す</h1>
+<p><code>sink</code>はバッチ処理など画面表示がない場合は使えないので、そのときは<code>capture.outut</code>を使います。</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">capture.output</span>(<span class="fu">print</span>(<span class="fu">summary</span>(<span class="fu">lm</span>(<span class="fu">I</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span> <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">10</span>)) <span class="sc">~</span> <span class="fu">I</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)))), <span class="at">file =</span> <span class="st">&quot;example.txt&quot;</span>)</span></code></pre></div>
+</div>
+<div id="ファイルを読み込んで変更し上書きする" class="section level1"
+number="6">
+<h1><span class="header-section-number">6</span>
 ファイルを読み込んで変更し、上書きする</h1>
 <p><code>file</code>でファイルを開いてファイルハンドルを取得し、読み書き操作の上で、<code>close</code>でファイルを閉じる操作もできます。PerlやPythonと言ったスクリプト言語が得意な処理をしてみましょう。ファイルを読み込んで変更し、上書きします。前世紀に流行ったCGI<a
 href="#fn2" class="footnote-ref"
 id="fnref2"><sup>2</sup></a>で一般的だった流れです<a href="#fn3"
 class="footnote-ref" id="fnref3"><sup>3</sup></a>。</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># 読み書きモードでファイルを開く</span></span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">file</span>(<span class="st">&quot;example.txt&quot;</span>, <span class="st">&quot;r+&quot;</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="co"># 複数行まとめて読み出す</span></span>
-<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">readLines</span>(con)</span>
-<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a><span class="co"># blocking=FALSEのときは全部一度で読み取るとは限らないので以下が要る</span></span>
-<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a><span class="co"># while(isIncomplete(con)){</span></span>
-<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a><span class="co">#   lines &lt;- c(lines, readLines(con))</span></span>
-<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="co"># ファイルの読み書き位置を0地点に移動</span></span>
-<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="fu">seek</span>(con, <span class="dv">0</span>)</span>
-<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co"># ファイルサイズをゼロにする</span></span>
-<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="fu">truncate</span>(con, <span class="dv">0</span>)</span>
-<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co"># 1を001に置換して書き出す</span></span>
-<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">gsub</span>(<span class="st">&quot;([^0-9])(1)([^0-9])&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">100</span><span class="sc">\\</span><span class="st">2</span><span class="sc">\\</span><span class="st">3&quot;</span>, lines), con)</span>
-<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co"># ファイルを閉じる</span></span>
-<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="fu">close</span>(con)</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># 読み書きモードでファイルを開く</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">file</span>(<span class="st">&quot;example.txt&quot;</span>, <span class="st">&quot;r+&quot;</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co"># 複数行まとめて読み出す</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>lines <span class="ot">&lt;-</span> <span class="fu">readLines</span>(con)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="co"># blocking=FALSEのときは全部一度で読み取るとは限らないので以下が要る</span></span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="co"># while(isIncomplete(con)){</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co">#   lines &lt;- c(lines, readLines(con))</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co"># ファイルの読み書き位置を0地点に移動</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="fu">seek</span>(con, <span class="dv">0</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co"># ファイルサイズをゼロにする</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="fu">truncate</span>(con, <span class="dv">0</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co"># 1を001に置換して書き出す</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="fu">writeLines</span>(<span class="fu">gsub</span>(<span class="st">&quot;([^0-9])(1)([^0-9])&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">100</span><span class="sc">\\</span><span class="st">2</span><span class="sc">\\</span><span class="st">3&quot;</span>, lines), con)</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co"># ファイルを閉じる</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="fu">close</span>(con)</span></code></pre></div>
 <p><code>?file</code>に詳しい説明がありますが、ファイルの第2引数のうち<code>r</code>（読み込み），<code>w</code>（書き込み），<code>a</code>（追記），<code>r+</code>（読み書き）を知っておけばだいたい間に合うと思います。なお、<code>file</code>はURLを指定してネットワーク通信も可能で、C言語の<code>fopen</code>と比較すると格段に高機能な関数です。</p>
+<div id="printの結果" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span>
+<code>print</code>の結果</h2>
+<p><code>file</code>引数をつけずに<code>capture.output</code>をつけて戻り値を得て、それを<code>writeLines</code>で書き出しましょう。</p>
+</div>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr />
