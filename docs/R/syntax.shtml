@@ -13,7 +13,7 @@
 
 <title>Rの文法のざっとした説明</title>
 
-<script src="common_files/header-attrs-2.29/header-attrs.js"></script>
+<script src="common_files/header-attrs-2.31/header-attrs.js"></script>
 <script src="common_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="common_files/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
@@ -337,8 +337,15 @@ src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
 <script type="text/javascript" src="https://static.evernote.com/noteit.js"></script>
 <a href="#" onclick="Evernote.doClip({contentId:'article'}); return false;"><img src="https://static.evernote.com/article-clipper.png" alt="Clip to Evernote" style="border:none;" border="0"/></a>
 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-<div class="line-it-button" data-lang="ja" data-type="share-c" data-env="REAL" data-url="https://wh.anlyznews.com/" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
-<script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+<div class="line-it-button" data-lang="ja" data-type="share-a" data-env="PROD" data-url="" data-color="default" data-size="small" data-count="false" data-ver="3" style="display: none;"></div>
+<a id="bsky-share-button"><img alt='' border='0' data-original-height='32' data-original-width='102' height='17' src='/img/bluesky.png' width='54'/></a>
+<script>
+var div = document.getElementsByClassName('line-it-button')[0];
+if(div) div.setAttribute('data-url', window.location.href);
+var bsky_linkElm = document.getElementById('bsky-share-button');
+if(bsky_linkElm) bsky_linkElm.href = "https://bsky.app/intent/compose?text=" + document.title + "%0D%0A" + window.location.href;
+</script>
+<script async='async' defer='defer' src='https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js'></script>
 <div style="text-align:center;"><script type="text/javascript"><!--
 google_ad_client = "ca-pub-1521343453876863";
 /* H2下側 */
@@ -375,7 +382,11 @@ class="toc-section-number">7</span> データ型</a></li>
 <li><a href="#データ構造" id="toc-データ構造"><span
 class="toc-section-number">8</span> データ構造</a></li>
 <li><a href="#条件分岐" id="toc-条件分岐"><span
-class="toc-section-number">9</span> 条件分岐</a></li>
+class="toc-section-number">9</span> 条件分岐</a>
+<ul>
+<li><a href="#ifも式" id="toc-ifも式"><span
+class="toc-section-number">9.1</span> <code>if</code>も式</a></li>
+</ul></li>
 <li><a href="#繰り返し文ループ" id="toc-繰り返し文ループ"><span
 class="toc-section-number">10</span> 繰り返し文（ループ）</a></li>
 <li><a href="#エラーと例外処理" id="toc-エラーと例外処理"><span
@@ -565,51 +576,61 @@ href="#fn5" class="footnote-ref"
 id="fnref5"><sup>5</sup></a>，<code>%in%</code><a href="#fn6"
 class="footnote-ref"
 id="fnref6"><sup>6</sup></a>といった比較演算子か、真偽値を戻す関数を使います。真偽値は<code>!</code>で反転させることができます。また、ベクトル全体を評価した場合は、ベクトルの要素それぞれに計算される真偽値を<code>any</code>（どれかが真）や<code>all</code>（すべてが真）などの関数でまとめる必要があります。</p>
+<div id="ifも式" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span>
+<code>if</code>も式</h2>
+<p><code>if</code>や<code>switch</code>が文になるのか式になるのかでプログラミング言語を比較することがありますが、Rの<code>if</code>はその文脈では式です。</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="fu">print</span>(<span class="cf">if</span>(x <span class="sc">&lt;</span> pi) <span class="st">&quot;x is lesser than π&quot;</span></span>
+<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a><span class="cf">else</span> <span class="cf">if</span> (x <span class="sc">==</span> pi) <span class="st">&quot;x equals π&quot;</span></span>
+<span id="cb56-3"><a href="#cb56-3" tabindex="-1"></a><span class="cf">else</span> <span class="st">&quot;x is greater than π&quot;</span>)</span></code></pre></div>
+<pre><code>[1] &quot;x is lesser than π&quot;</code></pre>
+<p><code>if</code>と<code>else</code>の式の中の最後の評価式が、式の値になります。ここでは値が文字列なので<code>print</code>関数に渡していますが、数値の場合は計算に使うこともできます。</p>
+</div>
 </div>
 <div id="繰り返し文ループ" class="section level1" number="10">
 <h1><span class="header-section-number">10</span>
 繰り返し文（ループ）</h1>
 <p><code>for</code>と<code>while</code>と<code>repeat</code>が用意されています。</p>
 <p><code>for</code>はベクトルの要素をひとつづつ取り出し、処理を繰り返す文です。</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="co"># 1,2,3からなるベクトルをつくって、順番にiに代入して処理</span></span>
-<span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="fu">print</span>(i)</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="co"># 1,2,3からなるベクトルをつくって、順番にiに代入して処理</span></span>
+<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)) <span class="fu">print</span>(i)</span></code></pre></div>
 <p><code>while</code>は条件式が真の間、処理を繰り返す文です。</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a><span class="co"># iが3以下の間、処理</span></span>
-<span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb57-3"><a href="#cb57-3" tabindex="-1"></a><span class="cf">while</span>(i <span class="sc">&lt;=</span> <span class="dv">3</span>){</span>
-<span id="cb57-4"><a href="#cb57-4" tabindex="-1"></a>    <span class="fu">print</span>(i)</span>
-<span id="cb57-5"><a href="#cb57-5" tabindex="-1"></a>    i <span class="ot">&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb57-6"><a href="#cb57-6" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a><span class="co"># iが3以下の間、処理</span></span>
+<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a><span class="cf">while</span>(i <span class="sc">&lt;=</span> <span class="dv">3</span>){</span>
+<span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a>    <span class="fu">print</span>(i)</span>
+<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a>    i <span class="ot">&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb59-6"><a href="#cb59-6" tabindex="-1"></a>}</span></code></pre></div>
 <p><code>repeat</code>は無条件に、処理を繰り返します。</p>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a><span class="cf">repeat</span>{</span>
-<span id="cb58-3"><a href="#cb58-3" tabindex="-1"></a>    <span class="fu">print</span>(i)</span>
-<span id="cb58-4"><a href="#cb58-4" tabindex="-1"></a>    i <span class="ot">&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb58-5"><a href="#cb58-5" tabindex="-1"></a>    <span class="co"># iが4以上のときループを抜ける</span></span>
-<span id="cb58-6"><a href="#cb58-6" tabindex="-1"></a>    <span class="cf">if</span>(i <span class="sc">&gt;=</span> <span class="dv">4</span>) <span class="cf">break</span>;</span>
-<span id="cb58-7"><a href="#cb58-7" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a>i <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a><span class="cf">repeat</span>{</span>
+<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a>    <span class="fu">print</span>(i)</span>
+<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a>    i <span class="ot">&lt;-</span> i <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb60-5"><a href="#cb60-5" tabindex="-1"></a>    <span class="co"># iが4以上のときループを抜ける</span></span>
+<span id="cb60-6"><a href="#cb60-6" tabindex="-1"></a>    <span class="cf">if</span>(i <span class="sc">&gt;=</span> <span class="dv">4</span>) <span class="cf">break</span>;</span>
+<span id="cb60-7"><a href="#cb60-7" tabindex="-1"></a>}</span></code></pre></div>
 <p>繰り返す文の中に<code>next</code>を入れると、繰り返す文の最初に戻ります。<code>for</code>であれば次の要素が取り出され、<code>while</code>であれば条件式が評価されます。</p>
 <p><code>break</code>を入れると、繰り返しを抜けます。</p>
 </div>
 <div id="エラーと例外処理" class="section level1" number="11">
 <h1><span class="header-section-number">11</span> エラーと例外処理</h1>
 <p><code>stop</code>を使うと基本的に処理がそこで止まり、後の文は評価されません。同様にエラーが出して止まるRの関数もあります。しかし、例外処理を書いて処理を続行させることもできます。エラーが出た後にも終了処理などが必要な場合に便利です。</p>
-<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a>(r <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
-<span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;Error!&quot;</span>)</span>
-<span id="cb59-3"><a href="#cb59-3" tabindex="-1"></a>    <span class="dv">0</span> <span class="co"># エラーが無ければ最後の式の値がtryCatch文の値</span></span>
-<span id="cb59-4"><a href="#cb59-4" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e){</span>
-<span id="cb59-5"><a href="#cb59-5" tabindex="-1"></a>    <span class="co"># エラーが出れば実行</span></span>
-<span id="cb59-6"><a href="#cb59-6" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Exception occured!&quot;</span>)</span>
-<span id="cb59-7"><a href="#cb59-7" tabindex="-1"></a>    <span class="sc">-</span><span class="dv">1</span> <span class="co"># エラー時のtryCatch文の値</span></span>
-<span id="cb59-8"><a href="#cb59-8" tabindex="-1"></a>}, <span class="at">warning =</span> <span class="cf">function</span>(e){</span>
-<span id="cb59-9"><a href="#cb59-9" tabindex="-1"></a>    <span class="co"># 警告が出れば実行</span></span>
-<span id="cb59-10"><a href="#cb59-10" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Warning occured!&quot;</span>)</span>
-<span id="cb59-11"><a href="#cb59-11" tabindex="-1"></a>    <span class="sc">-</span><span class="dv">2</span> <span class="co"># 警告時のtryCatch文の値</span></span>
-<span id="cb59-12"><a href="#cb59-12" tabindex="-1"></a>}, <span class="at">finally =</span> {</span>
-<span id="cb59-13"><a href="#cb59-13" tabindex="-1"></a>    <span class="co"># エラーが出ても出なくてもfinallyの部分は実行</span></span>
-<span id="cb59-14"><a href="#cb59-14" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Exception occured or not&quot;</span>)</span>
-<span id="cb59-15"><a href="#cb59-15" tabindex="-1"></a>    <span class="cn">NULL</span> <span class="co"># 使われない（ので無い方がよい）</span></span>
-<span id="cb59-16"><a href="#cb59-16" tabindex="-1"></a>}))</span></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a>(r <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;Error!&quot;</span>)</span>
+<span id="cb61-3"><a href="#cb61-3" tabindex="-1"></a>    <span class="dv">0</span> <span class="co"># エラーが無ければ最後の式の値がtryCatch文の値</span></span>
+<span id="cb61-4"><a href="#cb61-4" tabindex="-1"></a>}, <span class="at">error =</span> <span class="cf">function</span>(e){</span>
+<span id="cb61-5"><a href="#cb61-5" tabindex="-1"></a>    <span class="co"># エラーが出れば実行</span></span>
+<span id="cb61-6"><a href="#cb61-6" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Exception occured!&quot;</span>)</span>
+<span id="cb61-7"><a href="#cb61-7" tabindex="-1"></a>    <span class="sc">-</span><span class="dv">1</span> <span class="co"># エラー時のtryCatch文の値</span></span>
+<span id="cb61-8"><a href="#cb61-8" tabindex="-1"></a>}, <span class="at">warning =</span> <span class="cf">function</span>(e){</span>
+<span id="cb61-9"><a href="#cb61-9" tabindex="-1"></a>    <span class="co"># 警告が出れば実行</span></span>
+<span id="cb61-10"><a href="#cb61-10" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Warning occured!&quot;</span>)</span>
+<span id="cb61-11"><a href="#cb61-11" tabindex="-1"></a>    <span class="sc">-</span><span class="dv">2</span> <span class="co"># 警告時のtryCatch文の値</span></span>
+<span id="cb61-12"><a href="#cb61-12" tabindex="-1"></a>}, <span class="at">finally =</span> {</span>
+<span id="cb61-13"><a href="#cb61-13" tabindex="-1"></a>    <span class="co"># エラーが出ても出なくてもfinallyの部分は実行</span></span>
+<span id="cb61-14"><a href="#cb61-14" tabindex="-1"></a>    <span class="fu">message</span>(<span class="st">&quot;Exception occured or not&quot;</span>)</span>
+<span id="cb61-15"><a href="#cb61-15" tabindex="-1"></a>    <span class="cn">NULL</span> <span class="co"># 使われない（ので無い方がよい）</span></span>
+<span id="cb61-16"><a href="#cb61-16" tabindex="-1"></a>}))</span></code></pre></div>
 <p>第1引数と<code>finally</code>は文で、<code>error</code>と<code>warning</code>が関数であることには注意してください。</p>
 <p><code>error</code>と<code>warning</code>に指定する関数の引数には、<code>condition</code>クラスから派生した<code>error</code>もしくは<code>warning</code>S3オブジェクト<a
 href="#fn7" class="footnote-ref"
@@ -618,12 +639,12 @@ id="fnref7"><sup>7</sup></a>が入ります。中身はメッセージと評価�
 <h2><span class="header-section-number">11.1</span>
 例外をキャッチしない方法</h2>
 <p>オブジェクト指向的なtry-catchが好きではない人のために、<code>try</code>関数があります。</p>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a><span class="co"># エラーの発生とメッセージ表示を抑制</span></span>
-<span id="cb60-2"><a href="#cb60-2" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">try</span>(<span class="fu">stop</span>(<span class="st">&quot;Error!&quot;</span>), <span class="at">silent =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb60-3"><a href="#cb60-3" tabindex="-1"></a><span class="co"># 戻り値がtry-errorクラスを継承していれば、エラー処理を行う</span></span>
-<span id="cb60-4"><a href="#cb60-4" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">inherits</span>(r, <span class="st">&quot;try-error&quot;</span>)){</span>
-<span id="cb60-5"><a href="#cb60-5" tabindex="-1"></a>    <span class="fu">message</span>(r)</span>
-<span id="cb60-6"><a href="#cb60-6" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a><span class="co"># エラーの発生とメッセージ表示を抑制</span></span>
+<span id="cb62-2"><a href="#cb62-2" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">try</span>(<span class="fu">stop</span>(<span class="st">&quot;Error!&quot;</span>), <span class="at">silent =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-3"><a href="#cb62-3" tabindex="-1"></a><span class="co"># 戻り値がtry-errorクラスを継承していれば、エラー処理を行う</span></span>
+<span id="cb62-4"><a href="#cb62-4" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">inherits</span>(r, <span class="st">&quot;try-error&quot;</span>)){</span>
+<span id="cb62-5"><a href="#cb62-5" tabindex="-1"></a>    <span class="fu">message</span>(r)</span>
+<span id="cb62-6"><a href="#cb62-6" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="警告" class="section level2" number="11.2">
 <h2><span class="header-section-number">11.2</span> 警告</h2>
@@ -637,11 +658,11 @@ id="fnref7"><sup>7</sup></a>が入ります。中身はメッセージと評価�
 <h2><span class="header-section-number">12.1</span>
 三項演算（<code>ifelse</code>）</h2>
 <p>C言語の三項演算子に該当する関数です。</p>
-<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a><span class="fu">ifelse</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>) <span class="sc">&gt;</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="st">&quot;left-side is bigger.&quot;</span>, <span class="st">&quot;left-side is not bigger.&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a><span class="fu">ifelse</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>) <span class="sc">&gt;</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="st">&quot;left-side is bigger.&quot;</span>, <span class="st">&quot;left-side is not bigger.&quot;</span>)</span></code></pre></div>
 <pre><code>[1] &quot;left-side is bigger.&quot;     &quot;left-side is not bigger.&quot;</code></pre>
 <p>なお、<code>TRUE</code>が<code>1</code>，<code>FALSE</code>が<code>0</code>として計算されるため、算術演算での分布であれば、</p>
-<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb63-2"><a href="#cb63-2" tabindex="-1"></a>(a <span class="sc">==</span> <span class="dv">1</span>)<span class="sc">*</span><span class="dv">123</span> <span class="sc">+</span> (a <span class="sc">!=</span> <span class="dv">1</span>)<span class="sc">*</span><span class="dv">456</span></span></code></pre></div>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb65-2"><a href="#cb65-2" tabindex="-1"></a>(a <span class="sc">==</span> <span class="dv">1</span>)<span class="sc">*</span><span class="dv">123</span> <span class="sc">+</span> (a <span class="sc">!=</span> <span class="dv">1</span>)<span class="sc">*</span><span class="dv">456</span></span></code></pre></div>
 <pre><code>[1] 123</code></pre>
 <p>と言う風にも書け、こちらの方が速かったりします。</p>
 </div>
@@ -649,15 +670,15 @@ id="fnref7"><sup>7</sup></a>が入ります。中身はメッセージと評価�
 <h2><span class="header-section-number">12.2</span>
 分岐（<code>switch</code>）</h2>
 <p>Rにも<code>switch</code>文がありました。</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;a&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;a&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
 <pre><code>[1] 123</code></pre>
-<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;b&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;b&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
 <pre><code>[1] 456</code></pre>
-<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;c&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" tabindex="-1"></a><span class="cf">switch</span>(<span class="st">&quot;c&quot;</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>)</span></code></pre></div>
 <pre><code>[1] 789</code></pre>
 <p>ベクトル処理ができないので、まとめて処理するときにはunlistとsapplyを組み合わせるしか無いようです。</p>
-<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" tabindex="-1"></a><span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), </span>
-<span id="cb71-2"><a href="#cb71-2" tabindex="-1"></a>    <span class="cf">switch</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" tabindex="-1"></a><span class="fu">unlist</span>(<span class="fu">sapply</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), </span>
+<span id="cb73-2"><a href="#cb73-2" tabindex="-1"></a>    <span class="cf">switch</span>, <span class="at">a =</span> <span class="dv">123</span>, <span class="at">b =</span> <span class="dv">456</span>, <span class="at">c =</span> <span class="dv">789</span>))</span></code></pre></div>
 <pre><code>  a   b   c 
 123 456 789 </code></pre>
 </div>
