@@ -660,10 +660,10 @@ id="fnref7"><sup>7</sup></a>が入ります。中身はメッセージと評価�
 <p>C言語の三項演算子に該当する関数です。</p>
 <div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" tabindex="-1"></a><span class="fu">ifelse</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">0</span>) <span class="sc">&gt;</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="st">&quot;left-side is bigger.&quot;</span>, <span class="st">&quot;left-side is not bigger.&quot;</span>)</span></code></pre></div>
 <pre><code>[1] &quot;left-side is bigger.&quot;     &quot;left-side is not bigger.&quot;</code></pre>
-<p>なお、<code>TRUE</code>が<code>1</code>，<code>FALSE</code>が<code>0</code>として計算されるため、算術演算での分布であれば、</p>
-<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb65-2"><a href="#cb65-2" tabindex="-1"></a>(a <span class="sc">==</span> <span class="dv">1</span>)<span class="sc">*</span><span class="dv">123</span> <span class="sc">+</span> (a <span class="sc">!=</span> <span class="dv">1</span>)<span class="sc">*</span><span class="dv">456</span></span></code></pre></div>
-<pre><code>[1] 123</code></pre>
+<p>なお、<code>TRUE</code>が<code>1</code>，<code>FALSE</code>が<code>0</code>として計算されるため、算術演算であれば、</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb65-2"><a href="#cb65-2" tabindex="-1"></a>a <span class="sc">+</span> (a <span class="sc">&lt;=</span> <span class="dv">2</span>)<span class="sc">*</span><span class="dv">10</span> <span class="sc">+</span> (a <span class="sc">&gt;</span> <span class="dv">2</span>)<span class="sc">*</span><span class="dv">100</span></span></code></pre></div>
+<pre><code>[1]  11  12 103</code></pre>
 <p>と言う風にも書け、こちらの方が速かったりします。</p>
 </div>
 <div id="分岐switch" class="section level2" number="12.2">
