@@ -532,7 +532,7 @@ class="math inline">\(i\)</span>をつけて表します。</p>
 <pre><code>[1] &quot;logical&quot;</code></pre>
 <p>条件文やベクトルの要素を抜き出すときに使います。</p>
 <p>バイナリ型については、<a
-href="./binary_files.shtml">Rでのバイナリファイルの扱い方</a>を参照してください。</p>
+href="file_io_binary.shtml">Rでのバイナリファイルの扱い方</a>を参照してください。</p>
 </div>
 <div id="データ構造" class="section level1" number="8">
 <h1><span class="header-section-number">8</span> データ構造</h1>
