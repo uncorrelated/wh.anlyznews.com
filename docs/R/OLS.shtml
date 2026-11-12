@@ -583,7 +583,7 @@ Iterated Expectations）から<span class="math inline">\(E[b] = E[E[b|X]]
 <p><span
 class="math inline">\(b\)</span>は推定量なので誤差があり、その分散は係数の推定量のt検定や信頼区間の計算に用いられます。多変量なので分散共分散行列を導出します。</p>
 <p><span class="math display">\[
-\text{VAR}[ b \mid X ] = E[{}^t\!(b - \beta)(b - \beta) \mid X]
+\text{VAR}[ b \mid X ] = E[(b - \beta){}^t\!(b - \beta) \mid X]
 \]</span></p>
 <p><span class="math display">\[
 = E[({}^t\!XX)^{-1}{{}^t\!X} \epsilon {{}^t\!\epsilon} X ({}^t\!XX)^{-1}
